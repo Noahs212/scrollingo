@@ -28,8 +28,8 @@ export const useMessages = (chatId?: string, contactId?: string) => {
         item.members.some((member) => member === contactId),
       );
 
-      if (!chat && contactId) {
-        createChat(contactId).then((res) => setChatIdInst(res.id));
+      if (!chat && contactId && currentUser) {
+        createChat(contactId, currentUser.uid).then((res) => setChatIdInst(res.id));
       } else if (chat) {
         setChatIdInst(chat.id);
       }

@@ -6,7 +6,7 @@ import { RootState } from "../../../redux/store";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../navigation/main";
-import { FIREBASE_AUTH } from "../../../../firebaseConfig";
+import { useCurrentUserId } from "../../../hooks/useCurrentUserId";
 import { useFollowing } from "../../../hooks/useFollowing";
 import { Feather } from "@expo/vector-icons";
 import { useFollowingMutation } from "../../../hooks/useFollowingMutation";
@@ -36,12 +36,13 @@ export default function ProfileHeader({
     setFollowersCount(user?.followersCount || 0);
   }, [user]);
 
+  const currentUserId = useCurrentUserId();
   const followingData = useFollowing(
-    FIREBASE_AUTH.currentUser?.uid ?? null,
+    currentUserId,
     user?.uid ?? null,
   );
   const isFollowing =
-    FIREBASE_AUTH.currentUser?.uid && user?.uid && followingData.data
+    currentUserId && user?.uid && followingData.data
       ? followingData.data
       : false;
 
@@ -120,7 +121,7 @@ export default function ProfileHeader({
             <Text style={styles.counterLabelText}>Likes</Text>
           </View>
         </View>
-        {FIREBASE_AUTH.currentUser?.uid === user.uid ? (
+        {currentUserId === user.uid ? (
           <TouchableOpacity
             style={buttonStyles.grayOutlinedButton}
             onPress={() => navigation.navigate("editProfile")}

@@ -1,15 +1,16 @@
 import { Post, Comment } from "../../types";
 import { Dispatch, SetStateAction } from "react";
-import { MOCK_USER_UID } from "../../firebaseConfig";
 
 /**
  * Mock post data — sample videos from public sources.
  * Replace with Supabase queries when ready.
  */
+const MOCK_USER_ID = "mock-user-001";
+
 const MOCK_POSTS: Post[] = [
   {
     id: "post-001",
-    creator: MOCK_USER_UID,
+    creator: MOCK_USER_ID,
     media: [
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
       "",
@@ -45,7 +46,7 @@ const MOCK_POSTS: Post[] = [
   },
   {
     id: "post-004",
-    creator: MOCK_USER_UID,
+    creator: MOCK_USER_ID,
     media: [
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
       "",

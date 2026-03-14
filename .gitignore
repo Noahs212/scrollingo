@@ -11,7 +11,8 @@ downloads/
 .DS_Store
 *.pem
 
-# Node / React Native (mobile/)
+# Node
+node_modules/
 mobile/node_modules/
 mobile/.expo/
 mobile/dist/
@@ -36,3 +37,6 @@ yarn-error.*
 
 # TypeScript
 *.tsbuildinfo
+
+# Test coverage
+mobile/coverage/

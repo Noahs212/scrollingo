@@ -41,6 +41,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  logoutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 40,
+    paddingVertical: 12,
+    borderColor: "red",
+    borderWidth: 1,
+    borderRadius: 8,
+  },
+  logoutButtonText: {
+    color: "red",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 8,
+  },
 });
 
 export default styles;

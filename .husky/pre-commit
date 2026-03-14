@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Only enforce coverage on the main branch
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$BRANCH" != "main" ]; then
+  exit 0
+fi
+
+# Run mobile app tests with coverage enforcement
+export PATH="/usr/local/Cellar/node/25.8.1_1/bin:$PATH"
+cd mobile && npx jest --coverage
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Commit blocked: tests failed or coverage thresholds not met."
+  echo "Run 'npx jest --coverage' in mobile/ to see details."
+  exit 1
+fi

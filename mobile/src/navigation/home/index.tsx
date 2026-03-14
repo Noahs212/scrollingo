@@ -4,7 +4,7 @@ import ProfileScreen from "../../screens/profile";
 import SearchScreen from "../../screens/search";
 import ReviewScreen from "../../screens/review";
 import FeedNavigation from "../feed";
-import { FIREBASE_AUTH } from "../../../firebaseConfig";
+import { useCurrentUserId } from "../../hooks/useCurrentUserId";
 import ChatScreen from "../../screens/chat/list";
 import { useChats } from "../../hooks/useChats";
 
@@ -20,6 +20,7 @@ const Tab = createMaterialBottomTabNavigator<HomeStackParamList>();
 
 export default function HomeScreen() {
   useChats();
+  const currentUserId = useCurrentUserId();
 
   return (
     <Tab.Navigator
@@ -70,7 +71,7 @@ export default function HomeScreen() {
             <Feather name="user" size={24} color={color} />
           ),
         }}
-        initialParams={{ initialUserId: FIREBASE_AUTH.currentUser?.uid ?? "" }}
+        initialParams={{ initialUserId: currentUserId ?? "" }}
       />
     </Tab.Navigator>
   );

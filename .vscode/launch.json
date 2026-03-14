@@ -1,0 +1,59 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Jest: Run All Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/usr/local/Cellar/node/25.8.1_1/bin/npx",
+      "args": ["jest", "--no-cache", "--verbose"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/mobile",
+      "env": {
+        "PATH": "/usr/local/Cellar/node/25.8.1_1/bin:${env:PATH}"
+      }
+    },
+    {
+      "name": "Jest: Run All Tests with Coverage",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/usr/local/Cellar/node/25.8.1_1/bin/npx",
+      "args": ["jest", "--no-cache", "--verbose", "--coverage"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/mobile",
+      "env": {
+        "PATH": "/usr/local/Cellar/node/25.8.1_1/bin:${env:PATH}"
+      }
+    },
+    {
+      "name": "Jest: Run Current File",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/usr/local/Cellar/node/25.8.1_1/bin/npx",
+      "args": ["jest", "--no-cache", "--verbose", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/mobile",
+      "env": {
+        "PATH": "/usr/local/Cellar/node/25.8.1_1/bin:${env:PATH}"
+      }
+    },
+    {
+      "name": "Jest: Run with Debugger",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "/usr/local/Cellar/node/25.8.1_1/bin/node",
+      "args": [
+        "--experimental-vm-modules",
+        "${workspaceFolder}/mobile/node_modules/.bin/jest",
+        "--no-cache",
+        "--runInBand",
+        "${relativeFile}"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/mobile",
+      "env": {
+        "PATH": "/usr/local/Cellar/node/25.8.1_1/bin:${env:PATH}"
+      }
+    }
+  ]
+}

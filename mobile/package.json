@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "format": "prettier \"**/*.{ts,tsx}\" --write",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "jest": {
     "preset": "jest-expo",
@@ -21,7 +22,22 @@
       "js",
       "jsx",
       "json"
-    ]
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/__tests__/**",
+      "!src/**/*.test.{ts,tsx}",
+      "!src/**/styles.ts",
+      "!src/**/types.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 15,
+        "functions": 20,
+        "lines": 25,
+        "statements": 25
+      }
+    }
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5",
@@ -30,15 +46,20 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "@reduxjs/toolkit": "^2",
+    "@supabase/supabase-js": "^2.99.1",
     "@tanstack/react-query": "^5",
     "expo": "~55.0.6",
+    "expo-auth-session": "~55.0.8",
     "expo-camera": "~55.0.9",
+    "expo-crypto": "~55.0.9",
     "expo-image-picker": "~55.0.12",
     "expo-linear-gradient": "~55.0.8",
     "expo-media-library": "~55.0.9",
+    "expo-secure-store": "~55.0.8",
     "expo-status-bar": "~55.0.4",
     "expo-video": "~55.0.10",
     "expo-video-thumbnails": "~55.0.10",
+    "expo-web-browser": "~55.0.9",
     "react": "19.2.0",
     "react-native": "0.83.2",
     "react-native-gesture-handler": "~2.30.0",
@@ -48,6 +69,7 @@
     "react-native-safe-area-context": "~5.6.2",
     "react-native-screens": "~4.23.0",
     "react-native-tab-view": "^3.5.2",
+    "react-native-url-polyfill": "^3.0.0",
     "react-native-vector-icons": "^10.0.0",
     "react-redux": "^9",
     "throttle-debounce": "^5.0.0",

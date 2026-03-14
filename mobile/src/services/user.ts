@@ -1,12 +1,11 @@
-import { FIREBASE_AUTH, MOCK_USER_UID } from "../../firebaseConfig";
 import { SearchUser, User } from "../../types";
 
 /**
  * Mock user data. Replace with Supabase queries when ready.
  */
 const MOCK_USERS: Record<string, User> = {
-  [MOCK_USER_UID]: {
-    uid: MOCK_USER_UID,
+  "mock-user-001": {
+    uid: "mock-user-001",
     email: "demo@scrollingo.app",
     displayName: "Demo User",
     followingCount: 12,

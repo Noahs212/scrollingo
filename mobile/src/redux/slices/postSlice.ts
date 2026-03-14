@@ -1,9 +1,9 @@
-import { FIREBASE_AUTH } from "../../../firebaseConfig";
 import { saveMediaToStorage } from "../../services/utils";
 import { getPostsByUserId } from "../../services/posts";
 import uuid from "uuid-random";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Post } from "../../../types";
+import { RootState } from "../store";
 
 interface PostState {
   loading: boolean;
@@ -29,25 +29,27 @@ export const createPost = createAsyncThunk(
       video: string;
       thumbnail: string;
     },
-    { rejectWithValue },
+    { getState, rejectWithValue },
   ) => {
-    if (FIREBASE_AUTH.currentUser) {
+    const state = getState() as RootState;
+    const currentUser = state.auth.currentUser;
+    if (currentUser) {
       try {
         const storagePostId = uuid();
         const [videoDownloadUrl, thumbnailDownloadUrl] = await Promise.all([
           saveMediaToStorage(
             video,
-            `post/${FIREBASE_AUTH.currentUser.uid}/${storagePostId}/video`,
+            `post/${currentUser.uid}/${storagePostId}/video`,
           ),
           saveMediaToStorage(
             thumbnail,
-            `post/${FIREBASE_AUTH.currentUser.uid}/${storagePostId}/thumbnail`,
+            `post/${currentUser.uid}/${storagePostId}/thumbnail`,
           ),
         ]);
 
         // Mock: in a real app, this would insert into Supabase
         console.log("Post created (mock):", {
-          creator: FIREBASE_AUTH.currentUser.uid,
+          creator: currentUser.uid,
           media: [videoDownloadUrl, thumbnailDownloadUrl],
           description,
         });

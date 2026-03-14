@@ -3,18 +3,18 @@ import React from "react";
 import { useUser } from "../../../../hooks/useUser";
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
-import { FIREBASE_AUTH } from "../../../../../firebaseConfig";
+import { useCurrentUserId } from "../../../../hooks/useCurrentUserId";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../navigation/main";
 import { Chat } from "../../../../../types";
 import { Avatar } from "react-native-paper";
 
 const ChatListItem = ({ chat }: { chat: Chat }) => {
+  const currentUserId = useCurrentUserId();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { data: userData } = useUser(
-    FIREBASE_AUTH.currentUser &&
-      chat.members[0] === FIREBASE_AUTH.currentUser.uid
+    currentUserId && chat.members[0] === currentUserId
       ? chat.members[1]
       : chat.members[0],
   );

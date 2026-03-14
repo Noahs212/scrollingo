@@ -1,3 +1,4 @@
+import "react-native-url-polyfill/auto";
 import { store } from "./src/redux/store";
 import { Provider } from "react-redux";
 import Route from "./src/navigation/main";

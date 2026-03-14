@@ -1,13 +1,14 @@
-import { FIREBASE_AUTH, MOCK_USER_UID } from "../../firebaseConfig";
 import { Chat, Message } from "../../types";
 
 /**
  * Mock chat data. Replace with Supabase realtime when ready.
  */
+const MOCK_USER_ID = "mock-user-001";
+
 const MOCK_CHATS: Chat[] = [
   {
     id: "chat-001",
-    members: [MOCK_USER_UID, "user-002"],
+    members: [MOCK_USER_ID, "user-002"],
     lastMessage: "Hey, how's your Spanish going?",
     lastUpdate: { seconds: Math.floor(Date.now() / 1000) },
     messages: [],
@@ -17,15 +18,13 @@ const MOCK_CHATS: Chat[] = [
 const MOCK_MESSAGES: Record<string, Message[]> = {
   "chat-001": [
     { id: "m1", creator: "user-002", message: "Hey, how's your Spanish going?" },
-    { id: "m2", creator: MOCK_USER_UID, message: "Getting better every day!" },
+    { id: "m2", creator: MOCK_USER_ID, message: "Getting better every day!" },
   ],
 };
 
 type ListenerCallback = (data: { docs: Array<{ id: string; data: () => any }> }) => void;
 
 export const chatsListener = (listener: ListenerCallback) => {
-  if (!FIREBASE_AUTH.currentUser) return;
-
   // Simulate snapshot
   setTimeout(() => {
     listener({
@@ -54,12 +53,12 @@ export const messagesListener = (listener: ListenerCallback, chatId: string) => 
   return () => {}; // unsubscribe
 };
 
-export const sendMessage = async (chatId: string, message: string) => {
-  if (!FIREBASE_AUTH.currentUser) return;
+export const sendMessage = async (chatId: string, message: string, currentUserId: string) => {
+  if (!currentUserId) return;
 
   const newMsg: Message = {
     id: `m-${Date.now()}`,
-    creator: FIREBASE_AUTH.currentUser.uid,
+    creator: currentUserId,
     message,
   };
 
@@ -69,14 +68,14 @@ export const sendMessage = async (chatId: string, message: string) => {
   MOCK_MESSAGES[chatId].unshift(newMsg);
 };
 
-export const createChat = async (contactId: string) => {
-  if (!FIREBASE_AUTH.currentUser) {
+export const createChat = async (contactId: string, currentUserId: string) => {
+  if (!currentUserId) {
     throw new Error("User is not authenticated");
   }
 
   const newChat: Chat = {
     id: `chat-${Date.now()}`,
-    members: [contactId, FIREBASE_AUTH.currentUser.uid],
+    members: [contactId, currentUserId],
     lastMessage: "Send a first message",
     messages: [],
   };

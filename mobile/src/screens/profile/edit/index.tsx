@@ -6,14 +6,16 @@ import NavBarGeneral from "../../../components/general/navbar";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { saveUserProfileImage } from "../../../services/user";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { RootState } from "../../../redux/store";
+import { AppDispatch, RootState } from "../../../redux/store";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../navigation/main";
+import { logout } from "../../../redux/slices/authSlice";
 
 export default function EditProfileScreen() {
   const auth = useSelector((state: RootState) => state.auth);
+  const dispatch: AppDispatch = useDispatch();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -68,6 +70,14 @@ export default function EditProfileScreen() {
             <Text>{auth.currentUser ? auth.currentUser.displayName : ""}</Text>
             <Feather name="chevron-right" size={20} color="gray" />
           </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={() => dispatch(logout())}
+        >
+          <Feather name="log-out" size={20} color="red" />
+          <Text style={styles.logoutButtonText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
