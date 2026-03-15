@@ -4,6 +4,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Post, User } from "../../../../../types";
@@ -24,6 +25,7 @@ export default function PostSingleOverlay({
   user: User;
   post: Post;
 }) {
+  const insets = useSafeAreaInsets();
   const currentUser = useSelector(
     (state: RootState) => state.auth.currentUser,
   );
@@ -146,7 +148,7 @@ export default function PostSingleOverlay({
       </View>
 
       {/* Bottom left: username + description */}
-      <View style={styles.textContainer}>
+      <View style={[styles.textContainer, { paddingBottom: 16 + insets.bottom }]}>
         <Text style={styles.displayName}>
           @{user.displayName || user.email}
         </Text>
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
   actionsColumn: {
     position: "absolute",
     right: 8,
-    bottom: 100,
+    bottom: 120,
     alignItems: "center",
     width: 60,
   },
