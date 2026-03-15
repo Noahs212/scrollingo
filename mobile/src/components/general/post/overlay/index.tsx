@@ -1,3 +1,7 @@
+// INHERITED: This file is from the kirkwat/tiktok base repo.
+// It will likely undergo significant changes as Scrollingo features are built.
+// Do not assume this code follows Scrollingo patterns — verify before modifying.
+
 import { useEffect, useMemo, useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";

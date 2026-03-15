@@ -1,3 +1,7 @@
+// INHERITED: This file is from the kirkwat/tiktok base repo.
+// It will likely undergo significant changes as Scrollingo features are built.
+// Do not assume this code follows Scrollingo patterns — verify before modifying.
+
 import BottomSheet from "@gorhom/bottom-sheet";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";

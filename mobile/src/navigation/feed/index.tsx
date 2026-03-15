@@ -1,3 +1,7 @@
+// INHERITED: This file is from the kirkwat/tiktok base repo.
+// It will likely undergo significant changes as Scrollingo features are built.
+// Do not assume this code follows Scrollingo patterns — verify before modifying.
+
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FeedScreen from "../../screens/feed";

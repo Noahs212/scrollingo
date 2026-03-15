@@ -1,3 +1,7 @@
+// INHERITED: This file is from the kirkwat/tiktok base repo.
+// It will likely undergo significant changes as Scrollingo features are built.
+// Do not assume this code follows Scrollingo patterns — verify before modifying.
+
 import { ScrollView } from "react-native";
 import styles from "./styles";
 import ProfileNavBar from "../../components/profile/navBar";

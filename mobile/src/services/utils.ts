@@ -1,3 +1,7 @@
+// INHERITED: This file is from the kirkwat/tiktok base repo.
+// It will likely undergo significant changes as Scrollingo features are built.
+// Do not assume this code follows Scrollingo patterns — verify before modifying.
+
 /**
  * Mock storage utility — returns the local URI as-is since there's no backend.
  * Replace with Supabase Storage upload when ready.
