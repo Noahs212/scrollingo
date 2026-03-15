@@ -15,7 +15,6 @@ import {
   View,
   StyleSheet,
   Animated,
-  Dimensions,
 } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { Ionicons } from "@expo/vector-icons";
@@ -28,8 +27,6 @@ export interface PostSingleHandles {
   stop: () => void;
   unload: () => void;
 }
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const DOUBLE_TAP_DELAY = 300;
 
@@ -49,7 +46,6 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
       p.loop = true;
     });
 
-    // Store player in ref for cleanup safety
     useEffect(() => {
       playerRef.current = player;
     }, [player]);
@@ -60,32 +56,28 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
           player.play();
           setIsPaused(false);
         } catch (e) {
-          // Player may be released — safe to ignore
+          // Player may be released
         }
       },
       stop: () => {
         try {
           player.pause();
         } catch (e) {
-          // Player may be released — safe to ignore
+          // Player may be released
         }
       },
       unload: () => {
         try {
           player.pause();
         } catch (e) {
-          // Player may be released — safe to ignore
+          // Player may be released
         }
       },
     }));
 
-    // Cleanup: no-op since expo-video manages player lifecycle
     useEffect(() => {
       return () => {
-        // Do NOT call player.pause() here — the player object
-        // may already be released by expo-video, causing a crash.
-        // expo-video handles cleanup automatically when the
-        // VideoView unmounts.
+        // expo-video handles cleanup automatically when VideoView unmounts
       };
     }, []);
 
@@ -131,15 +123,12 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
       const timeSinceLastTap = now - lastTapRef.current;
 
       if (timeSinceLastTap < DOUBLE_TAP_DELAY) {
-        // Double tap — like
         showHeartAnimation();
         lastTapRef.current = 0;
       } else {
-        // Single tap — toggle play/pause (with delay to check for double)
         lastTapRef.current = now;
         setTimeout(() => {
           if (lastTapRef.current === now) {
-            // No second tap happened
             try {
               if (isPaused) {
                 player.play();
@@ -159,45 +148,48 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
 
     return (
       <View style={styles.container}>
+        {/* Video fills the entire container */}
+        <VideoView
+          player={player}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          nativeControls={false}
+        />
+
+        {/* Tap target for play/pause — behind the overlay buttons */}
         <TouchableWithoutFeedback onPress={handleTap}>
-          <View style={styles.videoContainer}>
-            <VideoView
-              player={player}
-              style={styles.video}
-              contentFit="cover"
-              nativeControls={false}
-            />
-
-            {/* Pause/Play indicator */}
-            <Animated.View
-              style={[styles.pauseIndicator, { opacity: pauseOpacity }]}
-              pointerEvents="none"
-            >
-              <Ionicons
-                name={isPaused ? "pause" : "play"}
-                size={80}
-                color="rgba(255,255,255,0.8)"
-              />
-            </Animated.View>
-
-            {/* Double-tap heart animation */}
-            {showHeart && (
-              <Animated.View
-                style={[
-                  styles.heartAnimation,
-                  {
-                    opacity: heartOpacity,
-                    transform: [{ scale: heartScale }],
-                  },
-                ]}
-                pointerEvents="none"
-              >
-                <Ionicons name="heart" size={120} color="white" />
-              </Animated.View>
-            )}
-          </View>
+          <View style={styles.tapTarget} />
         </TouchableWithoutFeedback>
 
+        {/* Pause/Play indicator */}
+        <Animated.View
+          style={[styles.centerIndicator, { opacity: pauseOpacity }]}
+          pointerEvents="none"
+        >
+          <Ionicons
+            name={isPaused ? "pause" : "play"}
+            size={80}
+            color="rgba(255,255,255,0.8)"
+          />
+        </Animated.View>
+
+        {/* Double-tap heart animation */}
+        {showHeart && (
+          <Animated.View
+            style={[
+              styles.centerIndicator,
+              {
+                opacity: heartOpacity,
+                transform: [{ scale: heartScale }],
+              },
+            ]}
+            pointerEvents="none"
+          >
+            <Ionicons name="heart" size={120} color="white" />
+          </Animated.View>
+        )}
+
+        {/* Overlay: action buttons + user info — renders ON TOP of tap target */}
         {user && <PostSingleOverlay user={user} post={item} />}
       </View>
     );
@@ -207,14 +199,13 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "black",
   },
-  videoContainer: {
-    flex: 1,
+  tapTarget: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
   },
-  video: {
-    flex: 1,
-  },
-  pauseIndicator: {
+  centerIndicator: {
     position: "absolute",
     top: 0,
     left: 0,
@@ -222,15 +213,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-  },
-  heartAnimation: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
+    zIndex: 2,
   },
 });
 
