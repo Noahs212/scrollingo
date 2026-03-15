@@ -6,7 +6,7 @@ import NavBarGeneral from "../../../components/general/navbar";
 import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { saveUserProfileImage } from "../../../services/user";
-import { NATIVE_LANGUAGES } from "../../../services/language";
+import { NATIVE_LANGUAGES, LEARNING_LANGUAGES } from "../../../services/language";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,8 +17,10 @@ import { logout, updateUserField } from "../../../redux/slices/authSlice";
 import { useCurrentUserId } from "../../../hooks/useCurrentUserId";
 import { keys } from "../../../hooks/queryKeys";
 
+const ALL_LANGUAGES = [...NATIVE_LANGUAGES, ...LEARNING_LANGUAGES];
+
 function getLanguageName(code: string): string {
-  const lang = NATIVE_LANGUAGES.find((l) => l.code === code);
+  const lang = ALL_LANGUAGES.find((l) => l.code === code);
   return lang ? `${lang.flag} ${lang.name}` : code;
 }
 

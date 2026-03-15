@@ -22,7 +22,7 @@ function mapSupabaseUser(
     uid: supaUser.id,
     email: supaUser.email ?? "",
     displayName: supaUser.user_metadata?.full_name ?? supaUser.user_metadata?.name ?? null,
-    photoURL: supaUser.user_metadata?.avatar_url ?? supaUser.user_metadata?.picture,
+    photoURL: supaUser.user_metadata?.avatar_url || supaUser.user_metadata?.picture || undefined,
     followingCount: 0,
     followersCount: 0,
     likesCount: 0,

@@ -12,7 +12,7 @@ function mapDbUser(
     uid: row.id,
     email,
     displayName: row.display_name ?? null,
-    photoURL: row.avatar_url ?? undefined,
+    photoURL: row.avatar_url || undefined,
     followingCount: row.following_count ?? 0,
     followersCount: row.follower_count ?? 0,
     likesCount: 0, // Computed from user_likes count; not stored on users table
@@ -68,7 +68,10 @@ export async function saveUserField(
     dailyGoalMinutes: "daily_goal_minutes",
   };
 
-  const dbField = fieldMap[field] ?? field;
+  const dbField = fieldMap[field];
+  if (!dbField) {
+    throw new Error(`Unknown profile field: "${field}". Add it to the fieldMap in saveUserField.`);
+  }
 
   // Convert numeric fields from string to number
   const numericFields = new Set(["daily_goal_minutes"]);

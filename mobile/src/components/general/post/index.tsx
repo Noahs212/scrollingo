@@ -44,7 +44,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
     const [showHeart, setShowHeart] = useState(false);
     const playerRef = useRef<ReturnType<typeof useVideoPlayer> | null>(null);
 
-    const player = useVideoPlayer(item.media[0], (p) => {
+    const videoUrl = item.media?.[0] ?? null;
+    const player = useVideoPlayer(videoUrl, (p) => {
       p.loop = true;
     });
 

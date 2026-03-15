@@ -36,9 +36,9 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     CurrentUserProfileItemInViewContext,
   );
 
-  const { creator, profile } = route.params as {
-    creator: string;
-    profile: boolean;
+  const { creator = "", profile = false } = (route.params ?? {}) as {
+    creator?: string;
+    profile?: boolean;
   };
 
   const isFocused = useIsFocused();

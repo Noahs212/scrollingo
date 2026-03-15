@@ -97,8 +97,8 @@ export default function ProfileHeader({ user }: { user: User | null }) {
 
   if (!user) return null;
 
-  const nativeLang = getLanguageDisplay(user.nativeLanguage);
-  const learningLangs = user.learningLanguages.map(getLanguageDisplay);
+  const nativeLang = getLanguageDisplay(user.nativeLanguage ?? "en");
+  const learningLangs = (user.learningLanguages ?? []).map(getLanguageDisplay);
 
   return (
     <View style={styles.container}>
