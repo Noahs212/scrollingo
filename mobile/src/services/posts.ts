@@ -4,63 +4,33 @@
 
 import { Post, Comment } from "../../types";
 import { Dispatch, SetStateAction } from "react";
+import { supabase } from "../lib/supabase";
 
 /**
- * Mock post data — sample videos from public sources.
- * Replace with Supabase queries when ready.
+ * Local video assets from downloads/ folder.
+ * These are Chinese short-form videos for development/testing.
+ * In production, videos will come from the videos table in Supabase + R2 CDN.
  */
-const MOCK_USER_ID = "mock-user-001";
-
-const MOCK_POSTS: Post[] = [
-  {
-    id: "post-001",
-    creator: MOCK_USER_ID,
-    media: [
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-      "",
-    ],
-    description: "Learning Spanish with immersion videos #language #spanish",
-    likesCount: 42,
-    commentsCount: 5,
-    creation: new Date().toISOString(),
-  },
-  {
-    id: "post-002",
-    creator: "user-002",
-    media: [
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-      "",
-    ],
-    description: "Japanese phrases for daily life #japanese #nihongo",
-    likesCount: 128,
-    commentsCount: 12,
-    creation: new Date().toISOString(),
-  },
-  {
-    id: "post-003",
-    creator: "user-003",
-    media: [
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-      "",
-    ],
-    description: "French pronunciation tips #french #francais",
-    likesCount: 89,
-    commentsCount: 7,
-    creation: new Date().toISOString(),
-  },
-  {
-    id: "post-004",
-    creator: MOCK_USER_ID,
-    media: [
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-      "",
-    ],
-    description: "Korean vocabulary through K-dramas #korean #hangul",
-    likesCount: 215,
-    commentsCount: 23,
-    creation: new Date().toISOString(),
-  },
+const LOCAL_VIDEOS = [
+  require("../../assets/videos/video_2.mp4"),
+  require("../../assets/videos/video_3.mp4"),
+  require("../../assets/videos/video_4.mp4"),
+  require("../../assets/videos/video_6.mp4"),
+  require("../../assets/videos/video_8.mp4"),
+  require("../../assets/videos/video_9.mp4"),
+  require("../../assets/videos/video_10.mp4"),
+  require("../../assets/videos/video_11.mp4"),
+  require("../../assets/videos/video_12.mp4"),
+  require("../../assets/videos/video_13.mp4"),
 ];
+
+/**
+ * Get the current user's ID to use as creator for local dev videos.
+ */
+async function getCurrentUserId(): Promise<string> {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.user?.id ?? "unknown";
+}
 
 const MOCK_COMMENTS: Comment[] = [
   { id: "c1", creator: "user-002", comment: "Great content!" },
@@ -69,8 +39,18 @@ const MOCK_COMMENTS: Comment[] = [
 
 const likedPosts = new Set<string>();
 
-export const getFeed = (): Promise<Post[]> => {
-  return Promise.resolve([...MOCK_POSTS]);
+export const getFeed = async (): Promise<Post[]> => {
+  const userId = await getCurrentUserId();
+
+  return LOCAL_VIDEOS.map((videoSource, i) => ({
+    id: `local-video-${i + 1}`,
+    creator: userId,
+    media: [videoSource, ""],
+    description: `Chinese learning video #${i + 1} #中文 #学习`,
+    likesCount: Math.floor(Math.random() * 200),
+    commentsCount: Math.floor(Math.random() * 20),
+    creation: new Date().toISOString(),
+  }));
 };
 
 export const getLikeById = async (
@@ -109,13 +89,13 @@ export const commentListener = (
   setCommentList: Dispatch<SetStateAction<Comment[]>>,
 ) => {
   setCommentList([...MOCK_COMMENTS]);
-  return () => {}; // unsubscribe no-op
+  return () => {};
 };
 
 export const clearCommentListener = () => {};
 
-export const getPostsByUserId = (uid?: string): Promise<Post[]> => {
-  if (!uid) return Promise.reject(new Error("User ID is not set"));
-  const userPosts = MOCK_POSTS.filter((p) => p.creator === uid);
-  return Promise.resolve(userPosts);
+export const getPostsByUserId = async (uid?: string): Promise<Post[]> => {
+  if (!uid) return [];
+  const allPosts = await getFeed();
+  return allPosts.filter((p) => p.creator === uid);
 };

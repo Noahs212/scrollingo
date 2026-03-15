@@ -1,7 +1,7 @@
 export interface Post {
   id: string;
   creator: string;
-  media: string[];
+  media: (string | number)[];  // string = URL, number = require() asset
   description: string;
   likesCount: number;
   commentsCount: number;
