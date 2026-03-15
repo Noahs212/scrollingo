@@ -1,43 +1,44 @@
 # Scrollingo — Phase 1 Database Design
 
-> Supabase PostgreSQL | 11 tables | Covers requirements R1-R32
+> Supabase PostgreSQL | 14 tables | Covers requirements R1-R37
 
 ---
 
 ## Entity Relationship Overview
 
 ```
-users ─────────────┬──────────────┬───────────────┬──────────────┐
-                   │              │               │              │
-              user_views     user_likes     user_bookmarks   comments
-                   │              │               │              │
-                   └──────┬───────┘               │              │
-                          │                       │              │
-                       videos ────────────── video_words ────────┘
-                          │                    │
-                     pipeline_jobs        vocab_words ──── word_definitions
-                                               │
-                                          flashcards
-                                               │
-                                        daily_progress
+users ─────┬──────────┬───────────┬────────────┬──────────────┐
+           │          │           │            │              │
+      user_views  user_likes  user_bookmarks  comments   user_follows
+           │          │           │            │              │
+           └────┬─────┘           │            │              │
+                │                 │            │              │
+             videos ──────── video_words ──────┘              │
+                │                 │                            │
+           pipeline_jobs     vocab_words ──── word_definitions │
+                                  │                            │
+                             flashcards ───────────────────────┘
+                                  │
+                           daily_progress
 ```
 
 ### Table Summary
 
-| Table | Purpose | Req |
-|-------|---------|-----|
-| `users` | Profile, language prefs, streak, stats | R7, R8, R18-R21, R26 |
-| `videos` | Video metadata, status, counts | R1-R5, R29, R32 |
-| `vocab_words` | Canonical word entries per language (word, frequency, TTS URL, pinyin) | R11, R22, R31 |
-| `word_definitions` | LLM-generated contextual definitions per (word, source_lang, target_lang, sentence) | R11, R24, R30 |
-| `video_words` | Links words in a video to their timestamps + definitions | R10, R11 |
-| `flashcards` | User's saved words with SM-2 SRS state | R13-R15, R17 |
-| `user_views` | Watch tracking (completion %, view count) | R2, R3, R27 |
-| `user_likes` | Liked videos | R6 |
-| `user_bookmarks` | Bookmarked videos | R6 |
-| `comments` | Video comments | R6 |
-| `daily_progress` | Daily streak + activity stats | R26-R28 |
-| `pipeline_jobs` | AI pipeline tracking per video | R29, R30, R32 |
+| # | Table | Purpose | Req |
+|---|-------|---------|-----|
+| 1 | `users` | Profile, language prefs, streak, stats. PK = Supabase auth UID | R7, R8, R22-R25, R30 |
+| 2 | `videos` | Video metadata, status, counts, subtitle source (STT/OCR) | R1-R5, R13-R15, R33, R37 |
+| 3 | `vocab_words` | Canonical word entries per language (word, frequency, TTS URL, pinyin) | R11, R26, R36 |
+| 4 | `word_definitions` | LLM contextual definitions per (word, target_lang, sentence) | R11, R28, R34 |
+| 5 | `video_words` | Links words in a video to timestamps + sentence context | R10, R11, R16 |
+| 6 | `flashcards` | User's saved words with SM-2 SRS state | R17-R19, R21 |
+| 7 | `user_views` | Watch tracking (completion %, view count) | R2, R3, R31 |
+| 8 | `user_likes` | Liked videos | R6 |
+| 9 | `user_bookmarks` | Bookmarked videos | R6 |
+| 10 | `comments` | Video comments | R6 |
+| 11 | `user_follows` | Follower/following relationships | R7 |
+| 12 | `daily_progress` | Daily streak + activity stats | R30-R32 |
+| 13 | `pipeline_jobs` | AI pipeline tracking per video | R33, R34, R37 |
 
 ---
 
@@ -47,44 +48,53 @@ users ─────────────┬──────────�
 -- ============================================================
 -- EXTENSIONS
 -- ============================================================
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";   -- Fuzzy word search
+
+-- NOTE: Using gen_random_uuid() (built-in) instead of pg_uuidv7.
+-- pg_uuidv7 is not guaranteed on all Supabase instances.
+-- If your project supports it, replace gen_random_uuid() with uuid_generate_v7().
 
 -- ============================================================
 -- 1. USERS
 -- ============================================================
--- Profile, language preferences, learning stats.
--- Auth is handled by Supabase Auth; this stores the app-level profile.
+-- PK is the Supabase auth UID directly (no dual-identity).
+-- All RLS policies use auth.uid() without extra JOINs.
 
 CREATE TABLE users (
-    id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    supabase_uid        TEXT UNIQUE NOT NULL,
+    id                  UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
 
-    -- Profile
+    -- Profile (R7)
     username            TEXT UNIQUE,
     display_name        TEXT,
     avatar_url          TEXT,
 
-    -- Language preferences (R18-R21)
+    -- Language preferences (R22-R25)
     native_language     TEXT NOT NULL DEFAULT 'en',        -- ISO 639-1: definitions rendered in this
     target_language     TEXT NOT NULL DEFAULT 'en',        -- Active learning language (filters feed)
     learning_languages  TEXT[] NOT NULL DEFAULT '{"en"}',  -- All learning languages
 
-    -- Learning stats (R26-R27)
+    -- Learning stats (R30-R31)
     daily_goal_minutes  SMALLINT NOT NULL DEFAULT 10,
     streak_days         INT NOT NULL DEFAULT 0,
     streak_last_date    DATE,
+    longest_streak      INT NOT NULL DEFAULT 0,            -- Best streak ever (for badges)
     total_words_learned INT NOT NULL DEFAULT 0,
     total_videos_watched INT NOT NULL DEFAULT 0,
 
+    -- Social counts (denormalized, updated by triggers)
+    follower_count      INT NOT NULL DEFAULT 0,
+    following_count     INT NOT NULL DEFAULT 0,
+
     -- Subscription
     premium             BOOLEAN NOT NULL DEFAULT FALSE,
+
+    -- User preferences (extensible without schema changes)
+    preferences         JSONB NOT NULL DEFAULT '{}',       -- {notifications: true, theme: "dark", ...}
 
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_users_supabase ON users(supabase_uid);
 CREATE INDEX idx_users_language ON users(target_language);
 
 -- ============================================================
@@ -94,48 +104,54 @@ CREATE INDEX idx_users_language ON users(target_language);
 -- No user uploads in Phase 1 (R4).
 
 CREATE TABLE videos (
-    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title             TEXT NOT NULL,
     description       TEXT,
     language          TEXT NOT NULL,                     -- Source language (ISO 639-1)
-    difficulty        TEXT,                              -- Free-form tag (e.g. 'beginner', 'intermediate')
-    duration_sec      SMALLINT NOT NULL,
+    difficulty        TEXT CHECK (difficulty IN ('beginner', 'intermediate', 'advanced')),
+    duration_sec      SMALLINT NOT NULL CHECK (duration_sec > 0),
     tags              TEXT[] DEFAULT '{}',
 
     -- Storage (R5)
     r2_video_key      TEXT NOT NULL,                     -- videos/{id}/video.mp4
     cdn_url           TEXT NOT NULL,                     -- Full CDN playback URL
     thumbnail_url     TEXT,
-    transcript_text   TEXT,                              -- Raw STT transcript
+    transcript_text   TEXT,                              -- Raw transcript (from STT or OCR)
 
-    -- Processing (R29, R32)
+    -- Subtitle extraction (R13-R15)
+    subtitle_source   TEXT                               -- NULL = not yet determined; set by pipeline
+        CHECK (subtitle_source IN ('stt', 'ocr')),
+
+    -- Processing (R33, R37)
     status            TEXT NOT NULL DEFAULT 'processing'
         CHECK (status IN ('uploading','processing','ready','failed')),
-    seeded_by         TEXT,                              -- Admin who uploaded
+    seeded_by         TEXT,
     processed_at      TIMESTAMPTZ,
 
-    -- Denormalized counts (updated via triggers or background workers)
+    -- Denormalized counts
     view_count        INT NOT NULL DEFAULT 0,
     like_count        INT NOT NULL DEFAULT 0,
     comment_count     INT NOT NULL DEFAULT 0,
     bookmark_count    INT NOT NULL DEFAULT 0,
 
-    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_videos_feed ON videos(language, status, created_at DESC);
+CREATE INDEX idx_videos_feed ON videos(language, status, created_at DESC, id DESC)
+    INCLUDE (title, cdn_url, thumbnail_url, duration_sec, difficulty, view_count, like_count);
 
 -- ============================================================
 -- 3. VOCAB WORDS
 -- ============================================================
 -- Canonical vocabulary entries per language.
 -- One row per unique word per language. Shared across all users and videos.
--- TTS audio is pre-generated for all ~100K words per learning language (R31).
+-- TTS audio is pre-generated for all ~100K words per learning language (R36).
 
 CREATE TABLE vocab_words (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     word            TEXT NOT NULL,
-    language        TEXT NOT NULL,             -- Language this word belongs to (ISO 639-1)
+    language        TEXT NOT NULL,
     frequency_rank  INT,                       -- Zipf frequency rank (lower = more common)
     pinyin          TEXT,                      -- Chinese only: romanization
     simplified      TEXT,                      -- Chinese only: simplified form
@@ -145,53 +161,59 @@ CREATE TABLE vocab_words (
     UNIQUE(word, language)
 );
 
-CREATE INDEX idx_vocab_word ON vocab_words(word, language);
-CREATE INDEX idx_vocab_trgm ON vocab_words USING gin (word gin_trgm_ops);  -- Fuzzy search
+-- UNIQUE constraint creates implicit index on (word, language)
+CREATE INDEX idx_vocab_trgm ON vocab_words USING gin (word gin_trgm_ops);
 CREATE INDEX idx_vocab_frequency ON vocab_words(language, frequency_rank);
 
 -- ============================================================
 -- 4. WORD DEFINITIONS
 -- ============================================================
--- LLM-generated contextual definitions (R24, R30).
--- Per (vocab_word, target_language, sentence_context).
--- The same word can have different contextual meanings in different sentences.
--- Generated during the AI pipeline, stored for all 12 native languages.
+-- LLM-generated CONTEXTUAL definitions.
+-- Per (word, video, target_language) — every word in every video
+-- gets its own definition because meaning depends on sentence context.
 --
--- Example: "bank" in "I sat by the river bank" vs "I went to the bank"
---   → different contextual_definition, same translation in some languages.
+-- "run" in "I went for a run" → translation: carrera, POS: noun
+-- "run" in "run the program"  → translation: ejecutar, POS: verb
+--
+-- The LLM prompt includes the source sentence for context.
+-- Pipeline generates definitions for every word × every video × 12 native languages.
+--
+-- NOTE: target_language = the user's native language (definitions rendered in it).
 
 CREATE TABLE word_definitions (
-    id                     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vocab_word_id          UUID NOT NULL REFERENCES vocab_words(id) ON DELETE CASCADE,
-    target_language        TEXT NOT NULL,           -- Native language (definition rendered in this)
-    sentence_context       TEXT,                    -- The sentence this word appeared in (for context)
+    video_id               UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
+    target_language        TEXT NOT NULL,           -- User's native language
     translation            TEXT NOT NULL,           -- Translated word (NOT the full sentence)
     contextual_definition  TEXT NOT NULL,           -- LLM-generated explanation in target language
-    part_of_speech         TEXT,                    -- May differ from vocab_words.part_of_speech by context
+    part_of_speech         TEXT,                    -- POS in this specific context
+    source_sentence        TEXT,                    -- The sentence used as LLM context
     llm_provider           TEXT,                    -- Which LLM generated this
     created_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(vocab_word_id, target_language, sentence_context)
+    UNIQUE(vocab_word_id, video_id, target_language)
 );
 
+CREATE INDEX idx_definitions_video ON word_definitions(video_id, target_language);
 CREATE INDEX idx_definitions_word ON word_definitions(vocab_word_id, target_language);
 
 -- ============================================================
 -- 5. VIDEO WORDS
 -- ============================================================
--- Junction table: links words appearing in a video to their timestamps.
--- Each row = one word occurrence at a specific time in a specific video.
--- References the vocab_word and the contextual definition for the user's language.
+-- Links words appearing in a video to their timestamps.
+-- Each row = one word occurrence at a specific time.
+-- Definitions resolved at query time via simple JOIN on vocab_word_id + target_language.
 
 CREATE TABLE video_words (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     video_id        UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
     vocab_word_id   UUID NOT NULL REFERENCES vocab_words(id) ON DELETE CASCADE,
-    definition_id   UUID REFERENCES word_definitions(id),  -- Contextual definition for this occurrence
-    start_ms        INT NOT NULL,              -- Word start time in video (milliseconds)
-    end_ms          INT NOT NULL,              -- Word end time in video
+    start_ms        INT NOT NULL CHECK (start_ms >= 0),
+    end_ms          INT NOT NULL,
     word_index      SMALLINT NOT NULL,         -- Position in transcript (0-based)
-    display_text    TEXT NOT NULL,             -- How the word appears in subtitles (may differ from canonical)
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    display_text    TEXT NOT NULL,             -- How the word appears in subtitles
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CHECK (end_ms > start_ms)
 );
 
 CREATE INDEX idx_video_words_video ON video_words(video_id, word_index);
@@ -200,47 +222,48 @@ CREATE INDEX idx_video_words_vocab ON video_words(vocab_word_id);
 -- ============================================================
 -- 6. FLASHCARDS (User Saved Words)
 -- ============================================================
--- When a user taps a word and saves it (R13), a flashcard is created.
--- SM-2 spaced repetition fields for review scheduling (R14).
--- Works offline via MMKV on client, synced to server (R15).
+-- SM-2 spaced repetition fields for review scheduling (R18).
+-- Display data (word, translation, TTS) resolved via JOINs.
+-- Client MMKV caches display data for offline review (R19).
+-- client_updated_at allows last-write-wins conflict resolution on sync.
 
 CREATE TABLE flashcards (
-    id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id          UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    vocab_word_id    UUID NOT NULL REFERENCES vocab_words(id),    -- → word, tts_url, pinyin
-    definition_id    UUID REFERENCES word_definitions(id),        -- → translation, contextual_definition, POS
-    source_video_id  UUID REFERENCES videos(id),                  -- Video where word was tapped
+    vocab_word_id    UUID NOT NULL REFERENCES vocab_words(id) ON DELETE RESTRICT,
+    definition_id    UUID NOT NULL REFERENCES word_definitions(id) ON DELETE RESTRICT,
+    source_video_id  UUID REFERENCES videos(id) ON DELETE SET NULL,
 
-    -- SM-2 SRS fields (R14)
+    -- SM-2 SRS fields (R18)
     ease_factor      REAL NOT NULL DEFAULT 2.5,
     interval_days    INT NOT NULL DEFAULT 0,
     repetitions      INT NOT NULL DEFAULT 0,
     next_review      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     last_review      TIMESTAMPTZ,
 
+    -- Offline sync (R19, N4)
+    client_updated_at TIMESTAMPTZ,             -- Set by client; last-write-wins conflict resolution
+
     created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_flashcards_due ON flashcards(user_id, next_review);
-CREATE INDEX idx_flashcards_user_word ON flashcards(user_id, vocab_word_id, target_language);  -- Dedup
+CREATE UNIQUE INDEX idx_flashcards_dedup ON flashcards(user_id, vocab_word_id, definition_id);
 
 -- ============================================================
 -- 7. USER VIEWS
 -- ============================================================
--- Tracks which videos a user has watched and how much (R2, R3, R27).
--- Used by feed query to exclude already-watched videos.
-
 CREATE TABLE user_views (
     user_id        UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     video_id       UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
-    watch_percent  SMALLINT NOT NULL DEFAULT 0,   -- 0-100, highest completion
+    watch_percent  SMALLINT NOT NULL DEFAULT 0 CHECK (watch_percent BETWEEN 0 AND 100),
     view_count     SMALLINT NOT NULL DEFAULT 1,
     last_viewed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (user_id, video_id)
 );
 
-CREATE INDEX idx_user_views_video ON user_views(video_id, user_id);  -- For feed LEFT JOIN
+CREATE INDEX idx_user_views_video ON user_views(video_id, user_id);
 
 -- ============================================================
 -- 8. USER LIKES
@@ -252,6 +275,8 @@ CREATE TABLE user_likes (
     PRIMARY KEY (user_id, video_id)
 );
 
+CREATE INDEX idx_likes_user ON user_likes(user_id, created_at DESC);
+
 -- ============================================================
 -- 9. USER BOOKMARKS
 -- ============================================================
@@ -262,113 +287,205 @@ CREATE TABLE user_bookmarks (
     PRIMARY KEY (user_id, video_id)
 );
 
+CREATE INDEX idx_bookmarks_user ON user_bookmarks(user_id, created_at DESC);
+
 -- ============================================================
 -- 10. COMMENTS
 -- ============================================================
 CREATE TABLE comments (
-    id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     video_id   UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
     user_id    UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     body       TEXT NOT NULL CHECK (length(body) <= 500),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_comments_video ON comments(video_id, created_at DESC);
 
 -- ============================================================
--- 11. DAILY PROGRESS
+-- 11. USER FOLLOWS (R7)
 -- ============================================================
--- One row per user per day. Tracks activity for streak calculation (R26-R28).
+CREATE TABLE user_follows (
+    follower_id  UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    following_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (follower_id, following_id),
+    CHECK (follower_id != following_id)        -- Can't follow yourself
+);
 
+CREATE INDEX idx_follows_following ON user_follows(following_id);  -- "Who follows me?"
+
+-- ============================================================
+-- 12. DAILY PROGRESS
+-- ============================================================
 CREATE TABLE daily_progress (
     user_id           UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     date              DATE NOT NULL,
     minutes_active    SMALLINT NOT NULL DEFAULT 0,
     videos_watched    SMALLINT NOT NULL DEFAULT 0,
-    words_learned     SMALLINT NOT NULL DEFAULT 0,    -- New flashcards created
+    words_learned     SMALLINT NOT NULL DEFAULT 0,
     cards_reviewed    SMALLINT NOT NULL DEFAULT 0,
     PRIMARY KEY (user_id, date)
 );
 
 -- ============================================================
--- 12. PIPELINE JOBS
+-- 13. PIPELINE JOBS
 -- ============================================================
--- Tracks AI processing status per video (R29, R30, R32).
-
 CREATE TABLE pipeline_jobs (
-    id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     video_id      UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
     status        TEXT NOT NULL DEFAULT 'pending'
-        CHECK (status IN ('pending','stt','translating','definitions','ready','failed')),
+        CHECK (status IN ('pending','extracting','translating','definitions','ready','failed')),
     error_message TEXT,
     retry_count   SMALLINT NOT NULL DEFAULT 0,
     started_at    TIMESTAMPTZ,
     completed_at  TIMESTAMPTZ,
-    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_pipeline_status ON pipeline_jobs(status);
 CREATE INDEX idx_pipeline_video ON pipeline_jobs(video_id);
+
+-- ============================================================
+-- TRIGGERS: auto-update updated_at
+-- ============================================================
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_users_updated BEFORE UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER trg_videos_updated BEFORE UPDATE ON videos
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER trg_flashcards_updated BEFORE UPDATE ON flashcards
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER trg_comments_updated BEFORE UPDATE ON comments
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE TRIGGER trg_pipeline_updated BEFORE UPDATE ON pipeline_jobs
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================
+-- ROW LEVEL SECURITY
+-- ============================================================
+-- Defense-in-depth. Primary access control is the Go backend (service-role key).
+-- RLS protects against accidental PostgREST exposure.
+
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE flashcards ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_views ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_likes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_bookmarks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_follows ENABLE ROW LEVEL SECURITY;
+ALTER TABLE daily_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE videos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE vocab_words ENABLE ROW LEVEL SECURITY;
+ALTER TABLE word_definitions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE video_words ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pipeline_jobs ENABLE ROW LEVEL SECURITY;
+
+-- Users: anyone can read profiles (R7), own can insert/update/delete
+CREATE POLICY users_read ON users FOR SELECT USING (true);
+CREATE POLICY users_insert ON users FOR INSERT WITH CHECK (id = auth.uid());
+CREATE POLICY users_write ON users FOR UPDATE USING (id = auth.uid());
+CREATE POLICY users_delete ON users FOR DELETE USING (id = auth.uid());
+
+-- User content: own data only
+CREATE POLICY flashcards_own ON flashcards FOR ALL USING (user_id = auth.uid());
+CREATE POLICY views_own ON user_views FOR ALL USING (user_id = auth.uid());
+CREATE POLICY likes_own ON user_likes FOR ALL USING (user_id = auth.uid());
+CREATE POLICY bookmarks_own ON user_bookmarks FOR ALL USING (user_id = auth.uid());
+CREATE POLICY progress_own ON daily_progress FOR ALL USING (user_id = auth.uid());
+CREATE POLICY follows_own ON user_follows FOR ALL USING (follower_id = auth.uid());
+CREATE POLICY follows_read ON user_follows FOR SELECT USING (true);  -- Anyone can see who follows whom
+
+-- Comments: anyone can read, own can write/edit/delete
+CREATE POLICY comments_read ON comments FOR SELECT USING (true);
+CREATE POLICY comments_insert ON comments FOR INSERT WITH CHECK (user_id = auth.uid());
+CREATE POLICY comments_update ON comments FOR UPDATE USING (user_id = auth.uid());
+CREATE POLICY comments_delete ON comments FOR DELETE USING (user_id = auth.uid());
+
+-- Content tables: read-only for authenticated users
+CREATE POLICY videos_read ON videos FOR SELECT USING (status = 'ready');
+CREATE POLICY vocab_read ON vocab_words FOR SELECT USING (true);
+CREATE POLICY definitions_read ON word_definitions FOR SELECT USING (true);
+CREATE POLICY video_words_read ON video_words FOR SELECT USING (true);
+
+-- Pipeline jobs: service-role only (no user-facing policy)
 ```
 
 ---
 
 ## Key Design Decisions
 
-### 1. `vocab_words` vs embedding definitions in subtitles JSONB
+### 1. Supabase auth UID as PK
+`users.id` references `auth.users(id)` directly. No separate `supabase_uid`. All RLS policies use `auth.uid()` without extra JOINs.
 
-**Before**: Definitions lived in `subtitles.word_data` JSONB — a blob per video per language.
+### 2. `gen_random_uuid()` over pg_uuidv7
+`pg_uuidv7` is not guaranteed on all Supabase instances. Using built-in `gen_random_uuid()` for portability. If your Supabase project supports it, swap to `uuid_generate_v7()` for better index locality on hot write tables.
 
-**Now**: Definitions are normalized into `vocab_words` + `word_definitions` + `video_words`.
+### 3. Definitions are per word per video per language
+Every word in every video gets its own LLM-generated contextual definition for each of 12 native languages. This is essential because the same word can mean different things depending on the sentence it appears in. Keyed on `(vocab_word_id, video_id, target_language)`.
 
-Why:
-- Same word appears across many videos → definitions are reusable, not duplicated
-- Flashcards reference `vocab_word_id` directly → clean foreign key
-- Can query "all definitions for word X" without parsing JSONB blobs
-- Can update/improve a definition in one place and all videos benefit
-- `video_words` tracks where each word appears (timestamps) separately from what it means
+The hot-path query (load all subtitle data for a video) is a clean equi-join on indexed UUID columns:
+```sql
+SELECT vw.display_text, vw.start_ms, vw.end_ms,
+       v.word, v.tts_url, v.pinyin,
+       wd.translation, wd.contextual_definition, wd.part_of_speech
+FROM video_words vw
+JOIN vocab_words v ON v.id = vw.vocab_word_id
+JOIN word_definitions wd ON wd.vocab_word_id = vw.vocab_word_id
+    AND wd.video_id = vw.video_id
+    AND wd.target_language = $user_native_language
+WHERE vw.video_id = $video_id
+ORDER BY vw.word_index;
+```
 
-### 2. Flashcards reference, don't snapshot
+### 4. Flashcard `definition_id` is NOT NULL
+Made NOT NULL (with ON DELETE RESTRICT) to prevent the NULL-in-UNIQUE problem. A flashcard always has a specific definition. If the definition is deleted, the flashcard is protected (RESTRICT prevents deletion).
 
-Flashcards store only FKs (`vocab_word_id`, `definition_id`) + SRS state. All display data (word, translation, definition, TTS URL) is fetched via JOINs. The client-side MMKV store handles offline caching — the server doesn't need to duplicate it.
+### 5. `client_updated_at` for offline sync
+When two devices edit the same flashcard offline, the server uses `client_updated_at` for last-write-wins conflict resolution. The `updated_at` column is server-managed (trigger); `client_updated_at` is set by the client.
 
-### 3. No `flashcard_decks` table
+### 6. Flashcards reference, don't snapshot
+Flashcards store only FKs + SRS state. Display data resolved via JOINs. Client MMKV caches display data for offline use.
 
-Removed for Phase 1. A single implicit deck per user is sufficient. Deck management adds UI complexity with no learning benefit at this stage. Can add in Phase 2 if users want to organize by topic/language.
+### 7. `subtitle_source` defaults to NULL
+NULL means "not yet determined." The pipeline auto-detects whether to use OCR or STT, then sets the value. No misleading default.
 
-### 4. No `subtitles` table
+### 8. Feed pagination uses compound cursor `(created_at, id)`
+Both columns are in the index key (not just INCLUDE) so the keyset cursor `WHERE (created_at, id) < ($cursor_ts, $cursor_id)` works efficiently.
 
-Replaced by `video_words`. The WebVTT files are still generated and stored in R2 for the video player, but the structured data lives in `video_words` + `word_definitions` (queryable, referenceable). The subtitle file becomes a rendering artifact, not the source of truth.
+### 9. Covering index on `videos` for feed query
+`idx_videos_feed` INCLUDEs the columns needed by the feed query, avoiding heap lookups.
 
-### 5. No `tts_cache` or `dictionary` tables
-
-- `tts_cache` → unnecessary; TTS is fully pre-generated, tracked via `vocab_words.tts_url`
-- `dictionary` → replaced by `vocab_words` + `word_definitions` (normalized, not a vague cache)
-
-### 6. Contextual definitions are per (word, target_lang, sentence)
-
-The same word can mean different things in different contexts:
-- "bank" in "river bank" → orilla (es)
-- "bank" in "go to the bank" → banco (es)
-
-`word_definitions` is keyed on `(vocab_word_id, target_language, sentence_context)` so each contextual meaning gets its own row.
+### 10. RLS as defense-in-depth
+Primary access control is the Go backend (service-role key bypasses RLS). RLS policies are a safety net against accidental PostgREST exposure. User profiles are readable by anyone (R7 requires viewing other profiles).
 
 ---
 
 ## Data Flow: Word Tap → Flashcard Save
 
 ```
-1. User watches video (video_id = X)
-2. SubtitleOverlay renders words from video_words WHERE video_id = X
-3. User taps "café"
-   → App looks up: video_words.vocab_word_id → vocab_words (get tts_url, pinyin)
-   → App looks up: video_words.definition_id → word_definitions (get translation, contextual_definition)
-   → Bottom sheet shows: "café" → "coffee" + "The beverage, ordering context" + [play audio]
-4. User taps "Save"
+1. User watches video (video_id = X, native_language = "es")
+2. App fetches: video_words JOIN vocab_words JOIN word_definitions
+   WHERE vw.video_id = X AND wd.video_id = X AND wd.target_language = "es"
+   → Single query returns all words with timestamps + contextual translations + TTS URLs
+   → ~50 rows per video, served in <20ms from indexed tables
+3. SubtitleOverlay renders tappable words synced to video playback
+4. User taps "café"
+   → Bottom sheet: "café" → "coffee" + "La bebida, en contexto de pedir" + [play audio]
+   → Data already loaded from step 2 (no extra query)
+5. User taps "Save"
    → POST /api/v1/flashcards { vocab_word_id, definition_id, source_video_id }
-   → Flashcard created with SM-2 defaults (ease=2.5, interval=0, next_review=now)
-   → Client caches full display data in MMKV (word, translation, TTS URL, etc.)
-   → Server stores only FKs + SRS state
+   → UNIQUE index prevents duplicate saves
+   → Client caches display data in MMKV for offline
 ```
 
 ---
@@ -378,44 +495,57 @@ The same word can mean different things in different contexts:
 ```
 1. Admin uploads video → pipeline_jobs.status = 'pending'
 
-2. STT (Groq Whisper):
-   → Extract transcript with word-level timestamps
-   → For each unique word: INSERT INTO vocab_words (word, language) ON CONFLICT DO NOTHING
-   → pipeline_jobs.status = 'stt'
+2. Text extraction (status = 'extracting'):
+   → Auto-detect: burned-in subs → OCR, otherwise → STT
+   → Set videos.subtitle_source = 'ocr' or 'stt'
+   → For each unique word: INSERT INTO vocab_words ON CONFLICT DO NOTHING
 
-3. Translation + Definitions (per native language):
-   → Google Translate: get bulk translation
-   → LLM batch: generate contextual definitions for all words
-   → For each word × native language:
-       INSERT INTO word_definitions (vocab_word_id, target_language, sentence_context, ...)
-       ON CONFLICT DO NOTHING
-   → pipeline_jobs.status = 'definitions'
+3. Translation + Definitions (status = 'translating' → 'definitions'):
+   → For each of 12 native languages:
+       → Google Translate: bulk translation
+       → LLM batch: contextual definitions for ALL words in this video
+       → INSERT INTO word_definitions (vocab_word_id, video_id, target_language, ...)
+       → Every word gets a fresh contextual definition per video (meaning depends on sentence)
 
 4. Link words to video:
-   → For each word occurrence in transcript:
-       INSERT INTO video_words (video_id, vocab_word_id, definition_id, start_ms, end_ms, ...)
+   → INSERT INTO video_words (video_id, vocab_word_id, start_ms, end_ms, display_text, word_index)
 
-5. Generate WebVTT file → upload to R2 (rendering artifact)
+5. Generate WebVTT → upload to R2
 
 6. videos.status = 'ready', pipeline_jobs.status = 'ready'
 ```
 
 ---
 
-## Row Count Projections (Phase 1, 12 months)
+## Row Count Projections (12 months)
 
-| Table | Rows at Month 1 | Rows at Month 12 | Growth Driver |
-|-------|-----------------|-------------------|---------------|
+| Table | Month 1 | Month 12 | Growth Driver |
+|-------|---------|----------|---------------|
 | users | ~100 | ~5,000 | MAU growth |
 | videos | 100 | 1,200 | 100 seeded/month |
-| vocab_words | ~5,000 | ~15,000 | Unique words across all videos |
-| word_definitions | ~60,000 | ~180,000 | 15K words × 12 native langs (deduped) |
-| video_words | ~5,000 | ~60,000 | ~50 words/video × 1,200 videos |
-| flashcards | ~500 | ~50,000 | ~10 cards/user × 5,000 users |
+| vocab_words | ~5,000 | ~15,000 | Unique words across videos |
+| word_definitions | ~60,000 | ~720,000 | ~50 words × 1,200 videos × 12 langs |
+| video_words | ~5,000 | ~60,000 | ~50 words/video × 1,200 |
+| flashcards | ~500 | ~50,000 | ~10 cards/user × 5K users |
 | user_views | ~2,000 | ~100,000 | Users × videos watched |
+| user_follows | ~500 | ~25,000 | ~5 follows/user |
 | user_likes | ~200 | ~10,000 | ~2 likes/user |
 | comments | ~50 | ~5,000 | ~1 comment/user |
 | daily_progress | ~3,000 | ~150,000 | Users × active days |
 | pipeline_jobs | 100 | 1,200 | 1 per video |
 
-**Total estimated DB size at 12 months: ~50-100 MB** (well within Supabase Pro 8 GB limit).
+**Total DB size at 12 months: ~50-100 MB** (Supabase Pro limit: 8 GB)
+
+---
+
+## Not In Schema (Conscious Deferrals)
+
+| Feature | Requirement | Decision |
+|---------|-------------|----------|
+| Direct messages | R9 | Base repo (kirkwat/tiktok) had DMs via Firebase. Needs `conversations` + `messages` tables if migrating to Supabase. **Defer to Phase 2** — DMs are not a core language learning feature. |
+| Notifications | — | No `notifications` table. Using Supabase Realtime for ephemeral in-app notifications only. Persistent notification history deferred. |
+| Multi-sense definitions | R28 | Handled: definitions are per-video, so the same word in different videos gets different contextual definitions automatically. |
+| Flashcard decks | — | Single implicit deck per user. Deck management deferred to Phase 2. |
+| Proficiency levels | — | CEFR/HSK/JLPT per-language proficiency. Deferred to Phase 1.5/2. Will need `user_proficiencies(user_id, language, system, level)` table. |
+| Video sharing tracking | — | No `shares` column on videos. Add when analytics matter. |
+| Comment reporting | — | No report/flag mechanism. Add when content moderation is needed (Phase 2). |

@@ -1,4 +1,4 @@
-import "react-native-url-polyfill/auto";
+// NOTE: react-native-url-polyfill removed — RN 0.83+ has native URL support
 import { createClient } from "@supabase/supabase-js";
 import * as SecureStore from "expo-secure-store";
 

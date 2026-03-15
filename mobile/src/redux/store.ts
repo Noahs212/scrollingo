@@ -3,6 +3,7 @@ import authSlice from "./slices/authSlice";
 import postSlice from "./slices/postSlice";
 import modalSlice from "./slices/modalSlice";
 import chatSlice from "./slices/chatSlice";
+import languageSlice from "./slices/languageSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     post: postSlice,
     modal: modalSlice,
     chat: chatSlice,
+    language: languageSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

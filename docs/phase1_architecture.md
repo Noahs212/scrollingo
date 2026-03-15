@@ -32,43 +32,50 @@
 - R8: Auth via Supabase (email/password + Google/Apple OAuth)
 - R9: Direct messages (inherited from kirkwat/tiktok base repo)
 
-**Language Learning UI**
-- R10: Tappable subtitle overlay synced to video playback
+**Subtitles & Word Interaction**
+- R10: Tappable subtitle overlay synced to video playback — every word is individually tappable
 - R11: Tap any word → bottom sheet with translation, contextual definition, part of speech, pronunciation
 - R12: Lookup direction is always: video language → user's native language
-- R13: Save any word as a flashcard (from word tap or subtitle context)
-- R14: Flashcard review with SM-2 spaced repetition algorithm
-- R15: Flashcards work offline (MMKV persistence, sync on reconnect)
-- R16: On-device TTS for instant word pronunciation (expo-speech, free)
-- R17: High-quality pre-generated TTS audio from R2 for flashcard review
+- R13: Two subtitle sources: (a) STT-generated from audio, (b) OCR-extracted from burned-in subtitles in the video frames
+- R14: OCR subtitle extraction for content sourced from other platforms with hardcoded/burned-in subtitles
+- R15: Pipeline auto-detects subtitle source: if video has burned-in text → OCR first, otherwise → STT from audio
+- R16: Both subtitle sources produce the same normalized word-timestamp format for the tappable overlay
+
+**Flashcards & Vocab**
+- R17: Save any word as a flashcard (from word tap or subtitle context)
+- R18: Flashcard review with SM-2 spaced repetition algorithm
+- R19: Flashcards work offline (MMKV persistence, sync on reconnect)
+- R20: On-device TTS for instant word pronunciation (expo-speech, free)
+- R21: High-quality pre-generated TTS audio from R2 for flashcard review
 
 **Language System**
-- R18: User sets one native language + one or more learning languages
-- R19: Learning languages (Phase 1): English, Chinese
-- R20: Native languages (definitions target): English, Spanish, Chinese, Japanese, Korean, Hindi, French, German, Portuguese, Arabic, Italian, Russian (12 total)
-- R21: English and Chinese can be both learning AND native
-- R22: Offline bilingual dictionaries (SQLite, ~20 pairs), auto-downloaded on language change
-- R23: Chinese dictionaries handle simplified/traditional characters + pinyin
-- R24: LLM contextual definitions for every word in every video, per native language
-- R25: Dictionary adapter factory with fallback to remote API for missing offline pairs
+- R22: User sets one native language + one or more learning languages
+- R23: Learning languages (Phase 1): English, Chinese
+- R24: Native languages (definitions target): English, Spanish, Chinese, Japanese, Korean, Hindi, French, German, Portuguese, Arabic, Italian, Russian (12 total)
+- R25: English and Chinese can be both learning AND native
+- R26: Offline bilingual dictionaries (SQLite, ~20 pairs), auto-downloaded on language change
+- R27: Chinese dictionaries handle simplified/traditional characters + pinyin
+- R28: LLM contextual definitions for every word in every video, per native language
+- R29: Dictionary adapter factory with fallback to remote API for missing offline pairs
 
 **Progress**
-- R26: Daily streak tracking with streak badges
-- R27: Stats dashboard: words learned, videos watched, cards reviewed
-- R28: Daily activity sync to server
+- R30: Daily streak tracking with streak badges
+- R31: Stats dashboard: words learned, videos watched, cards reviewed
+- R32: Daily activity sync to server
 
 **Content Pipeline (Backend)**
-- R29: Admin CLI uploads video → triggers AI pipeline
-- R30: Pipeline: STT (Groq Whisper) → Translation (Google Translate) → Contextual Definitions (LLM) → store subtitles in R2
-- R31: Pre-generated TTS for all ~100K words per learning language, stored in R2
-- R32: Videos marked "ready" after pipeline completes; Supabase Realtime notifies clients
+- R33: Admin CLI uploads video → triggers AI pipeline
+- R34: Pipeline: detect subtitle source (OCR or STT) → Translation → Contextual Definitions (LLM) → store in R2
+- R35: OCR via cloud vision API for videos with burned-in subtitles; STT via Groq Whisper for videos with audio only
+- R36: Pre-generated TTS for all ~100K words per learning language, stored in R2
+- R37: Videos marked "ready" after pipeline completes; Supabase Realtime notifies clients
 
 ### 1.3 Phase 1.5 Requirements (Deferred)
 
-- R33: Feed scoring algorithm (Krashen's i+1 difficulty matching)
-- R34: Personalized feed using recency, popularity, difficulty match, novelty
-- R35: Mid-scroll quiz cards interleaved in feed
-- R36: Quiz generation from user's learned vocabulary
+- R38: Feed scoring algorithm (Krashen's i+1 difficulty matching)
+- R39: Personalized feed using recency, popularity, difficulty match, novelty
+- R40: Mid-scroll quiz cards interleaved in feed
+- R41: Quiz generation from user's learned vocabulary
 
 ### 1.4 Non-Functional Requirements
 
@@ -364,17 +371,39 @@ Admin (API key + IP allowlist)
 ### 5.4 AI Pipeline
 ```go
 func (s *PipelineService) ProcessVideo(ctx context.Context, videoID string) error {
-    audio, _ := s.r2.GetObject(ctx, fmt.Sprintf("videos/%s/audio.mp3", videoID))
-    transcript, _ := s.groq.Transcribe(ctx, audio)                        // 1. STT
-
-    for _, lang := range s.nativeLanguages {                               // 2. Per native language
-        translation, _ := s.google.Translate(ctx, transcript.Text, srcLang, lang)
-        definitions, _ := s.llm.BatchDefine(ctx, transcript.Words, transcript.Text, srcLang, lang) // 3. LLM
-        vtt := generateWebVTT(transcript.Words, translation, definitions)
-        s.r2.PutObject(ctx, fmt.Sprintf("videos/%s/subs/%s.vtt", videoID, lang), vtt) // 4. Store
+    // 1. Extract text: OCR (burned-in subs) or STT (audio)
+    video, _ := s.db.GetVideo(ctx, videoID)
+    var transcript Transcript
+    if video.HasBurnedInSubs {
+        frames, _ := s.extractFrames(ctx, videoID)                        // Sample frames
+        transcript, _ = s.ocr.ExtractSubtitles(ctx, frames)              // Cloud Vision OCR
+    } else {
+        audio, _ := s.r2.GetObject(ctx, fmt.Sprintf("videos/%s/audio.mp3", videoID))
+        transcript, _ = s.groq.Transcribe(ctx, audio)                    // Groq Whisper STT
     }
 
-    s.db.Exec(ctx, "UPDATE videos SET status='ready' WHERE id=$1", videoID) // 5. Mark ready
+    // 2. Upsert unique words into vocab_words
+    for _, word := range transcript.UniqueWords() {
+        s.db.Exec(ctx, "INSERT INTO vocab_words (word, language) VALUES ($1, $2) ON CONFLICT DO NOTHING", word, srcLang)
+    }
+
+    // 3. Generate contextual definitions for ALL words × 12 native languages
+    // Every word gets a fresh definition because meaning depends on sentence context
+    for _, lang := range s.nativeLanguages {
+        definitions, _ := s.llm.BatchDefine(ctx, transcript.Words, transcript.Text, srcLang, lang)
+        s.bulkInsertDefinitions(ctx, videoID, lang, definitions)
+    }
+
+    // 4. Link word occurrences to video (timestamps)
+    s.insertVideoWords(ctx, videoID, transcript.Words)
+
+    // 5. Generate WebVTT files → upload to R2
+    for _, lang := range s.nativeLanguages {
+        vtt := s.generateWebVTT(ctx, videoID, lang)
+        s.r2.PutObject(ctx, fmt.Sprintf("videos/%s/subs/%s.vtt", videoID, lang), vtt)
+    }
+
+    s.db.Exec(ctx, "UPDATE videos SET status='ready' WHERE id=$1", videoID) // 6. Mark ready
     return nil
 }
 ```
@@ -415,7 +444,7 @@ LIMIT $4;
 | `vocab_words` | Canonical word entries per language (word, POS, frequency, TTS URL) |
 | `word_definitions` | LLM contextual definitions per (word, target_lang, sentence_context) |
 | `video_words` | Links words to timestamps in a video + their definitions |
-| `flashcards` | User's saved words with SM-2 SRS state (snapshots definition at save time) |
+| `flashcards` | User's saved words with SM-2 SRS state (FKs to vocab_words + word_definitions) |
 | `user_views` | Watch tracking (completion %, view count) |
 | `user_likes` | Liked videos |
 | `user_bookmarks` | Bookmarked videos |
@@ -425,7 +454,7 @@ LIMIT $4;
 
 ### Key Design Decisions
 - **Normalized definitions**: `vocab_words` + `word_definitions` instead of JSONB blobs in subtitles — same word across videos shares definitions, flashcards reference by FK
-- **Flashcard snapshots**: Cards copy word/translation/definition at creation so they work offline without pulling definition updates
+- **Flashcard references**: Cards store FKs to vocab_words + word_definitions + SRS state. Client MMKV caches display data for offline
 - **No decks**: Single implicit deck per user in Phase 1
 - **Contextual**: Same word gets different definitions per sentence context ("bank" = river bank vs financial bank)
 

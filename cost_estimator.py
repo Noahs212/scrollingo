@@ -367,9 +367,12 @@ def get_architecture_diagram(lean_mode=False):
         digraph Architecture {
             rankdir=TB;
             compound=true;
-            graph [bgcolor="transparent", fontname="Helvetica", label="Phase 1: Video Distribution + Social + Language Learning UI", fontsize=22, fontcolor="#333", nodesep=0.7, ranksep=1.0, labelloc=t];
+            graph [bgcolor="transparent", fontname="Helvetica", label="Scrollingo — Phase 1 Architecture", fontsize=22, fontcolor="#333", nodesep=0.7, ranksep=1.0, labelloc=t];
             node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#d0d0d0", fontcolor="#333"];
             edge [fontname="Helvetica", fontsize=9, color="#999"];
+
+            // ── Admin ──
+            AdminCLI [label="Admin CLI\\n(seed videos)", shape=cds, fillcolor="#e0e0e0", fontsize=10];
 
             // ── Mobile Client ──
             subgraph cluster_client {
@@ -380,63 +383,57 @@ def get_architecture_diagram(lean_mode=False):
                 fontcolor="#1a3a5c";
                 fontsize=13;
 
-                AppFeed [label="Video Feed\\n(FlashList + Preload)\\nexpo-video", fillcolor="#c6dafc"];
-                AppFlashcards [label="Flashcards\\n(Offline SRS)\\nMMKV + Zustand", fillcolor="#c6dafc"];
-                AppTTS [label="On-Device\\nTTS / STT\\nexpo-speech", fillcolor="#c6dafc"];
-                AppQuiz [label="Mid-Scroll Quiz\\n(Phase 1.5)", fillcolor="#dce4f2"];
+                AppFeed [label="Video Feed\\n(FlashList + expo-video)\\nTappable Subtitles", fillcolor="#c6dafc"];
+                AppWordPopup [label="Word Popup\\ntranslation + definition\\n+ POS + pronunciation", fillcolor="#c6dafc"];
+                AppFlashcards [label="Flashcard Review\\n(SM-2 SRS)\\nMMKV offline", fillcolor="#c6dafc"];
+                AppTTS [label="On-Device TTS\\n(expo-speech)", fillcolor="#c6dafc"];
+                AppDict [label="Offline Dictionary\\n(SQLite)\\nauto-downloaded", fillcolor="#c6dafc"];
+                AppSocial [label="Likes / Comments\\nBookmarks / Follows\\nProfiles / Streaks", fillcolor="#c6dafc"];
             }
 
-            // ── fly.io ──
+            // ── Go Backend (fly.io) ──
             subgraph cluster_flyio {
-                label="fly.io";
+                label="Go Monolith (fly.io · $5/mo)";
                 style="rounded,filled";
                 fillcolor="#e6f4ea";
                 color="#34a853";
                 fontcolor="#1e4620";
                 fontsize=13;
 
-                subgraph cluster_go {
-                    label="Go Monolith";
-                    style="rounded,filled";
-                    fillcolor="#ceead6";
-                    color="#34a853";
-                    fontcolor="#1e4620";
-                    fontsize=11;
-
-                    API [label="REST API\\n/api/v1/*", fillcolor="#a8dab5"];
-                    FeedEngine [label="Feed Engine\\nPhase 1: Chronological\\nPhase 1.5: Scored", fillcolor="#a8dab5"];
-                    Dict [label="Dictionary\\n(cached lookups)", fillcolor="#a8dab5"];
-                    Pipeline [label="AI Pipeline\\n(goroutines)", fillcolor="#a8dab5"];
-                    Workers [label="Background Workers\\n(view flush, cleanup)", fillcolor="#a8dab5"];
-                    Cache [label="In-Memory Cache\\n(sync.Map)", fillcolor="#a8dab5"];
-                }
+                API [label="REST API\\n/api/v1/*\\n(chi router)", fillcolor="#a8dab5"];
+                FeedSvc [label="Feed Service\\nchronological by language", fillcolor="#a8dab5"];
+                WordSvc [label="Word Service\\nvideo_words + definitions", fillcolor="#a8dab5"];
+                FlashSvc [label="Flashcard Service\\nSRS + offline sync", fillcolor="#a8dab5"];
+                Pipeline [label="AI Pipeline\\n(async goroutines)", fillcolor="#a8dab5"];
+                Workers [label="Background Workers\\nview count flush\\nstreak calculation", fillcolor="#a8dab5"];
+                GoCache [label="In-Memory Cache\\n(sync.Map)", fillcolor="#a8dab5"];
             }
 
             // ── Supabase ──
             subgraph cluster_supabase {
-                label="Supabase";
+                label="Supabase ($25/mo)";
                 style="rounded,filled";
                 fillcolor="#fef7e0";
                 color="#ea8600";
                 fontcolor="#5c3d00";
                 fontsize=13;
 
-                PostgreSQL [label="PostgreSQL\\n(15 tables, RLS)", shape=cylinder, fillcolor="#fce8b2"];
-                SupaAuth [label="Auth\\n(JWT, OAuth)", fillcolor="#fce8b2"];
-                Realtime [label="Realtime\\n(WebSocket)", fillcolor="#fce8b2"];
+                PostgreSQL [label="PostgreSQL (14 tables)\\nusers · videos · vocab_words\\nword_definitions · video_words\\nflashcards · user_views\\nuser_likes · user_bookmarks\\ncomments · user_follows\\ndaily_progress · pipeline_jobs", shape=cylinder, fillcolor="#fce8b2"];
+                SupaAuth [label="Auth\\n(JWT · OAuth\\nGoogle / Apple)", fillcolor="#fce8b2"];
+                Realtime [label="Realtime\\n(video ready\\nnotifications)", fillcolor="#fce8b2"];
             }
 
             // ── Cloudflare ──
             subgraph cluster_cloudflare {
-                label="Cloudflare";
+                label="Cloudflare (Free)";
                 style="rounded,filled";
                 fillcolor="#fce4ec";
                 color="#d93025";
                 fontcolor="#5c1018";
                 fontsize=13;
 
-                R2 [label="R2 Storage\\n(Videos + TTS Cache)", shape=folder, fillcolor="#f8bbd0"];
-                CDN [label="CDN\\n(Free Egress)", fillcolor="#f8bbd0"];
+                R2 [label="R2 Storage\\nvideos/ · tts/ · dictionaries/\\nWebVTT subtitles", shape=folder, fillcolor="#f8bbd0"];
+                CDN [label="CDN (Free Egress)\\nprogressive MP4\\nTTS audio · dictionaries", fillcolor="#f8bbd0"];
             }
 
             // ── AI Providers ──
@@ -448,9 +445,22 @@ def get_architecture_diagram(lean_mode=False):
                 fontcolor="#3b1a6e";
                 fontsize=13;
 
-                STT [label="Groq Whisper\\n($0.000667/min)", shape=box, peripheries=2, fillcolor="#e0cffc"];
-                TTS [label="Google Neural2\\n($0.016/1K chars)", shape=box, peripheries=2, fillcolor="#e0cffc"];
-                Trans [label="Google Translate\\n($20/M chars)", shape=box, peripheries=2, fillcolor="#e0cffc"];
+                STT [label="Groq Whisper\\nSTT ($0.0007/min)", fillcolor="#e0cffc"];
+                OCR [label="Cloud Vision\\nOCR (burned-in subs)", fillcolor="#e0cffc"];
+                Trans [label="Google Translate\\n($20/M chars)", fillcolor="#e0cffc"];
+                LLM [label="Gemini Flash\\nContextual Definitions\\n($0.10/M tokens)", fillcolor="#e0cffc"];
+            }
+
+            // ── Pre-generated (one-time) ──
+            subgraph cluster_pregen {
+                label="Pre-generated (one-time)";
+                style="rounded,filled";
+                fillcolor="#f5f5f5";
+                color="#999";
+                fontcolor="#555";
+                fontsize=11;
+
+                TTSPregen [label="Google Neural2 TTS\\n100K words × 2 langs\\n$22 one-time", fillcolor="#e8e8e8"];
             }
 
             // ── Monitoring ──
@@ -462,58 +472,64 @@ def get_architecture_diagram(lean_mode=False):
                 fontcolor="#555";
                 fontsize=11;
 
-                Axiom [label="Axiom\\n(Logs)", fillcolor="#e8e8e8"];
-                Sentry [label="Sentry\\n(Errors)", fillcolor="#e8e8e8"];
-                Grafana [label="Grafana Cloud\\n(Metrics)", fillcolor="#e8e8e8"];
+                Axiom [label="Axiom (Logs)", fillcolor="#e8e8e8"];
+                Sentry [label="Sentry (Errors)", fillcolor="#e8e8e8"];
             }
 
-            // ── Client to Backend ──
-            AppFeed -> API [label="GET /feed\\n(cursor pagination)", color="#4a86c8"];
-            AppFlashcards -> API [label="POST /progress/sync\\n+ POST /flashcards/*", color="#4a86c8", style=dashed];
-            AppQuiz -> API [label="POST /quiz/submit\\n(track progress)", color="#4a86c8", style=dashed];
-            AppFlashcards -> AppTTS [label="Pronounce\\nwords", color="#4a86c8", style=dotted];
-            AppFeed -> AppTTS [label="Tap word\\npronunciation", color="#4a86c8", style=dotted];
+            // ═══ CONNECTIONS ═══
 
-            // ── Client to Cloudflare (direct) ──
-            AppFeed -> CDN [label="Stream\\nMP4", color="#d93025"];
+            // ── Admin uploads video ──
+            AdminCLI -> R2 [label="1. Upload MP4", color="#d93025"];
+            AdminCLI -> API [label="2. POST /internal/admin/videos\\n(trigger pipeline)", color="#34a853"];
 
-            // ── Client Auth ──
-            AppFeed -> SupaAuth [label="Login / Signup\\n(get JWT)", color="#ea8600", style=dotted];
-            Realtime -> AppFeed [label="Video Ready\\nNotification", color="#ea8600", style=dashed];
+            // ── Client ↔ Backend ──
+            AppFeed -> API [label="GET /feed\\nGET /videos/:id/words", color="#4a86c8"];
+            AppFeed -> CDN [label="Stream MP4\\n+ load TTS audio", color="#d93025"];
+            AppFeed -> AppWordPopup [label="Tap word", color="#4a86c8", style=dotted];
+            AppWordPopup -> AppTTS [label="Instant\\npronunciation", color="#4a86c8", style=dotted];
+            AppWordPopup -> AppDict [label="Offline\\nlookup", color="#4a86c8", style=dotted];
+            AppWordPopup -> AppFlashcards [label="Save word", color="#4a86c8", style=dashed];
+            AppFlashcards -> API [label="Sync SRS state\\n(offline → server)", color="#4a86c8", style=dashed];
+            AppSocial -> API [label="Likes · Comments\\nBookmarks · Follows\\nProgress sync", color="#4a86c8"];
+            AppDict -> CDN [label="Download dictionaries\\non language change", color="#d93025", style=dashed];
 
-            // ── Backend to Data ──
-            API -> PostgreSQL [label="Queries", color="#ea8600"];
-            API -> Cache [label="Read/Write\\n(TTL-based)", color="#34a853"];
-            API -> FeedEngine [label="Assemble feed", color="#34a853", style=dotted];
-            FeedEngine -> PostgreSQL [label="Phase 1: chronological\\nPhase 1.5: scored\\n(recency + popularity\\n+ difficulty + novelty)", color="#ea8600"];
-            FeedEngine -> Cache [label="Cache\\nfeed page", color="#34a853", style=dotted];
-            API -> Dict [label="Word lookup", color="#34a853", style=dotted];
-            Dict -> Cache [label="Cache\\ndict entries", color="#34a853", style=dotted];
-            Dict -> PostgreSQL [label="Query", color="#ea8600", style=dotted];
-            API -> SupaAuth [label="Verify JWT\\n(cached JWKS)", color="#ea8600", style=dotted];
-            Workers -> PostgreSQL [label="Flush views\\nclean stale jobs", color="#ea8600", style=dotted];
+            // ── Auth ──
+            AppFeed -> SupaAuth [label="Login / Signup\\n(JWT + OAuth)", color="#ea8600", style=dotted];
+            API -> SupaAuth [label="Verify JWT", color="#ea8600", style=dotted];
 
-            // ── Realtime trigger ──
-            PostgreSQL -> Realtime [label="Row change\\n(status=ready)", color="#ea8600", style=dashed];
+            // ── Backend ↔ Data ──
+            API -> FeedSvc [color="#34a853", style=dotted];
+            API -> WordSvc [color="#34a853", style=dotted];
+            API -> FlashSvc [color="#34a853", style=dotted];
+            FeedSvc -> PostgreSQL [label="Feed query", color="#ea8600"];
+            FeedSvc -> GoCache [color="#34a853", style=dotted];
+            WordSvc -> PostgreSQL [label="video_words\\n+ word_definitions\\n+ vocab_words", color="#ea8600"];
+            FlashSvc -> PostgreSQL [label="Flashcards\\n+ SRS sync", color="#ea8600"];
+            Workers -> PostgreSQL [label="Flush view counts\\nstreak calc", color="#ea8600", style=dotted];
 
-            // ── Backend to Storage ──
-            API -> R2 [label="Presigned URLs", color="#d93025"];
+            // ── Realtime ──
+            PostgreSQL -> Realtime [label="status=ready", color="#ea8600", style=dashed];
+            Realtime -> AppFeed [label="New video\\nnotification", color="#ea8600", style=dashed];
+
+            // ── Storage ──
             R2 -> CDN [label="Origin", color="#d93025"];
+            API -> R2 [label="Presigned URLs\\nfor CDN paths", color="#d93025", style=dotted];
 
-            // ── AI Pipeline (async) ──
-            Pipeline -> STT [label="1. Transcribe", color="#7c3aed", style=dashed];
-            Pipeline -> Trans [label="2. Translate", color="#7c3aed", style=dashed];
-            Pipeline -> R2 [label="Store subtitles", color="#d93025", style=dashed];
+            // ── AI Pipeline (async, per video) ──
+            Pipeline -> STT [label="Audio → transcript\\n(word timestamps)", color="#7c3aed", style=dashed];
+            Pipeline -> OCR [label="Frames → text\\n(burned-in subs)", color="#7c3aed", style=dashed];
+            Pipeline -> Trans [label="Translate transcript\\n× 12 native langs", color="#7c3aed", style=dashed];
+            Pipeline -> LLM [label="Contextual definitions\\n× every word × 12 langs", color="#7c3aed", style=dashed];
+            Pipeline -> PostgreSQL [label="Store vocab_words\\nword_definitions\\nvideo_words\\npipeline status", color="#ea8600", style=dashed];
+            Pipeline -> R2 [label="Store WebVTT\\nsubtitle files", color="#d93025", style=dashed];
 
-            // TTS is on-demand for vocab lookups, not part of video pipeline
-            Dict -> TTS [label="Vocab word\\npronunciation\\n(cache-first)", color="#7c3aed", style=dashed];
-            Pipeline -> PostgreSQL [label="Update Status", color="#ea8600", style=dashed];
+            // ── Pre-generated TTS ──
+            TTSPregen -> R2 [label="100K words\\n× 2 learning langs\\nstored in tts/", color="#999", style=dashed];
 
             // ── Monitoring ──
             API -> Axiom [style=dotted, color="#999"];
             API -> Sentry [style=dotted, color="#999"];
-            Pipeline -> Sentry [label="Pipeline errors", style=dotted, color="#999"];
-            API -> Grafana [style=dotted, color="#999"];
+            Pipeline -> Sentry [style=dotted, color="#999"];
         }
         """
     else:
@@ -754,7 +770,7 @@ financials = calculate_financials(
 )
 
 # --- Tabbed Interface ---
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Financial Dashboard", "System Architecture", "Cost Optimizer", "Phase 1 Requirements", "Database Design"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Financial Dashboard", "System Architecture", "Cost Optimizer", "Phase 1 Requirements", "Database Design", "Implementation Guide"])
 
 with tab1:
     # Mode indicators
@@ -886,7 +902,8 @@ with tab1:
         """)
 
 with tab2:
-    st.graphviz_chart(get_architecture_diagram(lean_mode=lean_mode), use_container_width=True)
+    arch_view = st.radio("View", ["Phase 1 (Lean)", "Full Stack (Phase 3)"], horizontal=True)
+    st.graphviz_chart(get_architecture_diagram(lean_mode=(arch_view == "Phase 1 (Lean)")), use_container_width=True)
 
 with tab3:
     st.header("Cost Optimizer")
@@ -1034,51 +1051,62 @@ with tab4:
 | R9 | Direct messages (inherited from kirkwat/tiktok base repo) |
     """)
 
-    st.subheader("Language Learning UI")
+    st.subheader("Subtitles & Word Interaction")
     st.markdown("""
 | ID | Requirement |
 |----|-------------|
-| R10 | Tappable subtitle overlay synced to video playback |
+| R10 | Tappable subtitle overlay synced to video playback — every word is individually tappable |
 | R11 | Tap any word → bottom sheet with translation, contextual definition, part of speech, pronunciation |
 | R12 | Lookup direction: video language → user's native language (always) |
-| R13 | Save any word as a flashcard (from word tap or subtitle context) |
-| R14 | Flashcard review with SM-2 spaced repetition algorithm |
-| R15 | Flashcards work offline (MMKV persistence, sync on reconnect) |
-| R16 | On-device TTS for instant word pronunciation (expo-speech, free) |
-| R17 | High-quality pre-generated TTS audio from R2 for flashcard review |
+| R13 | Two subtitle sources: (a) STT-generated from audio, (b) OCR-extracted from burned-in subtitles |
+| R14 | OCR subtitle extraction for content sourced from other platforms with hardcoded subtitles |
+| R15 | Pipeline auto-detects subtitle source: burned-in text → OCR, otherwise → STT from audio |
+| R16 | Both subtitle sources produce the same normalized word-timestamp format for the overlay |
+    """)
+
+    st.subheader("Flashcards & Vocab")
+    st.markdown("""
+| ID | Requirement |
+|----|-------------|
+| R17 | Save any word as a flashcard (from word tap or subtitle context) |
+| R18 | Flashcard review with SM-2 spaced repetition algorithm |
+| R19 | Flashcards work offline (MMKV persistence, sync on reconnect) |
+| R20 | On-device TTS for instant word pronunciation (expo-speech, free) |
+| R21 | High-quality pre-generated TTS audio from R2 for flashcard review |
     """)
 
     st.subheader("Language System")
     st.markdown("""
 | ID | Requirement |
 |----|-------------|
-| R18 | User sets one native language + one or more learning languages |
-| R19 | Learning languages (Phase 1): **English, Chinese** |
-| R20 | Native languages (12): en, es, zh, ja, ko, hi, fr, de, pt, ar, it, ru |
-| R21 | English and Chinese can be both learning AND native |
-| R22 | Offline bilingual dictionaries (SQLite, ~20 pairs), auto-downloaded on language change |
-| R23 | Chinese dictionaries handle simplified/traditional characters + pinyin |
-| R24 | LLM contextual definitions for every word in every video, per native language |
-| R25 | Dictionary adapter factory with fallback to remote API for missing offline pairs |
+| R22 | User sets one native language + one or more learning languages |
+| R23 | Learning languages (Phase 1): **English, Chinese** |
+| R24 | Native languages (12): en, es, zh, ja, ko, hi, fr, de, pt, ar, it, ru |
+| R25 | English and Chinese can be both learning AND native |
+| R26 | Offline bilingual dictionaries (SQLite, ~20 pairs), auto-downloaded on language change |
+| R27 | Chinese dictionaries handle simplified/traditional characters + pinyin |
+| R28 | LLM contextual definitions for every word in every video, per native language |
+| R29 | Dictionary adapter factory with fallback to remote API for missing offline pairs |
     """)
 
     st.subheader("Progress")
     st.markdown("""
 | ID | Requirement |
 |----|-------------|
-| R26 | Daily streak tracking with streak badges |
-| R27 | Stats dashboard: words learned, videos watched, cards reviewed |
-| R28 | Daily activity sync to server |
+| R30 | Daily streak tracking with streak badges |
+| R31 | Stats dashboard: words learned, videos watched, cards reviewed |
+| R32 | Daily activity sync to server |
     """)
 
     st.subheader("Content Pipeline (Backend)")
     st.markdown("""
 | ID | Requirement |
 |----|-------------|
-| R29 | Admin CLI uploads video → triggers AI pipeline |
-| R30 | Pipeline: STT (Groq Whisper) → Translation (Google) → Contextual Definitions (LLM) → store in R2 |
-| R31 | Pre-generated TTS for all ~100K words per learning language, stored in R2 |
-| R32 | Videos marked "ready" after pipeline completes; Supabase Realtime notifies clients |
+| R33 | Admin CLI uploads video → triggers AI pipeline |
+| R34 | Pipeline: detect subtitle source (OCR or STT) → Translation → Definitions (LLM) → store in R2 |
+| R35 | OCR via cloud vision API for burned-in subs; STT via Groq Whisper for audio-only |
+| R36 | Pre-generated TTS for all ~100K words per learning language, stored in R2 |
+| R37 | Videos marked "ready" after pipeline completes; Supabase Realtime notifies clients |
     """)
 
     st.markdown("---")
@@ -1086,10 +1114,10 @@ with tab4:
     st.markdown("""
 | ID | Requirement |
 |----|-------------|
-| R33 | Feed scoring algorithm (Krashen's i+1 difficulty matching) |
-| R34 | Personalized feed using recency, popularity, difficulty match, novelty |
-| R35 | Mid-scroll quiz cards interleaved in feed |
-| R36 | Quiz generation from user's learned vocabulary |
+| R38 | Feed scoring algorithm (Krashen's i+1 difficulty matching) |
+| R39 | Personalized feed using recency, popularity, difficulty match, novelty |
+| R40 | Mid-scroll quiz cards interleaved in feed |
+| R41 | Quiz generation from user's learned vocabulary |
     """)
 
     st.markdown("---")
@@ -1368,4 +1396,326 @@ CREATE TABLE comments (
 4. **No subtitles table** — Replaced by `video_words`. WebVTT files are R2 rendering artifacts, not source of truth.
 5. **Contextual definitions** — Same word gets different definitions per sentence context ("bank" = river bank vs financial bank).
 6. **No tts_cache** — TTS is pre-generated, tracked via `vocab_words.tts_url`.
+    """)
+
+with tab6:
+    st.header("Implementation Guide")
+    st.markdown("Check off steps as you complete them. Progress is saved in your browser session.")
+    st.markdown("---")
+
+    # ── Milestone 0: Foundation (DONE) ──
+    st.subheader("Milestone 0: Foundation")
+    st.caption("Get the project skeleton running")
+
+    st.checkbox("0.1 — Clone kirkwat/tiktok repo, set up Expo project", value=True, key="m0_1")
+    st.checkbox("0.2 — Set up Supabase project (create org, project, get keys)", value=True, key="m0_2")
+    st.checkbox("0.3 — Integrate Supabase Auth (replace Firebase Auth)", value=True, key="m0_3")
+    st.checkbox("0.4 — Supabase OAuth working (Google/Apple login)", value=True, key="m0_4")
+    st.checkbox("0.5 — Basic app shell running on device/simulator", value=True, key="m0_5")
+
+    st.markdown("---")
+
+    # ── Milestone 1: Database + User System ──
+    st.subheader("Milestone 1: Database + User System")
+    st.caption("Set up all 14 tables. Wire up user creation, onboarding, and profile. This is the foundation for everything.")
+
+    st.checkbox("1.1 — Run initial migration (all 14 tables from database_design.md)", key="m1_1")
+    st.checkbox("1.2 — Verify tables in Supabase dashboard", key="m1_2")
+    st.checkbox("1.3 — Verify RLS policies are active (test with anon key — should be blocked)", key="m1_3")
+    st.checkbox("1.4 — Create DB trigger: auto-insert users row on auth.users signup", key="m1_4")
+    st.checkbox("1.5 — Test: sign up → user row created automatically", key="m1_5")
+    st.checkbox("1.6 — Onboarding screen: select native language + learning language(s) (R22)", key="m1_6")
+    st.checkbox("1.7 — Save language prefs to users table + MMKV (native_language, learning_languages)", key="m1_7")
+    st.checkbox("1.8 — Profile screen: display name, avatar, streak (0), words learned (0), videos watched (0)", key="m1_8")
+    st.checkbox("1.9 — Edit profile: update display_name, avatar_url", key="m1_9")
+    st.checkbox("1.10 — Settings screen: language switcher, daily goal slider", key="m1_10")
+    st.checkbox("1.11 — Follow/unfollow on profile screens (user_follows table)", key="m1_11")
+    st.checkbox("1.12 — Empty states for feed, flashcards, progress (placeholder UI)", key="m1_12")
+
+    with st.expander("M1 Details: What gets wired up and what stays empty"):
+        st.markdown("""
+#### Tables active after M1
+
+| Table | What to build | Satisfies |
+|-------|--------------|-----------|
+| `users` | Auto-create on signup (DB trigger). Onboarding sets `native_language` + `learning_languages`. Profile screen shows stats. Settings updates `daily_goal_minutes`. | R7, R8, R22, R30 |
+| `user_follows` | Follow/unfollow button on other users' profiles. Show follower/following counts. | R7 |
+
+#### Tables that exist but stay empty (no videos yet)
+
+| Table | Populated when | Why wait |
+|-------|---------------|----------|
+| `videos` | M2-M3 (R2 setup + pipeline) | Need storage + pipeline first |
+| `vocab_words` | M3 (pipeline processes first video) | AI pipeline creates these |
+| `word_definitions` | M3 (LLM generates definitions) | AI pipeline creates these |
+| `video_words` | M3 (word timestamps from STT/OCR) | AI pipeline creates these |
+| `user_likes` / `user_bookmarks` / `comments` | M4 (need videos to interact with) | Can't like/comment without videos |
+| `user_views` | M4 (need videos to watch) | Can't track views without videos |
+| `flashcards` | M5-M6 (need tappable subtitles first) | Save button lives in WordPopup |
+| `daily_progress` | M4+ (need activity to track) | Start tracking when videos exist |
+| `pipeline_jobs` | M3 (first pipeline run) | Admin tool creates these |
+
+#### Supabase trigger for auto user creation
+
+```sql
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.users (id) VALUES (NEW.id);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+```
+
+#### Key decision: Direct Supabase for M1-M9
+
+The app talks to Supabase directly (`@supabase/supabase-js` + PostgREST + RLS) until M10 when the Go backend is built. No API server needed yet.
+        """)
+
+    st.markdown("---")
+
+    # ── Milestone 2: Storage (R2 + CDN) ──
+    st.subheader("Milestone 2: Storage (R2 + CDN)")
+    st.caption("Set up Cloudflare R2 bucket and verify video delivery. Can be done in parallel with M1.")
+
+    st.checkbox("2.1 — Create Cloudflare account + R2 bucket (scrollingo-media)", key="m2_1")
+    st.checkbox("2.2 — Set up custom domain or public bucket URL for CDN access", key="m2_2")
+    st.checkbox("2.3 — Create R2 folder structure: videos/, tts/, dictionaries/", key="m2_3")
+    st.checkbox("2.4 — Upload one test video manually (720p MP4, ≤60 seconds)", key="m2_4")
+    st.checkbox("2.5 — Set Cache-Control headers (immutable for videos/TTS/subs)", key="m2_5")
+    st.checkbox("2.6 — Verify video plays in browser via CDN URL", key="m2_6")
+
+    st.markdown("---")
+
+    # ── Milestone 3: First Video End-to-End ──
+    st.subheader("Milestone 3: First Video End-to-End (Pipeline)")
+    st.caption("Process one video through the AI pipeline. Proves DB + R2 + AI all work together.")
+
+    st.checkbox("3.1 — Get API keys: Groq (Whisper), Gemini (definitions — handles translation + definition + POS in one call)", key="m3_1")
+    st.checkbox("3.2 — Insert video row into DB (status='processing', cdn_url from M2)", key="m3_2")
+    st.checkbox("3.3 — Insert pipeline_jobs row (status='pending')", key="m3_3")
+    st.checkbox("3.4 — Extract audio from video with FFmpeg → upload audio.mp3 to R2", key="m3_4")
+    st.checkbox("3.5 — STT: send audio to Groq Whisper → get transcript with word-level timestamps", key="m3_5")
+    st.checkbox("3.6 — Insert unique words into vocab_words (ON CONFLICT DO NOTHING)", key="m3_6")
+    st.checkbox("3.7 — LLM Definitions: batch call Gemini Flash for all words × 1 native lang (generates translation + contextual_definition + POS in one call)", key="m3_7")
+    st.checkbox("3.8 — Insert word_definitions into DB (vocab_word_id, video_id, target_language)", key="m3_8")
+    st.checkbox("3.9 — Insert video_words into DB (timestamps linked to vocab_words)", key="m3_9_new")
+    st.checkbox("3.10 — Update video status='ready', pipeline_jobs status='ready'", key="m3_10_new")
+    st.checkbox("3.11 — Verify: query video_words JOIN vocab_words JOIN word_definitions — all data correct", key="m3_11_new")
+
+    with st.expander("M3 Details: Pipeline script approach"):
+        st.markdown("""
+This can be a standalone Python or Go script — NOT the full Go backend (that's M10). The goal is to prove the pipeline works end-to-end with one video.
+
+**Recommended: Python script** (faster to prototype, can become the admin CLI later)
+
+```python
+# pipeline.py — process a single video
+python3 pipeline.py --video-url https://cdn.scrollingo.com/videos/test/video.mp4 \\
+                     --language en --native-lang es
+```
+
+**Order matters:** Create the video DB row FIRST (3.2), then process it (3.4-3.10), then mark it ready (3.11). This matches the real pipeline flow.
+
+**Start with 1 native language** (e.g., Spanish) to keep it simple. Expand to all 12 in M11.
+        """)
+
+    st.markdown("---")
+
+    # ── Milestone 4: Video Feed in App ──
+    st.subheader("Milestone 4: Video Feed in App")
+    st.caption("Display the video from M3 in the app. First visual proof of life.")
+
+    st.checkbox("4.1 — Query videos from Supabase (WHERE status='ready' AND language=target_language, LEFT JOIN user_views to exclude watched)", key="m4_1")
+    st.checkbox("4.2 — Wire up feedStore (Zustand) with pagination cursor", key="m4_2")
+    st.checkbox("4.3 — Render videos in FlashList with expo-video (full-screen, vertical paging)", key="m4_3")
+    st.checkbox("4.4 — Auto play/pause based on scroll visibility (onViewableItemsChanged)", key="m4_4")
+    st.checkbox("4.5 — Preload next 2 videos for smooth scrolling", key="m4_5")
+    st.checkbox("4.6 — Track views: INSERT/UPDATE user_views on watch completion", key="m4_6")
+    st.checkbox("4.7 — Test: app shows the M3 video, plays from R2 CDN, smooth scroll", key="m4_7")
+
+    st.markdown("---")
+
+    # ── Milestone 5: Tappable Subtitles (Core Feature) ──
+    st.subheader("Milestone 5: Tappable Subtitles")
+    st.caption("THE core language learning feature. User taps a word → sees translation + definition.")
+
+    st.checkbox("5.1 — Fetch all subtitle data for video: video_words JOIN vocab_words JOIN word_definitions (single query, filtered by user's native_language)", key="m5_1")
+    st.checkbox("5.2 — Build SubtitleOverlay component: render current sentence's words based on playback position", key="m5_2")
+    st.checkbox("5.3 — Highlight active word as video plays (sync word_index to currentTime)", key="m5_3")
+    st.checkbox("5.4 — Make each word individually tappable (onPress per word)", key="m5_4")
+    st.checkbox("5.5 — Build WordPopup bottom sheet (@gorhom/bottom-sheet): translation, contextual definition, POS", key="m5_5")
+    st.checkbox("5.6 — TTS in popup: expo-speech for instant pronunciation (R2 audio available after M12, expo-speech only until then)", key="m5_6")
+    st.checkbox("5.7 — Pause video when popup opens, resume on close", key="m5_7")
+    st.checkbox("5.8 — Test: tap word in subtitle → correct translation in user's native language + audio plays", key="m5_8")
+
+    with st.expander("M5 Details: The subtitle data query"):
+        st.markdown("""
+**One query loads everything the subtitle overlay needs:**
+
+```sql
+SELECT vw.word_index, vw.display_text, vw.start_ms, vw.end_ms,
+       v.word, v.tts_url, v.pinyin,
+       wd.translation, wd.contextual_definition, wd.part_of_speech
+FROM video_words vw
+JOIN vocab_words v ON v.id = vw.vocab_word_id
+JOIN word_definitions wd ON wd.vocab_word_id = vw.vocab_word_id
+    AND wd.video_id = vw.video_id
+    AND wd.target_language = $user_native_language
+WHERE vw.video_id = $video_id
+ORDER BY vw.word_index;
+```
+
+This returns ~50 rows per video. The app caches this per video — no extra queries on word tap. The WordPopup just reads from the already-loaded data.
+        """)
+
+    st.markdown("---")
+
+    # ── Milestone 6: Flashcard Save + Review ──
+    st.subheader("Milestone 6: Flashcards")
+    st.caption("Save words from videos, review with spaced repetition.")
+
+    st.checkbox("6.1 — Add 'Save' button in WordPopup → INSERT flashcard (vocab_word_id, definition_id, source_video_id)", key="m6_1")
+    st.checkbox("6.2 — Dedup: UNIQUE index prevents saving same word+definition twice, show 'Saved' state", key="m6_2")
+    st.checkbox("6.3 — Implement SM-2 algorithm (lib/sm2.ts)", key="m6_3")
+    st.checkbox("6.4 — Build FlashcardReview screen: show word, flip to reveal translation + definition", key="m6_4")
+    st.checkbox("6.5 — SRS controls: Again / Hard / Good / Easy → update ease_factor, interval, next_review", key="m6_5")
+    st.checkbox("6.6 — Fetch due cards from Supabase: flashcards JOIN vocab_words JOIN word_definitions WHERE next_review <= now()", key="m6_6")
+    st.checkbox("6.7 — Build flashcardStore (Zustand + MMKV): cache cards locally for offline review", key="m6_7")
+    st.checkbox("6.8 — Offline sync: queue SRS updates in MMKV, bulk sync to server on reconnect (client_updated_at for conflict resolution)", key="m6_8")
+
+    st.markdown("---")
+
+    # ── Milestone 7: Social Features ──
+    st.subheader("Milestone 7: Social Features")
+    st.caption("Likes, comments, bookmarks. Depends on M4 (need videos to interact with).")
+
+    st.checkbox("7.1 — Like button on video card: toggle INSERT/DELETE user_likes + optimistic like_count update", key="m7_1")
+    st.checkbox("7.2 — Bookmark button: toggle INSERT/DELETE user_bookmarks", key="m7_2")
+    st.checkbox("7.3 — Comment modal: fetch comments by video (cursor pagination), post new comment", key="m7_3")
+    st.checkbox("7.4 — 'My Bookmarks' screen: list saved videos", key="m7_4")
+    st.checkbox("7.5 — Show like/comment/bookmark counts on video cards", key="m7_5")
+
+    st.markdown("---")
+
+    # ── Milestone 8: Language System (Advanced) ──
+    st.subheader("Milestone 8: Language System (Advanced)")
+    st.caption("Offline dictionaries, adapter factory, auto-download. Basic language selection is in M1.")
+
+    st.checkbox("8.1 — Offline dictionary: download SQLite files from R2 on first launch", key="m8_1")
+    st.checkbox("8.2 — DictionaryFactory: route (sourceLang, targetLang) → correct adapter", key="m8_2")
+    st.checkbox("8.3 — SimpleDictAdapter: lookup word in local SQLite (written_rep → trans_list)", key="m8_3")
+    st.checkbox("8.4 — ChineseSourceAdapter: handle simplified/traditional + pinyin", key="m8_4")
+    st.checkbox("8.5 — LlmWrapperAdapter: merge local dict result with cached LLM definition", key="m8_5")
+    st.checkbox("8.6 — RemoteApiAdapter: fallback for missing offline pairs (queries word_definitions from Supabase; switches to Go API after M10)", key="m8_6")
+    st.checkbox("8.7 — Auto-download new dictionaries when user changes language", key="m8_7")
+    st.checkbox("8.8 — Test: word tap works with offline dictionary (airplane mode)", key="m8_8")
+
+    st.markdown("---")
+
+    # ── Milestone 9: Progress & Streaks ──
+    st.subheader("Milestone 9: Progress & Streaks")
+    st.caption("Track learning activity, maintain daily streaks. Depends on M4+ (need activity to track).")
+
+    st.checkbox("9.1 — Track activity client-side: videos_watched (M4), words_learned (M6), cards_reviewed (M6)", key="m9_1")
+    st.checkbox("9.2 — UPSERT daily_progress row on each session (increment counters for today)", key="m9_2")
+    st.checkbox("9.3 — Streak logic: if today's date > streak_last_date + 1 day → reset to 1, else increment", key="m9_3")
+    st.checkbox("9.4 — Update longest_streak when current streak beats it", key="m9_4")
+    st.checkbox("9.5 — Progress dashboard screen: streak badge, words learned, videos watched, cards reviewed", key="m9_5")
+    st.checkbox("9.6 — Daily goal ring: minutes_active vs daily_goal_minutes (animated progress ring)", key="m9_6")
+
+    st.markdown("---")
+
+    # ── Milestone 10: Go Backend ──
+    st.subheader("Milestone 10: Go Backend")
+    st.caption("Build the Go monolith on fly.io. Centralizes API logic, runs the AI pipeline.")
+
+    st.checkbox("10.1 — Scaffold Go project: chi router, Supabase DB connection, health endpoint", key="m10_1")
+    st.checkbox("10.2 — JWT middleware: verify Supabase tokens (JWKS caching)", key="m10_2")
+    st.checkbox("10.3 — Feed endpoint: GET /api/v1/feed (chronological, keyset pagination)", key="m10_3")
+    st.checkbox("10.4 — Video words endpoint: GET /api/v1/videos/:id/words (returns words + definitions)", key="m10_4")
+    st.checkbox("10.5 — Flashcard endpoints: GET due, POST create, PUT review, POST sync", key="m10_5")
+    st.checkbox("10.6 — Social endpoints: likes, comments, bookmarks, follows", key="m10_6")
+    st.checkbox("10.7 — Progress endpoints: GET stats, POST daily sync", key="m10_7")
+    st.checkbox("10.8 — Admin endpoints: POST /internal/admin/videos (trigger pipeline)", key="m10_8")
+    st.checkbox("10.9 — Port M3 pipeline script into Go as async goroutines (replaces the standalone script)", key="m10_9")
+    st.checkbox("10.10 — Background workers: view count flush, streak calculation", key="m10_10")
+    st.checkbox("10.11 — Rate limiting middleware", key="m10_11")
+    st.checkbox("10.12 — Deploy to fly.io, verify health check", key="m10_12")
+    st.checkbox("10.13 — Switch React Native app from direct Supabase to Go API", key="m10_13")
+
+    st.markdown("---")
+
+    # ── Milestone 11: Content Pipeline (Batch) ──
+    st.subheader("Milestone 11: Content Pipeline (Batch)")
+    st.caption("Scale from 1 test video to 100 videos/month.")
+
+    st.checkbox("11.1 — Admin CLI tool: scrollingo-admin upload (FFmpeg normalize + R2 upload + trigger)", key="m11_1")
+    st.checkbox("11.2 — Batch STT: process multiple videos in queue", key="m11_2")
+    st.checkbox("11.3 — OCR path: detect burned-in subtitles, extract via Cloud Vision", key="m11_3")
+    st.checkbox("11.4 — Batch LLM definitions: all words × 12 native languages per video", key="m11_4")
+    st.checkbox("11.5 — Generate WebVTT subtitle files → upload to R2", key="m11_5")
+    st.checkbox("11.6 — Pipeline status tracking: pipeline_jobs table, retry on failure", key="m11_6")
+    st.checkbox("11.7 — Seed 10 videos, verify feed works with multiple videos", key="m11_7")
+    st.checkbox("11.8 — Seed 100 videos across English + Chinese content", key="m11_8")
+
+    st.markdown("---")
+
+    # ── Milestone 12: TTS Pre-generation ──
+    st.subheader("Milestone 12: TTS Pre-generation")
+    st.caption("Pre-generate pronunciation audio for all words. One-time batch job.")
+
+    st.checkbox("12.1 — Get word frequency lists for English (~100K words) and Chinese (~100K)", key="m12_1")
+    st.checkbox("12.2 — Write batch script: word list → Google Neural2 TTS → MP3 files", key="m12_2")
+    st.checkbox("12.3 — Upload TTS audio to R2: tts/{language}/{sha256}.mp3", key="m12_3")
+    st.checkbox("12.4 — Update vocab_words.tts_url for all generated words", key="m12_4")
+    st.checkbox("12.5 — Verify: tap word → expo-speech instant + R2 high-quality audio loads", key="m12_5")
+
+    st.markdown("---")
+
+    # ── Milestone 13: Polish & Launch Prep ──
+    st.subheader("Milestone 13: Polish & Launch Prep")
+    st.caption("Final polish before beta launch.")
+
+    st.checkbox("13.1 — Error handling: network errors, empty states, loading skeletons", key="m13_1")
+    st.checkbox("13.2 — Monitoring: set up Axiom (logs) + Sentry (errors) for Go backend + app", key="m13_2")
+    st.checkbox("13.3 — CI/CD: GitHub Actions for Go deploy, EAS Build for app", key="m13_3")
+    st.checkbox("13.4 — Database migrations: set up golang-migrate, version the schema", key="m13_4")
+    st.checkbox("13.5 — App Store assets: screenshots, description, privacy policy", key="m13_5")
+    st.checkbox("13.6 — TestFlight / internal testing build", key="m13_6")
+    st.checkbox("13.7 — Load test: verify feed + word lookup performance at 100 concurrent users", key="m13_7")
+    st.checkbox("13.8 — Security audit: verify RLS, rate limits, admin endpoint protection", key="m13_8")
+    st.checkbox("13.9 — Beta launch to first 100 users", key="m13_9")
+
+    st.markdown("---")
+    st.subheader("Milestone Summary")
+    st.markdown("""
+| Milestone | What | Depends On | Effort |
+|-----------|------|-----------|--------|
+| **M0** | Foundation (React Native + Supabase Auth) | — | **Done** |
+| **M1** | Database + user system + onboarding + profile | M0 | 1-2 days |
+| **M2** | R2 Storage + CDN (can parallel with M1) | — | 1 hour |
+| **M3** | First video end-to-end (pipeline script) | M1, M2 | 1-2 days |
+| **M4** | Video feed in app + view tracking | M3 | 1-2 days |
+| **M5** | Tappable subtitles + word popup (CORE FEATURE) | M4 | 2-3 days |
+| **M6** | Flashcard save + SM-2 review + offline | M5 | 2-3 days |
+| **M7** | Social (likes, comments, bookmarks) | M4 | 2 days |
+| **M8** | Offline dictionaries + adapter factory | M5 | 3-5 days |
+| **M9** | Progress tracking + streaks | M4, M6 | 1-2 days |
+| **M10** | Go backend (centralize API + port pipeline) | M1, M2, M3 | 5-7 days |
+| **M11** | Content pipeline (batch 100 videos) | M10 | 3-5 days |
+| **M12** | TTS pre-generation (can run anytime after M2) | M2 | 1 day |
+| **M13** | Polish & launch | All above | 3-5 days |
+
+**Critical path**: M0 → M1 → M2 → M3 → M4 → M5 (first magic moment: tap word → see definition)
+
+**Parallel work**:
+- M2 can run in parallel with M1
+- M7 (social) can start after M4
+- M9 (progress) can start after M6
+- M12 (TTS) can run anytime after M2 — doesn't block anything
     """)
