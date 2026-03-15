@@ -1429,8 +1429,39 @@ with tab6:
     st.checkbox("1.8 — Profile screen: display name, avatar, streak (0), words learned (0), videos watched (0)", key="m1_8")
     st.checkbox("1.9 — Edit profile: update display_name, avatar_url", key="m1_9")
     st.checkbox("1.10 — Settings screen: language switcher, daily goal slider", key="m1_10")
-    st.checkbox("1.11 — Follow/unfollow on profile screens (user_follows table)", key="m1_11")
+    st.checkbox("1.11 — Own profile screen: display name, avatar, streak, words/videos stats (all 0)", key="m1_11")
     st.checkbox("1.12 — Empty states for feed, flashcards, progress (placeholder UI)", key="m1_12")
+    st.checkbox("1.13 — Language switching + multi-language support in profile/settings", key="m1_13")
+
+    with st.expander("1.13 Details: Language switching"):
+        st.markdown("""
+**What to build:**
+
+1. **Multiple learning languages** — onboarding already saves `learning_languages[]`, but the UI only lets you pick one at a time. Add multi-select so users can learn both English AND Chinese simultaneously.
+
+2. **Active language switcher** — in the feed or settings, a quick toggle to switch `target_language` (which language the feed filters by). This updates `users.target_language` without re-doing onboarding.
+   - Example: user learns English + Chinese → toggle between en/zh feeds
+   - Could be a pill/chip selector at the top of the feed, or a dropdown in settings
+
+3. **Change native language** — in Profile → Settings, allow changing `native_language`. This changes what language definitions/translations are rendered in.
+   - When changed: update `users.native_language` in Supabase
+   - Feed stays the same (content language unchanged)
+   - Word definitions switch to new native language on next video load
+   - Trigger dictionary re-download if offline dictionaries are set up (M8)
+
+4. **Profile language display** — show current native + learning languages on the profile screen (e.g., "Learning: 🇺🇸 English, 🇨🇳 Chinese · Native: 🇪🇸 Spanish")
+
+5. **Language store sync** — when any language pref changes, update both:
+   - Redux `languageSlice` (immediate, drives UI)
+   - Supabase `users` table (background sync)
+
+**Touches:**
+- `src/screens/onboarding/index.tsx` — allow multi-select for learning languages (already supported by data model)
+- `src/redux/slices/languageSlice.ts` — add `switchActiveLearning` action
+- `src/services/language.ts` — add `updateNativeLanguage()`, `updateActiveLearning()`
+- Profile/Settings screen — native language picker, active learning toggle
+- Feed screen — filter by `activeLearningLanguage`
+        """)
 
     with st.expander("M1 Details: What gets wired up and what stays empty"):
         st.markdown("""
@@ -1438,8 +1469,7 @@ with tab6:
 
 | Table | What to build | Satisfies |
 |-------|--------------|-----------|
-| `users` | Auto-create on signup (DB trigger). Onboarding sets `native_language` + `learning_languages`. Profile screen shows stats. Settings updates `daily_goal_minutes`. | R7, R8, R22, R30 |
-| `user_follows` | Follow/unfollow button on other users' profiles. Show follower/following counts. | R7 |
+| `users` | Auto-create on signup (DB trigger). Onboarding sets `native_language` + `learning_languages`. Profile screen shows own stats. Settings updates `daily_goal_minutes`. | R7, R8, R22, R30 |
 
 #### Tables that exist but stay empty (no videos yet)
 
@@ -1450,6 +1480,7 @@ with tab6:
 | `word_definitions` | M3 (LLM generates definitions) | AI pipeline creates these |
 | `video_words` | M3 (word timestamps from STT/OCR) | AI pipeline creates these |
 | `user_likes` / `user_bookmarks` / `comments` | M4 (need videos to interact with) | Can't like/comment without videos |
+| `user_follows` | M7 (need other users' profiles visible via videos) | Can't follow users you can't discover |
 | `user_views` | M4 (need videos to watch) | Can't track views without videos |
 | `flashcards` | M5-M6 (need tappable subtitles first) | Save button lives in WordPopup |
 | `daily_progress` | M4+ (need activity to track) | Start tracking when videos exist |
@@ -1599,6 +1630,9 @@ This returns ~50 rows per video. The app caches this per video — no extra quer
     st.checkbox("7.3 — Comment modal: fetch comments by video (cursor pagination), post new comment", key="m7_3")
     st.checkbox("7.4 — 'My Bookmarks' screen: list saved videos", key="m7_4")
     st.checkbox("7.5 — Show like/comment/bookmark counts on video cards", key="m7_5")
+    st.checkbox("7.6 — Other user profile screen: tap creator name on video → view their profile", key="m7_6")
+    st.checkbox("7.7 — Follow/unfollow button on other users' profiles (user_follows table)", key="m7_7")
+    st.checkbox("7.8 — Follower/following counts on profiles", key="m7_8")
 
     st.markdown("---")
 
@@ -1703,7 +1737,7 @@ This returns ~50 rows per video. The app caches this per video — no extra quer
 | **M4** | Video feed in app + view tracking | M3 | 1-2 days |
 | **M5** | Tappable subtitles + word popup (CORE FEATURE) | M4 | 2-3 days |
 | **M6** | Flashcard save + SM-2 review + offline | M5 | 2-3 days |
-| **M7** | Social (likes, comments, bookmarks) | M4 | 2 days |
+| **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
 | **M8** | Offline dictionaries + adapter factory | M5 | 3-5 days |
 | **M9** | Progress tracking + streaks | M4, M6 | 1-2 days |
 | **M10** | Go backend (centralize API + port pipeline) | M1, M2, M3 | 5-7 days |
