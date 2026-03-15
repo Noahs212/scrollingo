@@ -11,7 +11,7 @@ import PostSingle, { PostSingleHandles } from "../../components/general/post";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { getFeed, getPostsByUserId } from "../../services/posts";
 import { Post } from "../../../types";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useIsFocused } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/main";
 import { HomeStackParamList } from "../../navigation/home";
 import {
@@ -41,9 +41,12 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     profile: boolean;
   };
 
+  const isFocused = useIsFocused();
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const mediaRefs = useRef<Record<string, PostSingleHandles | null>>({});
+  const currentViewableKey = useRef<string | null>(null);
 
   const navBarHeight = useMaterialNavBarHeight(profile);
   const feedItemHeight = SCREEN_HEIGHT - navBarHeight;
@@ -69,6 +72,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
         const cell = mediaRefs.current[element.key];
         if (cell) {
           if (element.isViewable) {
+            currentViewableKey.current = element.key;
             if (!profile && setCurrentUserProfileItemInView) {
               setCurrentUserProfileItemInView(element.item.creator);
             }
@@ -80,6 +84,21 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
       });
     },
   );
+
+  // Pause all videos when tab loses focus, resume active video when refocused
+  useEffect(() => {
+    if (isFocused) {
+      const key = currentViewableKey.current;
+      if (key) {
+        const cell = mediaRefs.current[key];
+        cell?.play();
+      }
+    } else {
+      Object.values(mediaRefs.current).forEach((cell) => {
+        cell?.stop();
+      });
+    }
+  }, [isFocused]);
 
   const getItemLayout = useCallback(
     (_data: ArrayLike<Post> | null | undefined, index: number) => ({

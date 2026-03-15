@@ -19,9 +19,21 @@ export interface User {
   email: string;
   displayName: string | null;
   photoURL?: string;
+  // Social counts
   followingCount: number;
   followersCount: number;
   likesCount: number;
+  // Language preferences
+  nativeLanguage: string;
+  targetLanguage: string;
+  learningLanguages: string[];
+  // Learning stats
+  streakDays: number;
+  longestStreak: number;
+  totalWordsLearned: number;
+  totalVideosWatched: number;
+  dailyGoalMinutes: number;
+  premium: boolean;
 }
 
 export interface SearchUser extends User {

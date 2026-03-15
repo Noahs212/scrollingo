@@ -10,14 +10,25 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { saveLanguages } from "../../redux/slices/languageSlice";
+import { updateUserField } from "../../redux/slices/authSlice";
+import { saveUserField } from "../../services/user";
 import { NATIVE_LANGUAGES, LEARNING_LANGUAGES } from "../../services/language";
 
-type Step = "native" | "learning";
+type Step = "native" | "learning" | "goal";
+
+const GOAL_OPTIONS = [
+  { minutes: 5, label: "5 min", description: "Casual" },
+  { minutes: 10, label: "10 min", description: "Regular" },
+  { minutes: 15, label: "15 min", description: "Serious" },
+  { minutes: 20, label: "20 min", description: "Intense" },
+  { minutes: 30, label: "30 min", description: "Hardcore" },
+];
 
 export default function OnboardingScreen() {
   const [step, setStep] = useState<Step>("native");
   const [selectedNative, setSelectedNative] = useState<string | null>(null);
   const [selectedLearning, setSelectedLearning] = useState<string[]>([]);
+  const [selectedGoal, setSelectedGoal] = useState(10);
 
   const [localError, setLocalError] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
@@ -32,16 +43,22 @@ export default function OnboardingScreen() {
 
   const handleContinue = () => {
     if (step === "native" && selectedNative) {
-      // Filter out native language from learning options
       setSelectedLearning((prev) => prev.filter((c) => c !== selectedNative));
       setStep("learning");
+    } else if (step === "learning" && selectedLearning.length > 0) {
+      setStep("goal");
     }
   };
 
   const handleFinish = async () => {
     if (!userId || !selectedNative || selectedLearning.length === 0) return;
     setLocalError(null);
-    // Save to server, but don't block on failure — proceed to home either way
+
+    // Save daily goal to DB + Redux
+    dispatch(updateUserField({ field: "dailyGoalMinutes", value: selectedGoal }));
+    saveUserField("dailyGoalMinutes", String(selectedGoal)).catch(() => {});
+
+    // Save languages (optimistic — navigates to home immediately)
     dispatch(
       saveLanguages({
         userId,
@@ -51,7 +68,6 @@ export default function OnboardingScreen() {
     );
   };
 
-  // Filter learning languages to exclude the user's native language
   const availableLearning = LEARNING_LANGUAGES.filter(
     (l) => l.code !== selectedNative,
   );
@@ -95,22 +111,17 @@ export default function OnboardingScreen() {
           </ScrollView>
 
           <TouchableOpacity
-            style={[
-              styles.button,
-              !selectedNative && styles.buttonDisabled,
-            ]}
+            style={[styles.button, !selectedNative && styles.buttonDisabled]}
             onPress={handleContinue}
             disabled={!selectedNative}
           >
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </>
-      ) : (
+      ) : step === "learning" ? (
         <>
           <Text style={styles.title}>What do you want to learn?</Text>
-          <Text style={styles.subtitle}>
-            Select one or more languages
-          </Text>
+          <Text style={styles.subtitle}>Select one or more languages</Text>
 
           <ScrollView
             style={styles.list}
@@ -143,8 +154,6 @@ export default function OnboardingScreen() {
             ))}
           </ScrollView>
 
-          {localError && <Text style={styles.error}>{localError}</Text>}
-
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={styles.backButton}
@@ -157,11 +166,75 @@ export default function OnboardingScreen() {
               style={[
                 styles.button,
                 styles.buttonFlex,
-                (selectedLearning.length === 0 || loading) &&
-                  styles.buttonDisabled,
+                selectedLearning.length === 0 && styles.buttonDisabled,
+              ]}
+              onPress={handleContinue}
+              disabled={selectedLearning.length === 0}
+            >
+              <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <>
+          <Text style={styles.title}>Set your daily goal</Text>
+          <Text style={styles.subtitle}>
+            How much time do you want to study each day?
+          </Text>
+
+          <ScrollView
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
+          >
+            {GOAL_OPTIONS.map((option) => (
+              <TouchableOpacity
+                key={option.minutes}
+                style={[
+                  styles.languageItem,
+                  selectedGoal === option.minutes && styles.languageItemSelected,
+                ]}
+                onPress={() => setSelectedGoal(option.minutes)}
+              >
+                <Text style={styles.goalEmoji}>⏱</Text>
+                <View style={styles.goalTextContainer}>
+                  <Text
+                    style={[
+                      styles.languageName,
+                      selectedGoal === option.minutes &&
+                        styles.languageNameSelected,
+                    ]}
+                  >
+                    {option.label}
+                  </Text>
+                  <Text style={styles.goalDescription}>
+                    {option.description}
+                  </Text>
+                </View>
+                {selectedGoal === option.minutes && (
+                  <Text style={styles.checkmark}>✓</Text>
+                )}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          {localError && <Text style={styles.error}>{localError}</Text>}
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => setStep("learning")}
+            >
+              <Text style={styles.backButtonText}>Back</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.button,
+                styles.buttonFlex,
+                loading && styles.buttonDisabled,
               ]}
               onPress={handleFinish}
-              disabled={selectedLearning.length === 0 || loading}
+              disabled={loading}
             >
               {loading ? (
                 <ActivityIndicator color="#fff" />
@@ -273,5 +346,17 @@ const styles = StyleSheet.create({
     color: "#ff4040",
     textAlign: "center",
     marginBottom: 12,
+  },
+  goalEmoji: {
+    fontSize: 24,
+    marginRight: 16,
+  },
+  goalTextContainer: {
+    flex: 1,
+  },
+  goalDescription: {
+    color: "#666",
+    fontSize: 14,
+    marginTop: 2,
   },
 });

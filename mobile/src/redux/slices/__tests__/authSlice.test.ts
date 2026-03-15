@@ -211,7 +211,7 @@ describe("authSlice", () => {
 
     const state = store.getState().auth;
     expect(state.loaded).toBe(true);
-    expect(state.currentUser).toEqual({
+    expect(state.currentUser).toMatchObject({
       uid: "supa-user-1",
       email: "supa@test.com",
       displayName: "Supa User",

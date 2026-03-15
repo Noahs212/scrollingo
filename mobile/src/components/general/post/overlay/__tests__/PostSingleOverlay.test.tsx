@@ -28,6 +28,15 @@ const mockUser: User = {
   followingCount: 5,
   followersCount: 10,
   likesCount: 50,
+  nativeLanguage: "en",
+  targetLanguage: "es",
+  learningLanguages: ["es"],
+  streakDays: 0,
+  longestStreak: 0,
+  totalWordsLearned: 0,
+  totalVideosWatched: 0,
+  dailyGoalMinutes: 10,
+  premium: false,
 };
 
 const mockUserWithPhoto: User = {

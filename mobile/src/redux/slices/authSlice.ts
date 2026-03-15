@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { supabase } from "../../lib/supabase";
 import {
   signInWithEmail,
@@ -7,9 +7,14 @@ import {
   signInWithApple,
   signOut,
 } from "../../services/auth";
+import { getUserById } from "../../services/user";
 import { getPostsByUser } from "./postSlice";
 import { User } from "../../../types";
 
+/**
+ * Creates a minimal User from Supabase auth metadata.
+ * Used as a fallback when the DB profile hasn't loaded yet.
+ */
 function mapSupabaseUser(
   supaUser: { id: string; email?: string; user_metadata?: Record<string, any> },
 ): User {
@@ -21,7 +26,35 @@ function mapSupabaseUser(
     followingCount: 0,
     followersCount: 0,
     likesCount: 0,
+    nativeLanguage: "en",
+    targetLanguage: "en",
+    learningLanguages: ["en"],
+    streakDays: 0,
+    longestStreak: 0,
+    totalWordsLearned: 0,
+    totalVideosWatched: 0,
+    dailyGoalMinutes: 10,
+    premium: false,
   };
+}
+
+/**
+ * Loads the full user profile from the database.
+ * Falls back to auth metadata if DB fetch fails (network issues on simulator).
+ */
+async function loadFullProfile(
+  supaUser: { id: string; email?: string; user_metadata?: Record<string, any> },
+): Promise<User> {
+  try {
+    const dbUser = await getUserById(supaUser.id);
+    if (dbUser) {
+      // Merge: DB data + email from auth (email not stored in users table)
+      return { ...dbUser, email: supaUser.email ?? dbUser.email };
+    }
+  } catch (err) {
+    console.warn("[auth] Failed to load DB profile, using auth metadata:", err);
+  }
+  return mapSupabaseUser(supaUser);
 }
 
 export const userAuthStateListener = createAsyncThunk(
@@ -29,16 +62,22 @@ export const userAuthStateListener = createAsyncThunk(
   async (_, { dispatch }) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
+      // Set immediately with auth metadata, then enhance with DB data
       dispatch(setUserState({ currentUser: mapSupabaseUser(session.user), loaded: true }));
       dispatch(getPostsByUser(session.user.id));
+      // Load full profile in background
+      const fullUser = await loadFullProfile(session.user);
+      dispatch(setUserState({ currentUser: fullUser, loaded: true }));
     } else {
       dispatch(setUserState({ currentUser: null, loaded: true }));
     }
 
-    supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         dispatch(setUserState({ currentUser: mapSupabaseUser(session.user), loaded: true }));
         dispatch(getPostsByUser(session.user.id));
+        const fullUser = await loadFullProfile(session.user);
+        dispatch(setUserState({ currentUser: fullUser, loaded: true }));
       } else {
         dispatch(setUserState({ currentUser: null, loaded: true }));
       }
@@ -101,6 +140,11 @@ const authSlice = createSlice({
       state.currentUser = action.payload.currentUser;
       state.loaded = action.payload.loaded;
     },
+    updateUserField: (state, action: PayloadAction<{ field: string; value: any }>) => {
+      if (state.currentUser) {
+        (state.currentUser as any)[action.payload.field] = action.payload.value;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -135,5 +179,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUserState } = authSlice.actions;
+export const { setUserState, updateUserField } = authSlice.actions;
 export default authSlice.reducer;

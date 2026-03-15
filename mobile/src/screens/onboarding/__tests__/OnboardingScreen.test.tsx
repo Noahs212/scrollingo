@@ -28,6 +28,11 @@ jest.mock("react-redux", () => ({
 }));
 
 // Mock language service (prevent supabase import)
+// Mock user service (also imports supabase)
+jest.mock("../../../services/user", () => ({
+  saveUserField: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock("../../../services/language", () => ({
   fetchUserLanguages: jest.fn(),
   updateUserLanguages: jest.fn(),
@@ -55,6 +60,12 @@ jest.mock("../../../redux/slices/languageSlice", () => ({
   __esModule: true,
   default: jest.fn(),
   saveLanguages: jest.fn(() => ({ type: "language/save" })),
+}));
+
+jest.mock("../../../redux/slices/authSlice", () => ({
+  __esModule: true,
+  default: jest.fn(),
+  updateUserField: jest.fn((payload) => ({ type: "auth/updateUserField", payload })),
 }));
 
 describe("OnboardingScreen", () => {
@@ -90,11 +101,13 @@ describe("OnboardingScreen", () => {
     expect(screen.getByText("What language do you speak?")).toBeTruthy();
   });
 
-  it("dispatches saveLanguages on Start Learning", () => {
+  it("dispatches saveLanguages on Start Learning (after goal step)", () => {
     render(<OnboardingScreen />);
     fireEvent.press(screen.getByText("Spanish"));
-    fireEvent.press(screen.getByText("Continue"));
+    fireEvent.press(screen.getByText("Continue")); // → learning step
     fireEvent.press(screen.getByText("Chinese"));
+    fireEvent.press(screen.getByText("Continue")); // → goal step
+    expect(screen.getByText("Set your daily goal")).toBeTruthy();
     fireEvent.press(screen.getByText("Start Learning"));
     expect(mockDispatch).toHaveBeenCalled();
   });
@@ -107,11 +120,15 @@ describe("OnboardingScreen", () => {
     }
   });
 
-  it("shows Start Learning button disabled when no learning language selected", () => {
+  it("shows daily goal step with options after selecting learning language", () => {
     render(<OnboardingScreen />);
     fireEvent.press(screen.getByText("Spanish"));
     fireEvent.press(screen.getByText("Continue"));
-    // Start Learning should exist but be disabled (no learning lang selected)
-    expect(screen.getByText("Start Learning")).toBeTruthy();
+    fireEvent.press(screen.getByText("Chinese"));
+    fireEvent.press(screen.getByText("Continue"));
+    expect(screen.getByText("Set your daily goal")).toBeTruthy();
+    expect(screen.getByText("5 min")).toBeTruthy();
+    expect(screen.getByText("10 min")).toBeTruthy();
+    expect(screen.getByText("30 min")).toBeTruthy();
   });
 });
