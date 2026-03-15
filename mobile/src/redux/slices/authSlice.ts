@@ -52,7 +52,6 @@ async function loadFullProfile(
       return { ...dbUser, email: supaUser.email ?? dbUser.email };
     }
   } catch (err) {
-    console.warn("[auth] Failed to load DB profile, using auth metadata:", err);
   }
   return mapSupabaseUser(supaUser);
 }

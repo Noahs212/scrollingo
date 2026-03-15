@@ -42,7 +42,6 @@ export default function EditProfileFieldScreen({
       queryClient.invalidateQueries({ queryKey: keys.user(currentUserId) });
       navigation.goBack();
     } catch (err) {
-      console.error("[editField] save failed:", err);
     }
   };
 

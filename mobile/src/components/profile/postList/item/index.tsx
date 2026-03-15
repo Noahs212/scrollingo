@@ -24,7 +24,11 @@ export default function ProfilePostListItem({ item }: { item: Post | null }) {
           })
         }
       >
-        <Image style={styles.image} source={{ uri: item.media[1] }} />
+        {item.media[1] ? (
+          <Image style={styles.image} source={{ uri: item.media[1] }} />
+        ) : (
+          <Image style={[styles.image, { backgroundColor: "#1a1a1a" }]} source={{}} />
+        )}
       </TouchableOpacity>
     )
   );

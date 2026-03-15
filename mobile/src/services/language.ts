@@ -21,8 +21,6 @@ export const NATIVE_LANGUAGES = [
 ] as const;
 
 export async function fetchUserLanguages(userId: string) {
-  console.log("[language service] fetching for user:", userId);
-
   // Add timeout to prevent hanging forever on flaky network
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5000);
@@ -38,14 +36,11 @@ export async function fetchUserLanguages(userId: string) {
     clearTimeout(timeout);
 
     if (error) {
-      console.error("[language service] fetch error:", JSON.stringify(error));
       throw error;
     }
-    console.log("[language service] result:", JSON.stringify(data));
     return data;
   } catch (err: any) {
     clearTimeout(timeout);
-    console.error("[language service] fetch failed:", err.message ?? err);
     throw err;
   }
 }
@@ -55,7 +50,6 @@ export async function updateUserLanguages(
   nativeLanguage: string,
   learningLanguages: string[],
 ) {
-  console.log("[language service] updating:", { userId, nativeLanguage, learningLanguages });
   const { error } = await supabase
     .from("users")
     .update({
@@ -66,8 +60,6 @@ export async function updateUserLanguages(
     .eq("id", userId);
 
   if (error) {
-    console.error("[language service] update error:", JSON.stringify(error));
     throw error;
   }
-  console.log("[language service] update success");
 }

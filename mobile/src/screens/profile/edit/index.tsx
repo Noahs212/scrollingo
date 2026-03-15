@@ -46,7 +46,7 @@ export default function EditProfileScreen() {
         dispatch(updateUserField({ field: "photoURL", value: uri }));
         queryClient.invalidateQueries({ queryKey: keys.user(currentUserId) });
       } catch (err) {
-        console.error("[editProfile] save image failed:", err);
+        // image save failed silently
       }
     }
   };

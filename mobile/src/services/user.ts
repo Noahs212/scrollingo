@@ -39,7 +39,6 @@ export async function getUserById(id: string): Promise<User | null> {
     .single();
 
   if (error || !data) {
-    console.error("[user service] getUserById error:", error?.message);
     return null;
   }
 
@@ -81,7 +80,6 @@ export async function saveUserField(
     .eq("id", user.id);
 
   if (error) {
-    console.error("[user service] saveUserField error:", error.message);
     throw error;
   }
 }
@@ -100,7 +98,6 @@ export async function saveUserProfileImage(imageUri: string): Promise<void> {
     .eq("id", user.id);
 
   if (error) {
-    console.error("[user service] saveProfileImage error:", error.message);
     throw error;
   }
 }
@@ -120,7 +117,6 @@ export async function queryUsersByEmail(
     .limit(20);
 
   if (error || !data) {
-    console.error("[user service] queryUsers error:", error?.message);
     return [];
   }
 
@@ -147,7 +143,6 @@ export async function getIsFollowing(
     .maybeSingle();
 
   if (error) {
-    console.error("[user service] getIsFollowing error:", error.message);
     return false;
   }
 
@@ -176,7 +171,6 @@ export async function changeFollowState({
       .eq("following_id", otherUserId);
 
     if (error) {
-      console.error("[user service] unfollow error:", error.message);
       throw error;
     }
   } else {
@@ -186,7 +180,6 @@ export async function changeFollowState({
       .insert({ follower_id: user.id, following_id: otherUserId });
 
     if (error) {
-      console.error("[user service] follow error:", error.message);
       throw error;
     }
   }

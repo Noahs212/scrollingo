@@ -24,13 +24,10 @@ const initialState: LanguageState = {
 export const loadLanguages = createAsyncThunk(
   "language/load",
   async (userId: string) => {
-    console.log("[language] loading languages for user:", userId);
     try {
       const data = await fetchUserLanguages(userId);
-      console.log("[language] loaded:", JSON.stringify(data));
       return data;
     } catch (err) {
-      console.error("[language] load failed:", err);
       throw err;
     }
   },
@@ -47,13 +44,10 @@ export const saveLanguages = createAsyncThunk(
     nativeLanguage: string;
     learningLanguages: string[];
   }) => {
-    console.log("[language] saving:", { userId, nativeLanguage, learningLanguages });
     try {
       await updateUserLanguages(userId, nativeLanguage, learningLanguages);
-      console.log("[language] saved successfully");
       return { nativeLanguage, learningLanguages };
     } catch (err) {
-      console.error("[language] save failed:", err);
       throw err;
     }
   },
@@ -92,7 +86,6 @@ const languageSlice = createSlice({
         state.loaded = true;
         state.onboardingComplete = false; // Show onboarding on failure — user can set languages
         state.error = action.error.message ?? "Failed to load languages";
-        console.log("[language] load rejected, showing onboarding. Error:", action.error.message);
       })
       .addCase(saveLanguages.pending, (state, action) => {
         state.loading = true;
@@ -106,14 +99,12 @@ const languageSlice = createSlice({
       .addCase(saveLanguages.fulfilled, (state) => {
         state.loading = false;
         state.error = null;
-        console.log("[language] saved to server successfully");
       })
       .addCase(saveLanguages.rejected, (state, action) => {
         state.loading = false;
         // Keep onboardingComplete = true — don't send user back to onboarding
         // The save will be retried next time the app opens
         state.error = action.error.message ?? "Failed to save languages";
-        console.warn("[language] save failed, will retry later:", action.error.message);
       });
   },
 });

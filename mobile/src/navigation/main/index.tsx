@@ -47,11 +47,8 @@ export default function Route() {
     }
   }, [currentUserObj.currentUser?.uid, dispatch]);
 
-  console.log("[nav] auth loaded:", currentUserObj.loaded, "user:", !!currentUserObj.currentUser, "lang loaded:", languageLoaded, "onboarding:", onboardingComplete);
-
   // Show loading screen until auth AND language state are resolved
   if (!currentUserObj.loaded || (currentUserObj.currentUser && !languageLoaded)) {
-    console.log("[nav] showing loading screen");
     return <View style={{ flex: 1, backgroundColor: "black" }} />;
   }
 

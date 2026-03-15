@@ -9,16 +9,19 @@ import ProfileHeader from "../../components/profile/header";
 import ProfilePostList from "../../components/profile/postList";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useContext, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   CurrentUserProfileItemInViewContext,
   FeedStackParamList,
 } from "../../navigation/feed";
 import { useUser } from "../../hooks/useUser";
+import { useCurrentUserId } from "../../hooks/useCurrentUserId";
 import { getPostsByUserId } from "../../services/posts";
-import { Post } from "../../../types";
+import { Post, User } from "../../../types";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/main";
 import { HomeStackParamList } from "../../navigation/home";
+import { RootState } from "../../redux/store";
 
 type ProfileScreenRouteProp =
   | RouteProp<RootStackParamList, "profileOther">
@@ -33,21 +36,23 @@ export default function ProfileScreen({
   const { initialUserId } = route.params;
   const [userPosts, setUserPosts] = useState<Post[]>([]);
 
+  const currentUserId = useCurrentUserId();
   const providerUserId = useContext(CurrentUserProfileItemInViewContext);
 
-  const userQuery = useUser(
-    initialUserId ? initialUserId : providerUserId.currentUserProfileItemInView,
-  );
+  const targetUserId = initialUserId || providerUserId.currentUserProfileItemInView;
+  const isOwnProfile = targetUserId === currentUserId;
 
-  const user = userQuery.data;
+  // Own profile: read from Redux (always up to date after edits)
+  // Other profiles: read from React Query (cached, refetched as needed)
+  const currentUser = useSelector((state: RootState) => state.auth.currentUser);
+  const otherUserQuery = useUser(isOwnProfile ? null : targetUserId);
+
+  const user: User | null = isOwnProfile ? currentUser : (otherUserQuery.data ?? null);
 
   useEffect(() => {
-    if (!user) {
-      return;
-    }
-
-    getPostsByUserId(user?.uid).then((posts) => setUserPosts(posts));
-  }, [user]);
+    if (!user) return;
+    getPostsByUserId(user.uid).then((posts) => setUserPosts(posts));
+  }, [user?.uid]);
 
   if (!user) {
     return <></>;
