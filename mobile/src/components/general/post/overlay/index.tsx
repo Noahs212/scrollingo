@@ -73,7 +73,7 @@ export default function PostSingleOverlay({
   };
 
   return (
-    <View style={styles.container} pointerEvents="box-none">
+    <View style={styles.container} pointerEvents="box-none" testID="overlay-container">
       {/* Bottom gradient for text readability */}
       <LinearGradient
         colors={["transparent", "rgba(0,0,0,0.7)"]}
@@ -82,7 +82,7 @@ export default function PostSingleOverlay({
       />
 
       {/* Right side: vertical action buttons — positioned in lower-center */}
-      <View style={styles.actionsColumn} pointerEvents="box-none">
+      <View style={styles.actionsColumn} pointerEvents="box-none" testID="actions-column">
         {/* Avatar with follow badge */}
         <TouchableOpacity
           style={styles.avatarContainer}
@@ -148,11 +148,11 @@ export default function PostSingleOverlay({
       </View>
 
       {/* Bottom left: username + description */}
-      <View style={[styles.textContainer, { paddingBottom: 16 + insets.bottom }]}>
-        <Text style={styles.displayName}>
+      <View style={[styles.textContainer, { paddingBottom: 16 + insets.bottom }]} testID="text-container">
+        <Text style={styles.displayName} testID="display-name">
           @{user.displayName || user.email}
         </Text>
-        <Text style={styles.description} numberOfLines={2}>
+        <Text style={styles.description} numberOfLines={2} testID="description">
           {post.description}
         </Text>
       </View>
