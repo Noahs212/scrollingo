@@ -1,0 +1,927 @@
+{
+  "video": "video_12",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "duration_ms": 32300,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 6500,
+      "end_ms": 7500,
+      "detections": [
+        {
+          "text": "Ever'",
+          "confidence": 0.8094,
+          "bbox": {
+            "x": 564,
+            "y": 287,
+            "width": 170,
+            "height": 70
+          },
+          "chars": [
+            {
+              "char": "E",
+              "x": 564,
+              "y": 287,
+              "width": 34,
+              "height": 70
+            },
+            {
+              "char": "v",
+              "x": 598,
+              "y": 287,
+              "width": 34,
+              "height": 70
+            },
+            {
+              "char": "e",
+              "x": 632,
+              "y": 287,
+              "width": 34,
+              "height": 70
+            },
+            {
+              "char": "r",
+              "x": 666,
+              "y": 287,
+              "width": 34,
+              "height": 70
+            },
+            {
+              "char": "'",
+              "x": 700,
+              "y": 287,
+              "width": 34,
+              "height": 70
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7500,
+      "end_ms": 8250,
+      "detections": [
+        {
+          "text": "Start",
+          "confidence": 0.9496,
+          "bbox": {
+            "x": 556,
+            "y": 288,
+            "width": 176,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "S",
+              "x": 556,
+              "y": 288,
+              "width": 35,
+              "height": 68
+            },
+            {
+              "char": "t",
+              "x": 591,
+              "y": 288,
+              "width": 35,
+              "height": 68
+            },
+            {
+              "char": "a",
+              "x": 626,
+              "y": 288,
+              "width": 35,
+              "height": 68
+            },
+            {
+              "char": "r",
+              "x": 662,
+              "y": 288,
+              "width": 35,
+              "height": 68
+            },
+            {
+              "char": "t",
+              "x": 697,
+              "y": 288,
+              "width": 35,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8750,
+      "end_ms": 9500,
+      "detections": [
+        {
+          "text": "Wonder",
+          "confidence": 0.9968,
+          "bbox": {
+            "x": 508,
+            "y": 290,
+            "width": 260,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "W",
+              "x": 508,
+              "y": 290,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 551,
+              "y": 290,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 595,
+              "y": 290,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "d",
+              "x": 638,
+              "y": 290,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 681,
+              "y": 290,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 725,
+              "y": 290,
+              "width": 43,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9500,
+      "end_ms": 10500,
+      "detections": [
+        {
+          "text": "Wonder",
+          "confidence": 0.9968,
+          "bbox": {
+            "x": 510,
+            "y": 289,
+            "width": 258,
+            "height": 66
+          },
+          "chars": [
+            {
+              "char": "W",
+              "x": 510,
+              "y": 289,
+              "width": 43,
+              "height": 66
+            },
+            {
+              "char": "o",
+              "x": 553,
+              "y": 289,
+              "width": 43,
+              "height": 66
+            },
+            {
+              "char": "n",
+              "x": 596,
+              "y": 289,
+              "width": 43,
+              "height": 66
+            },
+            {
+              "char": "d",
+              "x": 639,
+              "y": 289,
+              "width": 43,
+              "height": 66
+            },
+            {
+              "char": "e",
+              "x": 682,
+              "y": 289,
+              "width": 43,
+              "height": 66
+            },
+            {
+              "char": "r",
+              "x": 725,
+              "y": 289,
+              "width": 43,
+              "height": 66
+            }
+          ]
+        },
+        {
+          "text": "ELEVEN",
+          "confidence": 0.8312,
+          "bbox": {
+            "x": 642,
+            "y": 145,
+            "width": 56,
+            "height": 14
+          },
+          "chars": [
+            {
+              "char": "E",
+              "x": 642,
+              "y": 145,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "L",
+              "x": 651,
+              "y": 145,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "E",
+              "x": 661,
+              "y": 145,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "V",
+              "x": 670,
+              "y": 145,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "E",
+              "x": 679,
+              "y": 145,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "N",
+              "x": 689,
+              "y": 145,
+              "width": 9,
+              "height": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 12750,
+      "end_ms": 14250,
+      "detections": [
+        {
+          "text": "rain",
+          "confidence": 0.9959,
+          "bbox": {
+            "x": 562,
+            "y": 297,
+            "width": 150,
+            "height": 58
+          },
+          "chars": [
+            {
+              "char": "r",
+              "x": 562,
+              "y": 297,
+              "width": 38,
+              "height": 58
+            },
+            {
+              "char": "a",
+              "x": 600,
+              "y": 297,
+              "width": 38,
+              "height": 58
+            },
+            {
+              "char": "i",
+              "x": 637,
+              "y": 297,
+              "width": 38,
+              "height": 58
+            },
+            {
+              "char": "n",
+              "x": 674,
+              "y": 297,
+              "width": 38,
+              "height": 58
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 15500,
+      "end_ms": 17250,
+      "detections": [
+        {
+          "text": "thunder",
+          "confidence": 0.9976,
+          "bbox": {
+            "x": 510,
+            "y": 293,
+            "width": 262,
+            "height": 62
+          },
+          "chars": [
+            {
+              "char": "t",
+              "x": 510,
+              "y": 293,
+              "width": 37,
+              "height": 62
+            },
+            {
+              "char": "h",
+              "x": 547,
+              "y": 293,
+              "width": 37,
+              "height": 62
+            },
+            {
+              "char": "u",
+              "x": 585,
+              "y": 293,
+              "width": 37,
+              "height": 62
+            },
+            {
+              "char": "n",
+              "x": 622,
+              "y": 293,
+              "width": 37,
+              "height": 62
+            },
+            {
+              "char": "d",
+              "x": 660,
+              "y": 293,
+              "width": 37,
+              "height": 62
+            },
+            {
+              "char": "e",
+              "x": 697,
+              "y": 293,
+              "width": 37,
+              "height": 62
+            },
+            {
+              "char": "r",
+              "x": 735,
+              "y": 293,
+              "width": 37,
+              "height": 62
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 19500,
+      "end_ms": 22500,
+      "detections": [
+        {
+          "text": "around",
+          "confidence": 0.9849,
+          "bbox": {
+            "x": 522,
+            "y": 285,
+            "width": 238,
+            "height": 70
+          },
+          "chars": [
+            {
+              "char": "a",
+              "x": 522,
+              "y": 285,
+              "width": 40,
+              "height": 70
+            },
+            {
+              "char": "r",
+              "x": 562,
+              "y": 285,
+              "width": 40,
+              "height": 70
+            },
+            {
+              "char": "o",
+              "x": 601,
+              "y": 285,
+              "width": 40,
+              "height": 70
+            },
+            {
+              "char": "u",
+              "x": 641,
+              "y": 285,
+              "width": 40,
+              "height": 70
+            },
+            {
+              "char": "n",
+              "x": 681,
+              "y": 285,
+              "width": 40,
+              "height": 70
+            },
+            {
+              "char": "d",
+              "x": 720,
+              "y": 285,
+              "width": 40,
+              "height": 70
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 23000,
+      "end_ms": 24000,
+      "detections": [
+        {
+          "text": "GGO",
+          "confidence": 0.957,
+          "bbox": {
+            "x": 708,
+            "y": 279,
+            "width": 34,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "G",
+              "x": 708,
+              "y": 279,
+              "width": 11,
+              "height": 26
+            },
+            {
+              "char": "G",
+              "x": 719,
+              "y": 279,
+              "width": 11,
+              "height": 26
+            },
+            {
+              "char": "O",
+              "x": 731,
+              "y": 279,
+              "width": 11,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "人狸小路店",
+          "confidence": 0.9007,
+          "bbox": {
+            "x": 1176,
+            "y": -121,
+            "width": 64,
+            "height": 242
+          },
+          "chars": [
+            {
+              "char": "人",
+              "x": 1176,
+              "y": -121,
+              "width": 13,
+              "height": 242
+            },
+            {
+              "char": "狸",
+              "x": 1189,
+              "y": -121,
+              "width": 13,
+              "height": 242
+            },
+            {
+              "char": "小",
+              "x": 1202,
+              "y": -121,
+              "width": 13,
+              "height": 242
+            },
+            {
+              "char": "路",
+              "x": 1214,
+              "y": -121,
+              "width": 13,
+              "height": 242
+            },
+            {
+              "char": "店",
+              "x": 1227,
+              "y": -121,
+              "width": 13,
+              "height": 242
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 24750,
+      "end_ms": 25500,
+      "detections": [
+        {
+          "text": "AION CEF",
+          "confidence": 0.7185,
+          "bbox": {
+            "x": 1018,
+            "y": 353,
+            "width": 64,
+            "height": 14
+          },
+          "chars": [
+            {
+              "char": "A",
+              "x": 1018,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            },
+            {
+              "char": "I",
+              "x": 1026,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            },
+            {
+              "char": "O",
+              "x": 1034,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            },
+            {
+              "char": "N",
+              "x": 1042,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            },
+            {
+              "char": " ",
+              "x": 1050,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            },
+            {
+              "char": "C",
+              "x": 1058,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            },
+            {
+              "char": "E",
+              "x": 1066,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            },
+            {
+              "char": "F",
+              "x": 1074,
+              "y": 353,
+              "width": 8,
+              "height": 14
+            }
+          ]
+        },
+        {
+          "text": "MEGAF",
+          "confidence": 0.905,
+          "bbox": {
+            "x": 878,
+            "y": 47,
+            "width": 56,
+            "height": 18
+          },
+          "chars": [
+            {
+              "char": "M",
+              "x": 878,
+              "y": 47,
+              "width": 11,
+              "height": 18
+            },
+            {
+              "char": "E",
+              "x": 889,
+              "y": 47,
+              "width": 11,
+              "height": 18
+            },
+            {
+              "char": "G",
+              "x": 900,
+              "y": 47,
+              "width": 11,
+              "height": 18
+            },
+            {
+              "char": "A",
+              "x": 912,
+              "y": 47,
+              "width": 11,
+              "height": 18
+            },
+            {
+              "char": "F",
+              "x": 923,
+              "y": 47,
+              "width": 11,
+              "height": 18
+            }
+          ]
+        },
+        {
+          "text": "人狸小路店",
+          "confidence": 0.8681,
+          "bbox": {
+            "x": 1182,
+            "y": -104,
+            "width": 48,
+            "height": 208
+          },
+          "chars": [
+            {
+              "char": "人",
+              "x": 1182,
+              "y": -104,
+              "width": 10,
+              "height": 208
+            },
+            {
+              "char": "狸",
+              "x": 1192,
+              "y": -104,
+              "width": 10,
+              "height": 208
+            },
+            {
+              "char": "小",
+              "x": 1201,
+              "y": -104,
+              "width": 10,
+              "height": 208
+            },
+            {
+              "char": "路",
+              "x": 1211,
+              "y": -104,
+              "width": 10,
+              "height": 208
+            },
+            {
+              "char": "店",
+              "x": 1220,
+              "y": -104,
+              "width": 10,
+              "height": 208
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 28000,
+      "end_ms": 30250,
+      "detections": [
+        {
+          "text": "loose...",
+          "confidence": 0.9951,
+          "bbox": {
+            "x": 524,
+            "y": 291,
+            "width": 230,
+            "height": 66
+          },
+          "chars": [
+            {
+              "char": "l",
+              "x": 524,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            },
+            {
+              "char": "o",
+              "x": 553,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            },
+            {
+              "char": "o",
+              "x": 582,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            },
+            {
+              "char": "s",
+              "x": 610,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            },
+            {
+              "char": "e",
+              "x": 639,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            },
+            {
+              "char": ".",
+              "x": 668,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            },
+            {
+              "char": ".",
+              "x": 696,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            },
+            {
+              "char": ".",
+              "x": 725,
+              "y": 291,
+              "width": 29,
+              "height": 66
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 31500,
+      "end_ms": 32250,
+      "detections": [
+        {
+          "text": "loose...",
+          "confidence": 0.9369,
+          "bbox": {
+            "x": 524,
+            "y": 290,
+            "width": 236,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "l",
+              "x": 524,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            },
+            {
+              "char": "o",
+              "x": 554,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            },
+            {
+              "char": "o",
+              "x": 583,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            },
+            {
+              "char": "s",
+              "x": 612,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            },
+            {
+              "char": "e",
+              "x": 642,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            },
+            {
+              "char": ".",
+              "x": 672,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            },
+            {
+              "char": ".",
+              "x": 701,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            },
+            {
+              "char": ".",
+              "x": 730,
+              "y": 290,
+              "width": 30,
+              "height": 68
+            }
+          ]
+        },
+        {
+          "text": "Runless",
+          "confidence": 0.7596,
+          "bbox": {
+            "x": 264,
+            "y": 235,
+            "width": 106,
+            "height": 38
+          },
+          "chars": [
+            {
+              "char": "R",
+              "x": 264,
+              "y": 235,
+              "width": 15,
+              "height": 38
+            },
+            {
+              "char": "u",
+              "x": 279,
+              "y": 235,
+              "width": 15,
+              "height": 38
+            },
+            {
+              "char": "n",
+              "x": 294,
+              "y": 235,
+              "width": 15,
+              "height": 38
+            },
+            {
+              "char": "l",
+              "x": 309,
+              "y": 235,
+              "width": 15,
+              "height": 38
+            },
+            {
+              "char": "e",
+              "x": 325,
+              "y": 235,
+              "width": 15,
+              "height": 38
+            },
+            {
+              "char": "s",
+              "x": 340,
+              "y": 235,
+              "width": 15,
+              "height": 38
+            },
+            {
+              "char": "s",
+              "x": 355,
+              "y": 235,
+              "width": 15,
+              "height": 38
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

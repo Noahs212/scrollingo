@@ -1,0 +1,10 @@
+{
+  "video": "video_9",
+  "resolution": {
+    "width": 496,
+    "height": 864
+  },
+  "duration_ms": 10042,
+  "frame_interval_ms": 250,
+  "segments": []
+}

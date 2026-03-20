@@ -25,6 +25,29 @@ const LOCAL_VIDEOS = [
 ];
 
 /**
+ * Seed user IDs for dev/testing. These are real rows in Supabase.
+ */
+const SEED_CREATORS = [
+  "aaaaaaaa-1111-4000-a000-000000000001", // Li Wei
+  "aaaaaaaa-1111-4000-a000-000000000002", // Sarah Chen
+  "aaaaaaaa-1111-4000-a000-000000000003", // Pat Kim
+  "aaaaaaaa-1111-4000-a000-000000000004", // Maria Garcia
+];
+
+const VIDEO_DESCRIPTIONS = [
+  "How to order food in Chinese #中文 #学习",
+  "Basic greetings in Mandarin #你好 #chinese",
+  "Numbers 1-100 in Chinese #数字 #beginner",
+  "Chinese tones explained #声调 #pronunciation",
+  "Daily routines vocabulary #日常 #vocab",
+  "Shopping phrases in Chinese #购物 #travel",
+  "Chinese slang you need to know #俚语 #advanced",
+  "How to introduce yourself #自我介绍 #beginner",
+  "Colors and descriptions #颜色 #vocab",
+  "Chinese culture tips #文化 #travel",
+];
+
+/**
  * Get the current user's ID to use as creator for local dev videos.
  */
 async function getCurrentUserId(): Promise<string> {
@@ -33,22 +56,39 @@ async function getCurrentUserId(): Promise<string> {
 }
 
 const MOCK_COMMENTS: Comment[] = [
-  { id: "c1", creator: "user-002", comment: "Great content!" },
-  { id: "c2", creator: "user-003", comment: "This helped me so much" },
+  { id: "c1", creator: SEED_CREATORS[0], comment: "Great content!" },
+  { id: "c2", creator: SEED_CREATORS[1], comment: "This helped me so much" },
 ];
 
+/**
+ * In-memory like tracking for mock videos.
+ * Real Supabase likes (user_likes table) will be used in M7 when
+ * videos exist as real DB rows. Currently mock video IDs (local-video-*)
+ * have no corresponding rows in the videos table, so FK constraints
+ * prevent inserting into user_likes.
+ */
 const likedPosts = new Set<string>();
+
+/**
+ * Stable per-video like/comment counts so they don't re-randomize on every fetch.
+ * Seeded deterministically from video index.
+ */
+const STABLE_LIKES = LOCAL_VIDEOS.map((_, i) => 12 + ((i * 37 + 13) % 188));
+const STABLE_COMMENTS = LOCAL_VIDEOS.map((_, i) => 1 + ((i * 7 + 3) % 18));
 
 export const getFeed = async (): Promise<Post[]> => {
   const userId = await getCurrentUserId();
 
+  // Mix current user with seed creators so feed shows different people
+  const creators = [userId, ...SEED_CREATORS];
+
   return LOCAL_VIDEOS.map((videoSource, i) => ({
     id: `local-video-${i + 1}`,
-    creator: userId,
+    creator: creators[i % creators.length],
     media: [videoSource, ""],
-    description: `Chinese learning video #${i + 1} #中文 #学习`,
-    likesCount: Math.floor(Math.random() * 200),
-    commentsCount: Math.floor(Math.random() * 20),
+    description: VIDEO_DESCRIPTIONS[i] ?? `Chinese learning video #${i + 1}`,
+    likesCount: STABLE_LIKES[i],
+    commentsCount: STABLE_COMMENTS[i],
     creation: new Date().toISOString(),
   }));
 };

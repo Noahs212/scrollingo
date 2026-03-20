@@ -1,0 +1,3414 @@
+{
+  "video": "video_13",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 43126,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 1250,
+      "detections": [
+        {
+          "text": "I think this shot",
+          "confidence": 0.9472,
+          "bbox": {
+            "x": 234,
+            "y": 742,
+            "width": 250,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "I",
+              "x": 234,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 249,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 263,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 278,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 293,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "n",
+              "x": 308,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "k",
+              "x": 322,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 337,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 352,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 366,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 381,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "s",
+              "x": 396,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 410,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "s",
+              "x": 425,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 440,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "o",
+              "x": 455,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 469,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "这个镜头就是",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 240,
+            "y": 678,
+            "width": 236,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "这",
+              "x": 240,
+              "y": 678,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "个",
+              "x": 279,
+              "y": 678,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "镜",
+              "x": 319,
+              "y": 678,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "头",
+              "x": 358,
+              "y": 678,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "就",
+              "x": 397,
+              "y": 678,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "是",
+              "x": 437,
+              "y": 678,
+              "width": 39,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5250,
+      "end_ms": 6000,
+      "detections": [
+        {
+          "text": "XZ1 COMPACT",
+          "confidence": 0.9715,
+          "bbox": {
+            "x": 178,
+            "y": 865,
+            "width": 362,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "X",
+              "x": 178,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "Z",
+              "x": 211,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "1",
+              "x": 244,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": " ",
+              "x": 277,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "C",
+              "x": 310,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "O",
+              "x": 343,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "M",
+              "x": 375,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "P",
+              "x": 408,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "A",
+              "x": 441,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "C",
+              "x": 474,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            },
+            {
+              "char": "T",
+              "x": 507,
+              "y": 865,
+              "width": 33,
+              "height": 82
+            }
+          ]
+        },
+        {
+          "text": "SONY XPERIA",
+          "confidence": 0.9697,
+          "bbox": {
+            "x": 176,
+            "y": 797,
+            "width": 364,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "S",
+              "x": 176,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "O",
+              "x": 209,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "N",
+              "x": 242,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "Y",
+              "x": 275,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": " ",
+              "x": 308,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "X",
+              "x": 341,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "P",
+              "x": 375,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "E",
+              "x": 408,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "R",
+              "x": 441,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "I",
+              "x": 474,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            },
+            {
+              "char": "A",
+              "x": 507,
+              "y": 797,
+              "width": 33,
+              "height": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 10500,
+      "end_ms": 12000,
+      "detections": [
+        {
+          "text": "might.have towait patiently",
+          "confidence": 0.9345,
+          "bbox": {
+            "x": 130,
+            "y": 744,
+            "width": 454,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "m",
+              "x": 130,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 147,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "g",
+              "x": 164,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 180,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 197,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": ".",
+              "x": 214,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 231,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 248,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "v",
+              "x": 265,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 281,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 298,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 315,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "o",
+              "x": 332,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "w",
+              "x": 349,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 365,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 382,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 399,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 416,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "p",
+              "x": 433,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 449,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 466,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 483,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 500,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "n",
+              "x": 517,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 534,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "l",
+              "x": 550,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "y",
+              "x": 567,
+              "y": 744,
+              "width": 17,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "耐心等着",
+          "confidence": 0.9986,
+          "bbox": {
+            "x": 278,
+            "y": 679,
+            "width": 160,
+            "height": 50
+          },
+          "chars": [
+            {
+              "char": "耐",
+              "x": 278,
+              "y": 679,
+              "width": 40,
+              "height": 50
+            },
+            {
+              "char": "心",
+              "x": 318,
+              "y": 679,
+              "width": 40,
+              "height": 50
+            },
+            {
+              "char": "等",
+              "x": 358,
+              "y": 679,
+              "width": 40,
+              "height": 50
+            },
+            {
+              "char": "着",
+              "x": 398,
+              "y": 679,
+              "width": 40,
+              "height": 50
+            }
+          ]
+        },
+        {
+          "text": "257",
+          "confidence": 0.9543,
+          "bbox": {
+            "x": 580,
+            "y": 230,
+            "width": 58,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "2",
+              "x": 580,
+              "y": 230,
+              "width": 19,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 599,
+              "y": 230,
+              "width": 19,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 619,
+              "y": 230,
+              "width": 19,
+              "height": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 12500,
+      "end_ms": 13750,
+      "detections": [
+        {
+          "text": "to take a few shots,",
+          "confidence": 0.9201,
+          "bbox": {
+            "x": 194,
+            "y": 735,
+            "width": 322,
+            "height": 46
+          },
+          "chars": [
+            {
+              "char": "t",
+              "x": 194,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "o",
+              "x": 210,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": " ",
+              "x": 226,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "t",
+              "x": 242,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "a",
+              "x": 258,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "k",
+              "x": 274,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "e",
+              "x": 291,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": " ",
+              "x": 307,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "a",
+              "x": 323,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": " ",
+              "x": 339,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "f",
+              "x": 355,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "e",
+              "x": 371,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "w",
+              "x": 387,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": " ",
+              "x": 403,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "s",
+              "x": 419,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "h",
+              "x": 436,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "o",
+              "x": 452,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "t",
+              "x": 468,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": "s",
+              "x": 484,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            },
+            {
+              "char": ",",
+              "x": 500,
+              "y": 735,
+              "width": 16,
+              "height": 46
+            }
+          ]
+        },
+        {
+          "text": "拍几张",
+          "confidence": 0.9974,
+          "bbox": {
+            "x": 296,
+            "y": 682,
+            "width": 122,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "拍",
+              "x": 296,
+              "y": 682,
+              "width": 41,
+              "height": 44
+            },
+            {
+              "char": "几",
+              "x": 337,
+              "y": 682,
+              "width": 41,
+              "height": 44
+            },
+            {
+              "char": "张",
+              "x": 377,
+              "y": 682,
+              "width": 41,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 14750,
+      "end_ms": 16000,
+      "detections": [
+        {
+          "text": "see which one is best.",
+          "confidence": 0.952,
+          "bbox": {
+            "x": 182,
+            "y": 741,
+            "width": 352,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "s",
+              "x": 182,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 198,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 214,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 230,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "w",
+              "x": 246,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "h",
+              "x": 262,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "i",
+              "x": 278,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "c",
+              "x": 294,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "h",
+              "x": 310,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 326,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "o",
+              "x": 342,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "n",
+              "x": 358,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 374,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 390,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "i",
+              "x": 406,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "s",
+              "x": 422,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 438,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "b",
+              "x": 454,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 470,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "s",
+              "x": 486,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": "t",
+              "x": 502,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            },
+            {
+              "char": ".",
+              "x": 518,
+              "y": 741,
+              "width": 16,
+              "height": 42
+            }
+          ]
+        },
+        {
+          "text": "看一下哪一个最好",
+          "confidence": 0.9944,
+          "bbox": {
+            "x": 204,
+            "y": 680,
+            "width": 310,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "看",
+              "x": 204,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "一",
+              "x": 243,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "下",
+              "x": 282,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "哪",
+              "x": 320,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "一",
+              "x": 359,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "个",
+              "x": 398,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "最",
+              "x": 436,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "好",
+              "x": 475,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 16000,
+      "end_ms": 17250,
+      "detections": [
+        {
+          "text": "I've already waited here",
+          "confidence": 0.9715,
+          "bbox": {
+            "x": 164,
+            "y": 744,
+            "width": 392,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "I",
+              "x": 164,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "'",
+              "x": 180,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "v",
+              "x": 197,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 213,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 229,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 246,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "l",
+              "x": 262,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "r",
+              "x": 278,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 295,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 311,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "d",
+              "x": 327,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "y",
+              "x": 344,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 360,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "w",
+              "x": 376,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 393,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 409,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 425,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 442,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "d",
+              "x": 458,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 474,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 491,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 507,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "r",
+              "x": 523,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 540,
+              "y": 744,
+              "width": 16,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "然后已经在这儿",
+          "confidence": 0.9963,
+          "bbox": {
+            "x": 222,
+            "y": 680,
+            "width": 276,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "然",
+              "x": 222,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "后",
+              "x": 261,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "已",
+              "x": 301,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "经",
+              "x": 340,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "在",
+              "x": 380,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "这",
+              "x": 419,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "儿",
+              "x": 459,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 17250,
+      "end_ms": 18250,
+      "detections": [
+        {
+          "text": "for about",
+          "confidence": 0.992,
+          "bbox": {
+            "x": 280,
+            "y": 746,
+            "width": 158,
+            "height": 36
+          },
+          "chars": [
+            {
+              "char": "f",
+              "x": 280,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": "o",
+              "x": 298,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": "r",
+              "x": 315,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": " ",
+              "x": 333,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": "a",
+              "x": 350,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": "b",
+              "x": 368,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": "o",
+              "x": 385,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": "u",
+              "x": 403,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            },
+            {
+              "char": "t",
+              "x": 420,
+              "y": 746,
+              "width": 18,
+              "height": 36
+            }
+          ]
+        },
+        {
+          "text": "等了大概",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 274,
+            "y": 668,
+            "width": 168,
+            "height": 60
+          },
+          "chars": [
+            {
+              "char": "等",
+              "x": 274,
+              "y": 668,
+              "width": 42,
+              "height": 60
+            },
+            {
+              "char": "了",
+              "x": 316,
+              "y": 668,
+              "width": 42,
+              "height": 60
+            },
+            {
+              "char": "大",
+              "x": 358,
+              "y": 668,
+              "width": 42,
+              "height": 60
+            },
+            {
+              "char": "概",
+              "x": 400,
+              "y": 668,
+              "width": 42,
+              "height": 60
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 18250,
+      "end_ms": 19000,
+      "detections": [
+        {
+          "text": "fifteen minutes,",
+          "confidence": 0.9844,
+          "bbox": {
+            "x": 226,
+            "y": 734,
+            "width": 262,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "f",
+              "x": 226,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "i",
+              "x": 242,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "f",
+              "x": 259,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "t",
+              "x": 275,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "e",
+              "x": 292,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "e",
+              "x": 308,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "n",
+              "x": 324,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": " ",
+              "x": 341,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "m",
+              "x": 357,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "i",
+              "x": 373,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "n",
+              "x": 390,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "u",
+              "x": 406,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "t",
+              "x": 422,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "e",
+              "x": 439,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": "s",
+              "x": 455,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            },
+            {
+              "char": ",",
+              "x": 472,
+              "y": 734,
+              "width": 16,
+              "height": 48
+            }
+          ]
+        },
+        {
+          "text": "十五分钟",
+          "confidence": 0.9998,
+          "bbox": {
+            "x": 278,
+            "y": 673,
+            "width": 164,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "十",
+              "x": 278,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            },
+            {
+              "char": "五",
+              "x": 319,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            },
+            {
+              "char": "分",
+              "x": 360,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            },
+            {
+              "char": "钟",
+              "x": 401,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 19000,
+      "end_ms": 20250,
+      "detections": [
+        {
+          "text": "and already captured",
+          "confidence": 0.9774,
+          "bbox": {
+            "x": 184,
+            "y": 741,
+            "width": 350,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "a",
+              "x": 184,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "n",
+              "x": 202,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "d",
+              "x": 219,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 236,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "a",
+              "x": 254,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "l",
+              "x": 272,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "r",
+              "x": 289,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 306,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "a",
+              "x": 324,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "d",
+              "x": 342,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "y",
+              "x": 359,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 376,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "c",
+              "x": 394,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "a",
+              "x": 412,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "p",
+              "x": 429,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "t",
+              "x": 446,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "u",
+              "x": 464,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "r",
+              "x": 482,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 499,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            },
+            {
+              "char": "d",
+              "x": 516,
+              "y": 741,
+              "width": 18,
+              "height": 42
+            }
+          ]
+        },
+        {
+          "text": "已经拍到",
+          "confidence": 0.9991,
+          "bbox": {
+            "x": 280,
+            "y": 682,
+            "width": 154,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "已",
+              "x": 280,
+              "y": 682,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "经",
+              "x": 318,
+              "y": 682,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "拍",
+              "x": 357,
+              "y": 682,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "到",
+              "x": 396,
+              "y": 682,
+              "width": 38,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 20500,
+      "end_ms": 22500,
+      "detections": [
+        {
+          "text": "two or three",
+          "confidence": 0.9871,
+          "bbox": {
+            "x": 258,
+            "y": 749,
+            "width": 200,
+            "height": 34
+          },
+          "chars": [
+            {
+              "char": "t",
+              "x": 258,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "w",
+              "x": 275,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "o",
+              "x": 291,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": " ",
+              "x": 308,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "o",
+              "x": 325,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "r",
+              "x": 341,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": " ",
+              "x": 358,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "t",
+              "x": 375,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "h",
+              "x": 391,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "r",
+              "x": 408,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "e",
+              "x": 425,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            },
+            {
+              "char": "e",
+              "x": 441,
+              "y": 749,
+              "width": 17,
+              "height": 34
+            }
+          ]
+        },
+        {
+          "text": "两到三个比较",
+          "confidence": 0.9995,
+          "bbox": {
+            "x": 242,
+            "y": 680,
+            "width": 236,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "两",
+              "x": 242,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "到",
+              "x": 281,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "三",
+              "x": 321,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "个",
+              "x": 360,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "比",
+              "x": 399,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "较",
+              "x": 439,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 23250,
+      "end_ms": 24000,
+      "detections": [
+        {
+          "text": "But I think the best was",
+          "confidence": 0.945,
+          "bbox": {
+            "x": 170,
+            "y": 742,
+            "width": 378,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "B",
+              "x": 170,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "u",
+              "x": 186,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 202,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 217,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "I",
+              "x": 233,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 249,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 264,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 280,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 296,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "n",
+              "x": 312,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "k",
+              "x": 328,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 343,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 359,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 375,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 390,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 406,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "b",
+              "x": 422,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 438,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "s",
+              "x": 454,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 469,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 485,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "w",
+              "x": 501,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 516,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            },
+            {
+              "char": "s",
+              "x": 532,
+              "y": 742,
+              "width": 16,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "但我觉得最好",
+          "confidence": 0.9998,
+          "bbox": {
+            "x": 244,
+            "y": 685,
+            "width": 230,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "但",
+              "x": 244,
+              "y": 685,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "我",
+              "x": 282,
+              "y": 685,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "觉",
+              "x": 321,
+              "y": 685,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "得",
+              "x": 359,
+              "y": 685,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "最",
+              "x": 397,
+              "y": 685,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "好",
+              "x": 436,
+              "y": 685,
+              "width": 38,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 24000,
+      "end_ms": 25000,
+      "detections": [
+        {
+          "text": "still that",
+          "confidence": 0.9124,
+          "bbox": {
+            "x": 288,
+            "y": 746,
+            "width": 144,
+            "height": 36
+          },
+          "chars": [
+            {
+              "char": "s",
+              "x": 288,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "t",
+              "x": 302,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "i",
+              "x": 317,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "l",
+              "x": 331,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "l",
+              "x": 346,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": " ",
+              "x": 360,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "t",
+              "x": 374,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "h",
+              "x": 389,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "a",
+              "x": 403,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            },
+            {
+              "char": "t",
+              "x": 418,
+              "y": 746,
+              "width": 14,
+              "height": 36
+            }
+          ]
+        },
+        {
+          "text": "还是那个",
+          "confidence": 0.999,
+          "bbox": {
+            "x": 276,
+            "y": 673,
+            "width": 164,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "还",
+              "x": 276,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            },
+            {
+              "char": "是",
+              "x": 317,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            },
+            {
+              "char": "那",
+              "x": 358,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            },
+            {
+              "char": "个",
+              "x": 399,
+              "y": 673,
+              "width": 41,
+              "height": 54
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 25750,
+      "end_ms": 26500,
+      "detections": [
+        {
+          "text": "This one.",
+          "confidence": 0.9449,
+          "bbox": {
+            "x": 288,
+            "y": 749,
+            "width": 142,
+            "height": 34
+          },
+          "chars": [
+            {
+              "char": "T",
+              "x": 288,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "h",
+              "x": 304,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "i",
+              "x": 320,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "s",
+              "x": 335,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": " ",
+              "x": 351,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "o",
+              "x": 367,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "n",
+              "x": 383,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "e",
+              "x": 398,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": ".",
+              "x": 414,
+              "y": 749,
+              "width": 16,
+              "height": 34
+            }
+          ]
+        },
+        {
+          "text": "这个",
+          "confidence": 0.9996,
+          "bbox": {
+            "x": 310,
+            "y": 669,
+            "width": 94,
+            "height": 58
+          },
+          "chars": [
+            {
+              "char": "这",
+              "x": 310,
+              "y": 669,
+              "width": 47,
+              "height": 58
+            },
+            {
+              "char": "个",
+              "x": 357,
+              "y": 669,
+              "width": 47,
+              "height": 58
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 28750,
+      "end_ms": 29500,
+      "detections": [
+        {
+          "text": "street photography,",
+          "confidence": 0.9682,
+          "bbox": {
+            "x": 196,
+            "y": 746,
+            "width": 322,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "s",
+              "x": 196,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 213,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "r",
+              "x": 230,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 247,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "e",
+              "x": 264,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 281,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 298,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "p",
+              "x": 315,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 332,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "o",
+              "x": 349,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 365,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "o",
+              "x": 382,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "g",
+              "x": 399,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "r",
+              "x": 416,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "a",
+              "x": 433,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "p",
+              "x": 450,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 467,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": "y",
+              "x": 484,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            },
+            {
+              "char": ",",
+              "x": 501,
+              "y": 746,
+              "width": 17,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "拍街头摄影",
+          "confidence": 0.9987,
+          "bbox": {
+            "x": 258,
+            "y": 680,
+            "width": 200,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "拍",
+              "x": 258,
+              "y": 680,
+              "width": 40,
+              "height": 48
+            },
+            {
+              "char": "街",
+              "x": 298,
+              "y": 680,
+              "width": 40,
+              "height": 48
+            },
+            {
+              "char": "头",
+              "x": 338,
+              "y": 680,
+              "width": 40,
+              "height": 48
+            },
+            {
+              "char": "摄",
+              "x": 378,
+              "y": 680,
+              "width": 40,
+              "height": 48
+            },
+            {
+              "char": "影",
+              "x": 418,
+              "y": 680,
+              "width": 40,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 31250,
+      "end_ms": 32500,
+      "detections": [
+        {
+          "text": "I think this shot",
+          "confidence": 0.9187,
+          "bbox": {
+            "x": 234,
+            "y": 742,
+            "width": 250,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "I",
+              "x": 234,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 249,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 263,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 278,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 293,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "n",
+              "x": 308,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "k",
+              "x": 322,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 337,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 352,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 366,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "i",
+              "x": 381,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "s",
+              "x": 396,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": " ",
+              "x": 410,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "s",
+              "x": 425,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "h",
+              "x": 440,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "o",
+              "x": 455,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            },
+            {
+              "char": "t",
+              "x": 469,
+              "y": 742,
+              "width": 15,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "这个镜头就是",
+          "confidence": 0.9988,
+          "bbox": {
+            "x": 240,
+            "y": 680,
+            "width": 236,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "这",
+              "x": 240,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "个",
+              "x": 279,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "镜",
+              "x": 319,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "头",
+              "x": 358,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "就",
+              "x": 397,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "是",
+              "x": 437,
+              "y": 680,
+              "width": 39,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 33500,
+      "end_ms": 36750,
+      "detections": [
+        {
+          "text": "Because he saw me, I thought",
+          "confidence": 0.9771,
+          "bbox": {
+            "x": 120,
+            "y": 743,
+            "width": 480,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "B",
+              "x": 120,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 137,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "c",
+              "x": 154,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "a",
+              "x": 171,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "u",
+              "x": 189,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "s",
+              "x": 206,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 223,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 240,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "h",
+              "x": 257,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 274,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 291,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "s",
+              "x": 309,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "a",
+              "x": 326,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "w",
+              "x": 343,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 360,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "m",
+              "x": 377,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "e",
+              "x": 394,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": ",",
+              "x": 411,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 429,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "I",
+              "x": 446,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": " ",
+              "x": 463,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "t",
+              "x": 480,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "h",
+              "x": 497,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "o",
+              "x": 514,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "u",
+              "x": 531,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "g",
+              "x": 549,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "h",
+              "x": 566,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            },
+            {
+              "char": "t",
+              "x": 583,
+              "y": 743,
+              "width": 17,
+              "height": 42
+            }
+          ]
+        },
+        {
+          "text": "我因为他看到我",
+          "confidence": 0.9998,
+          "bbox": {
+            "x": 224,
+            "y": 687,
+            "width": 270,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 224,
+              "y": 687,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "因",
+              "x": 263,
+              "y": 687,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "为",
+              "x": 301,
+              "y": 687,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "他",
+              "x": 340,
+              "y": 687,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "看",
+              "x": 378,
+              "y": 687,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "到",
+              "x": 417,
+              "y": 687,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "我",
+              "x": 455,
+              "y": 687,
+              "width": 39,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 36750,
+      "end_ms": 38500,
+      "detections": [
+        {
+          "text": "But not onlydid he stop",
+          "confidence": 0.9391,
+          "bbox": {
+            "x": 160,
+            "y": 738,
+            "width": 390,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "B",
+              "x": 160,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "u",
+              "x": 177,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "t",
+              "x": 194,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": " ",
+              "x": 211,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "n",
+              "x": 228,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "o",
+              "x": 245,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "t",
+              "x": 262,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": " ",
+              "x": 279,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "o",
+              "x": 296,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "n",
+              "x": 313,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "l",
+              "x": 330,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "y",
+              "x": 347,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "d",
+              "x": 363,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "i",
+              "x": 380,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "d",
+              "x": 397,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": " ",
+              "x": 414,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "h",
+              "x": 431,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "e",
+              "x": 448,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": " ",
+              "x": 465,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "s",
+              "x": 482,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "t",
+              "x": 499,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "o",
+              "x": 516,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            },
+            {
+              "char": "p",
+              "x": 533,
+              "y": 738,
+              "width": 17,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "text": "但他不仅停留了",
+          "confidence": 0.999,
+          "bbox": {
+            "x": 228,
+            "y": 687,
+            "width": 258,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "但",
+              "x": 228,
+              "y": 687,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "他",
+              "x": 265,
+              "y": 687,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "不",
+              "x": 302,
+              "y": 687,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "仅",
+              "x": 339,
+              "y": 687,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "停",
+              "x": 375,
+              "y": 687,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "留",
+              "x": 412,
+              "y": 687,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "了",
+              "x": 449,
+              "y": 687,
+              "width": 37,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 40250,
+      "end_ms": 43250,
+      "detections": [
+        {
+          "text": "mist",
+          "confidence": 0.9924,
+          "bbox": {
+            "x": 286,
+            "y": 613,
+            "width": 152,
+            "height": 86
+          },
+          "chars": [
+            {
+              "char": "m",
+              "x": 286,
+              "y": 613,
+              "width": 38,
+              "height": 86
+            },
+            {
+              "char": "i",
+              "x": 324,
+              "y": 613,
+              "width": 38,
+              "height": 86
+            },
+            {
+              "char": "s",
+              "x": 362,
+              "y": 613,
+              "width": 38,
+              "height": 86
+            },
+            {
+              "char": "t",
+              "x": 400,
+              "y": 613,
+              "width": 38,
+              "height": 86
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

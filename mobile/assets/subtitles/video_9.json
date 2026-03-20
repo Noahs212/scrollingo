@@ -1,0 +1,146 @@
+{
+  "video": "video_9",
+  "resolution": {
+    "width": 496,
+    "height": 864
+  },
+  "duration_ms": 10042,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 750,
+      "end_ms": 2000,
+      "detections": [
+        {
+          "text": "你知道我是谁吗",
+          "confidence": 0.9971,
+          "bbox": {
+            "x": 126,
+            "y": 630,
+            "width": 246,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 126,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "知",
+              "x": 161,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "道",
+              "x": 196,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "我",
+              "x": 231,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "是",
+              "x": 267,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "谁",
+              "x": 302,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "吗",
+              "x": 337,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "给脸不要脸怎么了",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 106,
+            "y": 588,
+            "width": 280,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "给",
+              "x": 106,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "脸",
+              "x": 141,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "不",
+              "x": 176,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "要",
+              "x": 211,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "脸",
+              "x": 246,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "怎",
+              "x": 281,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "么",
+              "x": 316,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "了",
+              "x": 351,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

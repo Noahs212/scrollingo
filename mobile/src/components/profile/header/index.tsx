@@ -9,7 +9,6 @@ import { useCurrentUserId } from "../../../hooks/useCurrentUserId";
 import { useFollowing } from "../../../hooks/useFollowing";
 import { Feather } from "@expo/vector-icons";
 import { useFollowingMutation } from "../../../hooks/useFollowingMutation";
-import { useEffect, useState } from "react";
 import { User } from "../../../../types";
 import { NATIVE_LANGUAGES, LEARNING_LANGUAGES } from "../../../services/language";
 
@@ -27,13 +26,6 @@ function getLanguageDisplay(code: string): { name: string; flag: string } {
 export default function ProfileHeader({ user }: { user: User | null }) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [followersCount, setFollowersCount] = useState(
-    user?.followersCount || 0,
-  );
-
-  useEffect(() => {
-    setFollowersCount(user?.followersCount || 0);
-  }, [user]);
 
   const currentUserId = useCurrentUserId();
   const followingData = useFollowing(currentUserId, user?.uid ?? null);
@@ -67,7 +59,6 @@ export default function ProfileHeader({ user }: { user: User | null }) {
                   otherUserId: user.uid,
                   isFollowing,
                 });
-                setFollowersCount(followersCount - 1);
               }
             }}
           >
@@ -86,7 +77,6 @@ export default function ProfileHeader({ user }: { user: User | null }) {
               otherUserId: user.uid,
               isFollowing,
             });
-            setFollowersCount(followersCount + 1);
           }
         }}
       >
@@ -137,7 +127,7 @@ export default function ProfileHeader({ user }: { user: User | null }) {
           <Text style={styles.counterLabelText}>Following</Text>
         </View>
         <View style={styles.counterItemContainer}>
-          <Text style={styles.counterNumberText}>{followersCount}</Text>
+          <Text style={styles.counterNumberText}>{user.followersCount}</Text>
           <Text style={styles.counterLabelText}>Followers</Text>
         </View>
         <View style={styles.counterItemContainer}>

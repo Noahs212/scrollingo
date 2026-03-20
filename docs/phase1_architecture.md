@@ -81,7 +81,9 @@
 
 - N1: Monthly infrastructure cost ≤ $85 at 10K MAU
 - N2: App binary < 50 MB (dictionaries downloaded on-demand, not bundled)
-- N3: Video start-to-play < 2 seconds on 4G
+- N3: Video time-to-first-frame < 200ms (prefetch next 2 videos while current plays)
+- N3a: Thumbnail placeholder shown instantly while video buffers (eliminates black flash on swipe)
+- N3b: Design for TikTok-style swiping: users skip 15-20 videos (within 1-3s each) before fully watching one
 - N4: Flashcard review works fully offline
 - N5: Dictionary lookup < 100ms (local SQLite)
 
@@ -174,10 +176,25 @@ src/
 ```
 
 ### 3.2 Video Feed
+
+**Playback Optimization for TikTok-style Swiping**
+
+TikTok users swipe through 15-20 videos (1-3s each) before fully watching one. Two things are critical:
+
+1. **Thumbnail placeholders**: Show `thumbnail_url` as `<Image>` behind `<VideoView>`. User sees the frame instantly while the video player buffers. Eliminates the black flash between swipes.
+
+2. **Prefetch next 2 videos**: While the user watches video N, pre-initialize players for N+1 and N+2 so they're already buffering. When the user swipes, the next video's first frame is already decoded. Target: <200ms time-to-first-frame.
+
+3. **Cursor pagination**: Fetch 10-15 video metadata records per page. Trigger next page fetch when user is 3-5 videos from the end. Lightweight — only URLs, counts, and IDs.
+
+4. **Bandwidth awareness** (Phase 2): Each skipped video wastes ~2-3MB (3s of 8MB/30s). Over 20 swipes = 40-60MB waste. Acceptable for Phase 1; Phase 2 adds 480p initial quality with upgrade after 3s watch time.
+
 ```typescript
 import { useVideoPlayer, VideoView } from 'expo-video';
 
-const VideoCard = ({ video, isActive }: { video: Video; isActive: boolean }) => {
+const VideoCard = ({ video, isActive, prefetchUrls }: {
+  video: Video; isActive: boolean; prefetchUrls: string[];
+}) => {
   const player = useVideoPlayer(video.cdn_url, (p) => { p.loop = true; });
 
   useEffect(() => {
@@ -187,6 +204,8 @@ const VideoCard = ({ video, isActive }: { video: Video; isActive: boolean }) => 
 
   return (
     <View style={styles.fullScreen}>
+      {/* Thumbnail placeholder — visible instantly, behind the video */}
+      <Image source={{ uri: video.thumbnail_url }} style={StyleSheet.absoluteFill} />
       <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" nativeControls={false} />
       <SubtitleOverlay
         words={video.subtitles}
@@ -428,6 +447,8 @@ LIMIT $4;
 | JWKS keys | Go sync.Map | 1h |
 | TTS/videos/subtitles | R2 + CDN | Immutable |
 | Flashcards | Client MMKV | Sync on open |
+| Next 2 videos | Client expo-video prefetch | Until swipe past |
+| Thumbnails | Client Image cache | Platform default |
 
 ---
 
@@ -597,7 +618,8 @@ scrollingo-admin upload --file output.mp4 --lang en --title "Ordering Coffee"
 | User video uploads | 2 | Moderation, storage costs |
 | Redis | 2 | Go sync.Map sufficient |
 | Multi-instance HA | 2 | Single instance handles 50K+ MAU |
-| HLS streaming | 2 | Progressive MP4 fine for <60s clips |
+| HLS streaming | 2 | Progressive MP4 + prefetch fine for <60s clips |
+| Bandwidth optimization (480p initial + quality upgrade) | 2 | Acceptable waste at <10K MAU |
 | Push notifications | 2 | Supabase Realtime for in-app |
 | ML recommendations | 3 | SQL scoring works at this scale |
 | A/B testing | 3 | Need statistical significance |

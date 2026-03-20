@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -15,12 +16,16 @@ import {
   View,
   StyleSheet,
   Animated,
+  Alert,
 } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
+import { useEvent } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Post } from "../../../../types";
 import { useUser } from "../../../hooks/useUser";
 import PostSingleOverlay from "./overlay";
+import SubtitleTapOverlay from "./subtitleOverlay";
+import { getSubtitleData } from "../../../services/subtitles";
 
 export interface PostSingleHandles {
   play: () => void;
@@ -40,11 +45,27 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
     const heartOpacity = useRef(new Animated.Value(0)).current;
     const [showHeart, setShowHeart] = useState(false);
     const playerRef = useRef<ReturnType<typeof useVideoPlayer> | null>(null);
+    const subtitleData = getSubtitleData(item.id);
+    const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
     const videoUrl = item.media?.[0] ?? null;
     const player = useVideoPlayer(videoUrl, (p) => {
       p.loop = true;
+      // Enable native time update events at ~50ms intervals (fires from
+      // AVPlayer's addPeriodicTimeObserver on iOS — no JS polling needed)
+      if (subtitleData) {
+        p.timeUpdateEventInterval = 0.05;
+      }
     });
+
+    // Event-driven time tracking from native side — replaces setInterval polling
+    const { currentTime } = useEvent(player, "timeUpdate", {
+      currentTime: 0,
+      currentLiveTimestamp: 0,
+      currentOffsetFromLive: 0,
+      bufferedPosition: 0,
+    });
+    const currentTimeMs = currentTime * 1000;
 
     useEffect(() => {
       playerRef.current = player;
@@ -75,11 +96,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
       },
     }));
 
-    useEffect(() => {
-      return () => {
-        // expo-video handles cleanup automatically when VideoView unmounts
-      };
-    }, []);
+    // Time tracking is now event-driven via useEvent above — no polling needed
 
     const showPauseIndicator = useCallback(() => {
       Animated.sequence([
@@ -147,12 +164,18 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
     }, [isPaused, player, showPauseIndicator, showHeartAnimation]);
 
     return (
-      <View style={styles.container}>
+      <View
+        style={styles.container}
+        onLayout={(e) => {
+          const { width, height } = e.nativeEvent.layout;
+          setContainerSize({ width, height });
+        }}
+      >
         {/* Video fills the entire container */}
         <VideoView
           player={player}
           style={StyleSheet.absoluteFill}
-          contentFit="cover"
+          contentFit="contain"
           nativeControls={false}
         />
 
@@ -187,6 +210,25 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
           >
             <Ionicons name="heart" size={120} color="white" />
           </Animated.View>
+        )}
+
+        {/* Invisible subtitle tap targets — over the burned-in text */}
+        {subtitleData && containerSize.width > 0 && (
+          <SubtitleTapOverlay
+            subtitleData={subtitleData}
+            currentTimeMs={currentTimeMs}
+            containerWidth={containerSize.width}
+            containerHeight={containerSize.height}
+            onCharTap={(char, fullText) => {
+              try {
+                player.pause();
+                setIsPaused(true);
+              } catch {
+                // Player may be released
+              }
+              Alert.alert(char, `From: "${fullText}"`);
+            }}
+          />
         )}
 
         {/* Overlay: action buttons + user info — renders ON TOP of tap target */}

@@ -45,6 +45,17 @@ export async function fetchUserLanguages(userId: string) {
   }
 }
 
+export async function updateActiveLanguage(
+  userId: string,
+  languageCode: string,
+) {
+  const { error } = await supabase
+    .from("users")
+    .update({ target_language: languageCode })
+    .eq("id", userId);
+  if (error) throw error;
+}
+
 export async function updateUserLanguages(
   userId: string,
   nativeLanguage: string,

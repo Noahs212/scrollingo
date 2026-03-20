@@ -1,0 +1,466 @@
+{
+  "video": "video_9",
+  "resolution": {
+    "width": 496,
+    "height": 864
+  },
+  "duration_ms": 10042,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 750,
+      "end_ms": 2000,
+      "detections": [
+        {
+          "text": "你知道我是谁吗",
+          "confidence": 0.9977,
+          "bbox": {
+            "x": 124,
+            "y": 630,
+            "width": 248,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 124,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "知",
+              "x": 159,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "道",
+              "x": 195,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "我",
+              "x": 230,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "是",
+              "x": 266,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "谁",
+              "x": 301,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "吗",
+              "x": 337,
+              "y": 630,
+              "width": 35,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "给脸不要脸怎么了",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 106,
+            "y": 588,
+            "width": 280,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "给",
+              "x": 106,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "脸",
+              "x": 141,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "不",
+              "x": 176,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "要",
+              "x": 211,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "脸",
+              "x": 246,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "怎",
+              "x": 281,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "么",
+              "x": 316,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "了",
+              "x": 351,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2000,
+      "end_ms": 3000,
+      "detections": [
+        {
+          "text": "你知道我是谁吗",
+          "confidence": 0.998,
+          "bbox": {
+            "x": 124,
+            "y": 631,
+            "width": 248,
+            "height": 38
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 124,
+              "y": 631,
+              "width": 35,
+              "height": 38
+            },
+            {
+              "char": "知",
+              "x": 159,
+              "y": 631,
+              "width": 35,
+              "height": 38
+            },
+            {
+              "char": "道",
+              "x": 195,
+              "y": 631,
+              "width": 35,
+              "height": 38
+            },
+            {
+              "char": "我",
+              "x": 230,
+              "y": 631,
+              "width": 35,
+              "height": 38
+            },
+            {
+              "char": "是",
+              "x": 266,
+              "y": 631,
+              "width": 35,
+              "height": 38
+            },
+            {
+              "char": "谁",
+              "x": 301,
+              "y": 631,
+              "width": 35,
+              "height": 38
+            },
+            {
+              "char": "吗",
+              "x": 337,
+              "y": 631,
+              "width": 35,
+              "height": 38
+            }
+          ]
+        },
+        {
+          "text": "给脸不要脸怎么了",
+          "confidence": 0.9991,
+          "bbox": {
+            "x": 106,
+            "y": 588,
+            "width": 280,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "给",
+              "x": 106,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "脸",
+              "x": 141,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "不",
+              "x": 176,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "要",
+              "x": 211,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "脸",
+              "x": 246,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "怎",
+              "x": 281,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "么",
+              "x": 316,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            },
+            {
+              "char": "了",
+              "x": 351,
+              "y": 588,
+              "width": 35,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "57元",
+          "confidence": 0.9951,
+          "bbox": {
+            "x": 344,
+            "y": 117,
+            "width": 40,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 344,
+              "y": 117,
+              "width": 13,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 357,
+              "y": 117,
+              "width": 13,
+              "height": 22
+            },
+            {
+              "char": "元",
+              "x": 371,
+              "y": 117,
+              "width": 13,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "380",
+          "confidence": 0.7689,
+          "bbox": {
+            "x": 350,
+            "y": 98,
+            "width": 30,
+            "height": 16
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 350,
+              "y": 98,
+              "width": 10,
+              "height": 16
+            },
+            {
+              "char": "8",
+              "x": 360,
+              "y": 98,
+              "width": 10,
+              "height": 16
+            },
+            {
+              "char": "0",
+              "x": 370,
+              "y": 98,
+              "width": 10,
+              "height": 16
+            }
+          ]
+        },
+        {
+          "text": "6元/元",
+          "confidence": 0.8806,
+          "bbox": {
+            "x": 326,
+            "y": 56,
+            "width": 60,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "6",
+              "x": 326,
+              "y": 56,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 341,
+              "y": 56,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "/",
+              "x": 356,
+              "y": 56,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 371,
+              "y": 56,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8935,
+          "bbox": {
+            "x": 332,
+            "y": 41,
+            "width": 56,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 332,
+              "y": 41,
+              "width": 14,
+              "height": 22
+            },
+            {
+              "char": "元",
+              "x": 346,
+              "y": 41,
+              "width": 14,
+              "height": 22
+            },
+            {
+              "char": "/",
+              "x": 360,
+              "y": 41,
+              "width": 14,
+              "height": 22
+            },
+            {
+              "char": "元",
+              "x": 374,
+              "y": 41,
+              "width": 14,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6500,
+      "end_ms": 8250,
+      "detections": [
+        {
+          "text": "57元",
+          "confidence": 0.9191,
+          "bbox": {
+            "x": 368,
+            "y": 150,
+            "width": 38,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 368,
+              "y": 150,
+              "width": 13,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 381,
+              "y": 150,
+              "width": 13,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 393,
+              "y": 150,
+              "width": 13,
+              "height": 20
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,537 @@
+{
+  "video": "video_12",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "duration_ms": 32300,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 3500,
+      "end_ms": 4250,
+      "detections": [
+        {
+          "text": "PLAIR",
+          "confidence": 0.9637,
+          "bbox": {
+            "x": 762,
+            "y": 674,
+            "width": 66,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "P",
+              "x": 762,
+              "y": 674,
+              "width": 13,
+              "height": 28
+            },
+            {
+              "char": "L",
+              "x": 775,
+              "y": 674,
+              "width": 13,
+              "height": 28
+            },
+            {
+              "char": "A",
+              "x": 788,
+              "y": 674,
+              "width": 13,
+              "height": 28
+            },
+            {
+              "char": "I",
+              "x": 802,
+              "y": 674,
+              "width": 13,
+              "height": 28
+            },
+            {
+              "char": "R",
+              "x": 815,
+              "y": 674,
+              "width": 13,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "Ruth",
+          "confidence": 0.9706,
+          "bbox": {
+            "x": 754,
+            "y": 586,
+            "width": 94,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "R",
+              "x": 754,
+              "y": 586,
+              "width": 24,
+              "height": 68
+            },
+            {
+              "char": "u",
+              "x": 778,
+              "y": 586,
+              "width": 24,
+              "height": 68
+            },
+            {
+              "char": "t",
+              "x": 801,
+              "y": 586,
+              "width": 24,
+              "height": 68
+            },
+            {
+              "char": "h",
+              "x": 824,
+              "y": 586,
+              "width": 24,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9000,
+      "end_ms": 9750,
+      "detections": [
+        {
+          "text": "Wonder",
+          "confidence": 0.9885,
+          "bbox": {
+            "x": 500,
+            "y": 276,
+            "width": 268,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "W",
+              "x": 500,
+              "y": 276,
+              "width": 45,
+              "height": 76
+            },
+            {
+              "char": "o",
+              "x": 545,
+              "y": 276,
+              "width": 45,
+              "height": 76
+            },
+            {
+              "char": "n",
+              "x": 589,
+              "y": 276,
+              "width": 45,
+              "height": 76
+            },
+            {
+              "char": "d",
+              "x": 634,
+              "y": 276,
+              "width": 45,
+              "height": 76
+            },
+            {
+              "char": "e",
+              "x": 679,
+              "y": 276,
+              "width": 45,
+              "height": 76
+            },
+            {
+              "char": "r",
+              "x": 723,
+              "y": 276,
+              "width": 45,
+              "height": 76
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 18250,
+      "end_ms": 19000,
+      "detections": [
+        {
+          "text": "follows",
+          "confidence": 0.9912,
+          "bbox": {
+            "x": 514,
+            "y": 264,
+            "width": 246,
+            "height": 88
+          },
+          "chars": [
+            {
+              "char": "f",
+              "x": 514,
+              "y": 264,
+              "width": 35,
+              "height": 88
+            },
+            {
+              "char": "o",
+              "x": 549,
+              "y": 264,
+              "width": 35,
+              "height": 88
+            },
+            {
+              "char": "l",
+              "x": 584,
+              "y": 264,
+              "width": 35,
+              "height": 88
+            },
+            {
+              "char": "l",
+              "x": 619,
+              "y": 264,
+              "width": 35,
+              "height": 88
+            },
+            {
+              "char": "o",
+              "x": 655,
+              "y": 264,
+              "width": 35,
+              "height": 88
+            },
+            {
+              "char": "w",
+              "x": 690,
+              "y": 264,
+              "width": 35,
+              "height": 88
+            },
+            {
+              "char": "s",
+              "x": 725,
+              "y": 264,
+              "width": 35,
+              "height": 88
+            }
+          ]
+        },
+        {
+          "text": "SEIKO",
+          "confidence": 0.9659,
+          "bbox": {
+            "x": 622,
+            "y": 243,
+            "width": 66,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "S",
+              "x": 622,
+              "y": 243,
+              "width": 13,
+              "height": 22
+            },
+            {
+              "char": "E",
+              "x": 635,
+              "y": 243,
+              "width": 13,
+              "height": 22
+            },
+            {
+              "char": "I",
+              "x": 648,
+              "y": 243,
+              "width": 13,
+              "height": 22
+            },
+            {
+              "char": "K",
+              "x": 662,
+              "y": 243,
+              "width": 13,
+              "height": 22
+            },
+            {
+              "char": "O",
+              "x": 675,
+              "y": 243,
+              "width": 13,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "12",
+          "confidence": 0.9873,
+          "bbox": {
+            "x": 618,
+            "y": 156,
+            "width": 74,
+            "height": 60
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 618,
+              "y": 156,
+              "width": 37,
+              "height": 60
+            },
+            {
+              "char": "2",
+              "x": 655,
+              "y": 156,
+              "width": 37,
+              "height": 60
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 19500,
+      "end_ms": 22500,
+      "detections": [
+        {
+          "text": "around",
+          "confidence": 0.988,
+          "bbox": {
+            "x": 522,
+            "y": 290,
+            "width": 238,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "a",
+              "x": 522,
+              "y": 290,
+              "width": 40,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 562,
+              "y": 290,
+              "width": 40,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 601,
+              "y": 290,
+              "width": 40,
+              "height": 64
+            },
+            {
+              "char": "u",
+              "x": 641,
+              "y": 290,
+              "width": 40,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 681,
+              "y": 290,
+              "width": 40,
+              "height": 64
+            },
+            {
+              "char": "d",
+              "x": 720,
+              "y": 290,
+              "width": 40,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 22750,
+      "end_ms": 24750,
+      "detections": [
+        {
+          "text": "狸小路店",
+          "confidence": 0.9947,
+          "bbox": {
+            "x": 1180,
+            "y": -92,
+            "width": 50,
+            "height": 184
+          },
+          "chars": [
+            {
+              "char": "狸",
+              "x": 1180,
+              "y": -92,
+              "width": 12,
+              "height": 184
+            },
+            {
+              "char": "小",
+              "x": 1192,
+              "y": -92,
+              "width": 12,
+              "height": 184
+            },
+            {
+              "char": "路",
+              "x": 1205,
+              "y": -92,
+              "width": 12,
+              "height": 184
+            },
+            {
+              "char": "店",
+              "x": 1218,
+              "y": -92,
+              "width": 12,
+              "height": 184
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 24750,
+      "end_ms": 26500,
+      "detections": [
+        {
+          "text": "人狸小路店",
+          "confidence": 0.9308,
+          "bbox": {
+            "x": 1180,
+            "y": -92,
+            "width": 48,
+            "height": 184
+          },
+          "chars": [
+            {
+              "char": "人",
+              "x": 1180,
+              "y": -92,
+              "width": 10,
+              "height": 184
+            },
+            {
+              "char": "狸",
+              "x": 1190,
+              "y": -92,
+              "width": 10,
+              "height": 184
+            },
+            {
+              "char": "小",
+              "x": 1199,
+              "y": -92,
+              "width": 10,
+              "height": 184
+            },
+            {
+              "char": "路",
+              "x": 1209,
+              "y": -92,
+              "width": 10,
+              "height": 184
+            },
+            {
+              "char": "店",
+              "x": 1218,
+              "y": -92,
+              "width": 10,
+              "height": 184
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 28000,
+      "end_ms": 29000,
+      "detections": [
+        {
+          "text": "loose...",
+          "confidence": 0.9026,
+          "bbox": {
+            "x": 520,
+            "y": 278,
+            "width": 230,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "l",
+              "x": 520,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            },
+            {
+              "char": "o",
+              "x": 549,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            },
+            {
+              "char": "o",
+              "x": 578,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            },
+            {
+              "char": "s",
+              "x": 606,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            },
+            {
+              "char": "e",
+              "x": 635,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            },
+            {
+              "char": ".",
+              "x": 664,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            },
+            {
+              "char": ".",
+              "x": 692,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            },
+            {
+              "char": ".",
+              "x": 721,
+              "y": 278,
+              "width": 29,
+              "height": 76
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

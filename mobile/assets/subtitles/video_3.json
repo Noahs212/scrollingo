@@ -1,0 +1,332 @@
+{
+  "video": "video_3",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 11400,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 2250,
+      "detections": [
+        {
+          "text": "模仿一下我的台湾朋友说话",
+          "confidence": 0.9974,
+          "bbox": {
+            "x": 114,
+            "y": 1015,
+            "width": 496,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "模",
+              "x": 114,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "仿",
+              "x": 155,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "一",
+              "x": 197,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "下",
+              "x": 238,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "我",
+              "x": 279,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "的",
+              "x": 321,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "台",
+              "x": 362,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "湾",
+              "x": 403,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "朋",
+              "x": 445,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "友",
+              "x": 486,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "说",
+              "x": 527,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            },
+            {
+              "char": "话",
+              "x": 569,
+              "y": 1015,
+              "width": 41,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2250,
+      "end_ms": 4250,
+      "detections": [
+        {
+          "text": "干三小啦",
+          "confidence": 0.9948,
+          "bbox": {
+            "x": 272,
+            "y": 1007,
+            "width": 182,
+            "height": 50
+          },
+          "chars": [
+            {
+              "char": "干",
+              "x": 272,
+              "y": 1007,
+              "width": 46,
+              "height": 50
+            },
+            {
+              "char": "三",
+              "x": 318,
+              "y": 1007,
+              "width": 46,
+              "height": 50
+            },
+            {
+              "char": "小",
+              "x": 363,
+              "y": 1007,
+              "width": 46,
+              "height": 50
+            },
+            {
+              "char": "啦",
+              "x": 408,
+              "y": 1007,
+              "width": 46,
+              "height": 50
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4500,
+      "end_ms": 7500,
+      "detections": [
+        {
+          "text": "蛤好夸张哦",
+          "confidence": 0.9814,
+          "bbox": {
+            "x": 250,
+            "y": 1007,
+            "width": 224,
+            "height": 50
+          },
+          "chars": [
+            {
+              "char": "蛤",
+              "x": 250,
+              "y": 1007,
+              "width": 45,
+              "height": 50
+            },
+            {
+              "char": "好",
+              "x": 295,
+              "y": 1007,
+              "width": 45,
+              "height": 50
+            },
+            {
+              "char": "夸",
+              "x": 340,
+              "y": 1007,
+              "width": 45,
+              "height": 50
+            },
+            {
+              "char": "张",
+              "x": 384,
+              "y": 1007,
+              "width": 45,
+              "height": 50
+            },
+            {
+              "char": "哦",
+              "x": 429,
+              "y": 1007,
+              "width": 45,
+              "height": 50
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7500,
+      "end_ms": 8500,
+      "detections": [
+        {
+          "text": "靠北啦要怎样",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 230,
+            "y": 1008,
+            "width": 266,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "靠",
+              "x": 230,
+              "y": 1008,
+              "width": 44,
+              "height": 48
+            },
+            {
+              "char": "北",
+              "x": 274,
+              "y": 1008,
+              "width": 44,
+              "height": 48
+            },
+            {
+              "char": "啦",
+              "x": 319,
+              "y": 1008,
+              "width": 44,
+              "height": 48
+            },
+            {
+              "char": "要",
+              "x": 363,
+              "y": 1008,
+              "width": 44,
+              "height": 48
+            },
+            {
+              "char": "怎",
+              "x": 407,
+              "y": 1008,
+              "width": 44,
+              "height": 48
+            },
+            {
+              "char": "样",
+              "x": 452,
+              "y": 1008,
+              "width": 44,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9250,
+      "end_ms": 11500,
+      "detections": [
+        {
+          "text": "你是要怎样啊",
+          "confidence": 0.9992,
+          "bbox": {
+            "x": 236,
+            "y": 1006,
+            "width": 252,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 236,
+              "y": 1006,
+              "width": 42,
+              "height": 48
+            },
+            {
+              "char": "是",
+              "x": 278,
+              "y": 1006,
+              "width": 42,
+              "height": 48
+            },
+            {
+              "char": "要",
+              "x": 320,
+              "y": 1006,
+              "width": 42,
+              "height": 48
+            },
+            {
+              "char": "怎",
+              "x": 362,
+              "y": 1006,
+              "width": 42,
+              "height": 48
+            },
+            {
+              "char": "样",
+              "x": 404,
+              "y": 1006,
+              "width": 42,
+              "height": 48
+            },
+            {
+              "char": "啊",
+              "x": 446,
+              "y": 1006,
+              "width": 42,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,8 @@
+// Polyfill window.dispatchEvent for React 19 test renderer
+if (typeof window !== "undefined" && !window.dispatchEvent) {
+  window.dispatchEvent = () => true;
+}
+
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react-native";
 import FeedScreen from "../index";
@@ -38,6 +43,49 @@ jest.mock("../../../navigation/feed", () => {
     FeedStackParamList: {},
   };
 });
+
+// Mock react-redux
+jest.mock("react-redux", () => ({
+  useSelector: jest.fn((selector) =>
+    selector({
+      auth: {
+        currentUser: { uid: "user-001" },
+      },
+      language: {
+        learningLanguages: ["zh"],
+        activeLearningLanguage: "zh",
+      },
+    }),
+  ),
+  useDispatch: jest.fn(() => jest.fn()),
+}));
+
+// Mock useCurrentUserId
+jest.mock("../../../hooks/useCurrentUserId", () => ({
+  useCurrentUserId: jest.fn(() => "user-001"),
+}));
+
+// Mock Redux store
+jest.mock("../../../redux/store", () => ({
+  RootState: {},
+}));
+
+// Mock language slice
+jest.mock("../../../redux/slices/languageSlice", () => ({
+  setActiveLearningLanguage: jest.fn((code: string) => ({
+    type: "language/setActiveLearningLanguage",
+    payload: code,
+  })),
+}));
+
+// Mock language service
+jest.mock("../../../services/language", () => ({
+  LEARNING_LANGUAGES: [
+    { code: "en", name: "English", flag: "" },
+    { code: "zh", name: "Chinese", flag: "" },
+  ],
+  updateActiveLanguage: jest.fn().mockResolvedValue(undefined),
+}));
 
 // Mock posts service
 jest.mock("../../../services/posts", () => ({
@@ -131,7 +179,7 @@ describe("FeedScreen", () => {
     });
   });
 
-  it("renders an empty list gracefully when no posts are returned", async () => {
+  it("renders empty state when no posts are returned", async () => {
     (getFeed as jest.Mock).mockResolvedValue([]);
 
     render(<FeedScreen route={createRoute()} />);
@@ -140,7 +188,9 @@ describe("FeedScreen", () => {
       expect(getFeed).toHaveBeenCalled();
     });
 
-    // No video views should be rendered
+    // Should show empty state, not video views
     expect(screen.queryAllByTestId("video-view")).toHaveLength(0);
+    expect(screen.getByText("No videos yet")).toBeTruthy();
+    expect(screen.getByText("Videos in your learning language will appear here")).toBeTruthy();
   });
 });

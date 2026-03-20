@@ -1,0 +1,983 @@
+{
+  "video": "video_11",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "duration_ms": 31300,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 250,
+      "end_ms": 2750,
+      "detections": [
+        {
+          "text": "在中国我们不说遗憾",
+          "confidence": 0.9977,
+          "bbox": {
+            "x": 466,
+            "y": 582,
+            "width": 346,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "在",
+              "x": 466,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "中",
+              "x": 504,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "国",
+              "x": 543,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "我",
+              "x": 581,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "们",
+              "x": 620,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "不",
+              "x": 658,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "说",
+              "x": 697,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "遗",
+              "x": 735,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            },
+            {
+              "char": "憾",
+              "x": 774,
+              "y": 582,
+              "width": 38,
+              "height": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2750,
+      "end_ms": 4000,
+      "detections": [
+        {
+          "text": "我们说",
+          "confidence": 0.9996,
+          "bbox": {
+            "x": 580,
+            "y": 578,
+            "width": 118,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 580,
+              "y": 578,
+              "width": 39,
+              "height": 44
+            },
+            {
+              "char": "们",
+              "x": 619,
+              "y": 578,
+              "width": 39,
+              "height": 44
+            },
+            {
+              "char": "说",
+              "x": 659,
+              "y": 578,
+              "width": 39,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4500,
+      "end_ms": 7250,
+      "detections": [
+        {
+          "text": "红雨瓢泼泛起了回忆怎么浅",
+          "confidence": 0.9955,
+          "bbox": {
+            "x": 416,
+            "y": 582,
+            "width": 446,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "红",
+              "x": 416,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "雨",
+              "x": 453,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "瓢",
+              "x": 490,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "泼",
+              "x": 528,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "泛",
+              "x": 565,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "起",
+              "x": 602,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "了",
+              "x": 639,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "回",
+              "x": 676,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "忆",
+              "x": 713,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "怎",
+              "x": 750,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "么",
+              "x": 788,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "浅",
+              "x": 825,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7500,
+      "end_ms": 9000,
+      "detections": [
+        {
+          "text": "红雨瓢泼泛起了回忆怎么浅",
+          "confidence": 0.9909,
+          "bbox": {
+            "x": 416,
+            "y": 582,
+            "width": 448,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "红",
+              "x": 416,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "雨",
+              "x": 453,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "瓢",
+              "x": 491,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "泼",
+              "x": 528,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "泛",
+              "x": 565,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "起",
+              "x": 603,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "了",
+              "x": 640,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "回",
+              "x": 677,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "忆",
+              "x": 715,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "怎",
+              "x": 752,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "么",
+              "x": 789,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "浅",
+              "x": 827,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9250,
+      "end_ms": 10250,
+      "detections": [
+        {
+          "text": "红雨瓢泼泛起了回忆怎么浅",
+          "confidence": 0.9868,
+          "bbox": {
+            "x": 416,
+            "y": 582,
+            "width": 446,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "红",
+              "x": 416,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "雨",
+              "x": 453,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "瓢",
+              "x": 490,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "泼",
+              "x": 528,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "泛",
+              "x": 565,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "起",
+              "x": 602,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "了",
+              "x": 639,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "回",
+              "x": 676,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "忆",
+              "x": 713,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "怎",
+              "x": 750,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "么",
+              "x": 788,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "浅",
+              "x": 825,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 11250,
+      "end_ms": 14750,
+      "detections": [
+        {
+          "text": "你美目如当年",
+          "confidence": 0.9407,
+          "bbox": {
+            "x": 530,
+            "y": 579,
+            "width": 220,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 530,
+              "y": 579,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "美",
+              "x": 567,
+              "y": 579,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "目",
+              "x": 603,
+              "y": 579,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "如",
+              "x": 640,
+              "y": 579,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "当",
+              "x": 677,
+              "y": 579,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "年",
+              "x": 713,
+              "y": 579,
+              "width": 37,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 14750,
+      "end_ms": 17750,
+      "detections": [
+        {
+          "text": "流转我心间",
+          "confidence": 0.9982,
+          "bbox": {
+            "x": 544,
+            "y": 581,
+            "width": 190,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "流",
+              "x": 544,
+              "y": 581,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "转",
+              "x": 582,
+              "y": 581,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "我",
+              "x": 620,
+              "y": 581,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "心",
+              "x": 658,
+              "y": 581,
+              "width": 38,
+              "height": 42
+            },
+            {
+              "char": "间",
+              "x": 696,
+              "y": 581,
+              "width": 38,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 19000,
+      "end_ms": 19750,
+      "detections": [
+        {
+          "text": "渡口边最后一面洒下了旬点",
+          "confidence": 0.9458,
+          "bbox": {
+            "x": 416,
+            "y": 581,
+            "width": 446,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "渡",
+              "x": 416,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "口",
+              "x": 453,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "边",
+              "x": 490,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "最",
+              "x": 528,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "后",
+              "x": 565,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "一",
+              "x": 602,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "面",
+              "x": 639,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "洒",
+              "x": 676,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "下",
+              "x": 713,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "了",
+              "x": 750,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "旬",
+              "x": 788,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            },
+            {
+              "char": "点",
+              "x": 825,
+              "y": 581,
+              "width": 37,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 20500,
+      "end_ms": 21250,
+      "detections": [
+        {
+          "text": "渡口边最后一面洒下了句点",
+          "confidence": 0.9364,
+          "bbox": {
+            "x": 414,
+            "y": 578,
+            "width": 448,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "渡",
+              "x": 414,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "口",
+              "x": 451,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "边",
+              "x": 489,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "最",
+              "x": 526,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "后",
+              "x": 563,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "一",
+              "x": 601,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "面",
+              "x": 638,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "洒",
+              "x": 675,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "下",
+              "x": 713,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "了",
+              "x": 750,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "句",
+              "x": 787,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            },
+            {
+              "char": "点",
+              "x": 825,
+              "y": 578,
+              "width": 37,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 22750,
+      "end_ms": 24000,
+      "detections": [
+        {
+          "text": "渡口边最后一面洒下了句点",
+          "confidence": 0.9344,
+          "bbox": {
+            "x": 414,
+            "y": 578,
+            "width": 450,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "渡",
+              "x": 414,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "口",
+              "x": 452,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "边",
+              "x": 489,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "最",
+              "x": 526,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "后",
+              "x": 564,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "一",
+              "x": 602,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "面",
+              "x": 639,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "洒",
+              "x": 676,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "下",
+              "x": 714,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "了",
+              "x": 752,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "句",
+              "x": 789,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            },
+            {
+              "char": "点",
+              "x": 826,
+              "y": 578,
+              "width": 38,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 25000,
+      "end_ms": 28250,
+      "detections": [
+        {
+          "text": "与你若只如初见",
+          "confidence": 0.9923,
+          "bbox": {
+            "x": 510,
+            "y": 567,
+            "width": 260,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "与",
+              "x": 510,
+              "y": 567,
+              "width": 37,
+              "height": 54
+            },
+            {
+              "char": "你",
+              "x": 547,
+              "y": 567,
+              "width": 37,
+              "height": 54
+            },
+            {
+              "char": "若",
+              "x": 584,
+              "y": 567,
+              "width": 37,
+              "height": 54
+            },
+            {
+              "char": "只",
+              "x": 621,
+              "y": 567,
+              "width": 37,
+              "height": 54
+            },
+            {
+              "char": "如",
+              "x": 659,
+              "y": 567,
+              "width": 37,
+              "height": 54
+            },
+            {
+              "char": "初",
+              "x": 696,
+              "y": 567,
+              "width": 37,
+              "height": 54
+            },
+            {
+              "char": "见",
+              "x": 733,
+              "y": 567,
+              "width": 37,
+              "height": 54
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 28500,
+      "end_ms": 31500,
+      "detections": [
+        {
+          "text": "何须感伤离别",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 528,
+            "y": 582,
+            "width": 224,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "何",
+              "x": 528,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "须",
+              "x": 565,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "感",
+              "x": 603,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "伤",
+              "x": 640,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "离",
+              "x": 677,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            },
+            {
+              "char": "别",
+              "x": 715,
+              "y": 582,
+              "width": 37,
+              "height": 40
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

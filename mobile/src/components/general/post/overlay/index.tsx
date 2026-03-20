@@ -149,9 +149,18 @@ export default function PostSingleOverlay({
 
       {/* Bottom left: username + description */}
       <View style={[styles.textContainer, { paddingBottom: 16 + insets.bottom }]} testID="text-container">
-        <Text style={styles.displayName} testID="display-name">
-          @{user.displayName || user.email}
-        </Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("profileOther", {
+              initialUserId: user.uid,
+            })
+          }
+          activeOpacity={0.7}
+        >
+          <Text style={styles.displayName} testID="display-name">
+            @{user.displayName || user.email}
+          </Text>
+        </TouchableOpacity>
         <Text style={styles.description} numberOfLines={2} testID="description">
           {post.description}
         </Text>

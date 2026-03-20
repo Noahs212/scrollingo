@@ -30,23 +30,26 @@ function mapDbUser(
 
 /**
  * Fetch a user profile by ID from Supabase.
+ * likesCount is computed from user_likes (not stored on users table).
  */
 export async function getUserById(id: string): Promise<User | null> {
-  const { data, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const [profileResult, likesResult, authResult] = await Promise.all([
+    supabase.from("users").select("*").eq("id", id).single(),
+    supabase.from("user_likes").select("*", { count: "exact", head: true }).eq("user_id", id),
+    supabase.auth.getUser(),
+  ]);
 
-  if (error || !data) {
+  if (profileResult.error || !profileResult.data) {
     return null;
   }
 
-  // Get email from auth metadata (not stored in users table)
-  const { data: { user: authUser } } = await supabase.auth.getUser();
-  const email = authUser?.id === id ? (authUser?.email ?? "") : "";
+  const email = authResult.data?.user?.id === id
+    ? (authResult.data.user.email ?? "")
+    : "";
 
-  return mapDbUser(data, email);
+  const user = mapDbUser(profileResult.data, email);
+  user.likesCount = likesResult.count ?? 0;
+  return user;
 }
 
 /**

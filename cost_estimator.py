@@ -770,7 +770,7 @@ financials = calculate_financials(
 )
 
 # --- Tabbed Interface ---
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Financial Dashboard", "System Architecture", "Cost Optimizer", "Phase 1 Requirements", "Database Design", "Implementation Guide"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Financial Dashboard", "System Architecture", "Cost Optimizer", "Phase 1 Requirements", "Database Design", "Implementation Guide", "OCR Research"])
 
 with tab1:
     # Mode indicators
@@ -1415,23 +1415,23 @@ with tab6:
 
     st.markdown("---")
 
-    # ── Milestone 1: Database + User System ──
+    # ── Milestone 1: Database + User System (DONE) ──
     st.subheader("Milestone 1: Database + User System")
     st.caption("Set up all 14 tables. Wire up user creation, onboarding, and profile. This is the foundation for everything.")
 
-    st.checkbox("1.1 — Run initial migration (all 14 tables from database_design.md)", key="m1_1")
-    st.checkbox("1.2 — Verify tables in Supabase dashboard", key="m1_2")
-    st.checkbox("1.3 — Verify RLS policies are active (test with anon key — should be blocked)", key="m1_3")
-    st.checkbox("1.4 — Create DB trigger: auto-insert users row on auth.users signup", key="m1_4")
-    st.checkbox("1.5 — Test: sign up → user row created automatically", key="m1_5")
-    st.checkbox("1.6 — Onboarding screen: select native language + learning language(s) (R22)", key="m1_6")
-    st.checkbox("1.7 — Save language prefs to users table + MMKV (native_language, learning_languages)", key="m1_7")
-    st.checkbox("1.8 — Profile screen: display name, avatar, streak (0), words learned (0), videos watched (0)", key="m1_8")
-    st.checkbox("1.9 — Edit profile: update display_name, avatar_url", key="m1_9")
-    st.checkbox("1.10 — Settings screen: language switcher, daily goal slider", key="m1_10")
-    st.checkbox("1.11 — Own profile screen: display name, avatar, streak, words/videos stats (all 0)", key="m1_11")
-    st.checkbox("1.12 — Empty states for feed, flashcards, progress (placeholder UI)", key="m1_12")
-    st.checkbox("1.13 — Language switching + multi-language support in profile/settings", key="m1_13")
+    st.checkbox("1.1 — Run initial migration (all 14 tables from database_design.md)", value=True, key="m1_1")
+    st.checkbox("1.2 — Verify tables in Supabase dashboard", value=True, key="m1_2")
+    st.checkbox("1.3 — Verify RLS policies are active (test with anon key — should be blocked)", value=True, key="m1_3")
+    st.checkbox("1.4 — Create DB trigger: auto-insert users row on auth.users signup", value=True, key="m1_4")
+    st.checkbox("1.5 — Test: sign up → user row created automatically", value=True, key="m1_5")
+    st.checkbox("1.6 — Onboarding screen: select native language + learning language(s) (R22)", value=True, key="m1_6")
+    st.checkbox("1.7 — Save language prefs to users table + Redux (native_language, learning_languages)", value=True, key="m1_7")
+    st.checkbox("1.8 — Profile screen: display name, avatar, streak (0), words learned (0), videos watched (0)", value=True, key="m1_8")
+    st.checkbox("1.9 — Edit profile: update display_name, avatar_url", value=True, key="m1_9")
+    st.checkbox("1.10 — Settings screen: language switcher, daily goal slider", value=True, key="m1_10")
+    st.checkbox("1.11 — Own profile screen: display name, avatar, streak, words/videos stats (all 0)", value=True, key="m1_11")
+    st.checkbox("1.12 — Empty states for feed, flashcards, progress (placeholder UI)", value=True, key="m1_12")
+    st.checkbox("1.13 — Language switching + multi-language support in profile/settings", value=True, key="m1_13")
 
     with st.expander("1.13 Details: Language switching"):
         st.markdown("""
@@ -1462,6 +1462,9 @@ with tab6:
 - Profile/Settings screen — native language picker, active learning toggle
 - Feed screen — filter by `activeLearningLanguage`
         """)
+
+    st.checkbox("1.14 — Seed test users + distribute mock videos across creators for follow/profile testing", value=True, key="m1_14")
+    st.checkbox("1.15 — Tappable username in feed overlay → navigate to creator's profile", value=True, key="m1_15")
 
     with st.expander("M1 Details: What gets wired up and what stays empty"):
         st.markdown("""
@@ -1505,6 +1508,70 @@ CREATE TRIGGER on_auth_user_created
 #### Key decision: Direct Supabase for M1-M9
 
 The app talks to Supabase directly (`@supabase/supabase-js` + PostgREST + RLS) until M10 when the Go backend is built. No API server needed yet.
+        """)
+
+    st.markdown("---")
+
+    # ── Milestone 1.5: OCR + Tappable Subtitles Spike ──
+    st.subheader("Milestone 1.5: OCR + Tappable Subtitles Spike")
+    st.caption("Prove the core feature works end-to-end with ONE video before building the full pipeline. This is the key differentiator — validate early.")
+
+    st.checkbox("1.5.1 — Pick one test video with burned-in Chinese subtitles from assets/videos/", key="m1_5_1")
+    st.checkbox("1.5.2 — Python script: extract frames every 500ms with FFmpeg", key="m1_5_2")
+    st.checkbox("1.5.3 — OCR: run Google Cloud Vision (or Tesseract) on each frame → raw text per frame", key="m1_5_3")
+    st.checkbox("1.5.4 — Deduplicate: collapse consecutive identical text into subtitle segments with start_ms/end_ms", key="m1_5_4")
+    st.checkbox("1.5.5 — Chinese word segmentation: run jieba on each subtitle line → individual words with timing", key="m1_5_5")
+    st.checkbox("1.5.6 — Generate test translations: use Gemini/GPT to get English translations for each word (one-time, save to JSON)", key="m1_5_6")
+    st.checkbox("1.5.7 — Output JSON file: [{word, translation, start_ms, end_ms, part_of_speech}, ...] for the test video", key="m1_5_7")
+    st.checkbox("1.5.8 — Build SubtitleOverlay component: render current words based on video playback position", key="m1_5_8")
+    st.checkbox("1.5.9 — Make each word individually tappable → show translation in a bottom sheet popup", key="m1_5_9")
+    st.checkbox("1.5.10 — Wire into PostSingle for the test video: subtitle overlay synced to expo-video player", key="m1_5_10")
+    st.checkbox("1.5.11 — Test on device: verify OCR quality, word timing accuracy, tap UX feels right", key="m1_5_11")
+
+    with st.expander("M1.5 Details: Why spike before pipeline"):
+        st.markdown("""
+#### Why do this before M2/M3?
+
+The tappable subtitle overlay is **THE core feature** that differentiates Scrollingo from every other video app. If OCR quality is bad, or word timing is off, or the tap UX doesn't feel right, the entire product concept needs rethinking. Better to discover that with a 1-day spike than after building the full pipeline.
+
+#### What this proves
+
+1. **OCR quality**: Can we reliably extract burned-in Chinese text from short-form videos?
+2. **Word segmentation**: Does jieba correctly split Chinese sentences into tappable words?
+3. **Timing accuracy**: Are word timestamps close enough to feel synced with the video?
+4. **UX feel**: Does tapping a word mid-video → seeing a popup feel natural and useful?
+
+#### What this does NOT build
+
+- No database integration (hardcoded JSON, not Supabase)
+- No R2 storage (uses local video assets)
+- No pipeline automation (manual Python script)
+- No LLM contextual definitions (simple translations only)
+
+These all come in M3-M5. This spike is purely about **validating the core UX**.
+
+#### Python dependencies
+
+```bash
+pip install google-cloud-vision jieba openai  # or use Tesseract (free) instead of Cloud Vision
+brew install tesseract tesseract-lang          # for free local OCR
+```
+
+#### Frame extraction
+
+```bash
+ffmpeg -i video_2.mp4 -vf "fps=2" -q:v 2 frames/frame_%04d.jpg
+```
+
+#### Output format (one JSON file per video)
+
+```json
+[
+  {"word": "你", "translation": "you", "start_ms": 1000, "end_ms": 1500, "pos": "pronoun"},
+  {"word": "好", "translation": "good/hello", "start_ms": 1500, "end_ms": 2000, "pos": "adjective"},
+  ...
+]
+```
         """)
 
     st.markdown("---")
@@ -1559,15 +1626,63 @@ python3 pipeline.py --video-url https://cdn.scrollingo.com/videos/test/video.mp4
 
     # ── Milestone 4: Video Feed in App ──
     st.subheader("Milestone 4: Video Feed in App")
-    st.caption("Display the video from M3 in the app. First visual proof of life.")
+    st.caption("Display videos from M3 in the app. Optimized for TikTok-style rapid swiping (15-20 skips before a full watch).")
 
     st.checkbox("4.1 — Query videos from Supabase (WHERE status='ready' AND language=target_language, LEFT JOIN user_views to exclude watched)", key="m4_1")
-    st.checkbox("4.2 — Wire up feedStore (Zustand) with pagination cursor", key="m4_2")
-    st.checkbox("4.3 — Render videos in FlashList with expo-video (full-screen, vertical paging)", key="m4_3")
-    st.checkbox("4.4 — Auto play/pause based on scroll visibility (onViewableItemsChanged)", key="m4_4")
-    st.checkbox("4.5 — Preload next 2 videos for smooth scrolling", key="m4_5")
-    st.checkbox("4.6 — Track views: INSERT/UPDATE user_views on watch completion", key="m4_6")
-    st.checkbox("4.7 — Test: app shows the M3 video, plays from R2 CDN, smooth scroll", key="m4_7")
+    st.checkbox("4.2 — Wire up feedSlice (Redux Toolkit) with cursor pagination (10-15 items/page, fetch next page when 3-5 from end)", key="m4_2")
+    st.checkbox("4.3 — Adapt PostSingle to use videos table data directly (cdn_url, thumbnail_url) — NOT a mapping layer", key="m4_3")
+    st.checkbox("4.4 — Thumbnail placeholders: show thumbnail_url as <Image> behind <VideoView> to eliminate black flash on swipe", key="m4_4")
+    st.checkbox("4.5 — Prefetch next 2 videos: pre-initialize expo-video players for N+1 and N+2 while current video plays", key="m4_5")
+    st.checkbox("4.6 — Auto play/pause based on scroll visibility (onViewableItemsChanged) — already working with local videos", key="m4_6")
+    st.checkbox("4.7 — Track views: INSERT/UPDATE user_views on watch (buffered, not every frame)", key="m4_7")
+    st.checkbox("4.8 — Test: app plays videos from R2 CDN, <200ms time-to-first-frame on swipe, smooth rapid swiping", key="m4_8")
+
+    with st.expander("M4 Details: TikTok-style playback optimization"):
+        st.markdown("""
+#### Why prefetch matters
+
+A typical TikTok session: swipe → watch 2s → swipe → watch 1s → swipe → swipe → swipe → watch 30s → swipe...
+
+Without prefetch, each swipe triggers: new player creation → HTTP connection → download from byte 0 → decode first frame → **500ms-2s black screen on LTE**. This feels broken.
+
+#### Thumbnail placeholder (4.4)
+
+Show `thumbnail_url` as a React Native `<Image>` behind the `<VideoView>`. The thumbnail renders instantly (cached by the Image component), so the user never sees a black screen. When the video player's first frame is ready, it paints over the thumbnail seamlessly.
+
+```tsx
+<View style={styles.container}>
+  <Image source={{ uri: video.thumbnail_url }} style={StyleSheet.absoluteFill} />
+  <VideoView player={player} style={StyleSheet.absoluteFill} contentFit="cover" />
+</View>
+```
+
+#### Prefetch strategy (4.5)
+
+While the user watches video N, pre-initialize `useVideoPlayer` for videos N+1 and N+2. The native player starts buffering immediately (HTTP range request for the first few hundred KB). When the user swipes, the first frame is already decoded → **<200ms time-to-first-frame**.
+
+Options:
+- Increase FlatList `windowSize` so adjacent items render (and their players initialize)
+- Or manage a prefetch pool: create players for upcoming URLs, hand them off when the item renders
+
+#### Bandwidth awareness (Phase 2)
+
+Each skipped 30s video (8MB) wastes ~2-3MB in 3s of buffering. Over 20 swipes = 40-60MB waste. Acceptable for Phase 1. Phase 2 options:
+- Serve 480p initially, upgrade to 720p after 3s watch time
+- HLS with fast-start low-quality segment (Phase 3)
+
+#### Pagination (4.2)
+
+Keyset cursor pagination — NOT offset-based. Feed query returns 10-15 records per page:
+```sql
+SELECT id, cdn_url, thumbnail_url, like_count, ...
+FROM videos
+WHERE language = $1 AND status = 'ready'
+  AND (created_at, id) < ($cursor_ts, $cursor_id)
+ORDER BY created_at DESC, id DESC
+LIMIT 15;
+```
+Trigger next page fetch when user is 3-5 items from the end of the current page.
+        """)
 
     st.markdown("---")
 
@@ -1731,11 +1846,12 @@ This returns ~50 rows per video. The app caches this per video — no extra quer
 | Milestone | What | Depends On | Effort |
 |-----------|------|-----------|--------|
 | **M0** | Foundation (React Native + Supabase Auth) | — | **Done** |
-| **M1** | Database + user system + onboarding + profile | M0 | 1-2 days |
-| **M2** | R2 Storage + CDN (can parallel with M1) | — | 1 hour |
-| **M3** | First video end-to-end (pipeline script) | M1, M2 | 1-2 days |
-| **M4** | Video feed in app + view tracking | M3 | 1-2 days |
-| **M5** | Tappable subtitles + word popup (CORE FEATURE) | M4 | 2-3 days |
+| **M1** | Database + user system + onboarding + profile | M0 | **Done** |
+| **M1.5** | OCR + tappable subtitles spike (validate core UX) | M1 | 1 day |
+| **M2** | R2 Storage + CDN (can parallel with M1.5) | — | 1 hour |
+| **M3** | First video end-to-end (pipeline script) | M1.5, M2 | 1-2 days |
+| **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | 2-3 days |
+| **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | 1-2 days |
 | **M6** | Flashcard save + SM-2 review + offline | M5 | 2-3 days |
 | **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
 | **M8** | Offline dictionaries + adapter factory | M5 | 3-5 days |
@@ -1745,11 +1861,522 @@ This returns ~50 rows per video. The app caches this per video — no extra quer
 | **M12** | TTS pre-generation (can run anytime after M2) | M2 | 1 day |
 | **M13** | Polish & launch | All above | 3-5 days |
 
-**Critical path**: M0 → M1 → M2 → M3 → M4 → M5 (first magic moment: tap word → see definition)
+**Critical path**: M0 → M1 → **M1.5** → M2 → M3 → M4 → M5 (first magic moment: tap word → see definition)
 
 **Parallel work**:
-- M2 can run in parallel with M1
+- M2 can run in parallel with M1.5
+- M1.5 spike de-risks M5 — if OCR quality or UX is bad, pivot before investing in pipeline
 - M7 (social) can start after M4
 - M9 (progress) can start after M6
 - M12 (TTS) can run anytime after M2 — doesn't block anything
     """)
+
+with tab7:
+    st.header("OCR Research: PaddleOCR for Subtitle Extraction")
+    st.markdown("PaddleOCR PP-OCRv5 is the clear winner for extracting burned-in subtitles from TikTok-style videos. "
+                "This tab covers the PaddleOCR ecosystem: model versions, open-source video subtitle tools built on it, "
+                "and our recommended pipeline.")
+    st.markdown("---")
+
+    # --- Why PaddleOCR ---
+    st.subheader("Why PaddleOCR")
+    col_w1, col_w2 = st.columns(2)
+    with col_w1:
+        st.markdown("""
+**Best Chinese accuracy of any OCR engine.** PP-OCRv5 handles simplified, traditional, and pinyin in a single unified model. Only 70M parameters yet outperforms GPT-4o, Gemini, and Qwen2.5-VL-72B on OCR benchmarks.
+
+**Essentially free.** Self-hosted, Apache 2.0 license. At 6,000 frames/month, processing takes ~5 minutes on a GPU.
+
+**Built-in text detection.** DB/DB++ detector finds subtitle regions automatically and returns 4-point polygon bounding boxes.
+
+**Battle-tested.** Multiple open-source projects already use PaddleOCR specifically for extracting hardcoded subtitles from video frames.
+        """)
+    with col_w2:
+        st.markdown("""
+| Spec | Detail |
+|------|--------|
+| GitHub | 72,600+ stars |
+| Languages | 106 (en, es, zh, ja, ko, and 101 more) |
+| Detection | Built-in DB/DB++ |
+| BBox output | Line-level polygons, word-level via `return_word_box` |
+| Latency | ~30-80ms/frame (GPU), ~200-500ms (CPU) |
+| VRAM | 2-4 GB (server model) |
+| Install | `pip install paddleocr paddlepaddle` |
+| License | Apache 2.0 |
+| Latest | PP-OCRv5 (May 2025), PaddleOCR 3.0.3 (June 2025) |
+        """)
+
+    st.markdown("---")
+
+    # --- PP-OCR Version History ---
+    st.subheader("PP-OCR Model Versions")
+
+    st.markdown("""
+| Version | Year | Key Innovation | Det Model | Rec Model |
+|---------|------|----------------|-----------|-----------|
+| **PP-OCRv1** | 2020 | Foundational release, MobileNetV3 backbone | — | CRNN |
+| **PP-OCRv2** | 2021 | Knowledge distillation, expanded languages | — | Enhanced CRNN |
+| **PP-OCRv3** | 2022 | SVTR+LCNet recognition replacing CRNN | 2.1 MB (mobile) | ~9.6 MB (mobile) |
+| **PP-OCRv4** | 2023 | Server/mobile model split, PP-HGNetV2 backbone | 4.7 MB / 109 MB | 10.5 MB / 182 MB |
+| **PP-OCRv5** | 2025 | **Unified multilingual, 13% accuracy gain, dual-branch GTC-NRTR + SVTR-HGNet** | 4.7 MB / 84.3 MB | 16 MB / 81 MB |
+    """)
+
+    with st.expander("PP-OCRv5 Details", expanded=True):
+        st.markdown("""
+PP-OCRv5 is a significant leap over v4:
+
+- **Unified model:** Handles Simplified Chinese, Traditional Chinese, Pinyin, English, and Japanese in a single model (no separate language models needed for these 5)
+- **Dual-branch architecture:** GTC-NRTR + SVTR-HGNet with PFHead and DSR (Dynamic Spatial Refinement)
+- **13% accuracy improvement** over PP-OCRv4 across all scenarios
+- **30%+ improvement** for non-CJK multilingual text (Spanish, French, etc.)
+- **26% error reduction** on handwriting
+- **Only 70M parameters** — smaller than v4 server rec (182 MB → 81 MB) while being more accurate
+
+#### Accuracy by Scenario (Server Model)
+
+| Scenario | PP-OCRv5 | PP-OCRv4 | Improvement |
+|----------|----------|----------|-------------|
+| Printed Chinese | **90.1%** | 85.2% | +4.9% |
+| Printed English | **86.8%** | 82.4% | +4.4% |
+| Traditional Chinese | **74.7%** | 68.1% | +6.6% |
+| Distortion | **93.1%** | 89.2% | +3.9% |
+| Rotation | **74.4%** | 67.3% | +7.1% |
+| Artistic/Stylized Text | **64.0%** | 55.8% | +8.2% |
+| **Average** | **84.0%** | 77.1% | **+6.9%** |
+
+*Note: These are strict line-level accuracy (any wrong character = entire line wrong). Character-level accuracy is much higher.*
+        """)
+
+    with st.expander("Server vs Mobile Models"):
+        st.markdown("""
+| | Server | Mobile |
+|---|---|---|
+| **Detection** | 84.3 MB, 83.8% accuracy | 4.7 MB, 79.0% accuracy |
+| **Recognition** | 81 MB, 84.0% avg accuracy | 16 MB, 80.2% avg accuracy |
+| **Best for** | Server-side batch processing (our pipeline) | On-device, edge, real-time |
+| **GPU** | Recommended | Optional (runs fast on CPU) |
+
+**For Scrollingo:** Use PP-OCRv5 server models for maximum accuracy in the subtitle extraction pipeline.
+        """)
+
+    with st.expander("Key Parameters for Video Subtitle Extraction"):
+        st.markdown("""
+| Parameter | Default | Recommendation | Why |
+|-----------|---------|----------------|-----|
+| `use_angle_cls` | False | **False** | Subtitles are horizontal; angle classification adds latency for no benefit |
+| `det_db_thresh` | 0.3 | **0.25** | Lower threshold catches subtitles with semi-transparent backgrounds |
+| `det_db_box_thresh` | 0.5 | **0.6** | Reduces false positives from video noise/watermarks |
+| `rec_batch_num` | 6 | **16-32** | Process more text regions in parallel; subtitles usually have few boxes per frame |
+| `return_word_box` | False | **False** | Word-level boxes not needed; we use jieba for Chinese segmentation |
+| `use_gpu` | False | **True** | Essential for batch processing speed |
+| `det_limit_side_len` | 960 | **1280** | TikTok videos are 1080px wide; ensure detection sees full resolution |
+| `lang` | 'ch' | `'ch'` for Chinese (also handles English), `'latin'` for Spanish | Chinese model handles en+zh; Spanish needs latin model |
+        """)
+
+    with st.expander("PaddleOCR 3.x Framework Changes"):
+        st.markdown("""
+PaddleOCR 3.0 (May 2025) is a major rewrite of the framework:
+
+| Change | Old (2.x) | New (3.x) |
+|--------|-----------|-----------|
+| API | `PaddleOCR()` class with `ocr()` method | `TextDetection` and `TextRecognition` modules |
+| CLI | `paddleocr --image_dir ...` | `paddleocr ocr --input <path>` |
+| Results | Nested list traversal | `res.print()`, `res.save_to_json()`, `res.save_to_img()` |
+| ONNX | `use_onnx=True` parameter | Removed (replaced by high-performance inference) |
+| New model | — | **PaddleOCR-VL** (0.9B params) — vision-language OCR achieving 94.5% on OmniDocBench v1.5 (Jan 2026) |
+
+**For Scrollingo M1.5 spike:** The 2.x API still works and is simpler. Use `from paddleocr import PaddleOCR` as shown in the code examples. Migrate to 3.x API when building the production pipeline (M3/M10).
+        """)
+
+    st.markdown("---")
+
+    # --- Open Source Projects ---
+    st.subheader("PaddleOCR Video Subtitle Projects")
+    st.markdown("These open-source tools implement the exact pipeline we need: video → frames → PaddleOCR → deduplicated subtitles with timing.")
+
+    with st.expander("VideOCR — RECOMMENDED reference (timminator/VideOCR)", expanded=True):
+        st.markdown("""
+The most feature-complete and actively maintained project. **Last commit: March 11, 2026 (9 days ago).**
+
+| Spec | Detail |
+|------|--------|
+| GitHub | `timminator/VideOCR` — 453 stars, 41 forks |
+| License | MIT |
+| Latest release | v1.4.1 (Feb 23, 2026) |
+| PaddleOCR version | 3.x / PP-OCRv5 |
+| Python | 3.9+ |
+
+**Pipeline:**
+1. Frame extraction via **PyAV** (not raw OpenCV) — better codec support
+2. **VFR (variable frame rate) handling** via MediaInfo timestamp parsing — critical for TikTok videos which are often VFR
+3. **SSIM deduplication** via `fast_ssim` — intelligently samples only the subtitle region for comparison, reducing false positives from background video changes
+4. PaddleOCR 3.x CLI subprocess for OCR
+5. Post-processing: **WordNinja** word segmentation for English, Spanish, Portuguese, German, Italian, French
+6. **Simplified Chinese normalization** option
+7. **Dual subtitle zone** support (e.g., bilingual Chinese + English on same video)
+8. Fuzzy text matching for merging similar consecutive lines
+9. Output: SRT with optional ASS alignment tags
+
+**Key advantages over other projects:**
+- SSIM dedup (far superior to pixel diff)
+- VFR support (TikTok videos are often variable frame rate)
+- Dual subtitle zones (bilingual Chinese + English)
+- Latin language word segmentation built in
+- Simplified Chinese normalization
+- Active maintenance
+
+**API:**
+```python
+from videocr import get_subtitles, save_subtitles_to_file
+
+# Get subtitles as SRT string
+srt = get_subtitles(
+    "video.mp4",
+    lang="ch",               # PaddleOCR language
+    sim_threshold=85,         # SSIM threshold (%)
+    conf_threshold=60,        # OCR confidence threshold (%)
+    use_gpu=True,
+)
+
+# Or save directly to file
+save_subtitles_to_file(
+    "video.mp4", "output.srt",
+    lang="ch", use_gpu=True,
+)
+```
+
+**Limitation:** Runs PaddleOCR as a subprocess (not in-process). For server integration, extract core logic and call PaddleOCR Python API directly.
+        """)
+
+    with st.expander("video-subtitle-extractor (YaoFANGUK) — Most popular"):
+        st.markdown("""
+The most popular project by far (8,519 stars) with a full GUI. Best for manual/desktop use.
+
+| Spec | Detail |
+|------|--------|
+| GitHub | `YaoFANGUK/video-subtitle-extractor` — 8,519 stars, 869 forks |
+| License | Apache 2.0 |
+| Last push | Aug 2025 |
+| Languages | 87 (Chinese + English bilingual mode) |
+
+**Features:**
+- **Auto subtitle region detection** via deep learning (no manual cropping needed — unique among these tools)
+- Three modes: Fast (lightweight model), Auto (adaptive), Accurate (frame-by-frame)
+- GUI (desktop app) and CLI
+- Pre-built binaries for Windows and macOS
+- `typoMap.json` for OCR error correction (e.g., "l'm" → "I'm")
+- Watermark removal
+- Batch processing
+
+**Limitations:**
+- **Not a library** — structured as a standalone app, not pip-installable
+- 234 open issues (significant user-reported problems)
+- Paths cannot contain Chinese characters or spaces
+- Heavy dependencies (PaddlePaddle 3.0.0rc1)
+- Python 3.12+ only
+- Documentation primarily in Chinese
+
+**Best for:** Desktop users doing manual subtitle extraction. Less suitable as a library to integrate into our pipeline.
+        """)
+
+    with st.expander("videocr-PaddleOCR (devmaxxing) — Simplest library"):
+        st.markdown("""
+The simplest pip-installable library. Fork of original `videocr` with PaddleOCR replacing Tesseract.
+
+| Spec | Detail |
+|------|--------|
+| GitHub | `devmaxxing/videocr-PaddleOCR` — 221 stars, 34 forks |
+| License | MIT |
+| Last push | Aug 2025 |
+| PaddleOCR version | 2.x |
+
+**Pipeline:**
+1. Frame extraction via OpenCV `cv2.VideoCapture`
+2. **Pixel-diff deduplication** (grayscale `cv2.absdiff`, binary threshold, count non-zero pixels)
+3. PaddleOCR 2.x in-process for OCR
+4. Multi-line grouping by Y-coordinate position
+5. Output: SRT string or file
+
+**API:**
+```python
+from videocr import get_subtitles
+srt = get_subtitles(
+    "video.mp4", lang="ch",
+    sim_threshold=90,
+    conf_threshold=65,
+    use_gpu=True,
+)
+```
+
+**Limitations:**
+- Pixel-diff dedup (less accurate than SSIM)
+- No VFR support
+- No word segmentation post-processing
+- Uses older PaddleOCR 2.x
+- Manual subtitle region cropping only
+- Smaller community
+
+**Best for:** Quick prototyping and M1.5 spike — simplest possible integration, pip-installable, PaddleOCR runs in-process.
+        """)
+
+    with st.expander("RapidVideOCR (SWHL) — Two-stage with VideoSubFinder"):
+        st.markdown("""
+OCR-only tool designed to pair with VideoSubFinder for a two-stage pipeline.
+
+| Spec | Detail |
+|------|--------|
+| GitHub | `SWHL/RapidVideOCR` — 491 stars, 58 forks |
+| License | Apache 2.0 |
+| Latest release | v3.1.1 (June 2025) |
+| PyPI | `rapid_videocr` |
+| Backend | RapidOCR (ONNX Runtime, not PaddlePaddle) |
+
+**Two-stage pipeline:**
+1. **VideoSubFinder** (separate C++ app) detects subtitle keyframes → outputs cropped images
+2. **RapidVideOCR** runs OCR on those images → outputs SRT/ASS/TXT
+
+**Key distinction:** Uses **RapidOCR** (ONNX Runtime) instead of PaddlePaddle directly. Lighter dependency, but may be 2-3x slower for detection.
+
+**Limitations:**
+- Requires VideoSubFinder (separate C++ binary install)
+- Not a standalone pipeline
+- Documentation primarily in Chinese
+
+**Best for:** Maximum accuracy when paired with VideoSubFinder's specialized subtitle detection. More complex setup.
+        """)
+
+    with st.expander("VidSubX (voun7) — Newest, ONNX-based"):
+        st.markdown("""
+Newest project, very actively maintained.
+
+| Spec | Detail |
+|------|--------|
+| GitHub | `voun7/VidSubX` — 67 stars, 10 forks |
+| License | Not specified |
+| Last push | **March 19, 2026 (yesterday)** |
+| Latest release | v2.2 (March 6, 2026) |
+| Backend | PaddleOCR via ONNX Runtime |
+
+**Features:**
+- GUI with frame-by-frame navigation for precise region selection
+- Manual subtitle region selection via mouse
+- Batch processing
+- Light/dark themes
+- Windows and Linux
+
+**Limitations:** GUI-focused, not a library. No Chinese word segmentation. Manual region selection only.
+        """)
+
+    st.markdown("---")
+
+    # --- Project Comparison ---
+    st.subheader("Project Comparison")
+
+    st.markdown("""
+| Feature | VideOCR | video-subtitle-extractor | videocr-PaddleOCR | RapidVideOCR | VidSubX |
+|---------|---------|--------------------------|-------------------|--------------|---------|
+| **Stars** | 453 | 8,519 | 221 | 491 | 67 |
+| **Last active** | **Mar 2026** | Aug 2025 | Aug 2025 | Sep 2025 | **Mar 2026** |
+| **PaddleOCR ver** | **3.x / v5** | 3.0rc | **2.x** | ONNX | ONNX |
+| **Full pipeline** | Yes | Yes | Yes | No (OCR only) | Yes |
+| **Frame dedup** | **SSIM** | Text similarity | Pixel diff | Via VideoSubFinder | Unknown |
+| **VFR support** | **Yes** | Unknown | No | N/A | Unknown |
+| **Auto subtitle detection** | No | **Yes (DL)** | No | Via VideoSubFinder | Manual |
+| **Dual subtitle zones** | **Yes** | No | No | No | No |
+| **Word segmentation** | **6 Latin langs** | No | No | No | No |
+| **Chinese normalization** | **Yes** | No | No | No | No |
+| **Output** | SRT (+ASS) | SRT, TXT | SRT | SRT, ASS, TXT | SRT |
+| **Python library** | Semi (subprocess) | No (app) | **Yes (pip, in-process)** | **Yes (pip)** | No (app) |
+| **Install** | Medium | High | **Low** | Low | Medium |
+    """)
+
+    st.markdown("---")
+
+    # --- Pipeline Optimizations ---
+    st.subheader("Pipeline Optimization Techniques")
+
+    with st.expander("SSIM Frame Deduplication (skip ~70% of frames)"):
+        st.markdown("""
+Subtitles persist across multiple consecutive frames. VideOCR uses **SSIM** with an important optimization: it compares only the **subtitle region** of the frame (not the whole frame), preventing false positives from background video changes.
+
+**Impact:** Reduces OCR processing by ~70%.
+
+| | Frames extracted | Unique frames (after dedup) | OCR time (GPU) |
+|---|---|---|---|
+| Phase 1 (100 videos) | 6,000 | ~1,800 | ~1.5 min |
+| Phase 2 (1,000 videos) | 60,000 | ~18,000 | ~15 min |
+
+```python
+from fast_ssim import ssim  # VideOCR's approach
+import cv2
+
+def is_new_subtitle(frame1, frame2, subtitle_region, threshold=0.85):
+    # Crop to subtitle region only
+    y1, y2, x1, x2 = subtitle_region
+    crop1 = cv2.cvtColor(frame1[y1:y2, x1:x2], cv2.COLOR_BGR2GRAY)
+    crop2 = cv2.cvtColor(frame2[y1:y2, x1:x2], cv2.COLOR_BGR2GRAY)
+    return ssim(crop1, crop2) < threshold
+```
+        """)
+
+    with st.expander("LLM Post-Correction (95% error correction)"):
+        st.markdown("""
+The **GhostCut** project (`JollyToday/Extract-Subtitles-by-OCR`) demonstrates that running OCR output through an LLM proofreader corrects **95% of OCR errors**.
+
+**Cost:** Gemini 2.5 Flash at $0.10/M input tokens — proofreading all subtitle text from 100 videos costs **< $0.10/month**.
+
+```python
+# Post-correction for low-confidence OCR results
+prompt = f\"\"\"Fix any OCR errors in this {language} subtitle text.
+Previous line: {prev_line}
+Current line: {ocr_text} (confidence: {confidence:.0%})
+Next line: {next_line}
+Return only the corrected text.\"\"\"
+corrected = gemini_flash(prompt)
+```
+
+**When to use:** Apply to low-confidence results (< 0.90) or all results for maximum accuracy.
+        """)
+
+    st.markdown("---")
+
+    # --- Recommendation ---
+    st.subheader("Recommended Pipeline for Scrollingo")
+
+    st.success("**PaddleOCR PP-OCRv5 server models** — use VideOCR as reference implementation")
+
+    col_r1, col_r2 = st.columns(2)
+    with col_r1:
+        st.markdown("""
+**Architecture:**
+```
+Video (TikTok 9:16, 720p)
+  → PyAV frame extraction (2fps)
+  → SSIM dedup on subtitle region
+    (~70% frames skipped)
+  → PaddleOCR PP-OCRv5 server
+    (detect + recognize)
+  → Gemini Flash post-correction
+    (low-confidence only, < $0.10/mo)
+  → Fuzzy text merge (consecutive dupes)
+  → Segments: {text, start_ms, end_ms}
+  → jieba segmentation (Chinese)
+  → WordNinja segmentation (English/Spanish)
+  → Store in video_words table
+```
+        """)
+    with col_r2:
+        st.markdown("""
+**Monthly cost:**
+
+| | Phase 1 (100 vids) | Phase 2 (1K vids) |
+|---|---|---|
+| PaddleOCR | ~$0 (self-hosted) | ~$1-7 (spot GPU) |
+| Gemini post-correction | < $0.10 | < $1 |
+| **Total OCR** | **< $0.10/mo** | **< $8/mo** |
+
+**Model selection by language:**
+
+| Language | Model |
+|----------|-------|
+| Chinese + English | PP-OCRv5 server rec (`lang='ch'`) |
+| Spanish | PP-OCRv5 server rec (`lang='latin'`) |
+| Detection (all) | PP-OCRv5 server det (84.3 MB) |
+        """)
+
+    st.markdown("""
+**Implementation approach:**
+
+1. **M1.5 spike:** Use `videocr-PaddleOCR` (simplest pip install, PaddleOCR runs in-process) to validate OCR quality on one test video
+2. **M3 pipeline:** Extract core logic from VideOCR (SSIM dedup, VFR handling, word segmentation) and call PaddleOCR Python API directly
+3. **M10 Go backend:** Run PaddleOCR as a Python subprocess from Go, or wrap in a small FastAPI service
+
+**What to take from each project:**
+
+| From | Take |
+|------|------|
+| **VideOCR** | SSIM dedup on subtitle region, VFR handling via PyAV/MediaInfo, WordNinja segmentation, simplified Chinese normalization, dual subtitle zone support |
+| **videocr-PaddleOCR** | Simple in-process PaddleOCR API pattern, multi-line Y-coordinate grouping |
+| **video-subtitle-extractor** | `typoMap.json` OCR error correction patterns, auto subtitle region detection concept |
+| **GhostCut** | LLM post-correction pipeline for 95% error reduction |
+    """)
+
+    st.markdown("---")
+    st.subheader("M1.5 Spike: Quick Start")
+    st.markdown("""
+```bash
+# Install (no API keys needed)
+pip install paddleocr paddlepaddle opencv-python jieba
+
+# Or use videocr-PaddleOCR for the full pipeline
+pip install git+https://github.com/devmaxxing/videocr-PaddleOCR.git
+```
+
+**Option A: Full pipeline via videocr-PaddleOCR**
+```python
+from videocr import get_subtitles
+
+srt = get_subtitles(
+    "assets/videos/video_2.mp4",
+    lang="ch",
+    sim_threshold=90,
+    conf_threshold=65,
+    use_gpu=False,  # CPU for dev, GPU for prod
+)
+print(srt)
+# Output: SRT format with timestamps
+```
+
+**Option B: Frame-by-frame with raw PaddleOCR**
+```python
+from paddleocr import PaddleOCR
+import cv2, jieba, json
+
+ocr = PaddleOCR(lang='ch', use_angle_cls=False,
+                det_db_thresh=0.25, det_db_box_thresh=0.6,
+                det_limit_side_len=1280)
+
+cap = cv2.VideoCapture("assets/videos/video_2.mp4")
+fps = cap.get(cv2.CAP_PROP_FPS)
+frame_interval = int(fps / 2)  # 2fps
+subtitles = []
+frame_num = 0
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+    if frame_num % frame_interval != 0:
+        frame_num += 1
+        continue
+
+    result = ocr.ocr(frame, cls=False)
+    timestamp_ms = int((frame_num / fps) * 1000)
+
+    if result and result[0]:
+        for line in result[0]:
+            bbox, (text, conf) = line
+            if conf > 0.65:
+                words = list(jieba.cut(text))
+                subtitles.append({
+                    "text": text,
+                    "words": words,
+                    "confidence": round(conf, 3),
+                    "timestamp_ms": timestamp_ms,
+                    "bbox": bbox,
+                })
+    frame_num += 1
+
+cap.release()
+
+# Save for SubtitleOverlay component
+with open("assets/subtitles/video_2_ocr.json", "w") as f:
+    json.dump(subtitles, f, ensure_ascii=False, indent=2)
+```
+    """)
+
+    st.markdown("---")
+    st.caption("Research conducted March 2026. Sources: PaddleOCR GitHub (72.6K stars), PP-OCRv5 technical report (arXiv), "
+               "VideOCR/videocr-PaddleOCR/RapidVideOCR/video-subtitle-extractor GitHub repos, "
+               "GhostCut (JollyToday/Extract-Subtitles-by-OCR), CC-OCR benchmark (ICCV 2025), "
+               "PaddleOCR 3.0 upgrade notes.")
