@@ -51,6 +51,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     const [popupData, setPopupData] = useState<WordPopupData | null>(null);
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+    const [highlightedWord, setHighlightedWord] = useState<string | null>(null);
     const lastTapRef = useRef(0);
     const pauseOpacity = useRef(new Animated.Value(0)).current;
     const heartScale = useRef(new Animated.Value(0)).current;
@@ -237,6 +238,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
             currentTimeMs={currentTimeMs}
             containerWidth={containerSize.width}
             containerHeight={containerSize.height}
+            highlightedWord={highlightedWord}
             onCharTap={(char, fullText, tapX, tapY) => {
               // Haptic feedback
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -253,15 +255,16 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
               setPopupPosition({ x: tapX, y: tapY });
 
               // Look up the word that contains this character
-              if (wordDefs) {
+              if (wordDefs && wordDefs.length > 0) {
+                // Find word by: character is in the display_text AND time overlaps
                 const match = wordDefs.find(
                   (wd) =>
                     wd.display_text.includes(char) &&
-                    currentTimeMs >= wd.start_ms &&
-                    currentTimeMs < wd.end_ms + 250,
+                    currentTimeMs >= wd.start_ms - 500 &&
+                    currentTimeMs < wd.end_ms + 500,
                 );
                 if (match) {
-                  // Find the source sentence from word_definitions
+                  setHighlightedWord(match.display_text);
                   setPopupData({
                     word: match.word,
                     pinyin: match.pinyin,
@@ -276,6 +279,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
               }
 
               // Fallback: show the character if no word match found
+              setHighlightedWord(char);
               setPopupData({
                 word: char,
                 pinyin: null,
@@ -298,6 +302,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           tapY={popupPosition.y}
           onClose={() => {
             setPopupVisible(false);
+            setHighlightedWord(null);
             try {
               player.play();
               setIsPaused(false);

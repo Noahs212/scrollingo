@@ -1,9 +1,18 @@
 /**
- * WordPopup — frosted glass card floating ABOVE the tapped word with a
- * downward-pointing arrow anchored at (tapX, tapY).
+ * WordPopup — frosted glass floating card above the tapped word.
  *
- * Renders as an absolutely positioned View (NOT a Modal) so it stays in the
- * same coordinate space as the video and subtitle overlays.
+ * One unified shape: rounded card with integrated triangular arrow
+ * pointing down at the highlighted word. Arrow is part of the card
+ * background — same color, no seam, no gap.
+ *
+ * Layout (top to bottom):
+ * 1. Word (bold) + pinyin (gray, same line) + speaker icon (far right)
+ * 2. "- Translation"
+ * 3. Part of speech (italic gray)
+ * 4. Definition card (rounded box, sparkle icon + italic text, 3-line cap)
+ * 5. "See More ∨" — ONLY if definition overflows or source sentence exists
+ * 6. Dashed divider
+ * 7. "Add to Vocab" button (turns green "Saved ✓" after tap)
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -24,11 +33,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as Speech from "expo-speech";
 
-// Enable LayoutAnimation on Android
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
@@ -36,8 +41,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const POPUP_WIDTH = SCREEN_WIDTH * 0.82;
 const ARROW_SIZE = 10;
-const SCREEN_EDGE_PADDING = 8;
-const TOP_SAFE_AREA = 60;
+const TOP_SAFE = 60;
 
 export interface WordPopupData {
   word: string;
@@ -51,102 +55,60 @@ export interface WordPopupData {
 interface Props {
   data: WordPopupData | null;
   visible: boolean;
-  tapX: number; // screen X of tapped character center
-  tapY: number; // screen Y of tapped character top edge
+  tapX: number;
+  tapY: number;
   onClose: () => void;
   onSave?: (word: string) => void;
   language?: string;
 }
 
 export default function WordPopup({
-  data,
-  visible,
-  tapX,
-  tapY,
-  onClose,
-  onSave,
-  language = "zh",
+  data, visible, tapX, tapY, onClose, onSave, language = "zh",
 }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [saved, setSaved] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const speakerScale = useRef(new Animated.Value(1)).current;
-  const speakerLoop = useRef<Animated.CompositeAnimation | null>(null);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const pulseLoop = useRef<Animated.CompositeAnimation | null>(null);
 
-  // ---------- visibility fade ----------
+  // Fade in/out
   useEffect(() => {
     if (visible) {
       setExpanded(false);
       setSaved(false);
       setIsSpeaking(false);
-      fadeAnim.setValue(0);
-
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
+      Animated.timing(fadeAnim, { toValue: 1, duration: 180, useNativeDriver: true }).start();
     } else {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: true,
-      }).start();
+      Animated.timing(fadeAnim, { toValue: 0, duration: 120, useNativeDriver: true }).start();
     }
-  }, [visible, fadeAnim]);
+  }, [visible]);
 
-  // ---------- speaker pulse while speaking ----------
+  // Speaker pulse
   useEffect(() => {
     if (isSpeaking) {
-      const loop = Animated.loop(
-        Animated.sequence([
-          Animated.timing(speakerScale, {
-            toValue: 1.25,
-            duration: 350,
-            useNativeDriver: true,
-          }),
-          Animated.timing(speakerScale, {
-            toValue: 1,
-            duration: 350,
-            useNativeDriver: true,
-          }),
-        ]),
-      );
-      speakerLoop.current = loop;
+      const loop = Animated.loop(Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1.2, duration: 300, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+      ]));
+      pulseLoop.current = loop;
       loop.start();
     } else {
-      speakerLoop.current?.stop();
-      speakerScale.setValue(1);
+      pulseLoop.current?.stop();
+      pulseAnim.setValue(1);
     }
-  }, [isSpeaking, speakerScale]);
+  }, [isSpeaking]);
 
-  // ---------- handlers ----------
-  const handleClose = useCallback(() => {
-    Speech.stop();
-    onClose();
-  }, [onClose]);
+  const handleClose = useCallback(() => { Speech.stop(); onClose(); }, [onClose]);
 
   const handleSpeak = useCallback(() => {
     if (!data?.word) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
-    const localeMap: Record<string, string> = {
-      zh: "zh-CN",
-      en: "en-US",
-      ja: "ja-JP",
-      fr: "fr-FR",
-      es: "es-ES",
-      ko: "ko-KR",
-      de: "de-DE",
-    };
-
     setIsSpeaking(true);
+    const locales: Record<string, string> = { zh: "zh-CN", en: "en-US", ja: "ja-JP", fr: "fr-FR", es: "es-ES", ko: "ko-KR", de: "de-DE" };
     Speech.speak(data.word, {
-      language: localeMap[language] ?? language,
-      rate: 0.8,
-      onDone: () => setIsSpeaking(false),
-      onError: () => setIsSpeaking(false),
+      language: locales[language] ?? language, rate: 0.8,
+      onDone: () => setIsSpeaking(false), onError: () => setIsSpeaking(false),
     });
   }, [data?.word, language]);
 
@@ -163,71 +125,38 @@ export default function WordPopup({
     setExpanded(true);
   }, []);
 
-  // ---------- early return ----------
   if (!visible || !data) return null;
 
-  // ---------- positioning ----------
-  // Horizontally center on tapX, clamped to screen edges
-  let popupLeft = tapX - POPUP_WIDTH / 2;
-  popupLeft = Math.max(
-    SCREEN_EDGE_PADDING,
-    Math.min(popupLeft, SCREEN_WIDTH - POPUP_WIDTH - SCREEN_EDGE_PADDING),
-  );
+  // Position: centered on tapX, clamped to edges
+  let left = tapX - POPUP_WIDTH / 2;
+  left = Math.max(8, Math.min(left, SCREEN_WIDTH - POPUP_WIDTH - 8));
+  const bottom = SCREEN_HEIGHT - tapY;
+  const maxH = tapY - TOP_SAFE - ARROW_SIZE;
+  const arrowLeft = Math.max(14, Math.min(tapX - left - ARROW_SIZE, POPUP_WIDTH - 14 - ARROW_SIZE * 2));
 
-  // The popup sits ABOVE tapY. The arrow tip touches tapY.
-  // Using `bottom` positioning: distance from the bottom of the screen to
-  // the bottom of the arrow tip.
-  const popupBottom = SCREEN_HEIGHT - tapY;
-
-  // Max card height: from the arrow to TOP_SAFE_AREA
-  const maxCardHeight = tapY - TOP_SAFE_AREA - ARROW_SIZE;
-
-  // Arrow horizontal position relative to the popup's left edge
-  const arrowLeft = Math.max(
-    14,
-    Math.min(tapX - popupLeft - ARROW_SIZE, POPUP_WIDTH - 14 - ARROW_SIZE * 2),
-  );
+  const hasLongDef = data.contextual_definition && data.contextual_definition.length > 100;
+  const hasSeeMore = hasLongDef || !!data.source_sentence;
 
   return (
-    <Animated.View
-      style={[StyleSheet.absoluteFill, { opacity: fadeAnim, zIndex: 30 }]}
-      pointerEvents={visible ? "auto" : "none"}
-    >
-      {/* Transparent backdrop to capture outside taps */}
-      <Pressable style={styles.backdrop} onPress={handleClose} />
+    <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim, zIndex: 30 }]} pointerEvents={visible ? "auto" : "none"}>
+      <Pressable style={s.backdrop} onPress={handleClose} />
 
-      {/* Card + Arrow positioned above the tapped word */}
-      <View
-        style={[
-          styles.popupContainer,
-          {
-            left: popupLeft,
-            bottom: popupBottom,
-            width: POPUP_WIDTH,
-          },
-        ]}
-      >
-        {/* Scrollable card */}
+      <View style={[s.container, { left, bottom, width: POPUP_WIDTH }]}>
+        {/* Card */}
         <ScrollView
-          style={[
-            styles.card,
-            { maxHeight: maxCardHeight > 120 ? maxCardHeight : 120 },
-          ]}
-          contentContainerStyle={styles.cardContent}
+          style={[s.card, { maxHeight: Math.max(maxH, 140) }]}
+          contentContainerStyle={s.cardInner}
           bounces={false}
           showsVerticalScrollIndicator={false}
         >
-          {/* 1. Word + Speaker icon */}
-          <View style={styles.wordRow}>
-            <Text style={styles.word}>{data.word}</Text>
-            <TouchableOpacity
-              onPress={handleSpeak}
-              style={styles.speakerBtn}
-              activeOpacity={0.7}
-            >
-              <Animated.View
-                style={{ transform: [{ scale: speakerScale }] }}
-              >
+          {/* Row 1: Word + Pinyin + Speaker */}
+          <View style={s.row1}>
+            <View style={s.wordPinyinGroup}>
+              <Text style={s.word}>{data.word}</Text>
+              {data.pinyin ? <Text style={s.pinyin}>{data.pinyin}</Text> : null}
+            </View>
+            <TouchableOpacity onPress={handleSpeak} style={s.speaker} activeOpacity={0.7}>
+              <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
                 <Ionicons
                   name={isSpeaking ? "volume-high" : "volume-medium-outline"}
                   size={20}
@@ -237,109 +166,69 @@ export default function WordPopup({
             </TouchableOpacity>
           </View>
 
-          {/* 2. Pinyin */}
-          {data.pinyin ? (
-            <Text style={styles.pinyin}>{data.pinyin}</Text>
-          ) : null}
+          {/* Row 2: Translation */}
+          {data.translation ? <Text style={s.translation}>- {data.translation}</Text> : null}
 
-          {/* 3. Translation */}
-          {data.translation ? (
-            <Text style={styles.translation}>- {data.translation}</Text>
-          ) : null}
+          {/* Row 3: POS */}
+          {data.part_of_speech ? <Text style={s.pos}>{data.part_of_speech}</Text> : null}
 
-          {/* 4. Part of speech */}
-          {data.part_of_speech ? (
-            <Text style={styles.pos}>{data.part_of_speech}</Text>
-          ) : null}
-
-          {/* 5. Contextual definition card */}
+          {/* Row 4: Definition card */}
           {data.contextual_definition ? (
-            <View style={styles.defCard}>
-              <Text style={styles.sparkle}>✨</Text>
-              <Text
-                style={styles.defText}
-                numberOfLines={expanded ? undefined : 3}
-              >
+            <View style={s.defBox}>
+              <Text style={s.sparkle}>✨</Text>
+              <Text style={s.defText} numberOfLines={expanded ? undefined : 3}>
                 {data.contextual_definition}
               </Text>
             </View>
           ) : null}
 
-          {/* 6. See More — only when definition overflows OR has source sentence */}
-          {!expanded && (data.contextual_definition.length > 80 || data.source_sentence) ? (
-            <TouchableOpacity
-              onPress={handleSeeMore}
-              style={styles.seeMoreBtn}
-              activeOpacity={0.6}
-            >
-              <Text style={styles.seeMoreText}>See More</Text>
-              <Ionicons
-                name="chevron-down"
-                size={13}
-                color="rgba(255,255,255,0.4)"
-                style={{ marginLeft: 3 }}
-              />
+          {/* Row 5: See More (conditional) */}
+          {hasSeeMore && !expanded ? (
+            <TouchableOpacity onPress={handleSeeMore} style={s.seeMore} activeOpacity={0.6}>
+              <Text style={s.seeMoreText}>See More</Text>
+              <Ionicons name="chevron-down" size={13} color="rgba(255,255,255,0.4)" style={{ marginLeft: 3 }} />
             </TouchableOpacity>
           ) : null}
 
-          {/* Expanded: source sentence context */}
+          {/* Expanded: source sentence */}
           {expanded && data.source_sentence ? (
-            <View style={styles.expandedSection}>
-              <Text style={styles.expandedLabel}>Source sentence</Text>
-              <Text style={styles.expandedText}>
-                "{data.source_sentence}"
-              </Text>
+            <View style={s.expandedBox}>
+              <Text style={s.expandedLabel}>Context</Text>
+              <Text style={s.expandedText}>"{data.source_sentence}"</Text>
             </View>
           ) : null}
 
-          {/* 7. Dashed divider */}
-          <View style={styles.divider} />
+          {/* Row 6: Divider */}
+          <View style={s.divider} />
 
-          {/* 8. Add to Vocab / Saved button */}
-          <TouchableOpacity
-            onPress={handleSave}
-            style={[styles.saveBtn, saved && styles.saveBtnSaved]}
-            activeOpacity={0.7}
-          >
+          {/* Row 7: Save button */}
+          <TouchableOpacity onPress={handleSave} style={[s.saveBtn, saved && s.saveBtnDone]} activeOpacity={0.7}>
             {saved ? (
-              <View style={styles.savedRow}>
-                <Ionicons
-                  name="checkmark-circle"
-                  size={15}
-                  color="#22c55e"
-                  style={{ marginRight: 5 }}
-                />
-                <Text style={styles.saveBtnTextSaved}>Saved</Text>
+              <View style={s.savedRow}>
+                <Ionicons name="checkmark-circle" size={15} color="#22c55e" style={{ marginRight: 5 }} />
+                <Text style={s.saveBtnTextDone}>Saved</Text>
               </View>
             ) : (
-              <Text style={styles.saveBtnText}>Add to Vocab</Text>
+              <Text style={s.saveBtnText}>Add to Vocab</Text>
             )}
           </TouchableOpacity>
         </ScrollView>
 
-        {/* Arrow pointing down at the tapped word */}
-        <View style={[styles.arrow, { marginLeft: arrowLeft }]} />
+        {/* Integrated arrow — same bg color, seamless with card */}
+        <View style={[s.arrow, { marginLeft: arrowLeft }]} />
       </View>
     </Animated.View>
   );
 }
 
-const CARD_BG = "rgba(35,35,35,0.94)";
+const BG = "rgba(35,35,35,0.94)";
 
-const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "transparent",
-  },
-
-  popupContainer: {
-    position: "absolute",
-    // The container's bottom edge = arrow tip = tapY
-    // Card stacks above the arrow via normal flow
-  },
+const s = StyleSheet.create({
+  backdrop: { ...StyleSheet.absoluteFillObject },
+  container: { position: "absolute" },
 
   card: {
-    backgroundColor: CARD_BG,
+    backgroundColor: BG,
     borderRadius: 14,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
@@ -347,151 +236,73 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 24,
   },
-  cardContent: {
-    padding: 16,
-  },
+  cardInner: { padding: 16 },
 
-  // Arrow
+  // Integrated arrow — same color as card, no gap
   arrow: {
-    width: 0,
-    height: 0,
+    width: 0, height: 0,
     borderLeftWidth: ARROW_SIZE,
     borderRightWidth: ARROW_SIZE,
     borderTopWidth: ARROW_SIZE,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderTopColor: CARD_BG,
+    borderTopColor: BG,
   },
 
-  // 1. Word row
-  wordRow: {
+  // Row 1: word + pinyin (same line) + speaker
+  row1: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  word: {
-    color: "#ffffff",
-    fontSize: 28,
-    fontWeight: "bold",
-    letterSpacing: 2,
-  },
-  speakerBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.08)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  // 2. Pinyin
-  pinyin: {
-    color: "rgba(255,255,255,0.4)",
-    fontSize: 14,
-    marginTop: 2,
     marginBottom: 6,
   },
-
-  // 3. Translation
-  translation: {
-    color: "#ffffff",
-    fontSize: 16,
-    marginBottom: 4,
-  },
-
-  // 4. Part of speech
-  pos: {
-    color: "rgba(255,255,255,0.3)",
-    fontSize: 12,
-    fontStyle: "italic",
-    marginBottom: 10,
-  },
-
-  // 5. Contextual definition card
-  defCard: {
-    backgroundColor: "rgba(255,255,255,0.06)",
-    borderRadius: 10,
-    padding: 12,
+  wordPinyinGroup: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 4,
-  },
-  sparkle: {
-    fontSize: 13,
-    marginRight: 6,
-    marginTop: 1,
-  },
-  defText: {
-    color: "rgba(255,255,255,0.55)",
-    fontSize: 13,
-    lineHeight: 18,
+    alignItems: "baseline",
     flex: 1,
-    fontStyle: "italic",
+    gap: 8,
+  },
+  word: { color: "#fff", fontSize: 28, fontWeight: "bold", letterSpacing: 1 },
+  pinyin: { color: "rgba(255,255,255,0.4)", fontSize: 14 },
+  speaker: {
+    width: 36, height: 36, borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    justifyContent: "center", alignItems: "center",
+    marginLeft: 8,
   },
 
-  // 6. See More
-  seeMoreBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
-  },
-  seeMoreText: {
-    color: "rgba(255,255,255,0.4)",
-    fontSize: 12,
-  },
+  // Row 2: translation
+  translation: { color: "#fff", fontSize: 16, marginBottom: 3 },
 
-  // Expanded section
-  expandedSection: {
-    marginTop: 6,
-    marginBottom: 2,
-  },
-  expandedLabel: {
-    color: "rgba(255,255,255,0.25)",
-    fontSize: 10,
-    textTransform: "uppercase",
-    letterSpacing: 1,
+  // Row 3: POS
+  pos: { color: "rgba(255,255,255,0.3)", fontSize: 12, fontStyle: "italic", marginBottom: 10 },
+
+  // Row 4: definition
+  defBox: {
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 10, padding: 12,
+    flexDirection: "row", alignItems: "flex-start",
     marginBottom: 4,
   },
-  expandedText: {
-    color: "rgba(255,255,255,0.5)",
-    fontSize: 12,
-    fontStyle: "italic",
-    lineHeight: 17,
-  },
+  sparkle: { fontSize: 13, marginRight: 6, marginTop: 1 },
+  defText: { color: "rgba(255,255,255,0.55)", fontSize: 13, lineHeight: 18, flex: 1, fontStyle: "italic" },
 
-  // 7. Divider
-  divider: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(255,255,255,0.1)",
-    borderStyle: "dashed",
-    marginVertical: 10,
-  },
+  // Row 5: see more
+  seeMore: { flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 6 },
+  seeMoreText: { color: "rgba(255,255,255,0.4)", fontSize: 12 },
 
-  // 8. Add to Vocab button
-  saveBtn: {
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: "center",
-  },
-  saveBtnSaved: {
-    borderColor: "rgba(34,197,94,0.3)",
-    backgroundColor: "rgba(34,197,94,0.2)",
-  },
-  saveBtnText: {
-    color: "#ffffff",
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  saveBtnTextSaved: {
-    color: "#22c55e",
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  savedRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  // Expanded
+  expandedBox: { marginTop: 6, marginBottom: 2 },
+  expandedLabel: { color: "rgba(255,255,255,0.25)", fontSize: 10, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+  expandedText: { color: "rgba(255,255,255,0.5)", fontSize: 12, fontStyle: "italic", lineHeight: 17 },
+
+  // Row 6: divider
+  divider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.1)", borderStyle: "dashed", marginVertical: 10 },
+
+  // Row 7: save
+  saveBtn: { borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", borderRadius: 8, paddingVertical: 10, alignItems: "center" },
+  saveBtnDone: { borderColor: "rgba(34,197,94,0.3)", backgroundColor: "rgba(34,197,94,0.15)" },
+  saveBtnText: { color: "#fff", fontSize: 13, fontWeight: "500" },
+  saveBtnTextDone: { color: "#22c55e", fontSize: 13, fontWeight: "500" },
+  savedRow: { flexDirection: "row", alignItems: "center" },
 });

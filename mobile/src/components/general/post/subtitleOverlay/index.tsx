@@ -56,6 +56,7 @@ interface Props {
   currentTimeMs: number;
   containerWidth: number;
   containerHeight: number;
+  highlightedWord?: string | null;
   onCharTap?: (char: string, fullText: string, screenX: number, screenY: number) => void;
 }
 
@@ -122,6 +123,7 @@ export default function SubtitleTapOverlay({
   currentTimeMs,
   containerWidth,
   containerHeight,
+  highlightedWord,
   onCharTap,
 }: Props) {
   // Build lookup table once — O(1) access at runtime instead of O(n) search
@@ -166,6 +168,9 @@ export default function SubtitleTapOverlay({
           const screenW = ch.width * scale;
           const screenH = ch.height * scale;
 
+          // Check if this character belongs to the highlighted word
+          const isHighlighted = highlightedWord && det.text.includes(highlightedWord) && highlightedWord.includes(ch.char);
+
           return (
             <Pressable
               key={`${di}-${ci}`}
@@ -178,6 +183,7 @@ export default function SubtitleTapOverlay({
                   width: screenW,
                   height: screenH,
                 },
+                isHighlighted && styles.charHighlighted,
               ]}
             >
               {/* DEBUG: uncomment to see tap target boundaries */}
@@ -201,6 +207,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,0,0,0.15)",
     borderWidth: 1,
     borderColor: "rgba(255,0,0,0.4)",
+  },
+  charHighlighted: {
+    backgroundColor: "rgba(255, 213, 79, 0.35)",
+    borderColor: "rgba(255, 213, 79, 0.6)",
+    borderRadius: 4,
   },
   debugText: {
     color: "yellow",
