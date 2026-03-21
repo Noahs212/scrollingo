@@ -268,6 +268,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     return (
       <View style={styles.loadingContainer}>
         <StatusBar hidden />
+        {!profile && <LanguageDropdown onLanguageChange={() => {}} />}
         <ActivityIndicator size="large" color="white" />
       </View>
     );
@@ -277,6 +278,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     return (
       <View style={styles.emptyContainer}>
         <StatusBar hidden />
+        {!profile && <LanguageDropdown onLanguageChange={() => {}} />}
         <Ionicons name="videocam-outline" size={64} color="#888" />
         <Text style={styles.emptyTitle}>No videos yet</Text>
         <Text style={styles.emptySubtitle}>
