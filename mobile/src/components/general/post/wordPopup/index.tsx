@@ -13,8 +13,8 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Pressable,
   StyleSheet,
-  Platform,
 } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Ionicons } from "@expo/vector-icons";
@@ -96,16 +96,20 @@ export default function WordPopup({
     data.contextual_definition && data.contextual_definition.length > 80;
 
   return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={0}
-      snapPoints={snapPoints}
-      onClose={handleClose}
-      enablePanDownToClose
-      backgroundStyle={styles.sheetBackground}
-      handleIndicatorStyle={styles.handle}
-      animateOnMount
-    >
+    <View style={styles.fullScreenContainer}>
+      {/* Backdrop — covers action buttons, tappable to dismiss */}
+      <Pressable style={styles.backdrop} onPress={handleClose} />
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        onClose={handleClose}
+        enablePanDownToClose
+        backgroundStyle={styles.sheetBackground}
+        handleIndicatorStyle={styles.handle}
+        animateOnMount
+      >
       <BottomSheetView style={styles.content}>
         {/* Word + Pinyin + Speaker */}
         <View style={styles.wordRow}>
@@ -174,10 +178,19 @@ export default function WordPopup({
         </TouchableOpacity>
       </BottomSheetView>
     </BottomSheet>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  fullScreenContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 20,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+  },
   sheetBackground: {
     backgroundColor: "rgba(20, 20, 20, 0.92)",
     borderTopLeftRadius: 20,
