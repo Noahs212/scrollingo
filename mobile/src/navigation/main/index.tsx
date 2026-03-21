@@ -22,7 +22,7 @@ export type RootStackParamList = {
   home: undefined;
   auth: undefined;
   onboarding: undefined;
-  userPosts: { creator: string; profile: boolean };
+  userPosts: { creator: string; profile: boolean; initialIndex?: number };
   profileOther: { initialUserId: string };
   editProfile: undefined;
   editProfileField: { title: string; field: string; value: string };

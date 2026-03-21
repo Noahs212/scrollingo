@@ -17,7 +17,9 @@ export default function ProfilePostList({
         nestedScrollEnabled
         data={videos}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ProfilePostListItem item={item} />}
+        renderItem={({ item, index }) => (
+          <ProfilePostListItem item={item} index={index} />
+        )}
       />
     </View>
   );

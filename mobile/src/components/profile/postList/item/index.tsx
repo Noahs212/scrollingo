@@ -5,7 +5,13 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../../navigation/main";
 
-export default function ProfilePostListItem({ item }: { item: Video }) {
+export default function ProfilePostListItem({
+  item,
+  index,
+}: {
+  item: Video;
+  index: number;
+}) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -16,6 +22,7 @@ export default function ProfilePostListItem({ item }: { item: Video }) {
         navigation.navigate("userPosts", {
           creator: item.creator_id ?? "",
           profile: true,
+          initialIndex: index,
         })
       }
     >

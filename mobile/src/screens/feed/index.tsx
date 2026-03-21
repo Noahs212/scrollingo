@@ -163,9 +163,10 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     CurrentUserProfileItemInViewContext,
   );
 
-  const { creator = "", profile = false } = (route.params ?? {}) as {
+  const { creator = "", profile = false, initialIndex = 0 } = (route.params ?? {}) as {
     creator?: string;
     profile?: boolean;
+    initialIndex?: number;
   };
 
   const isFocused = useIsFocused();
@@ -303,13 +304,14 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         getItemLayout={getItemLayout}
+        initialScrollIndex={profile ? initialIndex : 0}
         pagingEnabled
         decelerationRate="fast"
         showsVerticalScrollIndicator={false}
         snapToInterval={feedItemHeight}
         snapToAlignment="start"
         windowSize={5}
-        initialNumToRender={1}
+        initialNumToRender={profile ? initialIndex + 2 : 1}
         maxToRenderPerBatch={2}
         removeClippedSubviews
         viewabilityConfig={{
