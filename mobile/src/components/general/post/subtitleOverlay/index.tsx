@@ -199,11 +199,6 @@ const styles = StyleSheet.create({
   },
   charTarget: {
     position: "absolute",
-    // DEBUG MODE: red boxes show tap target boundaries
-    // Remove these 2 lines once alignment is verified
-    backgroundColor: "rgba(255,0,0,0.2)",
-    borderWidth: 1,
-    borderColor: "rgba(255,0,0,0.5)",
   },
   debugText: {
     color: "yellow",

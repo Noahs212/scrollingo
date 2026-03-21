@@ -44,11 +44,7 @@ interface VideoViewToken extends ViewToken {
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-function LanguageDropdown({
-  onLanguageChange,
-}: {
-  onLanguageChange: (code: string) => void;
-}) {
+function LanguageDropdown() {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
   const userId = useCurrentUserId();
@@ -69,7 +65,6 @@ function LanguageDropdown({
     setOpen(false);
     if (code === activeLearningLanguage) return;
     dispatch(setActiveLearningLanguage(code));
-    onLanguageChange(code);
     if (userId) {
       updateActiveLanguage(userId, code).catch(() => {});
     }
@@ -275,7 +270,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     return (
       <View style={styles.loadingContainer}>
         <StatusBar hidden />
-        {!profile && <LanguageDropdown onLanguageChange={() => {}} />}
+        {!profile && <LanguageDropdown />}
         <ActivityIndicator size="large" color="white" />
       </View>
     );
@@ -285,7 +280,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     return (
       <View style={styles.emptyContainer}>
         <StatusBar hidden />
-        {!profile && <LanguageDropdown onLanguageChange={() => {}} />}
+        {!profile && <LanguageDropdown />}
         <Ionicons name="videocam-outline" size={64} color="#888" />
         <Text style={styles.emptyTitle}>No videos yet</Text>
         <Text style={styles.emptySubtitle}>
@@ -298,7 +293,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      {!profile && <LanguageDropdown onLanguageChange={() => {}} />}
+      {!profile && <LanguageDropdown />}
       <FlatList
         data={videos}
         renderItem={renderItem}

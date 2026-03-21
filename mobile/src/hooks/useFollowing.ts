@@ -1,37 +1,18 @@
-// INHERITED: This file is from the kirkwat/tiktok base repo.
-// It will likely undergo significant changes as Scrollingo features are built.
-// Do not assume this code follows Scrollingo patterns — verify before modifying.
-
 import { useQuery } from "@tanstack/react-query";
 import { getIsFollowing } from "../services/user";
 import { keys } from "./queryKeys";
 
 /**
- * hook meant to fetch a user using react-query in order
- * to cache data and avoid unnecessary queries to be made
- * to firestore for the follow state of the user over another
- *
- * @param {String} userId of the user we want to see if it's following another
- * @param {String} otherUserId the id of the user that we want to check if it's being followed by another.
- * @param {Object} options to be passed along to useQuery
- * @returns
+ * Hook to check if a user is following another user.
+ * Uses React Query for caching. Returns null when either ID is missing.
  */
 export const useFollowing = (
   userId: string | null,
   otherUserId: string | null,
-  options = {},
 ) => {
-  if (!userId || !otherUserId) {
-    return {
-      data: null,
-      isLoading: false,
-      isError: false,
-    };
-  }
-
   return useQuery({
-    queryKey: keys.userFollowing(userId, otherUserId),
-    queryFn: () => getIsFollowing(userId, otherUserId),
-    ...options,
+    queryKey: keys.userFollowing(userId ?? "", otherUserId ?? ""),
+    queryFn: () => getIsFollowing(userId!, otherUserId!),
+    enabled: !!userId && !!otherUserId,
   });
 };
