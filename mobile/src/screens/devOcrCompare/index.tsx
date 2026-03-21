@@ -344,6 +344,19 @@ export default function DevOcrCompareScreen() {
             nativeControls={false}
           />
 
+          {/* Tap video to play/pause */}
+          <TouchableOpacity
+            style={s.videoTapTarget}
+            activeOpacity={1}
+            onPress={handlePlayPause}
+          >
+            {isPaused && (
+              <View style={s.pauseOverlay}>
+                <Feather name="play" size={48} color="rgba(255,255,255,0.8)" />
+              </View>
+            )}
+          </TouchableOpacity>
+
           {/* Overlay boxes from all models */}
           {models.map((model, mi) => {
             const seg = activeSegments[mi];
@@ -501,7 +514,9 @@ const s = StyleSheet.create({
   videoPillTextActive: { color: "white", fontWeight: "600" },
 
   videoContainer: { width: SCREEN_WIDTH, height: SCREEN_WIDTH * (16 / 9), backgroundColor: "black" },
-  charBox: { position: "absolute", borderWidth: 1.5, backgroundColor: "rgba(255,255,255,0.1)" },
+  videoTapTarget: { ...StyleSheet.absoluteFillObject, zIndex: 5 },
+  pauseOverlay: { flex: 1, justifyContent: "center" as const, alignItems: "center" as const, backgroundColor: "rgba(0,0,0,0.3)" },
+  charBox: { position: "absolute", borderWidth: 1.5, backgroundColor: "rgba(255,255,255,0.1)", zIndex: 4 },
 
   controls: { flexDirection: "row", alignItems: "center", gap: 12, padding: 12 },
   playBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: "#333", justifyContent: "center", alignItems: "center" },

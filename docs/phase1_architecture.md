@@ -104,7 +104,7 @@
 | **Storage/CDN** | Cloudflare R2 | Free egress, free CDN |
 | **STT** | Groq Whisper Turbo | $0.000667/min, 9x cheaper than OpenAI |
 | **Translation** | Google Translate API | $20/M chars, best quality |
-| **Definitions** | LLM (Gemini 2.0 Flash default) | $0.91/mo for 100 videos x 12 languages |
+| **Definitions** | LLM (Claude Haiku 3.5) | ~$1/mo for 100 videos x 12 languages |
 | **TTS** | Pre-generated (Google Neural2) + expo-speech | $22.40 one-time for 2 langs, $0 ongoing |
 | **Monitoring** | Axiom + Sentry + Grafana Cloud | All free tier |
 
@@ -422,7 +422,12 @@ func (s *PipelineService) ProcessVideo(ctx context.Context, videoID string) erro
         s.r2.PutObject(ctx, fmt.Sprintf("videos/%s/subs/%s.vtt", videoID, lang), vtt)
     }
 
-    s.db.Exec(ctx, "UPDATE videos SET status='ready' WHERE id=$1", videoID) // 6. Mark ready
+    // 6. Extract OCR bounding boxes for tappable subtitle overlay → upload to R2
+    // Uses VideOCR (SSIM dedup) at 250ms frame intervals, half-res for speed
+    bboxes := s.extractSubtitleBboxes(ctx, videoID) // per-character tap targets
+    s.r2.PutObject(ctx, fmt.Sprintf("videos/%s/bboxes.json", videoID), bboxes)
+
+    s.db.Exec(ctx, "UPDATE videos SET status='ready' WHERE id=$1", videoID) // 7. Mark ready
     return nil
 }
 ```
@@ -445,10 +450,11 @@ LIMIT $4;
 | Feed pages | Go sync.Map | 60s |
 | Dictionary lookups | Go sync.Map | 24h |
 | JWKS keys | Go sync.Map | 1h |
-| TTS/videos/subtitles | R2 + CDN | Immutable |
+| TTS/videos/subtitles/bboxes | R2 + CDN | Immutable |
 | Flashcards | Client MMKV | Sync on open |
 | Next 2 videos | Client expo-video prefetch | Until swipe past |
 | Thumbnails | Client Image cache | Platform default |
+| Bbox JSON per video | Client (fetch once from R2) | Until app restart |
 
 ---
 
@@ -498,6 +504,7 @@ scrollingo-media/
 │   ├── video.mp4                  # 720p progressive MP4
 │   ├── audio.mp3                  # Extracted for STT
 │   ├── thumbnail.jpg
+│   ├── bboxes.json                # OCR bounding boxes for tappable subtitle overlay
 │   └── subs/
 │       ├── en.vtt                 # Subtitles + definitions per native language
 │       ├── es.vtt
@@ -511,7 +518,36 @@ scrollingo-media/
 └── avatars/{user_id}.jpg
 ```
 
-**Cache-Control**: Videos/TTS/subtitles: `immutable, max-age=31536000`. Dictionaries: `max-age=604800`. Avatars: `max-age=3600`.
+### bboxes.json — OCR Bounding Box Data
+
+Per-character tap target positions extracted by VideOCR (SSIM dedup) pipeline. Stored in R2 alongside each video — static after pipeline processing, fetched once by the app and cached locally.
+
+```json
+{
+  "video": "video_id",
+  "resolution": {"width": 720, "height": 1280},
+  "duration_ms": 11633,
+  "frame_interval_ms": 250,
+  "segments": [{
+    "start_ms": 1000, "end_ms": 3000,
+    "detections": [{
+      "text": "你好",
+      "confidence": 0.99,
+      "bbox": {"x": 200, "y": 900, "width": 300, "height": 80},
+      "chars": [
+        {"char": "你", "x": 200, "y": 900, "width": 150, "height": 80},
+        {"char": "好", "x": 350, "y": 900, "width": 150, "height": 80}
+      ]
+    }]
+  }]
+}
+```
+
+The app's `SubtitleTapOverlay` component transforms these pixel coordinates to screen coordinates (accounting for `contentFit="contain"` scaling/centering) and renders invisible `Pressable` tap targets over each character. A pre-computed lookup table indexed by 50ms buckets provides O(1) segment matching synced to `expo-video`'s native `timeUpdate` event.
+
+**Why R2 and not Supabase:** The bbox JSON is static per video (computed once), potentially large (50-300KB), and doesn't need SQL querying — just fetched whole. Same pattern as WebVTT subtitle files and TTS audio.
+
+**Cache-Control**: Videos/TTS/subtitles/bboxes: `immutable, max-age=31536000`. Dictionaries: `max-age=604800`. Avatars: `max-age=3600`.
 
 ---
 
@@ -599,7 +635,7 @@ scrollingo-admin upload --file output.mp4 --lang en --title "Ordering Coffee"
 | Monitoring | Axiom + Sentry + Grafana | $0.00 |
 | STT | Groq Whisper (100 videos) | $0.03 |
 | Translation | Google Translate (100 videos) | $0.80 |
-| Definitions | Gemini Flash (100 videos x 12 langs) | $0.91 |
+| Definitions | Claude Haiku 3.5 (100 videos x 12 langs) | ~$1.00 |
 | TTS storage | R2 (pre-generated audio) | $0.03 |
 | **Total** | | **~$32/mo** |
 | **One-time**: TTS generation (2 langs) | Google Neural2 | $22.40 |

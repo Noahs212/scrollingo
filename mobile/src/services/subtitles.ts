@@ -12,19 +12,20 @@ import { SubtitleData } from "../components/general/post/subtitleOverlay";
 
 /**
  * Map from local video index to the subtitle JSON.
+ * Using VideOCR (SSIM dedup) — best positioning accuracy in our comparison.
  * These are the same videos in the same order as LOCAL_VIDEOS in posts.ts.
  */
 const SUBTITLE_FILES: Record<string, SubtitleData> = {
-  "local-video-1": require("../../assets/subtitles/video_2.json"),
-  "local-video-2": require("../../assets/subtitles/video_3.json"),
-  "local-video-3": require("../../assets/subtitles/video_4.json"),
-  "local-video-4": require("../../assets/subtitles/video_6.json"),
-  "local-video-5": require("../../assets/subtitles/video_8.json"),
-  "local-video-6": require("../../assets/subtitles/video_9.json"),
-  "local-video-7": require("../../assets/subtitles/video_10.json"),
-  "local-video-8": require("../../assets/subtitles/video_11.json"),
-  "local-video-9": require("../../assets/subtitles/video_12.json"),
-  "local-video-10": require("../../assets/subtitles/video_13.json"),
+  "local-video-1": require("../../assets/subtitles/video_2_videocr2.json"),
+  "local-video-2": require("../../assets/subtitles/video_3_videocr2.json"),
+  "local-video-3": require("../../assets/subtitles/video_4_videocr2.json"),
+  "local-video-4": require("../../assets/subtitles/video_6_videocr2.json"),
+  "local-video-5": require("../../assets/subtitles/video_8_videocr2.json"),
+  "local-video-6": require("../../assets/subtitles/video_9_videocr2.json"),
+  "local-video-7": require("../../assets/subtitles/video_10_videocr2.json"),
+  "local-video-8": require("../../assets/subtitles/video_11_videocr2.json"),
+  "local-video-9": require("../../assets/subtitles/video_12_videocr2.json"),
+  "local-video-10": require("../../assets/subtitles/video_13_videocr2.json"),
 };
 
 export function getSubtitleData(postId: string): SubtitleData | null {

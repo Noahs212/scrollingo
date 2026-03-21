@@ -212,10 +212,7 @@ def _build_detection(text: str, score: float, poly, scale_back: float) -> dict |
     y_max = max(p[1] for p in coords) * scale_back
     box_h = y_max - y_min
 
-    # Shift up by 50% of box height for shadow/glow compensation
-    shift = box_h * 0.5
-    y_min -= shift
-    y_max -= shift
+    # No vertical shift — OCR polygon aligns with characters at half-res
 
     chars = list(text)
     char_w = (x_max - x_min) / max(len(chars), 1)
