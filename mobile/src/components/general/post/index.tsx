@@ -50,6 +50,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     const [isPaused, setIsPaused] = useState(false);
     const [popupData, setPopupData] = useState<WordPopupData | null>(null);
     const [popupVisible, setPopupVisible] = useState(false);
+    const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     const lastTapRef = useRef(0);
     const pauseOpacity = useRef(new Animated.Value(0)).current;
     const heartScale = useRef(new Animated.Value(0)).current;
@@ -236,7 +237,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
             currentTimeMs={currentTimeMs}
             containerWidth={containerSize.width}
             containerHeight={containerSize.height}
-            onCharTap={(char, fullText) => {
+            onCharTap={(char, fullText, tapX, tapY) => {
               // Haptic feedback
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
@@ -248,6 +249,9 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                 // Player may be released
               }
 
+              // Store tap position for popup placement
+              setPopupPosition({ x: tapX, y: tapY });
+
               // Look up the word that contains this character
               if (wordDefs) {
                 const match = wordDefs.find(
@@ -257,12 +261,14 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                     currentTimeMs < wd.end_ms + 250,
                 );
                 if (match) {
+                  // Find the source sentence from word_definitions
                   setPopupData({
                     word: match.word,
                     pinyin: match.pinyin,
                     translation: match.translation,
                     contextual_definition: match.contextual_definition,
                     part_of_speech: match.part_of_speech,
+                    source_sentence: fullText,
                   });
                   setPopupVisible(true);
                   return;
@@ -273,9 +279,10 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
               setPopupData({
                 word: char,
                 pinyin: null,
-                translation: fullText,
+                translation: "",
                 contextual_definition: "",
                 part_of_speech: null,
+                source_sentence: fullText,
               });
               setPopupVisible(true);
             }}
@@ -287,6 +294,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           data={popupData}
           visible={popupVisible}
           language={item.language}
+          tapX={popupPosition.x}
+          tapY={popupPosition.y}
           onClose={() => {
             setPopupVisible(false);
             try {

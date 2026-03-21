@@ -56,7 +56,7 @@ interface Props {
   currentTimeMs: number;
   containerWidth: number;
   containerHeight: number;
-  onCharTap?: (char: string, fullText: string) => void;
+  onCharTap?: (char: string, fullText: string, screenX: number, screenY: number) => void;
 }
 
 /**
@@ -139,11 +139,9 @@ export default function SubtitleTapOverlay({
   }, [lookupTable, currentTimeMs]);
 
   const handleCharTap = useCallback(
-    (char: string, fullText: string) => {
+    (char: string, fullText: string, x: number, y: number) => {
       if (onCharTap) {
-        onCharTap(char, fullText);
-      } else {
-        Alert.alert(char, `From: "${fullText}"`);
+        onCharTap(char, fullText, x, y);
       }
     },
     [onCharTap],
@@ -171,7 +169,7 @@ export default function SubtitleTapOverlay({
           return (
             <Pressable
               key={`${di}-${ci}`}
-              onPress={() => handleCharTap(ch.char, det.text)}
+              onPress={() => handleCharTap(ch.char, det.text, screenX + screenW / 2, screenY)}
               style={[
                 styles.charTarget,
                 {
