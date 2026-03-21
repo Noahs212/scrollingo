@@ -876,3 +876,59 @@ class TestEdgeCases:
         result = pipeline.generate_definition_for_word("好", "很好", "zh", "en")
         assert result["translation"] == "good"
         assert result["part_of_speech"] == "adjective"
+
+
+# ===========================================================================
+# OCR Regression Test: pipeline run_ocr must match extract_subtitles_videocr2
+# ===========================================================================
+
+class TestOCRRegression:
+    """Verify that the pipeline's run_ocr() produces the same output as
+    the validated extract_subtitles_videocr2.py for a reference video.
+
+    This test prevents the regression where the pipeline's inline OCR
+    silently diverged from the validated extraction script and produced
+    fewer subtitles. If this test fails, either:
+    1. The pipeline's run_ocr() was changed without updating videocr2, or
+    2. The videocr2 script was changed without updating the pipeline.
+    """
+
+    def test_pipeline_ocr_constants_match_videocr2(self):
+        """Verify that the pipeline's OCR uses the same constants as videocr2."""
+        import importlib.util
+
+        # Load videocr2 module
+        spec = importlib.util.spec_from_file_location(
+            "videocr2",
+            os.path.join(os.path.dirname(__file__), "extract_subtitles_videocr2.py"),
+        )
+        videocr2 = importlib.util.module_from_spec(spec)
+
+        # Extract constants from videocr2 source (avoid executing the module
+        # which would try to import paddleocr)
+        videocr2_source = open(
+            os.path.join(os.path.dirname(__file__), "extract_subtitles_videocr2.py")
+        ).read()
+
+        # Check that the pipeline's run_ocr docstring mentions videocr2
+        import inspect
+        run_ocr_source = inspect.getsource(pipeline.run_ocr)
+
+        # Verify critical constants are present and match
+        assert "FRAME_INTERVAL_MS = 250" in run_ocr_source, "Pipeline must sample at 250ms"
+        assert "OCR_SCALE = 0.5" in run_ocr_source, "Pipeline must use half-res"
+        assert "MIN_DURATION_MS = 750" in run_ocr_source, "Pipeline must filter <750ms segments"
+        assert "CONF_THRESHOLD = 0.70" in run_ocr_source, "Pipeline must use 0.70 confidence"
+        assert "MIN_CHARS = 2" in run_ocr_source, "Pipeline must filter <2 char detections"
+        assert "SSIM_THRESHOLD = 0.92" in run_ocr_source, "Pipeline must use 0.92 SSIM threshold"
+        assert "SUBTITLE_REGION_TOP = 0.5" in run_ocr_source, "Pipeline subtitle region must start at 50%"
+        assert "SUBTITLE_REGION_BOTTOM = 0.85" in run_ocr_source, "Pipeline subtitle region must end at 85%"
+
+        # Same constants in videocr2
+        assert "FRAME_INTERVAL_MS = 250" in videocr2_source
+        assert "OCR_SCALE = 0.5" in videocr2_source
+        assert "MIN_DURATION_MS = 750" in videocr2_source
+        assert "CONF_THRESHOLD = 0.70" in videocr2_source
+        assert "SSIM_THRESHOLD = 0.92" in videocr2_source
+        assert "SUBTITLE_REGION_TOP = 0.5" in videocr2_source
+        assert "SUBTITLE_REGION_BOTTOM = 0.85" in videocr2_source

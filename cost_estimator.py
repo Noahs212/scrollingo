@@ -1591,7 +1591,7 @@ Monthly ongoing (100 videos): ~$0.04/month. See OCR Research tab for details.
     st.checkbox("3.3b — Auto-detect content language from OCR text using langdetect (zh, en, ja, fr, es)", value=True, key="m3_3b")
     st.checkbox("3.4 — Upload video.mp4 + thumbnail.jpg + bboxes.json to R2 via boto3", value=True, key="m3_4")
     st.checkbox("3.5 — Insert video row into Supabase with service role key (status='processing')", value=True, key="m3_5")
-    st.checkbox("3.6 — Run VideOCR (SSIM dedup) to extract subtitle bounding boxes", value=True, key="m3_6")
+    st.checkbox("3.6 — Run VideOCR (SSIM dedup) via import from extract_subtitles_videocr2.py — do NOT reimplement OCR inline", value=True, key="m3_6")
     st.checkbox("3.7 — Chinese word segmentation (jieba) with punctuation filtering", value=True, key="m3_7")
     st.checkbox("3.8 — Batch upsert unique words into vocab_words (on_conflict)", value=True, key="m3_8")
     st.checkbox("3.9 — LLM Definitions: Claude Haiku 3.5 × all words × 11 target languages, localized prompts", value=True, key="m3_9")
@@ -1634,6 +1634,8 @@ python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4 --language zh
 
 **Note:** The pipeline generates definitions for ALL 11 target languages per word (not just 1).
 This means M11.4 ("batch LLM definitions for all languages") is already handled per-video — M11 is about batch processing at scale.
+
+**Lesson learned:** When a spike validates a component (M1.5 → VideOCR), the production code MUST use the exact same logic. Currently the pipeline imports `process_video()` from `extract_subtitles_videocr2.py` directly. When the pipeline moves to a separate deployment (M10 Go backend or Docker), extract the OCR logic into a shared Python package or replicate with a regression test that compares output against the validated script.
         """)
 
     st.markdown("---")

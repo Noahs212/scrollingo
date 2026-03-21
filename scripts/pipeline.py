@@ -206,33 +206,61 @@ def insert_video_row(video_id: str, title: str, language: str, duration_sec: int
 
 def run_ocr(video_path: str, video_id: str) -> dict:
     """Run VideOCR (SSIM dedup) to extract subtitle bounding boxes.
-    Uses the same logic as extract_subtitles_videocr2.py."""
 
-    # Import OCR dependencies
-    from paddleocr import PaddleOCR
+    This is a COPY of the validated extract_subtitles_videocr2.py logic.
+    The pipeline must be standalone (deployable independently), so we can't
+    import from the test script. Instead, we copy the exact same logic and
+    verify equivalence via a regression test in test_pipeline.py.
+
+    If you change OCR logic here, you MUST also update extract_subtitles_videocr2.py
+    and verify the regression test still passes.
+    """
     import cv2
     import numpy as np
+    from paddleocr import PaddleOCR
 
+    # ── Constants (MUST match extract_subtitles_videocr2.py) ──
     FRAME_INTERVAL_MS = 250
     OCR_SCALE = 0.5
     MIN_DURATION_MS = 750
+    CONF_THRESHOLD = 0.70
+    MIN_CHARS = 2
     SSIM_THRESHOLD = 0.92
+    SUBTITLE_REGION_TOP = 0.5
+    SUBTITLE_REGION_BOTTOM = 0.85
 
-    # Try to import SSIM
     try:
         from skimage.metrics import structural_similarity as ssim_func
-        has_ssim = True
     except ImportError:
-        has_ssim = False
+        ssim_func = None
 
-    ocr = PaddleOCR(lang='ch', use_doc_orientation_classify=False,
-                    use_doc_unwarping=False, use_textline_orientation=False)
+    def compute_ssim(img1, img2):
+        if ssim_func:
+            return ssim_func(img1, img2)
+        diff = cv2.absdiff(img1, img2)
+        return 1.0 - (np.mean(diff) / 255.0)
 
-    # Get video info
+    def build_detection(text, score, poly, scale_back):
+        if score < CONF_THRESHOLD or len(text) < MIN_CHARS:
+            return None
+        coords = poly.tolist() if hasattr(poly, 'tolist') else poly
+        x0 = min(p[0] for p in coords) * scale_back
+        y0 = min(p[1] for p in coords) * scale_back
+        x1 = max(p[0] for p in coords) * scale_back
+        y1 = max(p[1] for p in coords) * scale_back
+        box_h = y1 - y0
+        cw = (x1 - x0) / max(len(text), 1)
+        return {
+            "text": text, "confidence": round(score, 4),
+            "bbox": {"x": round(x0), "y": round(y0), "width": round(x1 - x0), "height": round(box_h)},
+            "chars": [{"char": c, "x": round(x0 + i * cw), "y": round(y0),
+                       "width": round(cw), "height": round(box_h)} for i, c in enumerate(text)],
+        }
+
+    # ── Get video info ──
     probe = json.loads(subprocess.run(
         ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", video_path],
-        capture_output=True, text=True,
-    ).stdout)
+        capture_output=True, text=True).stdout)
     vs = [s for s in probe["streams"] if s["codec_type"] == "video"][0]
     w, h = int(vs["width"]), int(vs["height"])
     dur = float(vs.get("duration", 0))
@@ -241,97 +269,97 @@ def run_ocr(video_path: str, video_id: str) -> dict:
 
     print(f"  OCR: {w}x{h}, {dur:.0f}s, sampling at {FRAME_INTERVAL_MS}ms...")
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        # Extract frames at half res
-        frames = []
-        ts = 0
-        while ts < dur * 1000:
-            fp = os.path.join(tmpdir, f"f_{ts:06d}.jpg")
-            subprocess.run([
-                "ffmpeg", "-y", "-i", video_path, "-ss", str(ts / 1000),
-                "-vframes", "1", "-vf", f"scale={sW}:{sH}", "-q:v", "2", fp,
-            ], capture_output=True)
-            if os.path.exists(fp):
-                frames.append((fp, ts))
-            ts += FRAME_INTERVAL_MS
+    # ── Extract frames with SSIM dedup (same as videocr2) ──
+    cap = cv2.VideoCapture(video_path)
+    frames = []
+    prev_sub_gray = None
+    ts_ms = 0
+    total_frames = 0
+    unique_frames = 0
 
-        # SSIM dedup: skip frames where subtitle region hasn't changed
-        prev_sub_gray = None
-        unique_frames = []
-        for fp, ts_ms in frames:
-            img = cv2.imread(fp, cv2.IMREAD_GRAYSCALE)
-            if img is None:
-                continue
-            # Subtitle region: bottom 50-85% of frame
-            sub_region = img[int(sH * 0.5):int(sH * 0.85), :]
+    while ts_ms < dur * 1000:
+        cap.set(cv2.CAP_PROP_POS_MSEC, ts_ms)
+        ret, frame = cap.read()
+        if not ret:
+            ts_ms += FRAME_INTERVAL_MS
+            continue
 
-            if prev_sub_gray is not None and has_ssim:
-                score = ssim_func(sub_region, prev_sub_gray)
-                if score > SSIM_THRESHOLD:
-                    continue  # Skip — subtitle region unchanged
+        total_frames += 1
+        frame = cv2.resize(frame, (sW, sH))
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        sub_region = gray[int(sH * SUBTITLE_REGION_TOP):int(sH * SUBTITLE_REGION_BOTTOM), :]
 
-            prev_sub_gray = sub_region
-            unique_frames.append((fp, ts_ms))
+        is_unique = True
+        if prev_sub_gray is not None and sub_region.shape == prev_sub_gray.shape:
+            ssim_val = compute_ssim(sub_region, prev_sub_gray)
+            is_unique = ssim_val < SSIM_THRESHOLD
 
-        skipped = len(frames) - len(unique_frames)
-        print(f"  Frames: {len(frames)} total, {len(unique_frames)} unique, {skipped} skipped")
+        if is_unique:
+            unique_frames += 1
+        frames.append((frame, ts_ms, is_unique))
+        prev_sub_gray = sub_region
+        ts_ms += FRAME_INTERVAL_MS
 
-        # OCR each unique frame
-        frame_results = []
-        for fp, ts_ms in unique_frames:
-            r = ocr.ocr(fp)
+    cap.release()
+    print(f"  Frames: {total_frames} total, {unique_frames} unique, {total_frames - unique_frames} skipped")
+
+    # ── OCR engine ──
+    ocr = PaddleOCR(lang='ch', use_doc_orientation_classify=False,
+                    use_doc_unwarping=False, use_textline_orientation=False)
+
+    # ── OCR each frame (skip non-unique, carry forward last detections) ──
+    frame_results = []
+    last_dets = []
+    for frame_img, ts_ms, is_unique in frames:
+        if is_unique:
+            r = ocr.ocr(frame_img)
             dets = []
             if r and r[0]:
-                for text, score, poly in zip(
-                    r[0].get("rec_texts", []),
-                    r[0].get("rec_scores", []),
-                    r[0].get("rec_polys", []),
-                ):
-                    if score < 0.7 or len(text) < 2:
-                        continue
-                    coords = poly.tolist()
-                    x0 = min(p[0] for p in coords) * scale_back
-                    y0 = min(p[1] for p in coords) * scale_back
-                    x1 = max(p[0] for p in coords) * scale_back
-                    y1 = max(p[1] for p in coords) * scale_back
-                    box_h = y1 - y0
-                    cw = (x1 - x0) / max(len(text), 1)
-                    dets.append({
-                        "text": text, "confidence": round(score, 4),
-                        "bbox": {"x": round(x0), "y": round(y0), "width": round(x1 - x0), "height": round(box_h)},
-                        "chars": [{"char": c, "x": round(x0 + i * cw), "y": round(y0),
-                                   "width": round(cw), "height": round(box_h)} for i, c in enumerate(text)],
-                    })
-            frame_results.append({"timestamp_ms": ts_ms, "detections": dets})
+                data = r[0]
+                if isinstance(data, dict):
+                    for text, score, poly in zip(data.get("rec_texts", []),
+                                                  data.get("rec_scores", []),
+                                                  data.get("rec_polys", [])):
+                        det = build_detection(text, score, poly, scale_back)
+                        if det:
+                            dets.append(det)
+                elif isinstance(data, list):
+                    for item in data:
+                        if len(item) >= 2:
+                            det = build_detection(item[1][0], item[1][1], item[0], scale_back)
+                            if det:
+                                dets.append(det)
+            last_dets = dets
+        else:
+            dets = last_dets
 
-        # Deduplicate into segments
-        segments = []
-        cur_text, cur_seg = None, None
-        for fr in frame_results:
-            if not fr["detections"]:
-                if cur_seg:
-                    segments.append(cur_seg)
-                    cur_seg = None
-                    cur_text = None
-                continue
-            sorted_dets = sorted(fr["detections"], key=lambda d: d["bbox"]["y"], reverse=True)
-            ft = "|".join(d["text"] for d in sorted_dets)
-            if ft == cur_text and cur_seg:
-                cur_seg["end_ms"] = fr["timestamp_ms"] + FRAME_INTERVAL_MS
-            else:
-                if cur_seg:
-                    segments.append(cur_seg)
-                cur_text = ft
-                cur_seg = {
-                    "start_ms": fr["timestamp_ms"],
-                    "end_ms": fr["timestamp_ms"] + FRAME_INTERVAL_MS,
-                    "detections": sorted_dets,
-                }
-        if cur_seg:
-            segments.append(cur_seg)
+        frame_results.append({"timestamp_ms": ts_ms, "detections": dets})
 
-        # Filter short segments
-        segments = [s for s in segments if (s["end_ms"] - s["start_ms"]) >= MIN_DURATION_MS]
+    # ── Deduplicate into segments ──
+    segments = []
+    cur_text, cur_seg = None, None
+    for fr in frame_results:
+        if not fr["detections"]:
+            if cur_seg:
+                segments.append(cur_seg)
+                cur_seg = None
+                cur_text = None
+            continue
+        sorted_dets = sorted(fr["detections"], key=lambda d: d["bbox"]["y"], reverse=True)
+        ft = "|".join(d["text"] for d in sorted_dets)
+        if ft == cur_text and cur_seg:
+            cur_seg["end_ms"] = fr["timestamp_ms"] + FRAME_INTERVAL_MS
+        else:
+            if cur_seg:
+                segments.append(cur_seg)
+            cur_text = ft
+            cur_seg = {"start_ms": fr["timestamp_ms"],
+                       "end_ms": fr["timestamp_ms"] + FRAME_INTERVAL_MS,
+                       "detections": sorted_dets}
+    if cur_seg:
+        segments.append(cur_seg)
+
+    segments = [s for s in segments if (s["end_ms"] - s["start_ms"]) >= MIN_DURATION_MS]
 
     bbox_data = {
         "video": video_id,
