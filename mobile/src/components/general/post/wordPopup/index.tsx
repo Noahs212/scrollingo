@@ -1,35 +1,43 @@
 /**
- * WordPopup — floating card positioned above the tapped word with arrow pointing down.
+ * WordPopup — frosted glass card floating ABOVE the tapped word with a
+ * downward-pointing arrow anchored at (tapX, tapY).
  *
- * Layout (matching the Chinese reading app reference):
- * - Source sentence translation
- * - Word (large bold) + speaker icon
- * - Pinyin
- * - "- Translation"
- * - Part of speech (italic)
- * - Contextual definition card with sparkle icon
- * - "See More ∨" link
- * - Dashed divider
- * - "Add to Vocab" button
- * - Arrow pointing down to the highlighted word
+ * Renders as an absolutely positioned View (NOT a Modal) so it stays in the
+ * same coordinate space as the video and subtitle overlays.
  */
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Pressable,
+  ScrollView,
   StyleSheet,
   Dimensions,
+  Animated,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as Speech from "expo-speech";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+// Enable LayoutAnimation on Android
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 const POPUP_WIDTH = SCREEN_WIDTH * 0.82;
 const ARROW_SIZE = 10;
+const SCREEN_EDGE_PADDING = 8;
+const TOP_SAFE_AREA = 60;
 
 export interface WordPopupData {
   word: string;
@@ -43,8 +51,8 @@ export interface WordPopupData {
 interface Props {
   data: WordPopupData | null;
   visible: boolean;
-  tapX: number;
-  tapY: number;
+  tapX: number; // screen X of tapped character center
+  tapY: number; // screen Y of tapped character top edge
   onClose: () => void;
   onSave?: (word: string) => void;
   language?: string;
@@ -59,21 +67,81 @@ export default function WordPopup({
   onSave,
   language = "zh",
 }: Props) {
-  const [showMore, setShowMore] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const speakerScale = useRef(new Animated.Value(1)).current;
+  const speakerLoop = useRef<Animated.CompositeAnimation | null>(null);
 
+  // ---------- visibility fade ----------
+  useEffect(() => {
+    if (visible) {
+      setExpanded(false);
+      setSaved(false);
+      setIsSpeaking(false);
+      fadeAnim.setValue(0);
+
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [visible, fadeAnim]);
+
+  // ---------- speaker pulse while speaking ----------
+  useEffect(() => {
+    if (isSpeaking) {
+      const loop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(speakerScale, {
+            toValue: 1.25,
+            duration: 350,
+            useNativeDriver: true,
+          }),
+          Animated.timing(speakerScale, {
+            toValue: 1,
+            duration: 350,
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      speakerLoop.current = loop;
+      loop.start();
+    } else {
+      speakerLoop.current?.stop();
+      speakerScale.setValue(1);
+    }
+  }, [isSpeaking, speakerScale]);
+
+  // ---------- handlers ----------
   const handleClose = useCallback(() => {
-    setShowMore(false);
+    Speech.stop();
     onClose();
   }, [onClose]);
 
   const handleSpeak = useCallback(() => {
     if (!data?.word) return;
-    const localeMap: Record<string, string> = {
-      zh: "zh-CN", en: "en-US", ja: "ja-JP", fr: "fr-FR", es: "es-ES",
-    };
-    setIsSpeaking(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    const localeMap: Record<string, string> = {
+      zh: "zh-CN",
+      en: "en-US",
+      ja: "ja-JP",
+      fr: "fr-FR",
+      es: "es-ES",
+      ko: "ko-KR",
+      de: "de-DE",
+    };
+
+    setIsSpeaking(true);
     Speech.speak(data.word, {
       language: localeMap[language] ?? language,
       rate: 0.8,
@@ -83,34 +151,55 @@ export default function WordPopup({
   }, [data?.word, language]);
 
   const handleSave = useCallback(() => {
-    if (!data?.word) return;
+    if (!data?.word || saved) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onSave?.(data.word);
-  }, [data?.word, onSave]);
+    setSaved(true);
+  }, [data?.word, onSave, saved]);
 
+  const handleSeeMore = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpanded(true);
+  }, []);
+
+  // ---------- early return ----------
   if (!visible || !data) return null;
 
-  // Position popup above the tapped word
-  // Center horizontally on tap point, clamped to screen edges
+  // ---------- positioning ----------
+  // Horizontally center on tapX, clamped to screen edges
   let popupLeft = tapX - POPUP_WIDTH / 2;
-  popupLeft = Math.max(8, Math.min(popupLeft, SCREEN_WIDTH - POPUP_WIDTH - 8));
+  popupLeft = Math.max(
+    SCREEN_EDGE_PADDING,
+    Math.min(popupLeft, SCREEN_WIDTH - POPUP_WIDTH - SCREEN_EDGE_PADDING),
+  );
 
-  // Position above the tap point (popup bottom edge at tapY - gap)
-  // If that would go off screen top, position below instead
-  const popupBottom = SCREEN_HEIGHT - tapY + ARROW_SIZE + 4;
+  // The popup sits ABOVE tapY. The arrow tip touches tapY.
+  // Using `bottom` positioning: distance from the bottom of the screen to
+  // the bottom of the arrow tip.
+  const popupBottom = SCREEN_HEIGHT - tapY;
 
-  // Arrow horizontal position relative to popup
-  const arrowLeft = tapX - popupLeft - ARROW_SIZE;
+  // Max card height: from the arrow to TOP_SAFE_AREA
+  const maxCardHeight = tapY - TOP_SAFE_AREA - ARROW_SIZE;
+
+  // Arrow horizontal position relative to the popup's left edge
+  const arrowLeft = Math.max(
+    14,
+    Math.min(tapX - popupLeft - ARROW_SIZE, POPUP_WIDTH - 14 - ARROW_SIZE * 2),
+  );
 
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      {/* Backdrop */}
+    <Animated.View
+      style={[StyleSheet.absoluteFill, { opacity: fadeAnim, zIndex: 30 }]}
+      pointerEvents={visible ? "auto" : "none"}
+    >
+      {/* Transparent backdrop to capture outside taps */}
       <Pressable style={styles.backdrop} onPress={handleClose} />
 
-      {/* Popup card positioned above the tapped word */}
+      {/* Card + Arrow positioned above the tapped word */}
       <View
         style={[
-          styles.popupCard,
+          styles.popupContainer,
           {
             left: popupLeft,
             bottom: popupBottom,
@@ -118,108 +207,150 @@ export default function WordPopup({
           },
         ]}
       >
-        {/* Source sentence */}
-        {data.source_sentence && (
-          <Text style={styles.contextSentence} numberOfLines={2}>
-            {data.source_sentence}
-          </Text>
-        )}
-
-        {/* Word + Speaker */}
-        <View style={styles.wordRow}>
-          <Text style={styles.word}>{data.word}</Text>
-          <TouchableOpacity onPress={handleSpeak} style={styles.speakerBtn}>
-            <Ionicons
-              name={isSpeaking ? "volume-high" : "volume-medium-outline"}
-              size={20}
-              color={isSpeaking ? "#fe2c55" : "rgba(255,255,255,0.5)"}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Pinyin */}
-        {data.pinyin && (
-          <Text style={styles.pinyin}>{data.pinyin}</Text>
-        )}
-
-        {/* Translation */}
-        {data.translation ? (
-          <Text style={styles.translation}>- {data.translation}</Text>
-        ) : null}
-
-        {/* Part of speech */}
-        {data.part_of_speech && (
-          <Text style={styles.pos}>{data.part_of_speech}</Text>
-        )}
-
-        {/* Contextual definition card */}
-        {data.contextual_definition ? (
-          <View style={styles.defCard}>
-            <Ionicons name="sparkles" size={13} color="rgba(255,255,255,0.35)" style={styles.defIcon} />
-            <Text style={styles.defText} numberOfLines={showMore ? undefined : 3}>
-              {data.contextual_definition}
-            </Text>
-          </View>
-        ) : null}
-
-        {/* See More */}
-        {!showMore && (
-          <TouchableOpacity onPress={() => setShowMore(true)} style={styles.seeMoreBtn}>
-            <Text style={styles.seeMoreText}>See More</Text>
-            <Ionicons name="chevron-down" size={13} color="rgba(255,255,255,0.4)" />
-          </TouchableOpacity>
-        )}
-
-        {/* Expanded context */}
-        {showMore && data.source_sentence && (
-          <View style={styles.expandedSection}>
-            <Text style={styles.expandedLabel}>Context</Text>
-            <Text style={styles.expandedText}>"{data.source_sentence}"</Text>
-          </View>
-        )}
-
-        {/* Divider */}
-        <View style={styles.divider} />
-
-        {/* Add to Vocab */}
-        <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
-          <Text style={styles.saveBtnText}>Add to Vocab</Text>
-        </TouchableOpacity>
-
-        {/* Arrow pointing down */}
-        <View
+        {/* Scrollable card */}
+        <ScrollView
           style={[
-            styles.arrow,
-            { left: Math.max(12, Math.min(arrowLeft, POPUP_WIDTH - 32)) },
+            styles.card,
+            { maxHeight: maxCardHeight > 120 ? maxCardHeight : 120 },
           ]}
-        />
+          contentContainerStyle={styles.cardContent}
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* 1. Word + Speaker icon */}
+          <View style={styles.wordRow}>
+            <Text style={styles.word}>{data.word}</Text>
+            <TouchableOpacity
+              onPress={handleSpeak}
+              style={styles.speakerBtn}
+              activeOpacity={0.7}
+            >
+              <Animated.View
+                style={{ transform: [{ scale: speakerScale }] }}
+              >
+                <Ionicons
+                  name={isSpeaking ? "volume-high" : "volume-medium-outline"}
+                  size={20}
+                  color={isSpeaking ? "#60a5fa" : "rgba(255,255,255,0.5)"}
+                />
+              </Animated.View>
+            </TouchableOpacity>
+          </View>
+
+          {/* 2. Pinyin */}
+          {data.pinyin ? (
+            <Text style={styles.pinyin}>{data.pinyin}</Text>
+          ) : null}
+
+          {/* 3. Translation */}
+          {data.translation ? (
+            <Text style={styles.translation}>- {data.translation}</Text>
+          ) : null}
+
+          {/* 4. Part of speech */}
+          {data.part_of_speech ? (
+            <Text style={styles.pos}>{data.part_of_speech}</Text>
+          ) : null}
+
+          {/* 5. Contextual definition card */}
+          {data.contextual_definition ? (
+            <View style={styles.defCard}>
+              <Text style={styles.sparkle}>✨</Text>
+              <Text style={styles.defText}>
+                {data.contextual_definition}
+              </Text>
+            </View>
+          ) : null}
+
+          {/* 6. See More / Expanded source sentence */}
+          {!expanded ? (
+            <TouchableOpacity
+              onPress={handleSeeMore}
+              style={styles.seeMoreBtn}
+              activeOpacity={0.6}
+            >
+              <Text style={styles.seeMoreText}>See More</Text>
+              <Ionicons
+                name="chevron-down"
+                size={13}
+                color="rgba(255,255,255,0.4)"
+                style={{ marginLeft: 3 }}
+              />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.expandedSection}>
+              {data.source_sentence ? (
+                <>
+                  <Text style={styles.expandedLabel}>Source sentence</Text>
+                  <Text style={styles.expandedText}>
+                    &ldquo;{data.source_sentence}&rdquo;
+                  </Text>
+                </>
+              ) : null}
+            </View>
+          )}
+
+          {/* 7. Dashed divider */}
+          <View style={styles.divider} />
+
+          {/* 8. Add to Vocab / Saved button */}
+          <TouchableOpacity
+            onPress={handleSave}
+            style={[styles.saveBtn, saved && styles.saveBtnSaved]}
+            activeOpacity={0.7}
+          >
+            {saved ? (
+              <View style={styles.savedRow}>
+                <Ionicons
+                  name="checkmark-circle"
+                  size={15}
+                  color="#22c55e"
+                  style={{ marginRight: 5 }}
+                />
+                <Text style={styles.saveBtnTextSaved}>Saved</Text>
+              </View>
+            ) : (
+              <Text style={styles.saveBtnText}>Add to Vocab</Text>
+            )}
+          </TouchableOpacity>
+        </ScrollView>
+
+        {/* Arrow pointing down at the tapped word */}
+        <View style={[styles.arrow, { marginLeft: arrowLeft }]} />
       </View>
-    </View>
+    </Animated.View>
   );
 }
+
+const CARD_BG = "rgba(35,35,35,0.94)";
 
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "transparent",
   },
-  popupCard: {
+
+  popupContainer: {
     position: "absolute",
-    backgroundColor: "rgba(40, 40, 40, 0.95)",
+    // The container's bottom edge = arrow tip = tapY
+    // Card stacks above the arrow via normal flow
+  },
+
+  card: {
+    backgroundColor: CARD_BG,
     borderRadius: 14,
-    padding: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 20,
-    zIndex: 30,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
+    elevation: 24,
+  },
+  cardContent: {
+    padding: 16,
   },
 
   // Arrow
   arrow: {
-    position: "absolute",
-    bottom: -ARROW_SIZE,
     width: 0,
     height: 0,
     borderLeftWidth: ARROW_SIZE,
@@ -227,18 +358,10 @@ const styles = StyleSheet.create({
     borderTopWidth: ARROW_SIZE,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderTopColor: "rgba(40, 40, 40, 0.95)",
+    borderTopColor: CARD_BG,
   },
 
-  // Context sentence
-  contextSentence: {
-    color: "rgba(255, 255, 255, 0.45)",
-    fontSize: 12,
-    marginBottom: 10,
-    lineHeight: 16,
-  },
-
-  // Word row
+  // 1. Word row
   wordRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -254,104 +377,119 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    backgroundColor: "rgba(255,255,255,0.08)",
     justifyContent: "center",
     alignItems: "center",
   },
 
-  // Pinyin
+  // 2. Pinyin
   pinyin: {
-    color: "rgba(255, 255, 255, 0.4)",
+    color: "rgba(255,255,255,0.4)",
     fontSize: 14,
     marginTop: 2,
     marginBottom: 6,
   },
 
-  // Translation
+  // 3. Translation
   translation: {
     color: "#ffffff",
     fontSize: 16,
-    marginBottom: 3,
+    marginBottom: 4,
   },
 
-  // POS
+  // 4. Part of speech
   pos: {
-    color: "rgba(255, 255, 255, 0.3)",
+    color: "rgba(255,255,255,0.3)",
     fontSize: 12,
     fontStyle: "italic",
     marginBottom: 10,
   },
 
-  // Def card
+  // 5. Contextual definition card
   defCard: {
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderRadius: 10,
     padding: 12,
     flexDirection: "row",
     alignItems: "flex-start",
-    marginBottom: 2,
+    marginBottom: 4,
   },
-  defIcon: {
+  sparkle: {
+    fontSize: 13,
     marginRight: 6,
-    marginTop: 2,
+    marginTop: 1,
   },
   defText: {
-    color: "rgba(255, 255, 255, 0.55)",
+    color: "rgba(255,255,255,0.55)",
     fontSize: 13,
     lineHeight: 18,
     flex: 1,
     fontStyle: "italic",
   },
 
-  // See More
+  // 6. See More
   seeMoreBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 6,
-    gap: 4,
+    paddingVertical: 8,
   },
   seeMoreText: {
-    color: "rgba(255, 255, 255, 0.4)",
+    color: "rgba(255,255,255,0.4)",
     fontSize: 12,
   },
 
-  // Expanded
+  // Expanded section
   expandedSection: {
     marginTop: 6,
+    marginBottom: 2,
   },
   expandedLabel: {
-    color: "rgba(255, 255, 255, 0.25)",
+    color: "rgba(255,255,255,0.25)",
     fontSize: 10,
     textTransform: "uppercase",
     letterSpacing: 1,
-    marginBottom: 3,
+    marginBottom: 4,
   },
   expandedText: {
-    color: "rgba(255, 255, 255, 0.45)",
+    color: "rgba(255,255,255,0.5)",
     fontSize: 12,
     fontStyle: "italic",
-    lineHeight: 16,
+    lineHeight: 17,
   },
 
-  // Divider
+  // 7. Divider
   divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderStyle: "dashed",
     marginVertical: 10,
   },
 
-  // Save
+  // 8. Add to Vocab button
   saveBtn: {
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
+    borderColor: "rgba(255,255,255,0.2)",
     borderRadius: 8,
-    paddingVertical: 9,
+    paddingVertical: 10,
     alignItems: "center",
+  },
+  saveBtnSaved: {
+    borderColor: "rgba(34,197,94,0.3)",
+    backgroundColor: "rgba(34,197,94,0.2)",
   },
   saveBtnText: {
     color: "#ffffff",
     fontSize: 13,
     fontWeight: "500",
+  },
+  saveBtnTextSaved: {
+    color: "#22c55e",
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  savedRow: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
