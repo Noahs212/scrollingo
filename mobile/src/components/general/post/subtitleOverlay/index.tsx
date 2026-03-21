@@ -199,6 +199,10 @@ const styles = StyleSheet.create({
   },
   charTarget: {
     position: "absolute",
+    // DEBUG: visible tap targets for OCR validation — remove before production
+    backgroundColor: "rgba(255,0,0,0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(255,0,0,0.4)",
   },
   debugText: {
     color: "yellow",
