@@ -1581,24 +1581,24 @@ Monthly ongoing (100 videos): ~$0.04/month. See OCR Research tab for details.
 
     st.markdown("---")
 
-    # ── Milestone 3: First Video End-to-End (Pipeline) ──
+    # ── Milestone 3: First Video End-to-End (Pipeline) (DONE) ──
     st.subheader("Milestone 3: First Video End-to-End (Pipeline)")
     st.caption("Process one video with burned-in subtitles through the pipeline: upload → OCR → definitions → DB. Proves R2 + OCR + LLM + Supabase all work together.")
 
-    st.checkbox("3.1 — Get Anthropic API key for Claude Haiku 3.5 (handles translation + contextual definition + POS in one call)", key="m3_1")
-    st.checkbox("3.2 — Python pipeline script: accepts local video file, optional --language flag (auto-detected from OCR if not provided)", key="m3_2")
-    st.checkbox("3.3 — Normalize video to 720p with FFmpeg (scale + pad + faststart)", key="m3_3")
-    st.checkbox("3.3b — Auto-detect content language from OCR text using langdetect (supports zh, en, ja, fr, es as source languages)", key="m3_3b")
-    st.checkbox("3.4 — Upload video.mp4 + thumbnail.jpg to R2 (videos/{id}/)", key="m3_4")
-    st.checkbox("3.5 — Insert video row into Supabase (status='processing', cdn_url, language, duration)", key="m3_5")
-    st.checkbox("3.6 — Run VideOCR (SSIM dedup) to extract subtitle bounding boxes → upload bboxes.json to R2", key="m3_6")
-    st.checkbox("3.7 — Chinese word segmentation (jieba) on OCR text → individual words with timestamps", key="m3_7")
-    st.checkbox("3.8 — Insert unique words into vocab_words (ON CONFLICT DO NOTHING)", key="m3_8")
-    st.checkbox("3.9 — LLM Definitions: call Claude Haiku 3.5 for all words × 11 target languages (skip self-translation), localized prompts per target language", key="m3_9")
-    st.checkbox("3.10 — Insert word_definitions into DB (vocab_word_id, video_id, target_language)", key="m3_10")
-    st.checkbox("3.11 — Insert video_words into DB (word timestamps linked to vocab_words)", key="m3_11")
-    st.checkbox("3.12 — Update video status='ready', insert pipeline_jobs row", key="m3_12")
-    st.checkbox("3.13 — Verify: app loads video from R2, bboxes overlay works, definitions queryable", key="m3_13")
+    st.checkbox("3.1 — Get Anthropic API key for Claude Haiku 3.5 via OpenRouter", value=True, key="m3_1")
+    st.checkbox("3.2 — Python pipeline script with --video, --language (auto-detect), --title (auto-detect), --dry-run", value=True, key="m3_2")
+    st.checkbox("3.3 — Normalize video to 720p with FFmpeg (scale + pad + faststart)", value=True, key="m3_3")
+    st.checkbox("3.3b — Auto-detect content language from OCR text using langdetect (zh, en, ja, fr, es)", value=True, key="m3_3b")
+    st.checkbox("3.4 — Upload video.mp4 + thumbnail.jpg + bboxes.json to R2 via boto3", value=True, key="m3_4")
+    st.checkbox("3.5 — Insert video row into Supabase with service role key (status='processing')", value=True, key="m3_5")
+    st.checkbox("3.6 — Run VideOCR (SSIM dedup) to extract subtitle bounding boxes", value=True, key="m3_6")
+    st.checkbox("3.7 — Chinese word segmentation (jieba) with punctuation filtering", value=True, key="m3_7")
+    st.checkbox("3.8 — Batch upsert unique words into vocab_words (on_conflict)", value=True, key="m3_8")
+    st.checkbox("3.9 — LLM Definitions: Claude Haiku 3.5 × all words × 11 target languages, localized prompts", value=True, key="m3_9")
+    st.checkbox("3.10 — Insert word_definitions into DB (all 11 languages per word)", value=True, key="m3_10")
+    st.checkbox("3.11 — Insert video_words into DB (word timestamps linked to vocab_words)", value=True, key="m3_11")
+    st.checkbox("3.12 — Update video status='ready', insert pipeline_jobs with real timestamps", value=True, key="m3_12")
+    st.checkbox("3.13 — Verified: video plays from R2 CDN, data queryable in Supabase (app integration is M4)", value=True, key="m3_13")
 
     with st.expander("M3 Details: Pipeline script approach"):
         st.markdown("""
@@ -1632,7 +1632,8 @@ python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4 --language zh
 - OCR vs STT auto-detection
 - Audio extraction
 
-**Start with 1 native language** (e.g., English) to keep it simple. Expand to all 12 in M11.
+**Note:** The pipeline generates definitions for ALL 11 target languages per word (not just 1).
+This means M11.4 ("batch LLM definitions for all languages") is already handled per-video — M11 is about batch processing at scale.
         """)
 
     st.markdown("---")
@@ -1907,7 +1908,7 @@ This returns ~50 rows per video. The app caches this per video — no extra quer
 | **M1** | Database + user system + onboarding + profile | M0 | **Done** |
 | **M1.5** | OCR + tappable subtitles spike (validate core UX) | M1 | **Done** |
 | **M2** | R2 Storage + CDN | — | **Done** |
-| **M3** | First video end-to-end — OCR pipeline (burned-in subtitles) | M1.5, M2 | 1-2 days |
+| **M3** | First video end-to-end — OCR pipeline (burned-in subtitles) | M1.5, M2 | **Done** |
 | **M3.5** | STT subtitle path — Whisper for videos without burned-in subs | M3 | 1 day |
 | **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | 2-3 days |
 | **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | 1-2 days |

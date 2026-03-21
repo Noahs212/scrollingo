@@ -66,7 +66,7 @@
 **Content Pipeline (Backend)**
 - R33: Admin CLI uploads video → triggers AI pipeline
 - R34: Pipeline: detect subtitle source (OCR or STT) → Translation → Contextual Definitions (LLM) → store in R2
-- R35: OCR via cloud vision API for videos with burned-in subtitles; STT via Groq Whisper for videos with audio only
+- R35: OCR via PaddleOCR PP-OCRv5 (VideOCR SSIM dedup) for videos with burned-in subtitles; STT via Groq Whisper for videos with audio only (M3.5)
 - R36: Pre-generated TTS for all ~100K words per learning language, stored in R2
 - R37: Videos marked "ready" after pipeline completes; Supabase Realtime notifies clients
 
@@ -93,86 +93,114 @@
 
 | Layer | Choice | Why |
 |-------|--------|-----|
-| **Mobile** | React Native + Expo (TypeScript) | kirkwat/tiktok base repo, largest ecosystem |
+| **Mobile** | React Native + Expo SDK 55 (TypeScript) | kirkwat/tiktok base repo, largest ecosystem |
 | **Base Repo** | kirkwat/tiktok | Auth, feed, likes, comments, profiles, DMs built |
-| **State** | Zustand | Simpler than Redux Toolkit (migrated from base) |
-| **Video** | expo-video + @shopify/flash-list | Native players, performant full-screen pager |
-| **Offline Storage** | react-native-mmkv (flashcards), expo-sqlite (dictionaries) | Fast KV store + SQL for structured lookups |
-| **Navigation** | React Navigation (bottom tabs + stacks) | Inherited from base, no migration needed |
-| **Backend** | Go monolith (chi router) on fly.io | Single binary, efficient, $5/mo |
+| **State** | Redux Toolkit + React Query v5 | Redux for global state (5 slices), React Query for server cache |
+| **Video** | expo-video (native AVPlayer/ExoPlayer) | Native players, `contentFit="contain"`, `useEvent` for time sync |
+| **Offline Storage** | react-native-mmkv (flashcards, M6), expo-sqlite (dictionaries, M8) | Fast KV store + SQL for structured lookups |
+| **Navigation** | React Navigation v6 (material-bottom-tabs + native-stack) | Inherited from base, no migration needed |
+| **Pipeline** | Python script (`scripts/pipeline.py`) | OCR + LLM + R2 upload. Go backend is M10 (future) |
+| **OCR** | PaddleOCR PP-OCRv5 via VideOCR (SSIM dedup) | Best Chinese accuracy, free, bounding box output |
 | **Database** | Supabase Pro (PostgreSQL + Auth + Realtime) | $25/mo, auth for 100K MAU included |
-| **Storage/CDN** | Cloudflare R2 | Free egress, free CDN |
-| **STT** | Groq Whisper Turbo | $0.000667/min, 9x cheaper than OpenAI |
-| **Translation** | Google Translate API | $20/M chars, best quality |
-| **Definitions** | LLM (Claude Haiku 3.5) | ~$1/mo for 100 videos x 12 languages |
+| **Storage/CDN** | Cloudflare R2 (`scrollingo-media` bucket) | Free egress, free CDN |
+| **STT** | Groq Whisper Turbo (M3.5, deferred) | $0.000667/min — only for videos without burned-in subs |
+| **Definitions** | Claude Haiku 3.5 via OpenRouter | ~$1/mo for 100 videos × 11 target languages, localized prompts |
 | **TTS** | Pre-generated (Google Neural2) + expo-speech | $22.40 one-time for 2 langs, $0 ongoing |
 | **Monitoring** | Axiom + Sentry + Grafana Cloud | All free tier |
 
-### Key Dependencies
+> **Current state (M3 complete):** App talks directly to Supabase via `@supabase/supabase-js` + PostgREST + RLS. The Go backend does not exist yet — it will be built in M10 to centralize API logic and rate limiting. Pipeline runs locally via Python.
+
+### Key Dependencies (Actual — from package.json)
 ```json
 {
-  "expo": "~52.x",
-  "expo-video": "~2.x",
-  "expo-speech": "~12.x",
-  "expo-sqlite": "~14.x",
-  "expo-file-system": "~17.x",
-  "@supabase/supabase-js": "^2.x",
-  "zustand": "^4.x",
-  "@shopify/flash-list": "^1.x",
-  "react-native-reanimated": "~3.x",
-  "@gorhom/bottom-sheet": "^4.x",
-  "react-native-mmkv": "^2.x"
+  "expo": "^55",
+  "expo-video": "~55.0.10",
+  "react": "19.2.0",
+  "react-native": "0.83.2",
+  "@supabase/supabase-js": "^2.99.1",
+  "@reduxjs/toolkit": "^2",
+  "@tanstack/react-query": "^5",
+  "react-native-reanimated": "4.2.1",
+  "@gorhom/bottom-sheet": "^5",
+  "react-native-paper": "^5.13.0",
+  "@expo/vector-icons": "^15.1.1"
 }
+```
+
+### Pipeline Dependencies (Python)
+```
+paddleocr, paddlepaddle    # OCR (PP-OCRv5)
+scikit-image               # SSIM frame dedup
+jieba                      # Chinese word segmentation
+openai                     # OpenRouter SDK (Claude Haiku 3.5)
+supabase                   # Database client (service role key)
+boto3                      # R2 uploads
+langdetect                 # Content language auto-detection
 ```
 
 ---
 
 ## 3. Mobile App
 
-### 3.1 Folder Structure
+### 3.1 Folder Structure (Actual)
 ```
-src/
-├── app/                            # React Navigation
-│   ├── (tabs)/
-│   │   ├── feed.tsx                # Video feed
-│   │   ├── flashcards.tsx          # Flashcard review
-│   │   ├── progress.tsx            # Stats dashboard
-│   │   └── profile.tsx             # User profile
-│   └── (auth)/
-│       ├── login.tsx
-│       └── onboarding.tsx          # Language + level selection
+mobile/src/
+├── navigation/
+│   ├── main/index.tsx              # Root stack navigator (auth gate + onboarding gate)
+│   ├── home/index.tsx              # Material bottom tabs (feed, discover, review, inbox, me)
+│   └── feed/index.tsx              # Feed top tabs + context provider
+├── screens/
+│   ├── feed/index.tsx              # Video feed (FlatList, vertical paging)
+│   ├── auth/index.tsx              # Login/signup
+│   ├── onboarding/index.tsx        # 3-step: native lang, learning lang, daily goal
+│   ├── profile/index.tsx           # Own + other user profiles
+│   ├── profile/edit/index.tsx      # Edit profile fields
+│   ├── settings/index.tsx          # Language, daily goal, developer menu
+│   ├── review/index.tsx            # Flashcard review (empty state, M6)
+│   ├── search/index.tsx            # Discover (placeholder, M7)
+│   ├── devOcrCompare/index.tsx     # Developer: OCR model comparison tool
+│   └── chat/                       # DMs (inherited, placeholder)
 ├── components/
-│   ├── feed/
-│   │   ├── VideoCard.tsx           # Full-screen video + subtitle overlay
-│   │   ├── SubtitleOverlay.tsx     # Tappable word-by-word subtitles
-│   │   └── WordPopup.tsx           # Bottom sheet: translation + TTS
-│   └── flashcards/
-│       ├── FlashcardDeck.tsx       # Swipeable card stack
-│       └── SRSControls.tsx         # Again / Hard / Good / Easy
-├── stores/
-│   ├── authStore.ts                # Supabase auth (Zustand)
-│   ├── feedStore.ts                # Feed data + pagination
-│   ├── flashcardStore.ts           # Offline SRS (MMKV)
-│   ├── progressStore.ts            # Streak, daily goals
-│   └── languageStore.ts            # native_language + learning_languages[]
+│   ├── general/post/
+│   │   ├── index.tsx               # PostSingle: video player + tap targets
+│   │   ├── overlay/index.tsx       # Action buttons, username, description
+│   │   └── subtitleOverlay/index.tsx # Invisible OCR tap targets over burned-in text
+│   ├── profile/
+│   │   ├── header/index.tsx        # Avatar, stats, follow button, language badges
+│   │   ├── navBar/index.tsx        # Profile top bar with slide-out menu
+│   │   └── postList/index.tsx      # Grid of user's videos
+│   └── modal/comment/index.tsx     # Comment modal (mock, M7)
+├── redux/
+│   └── slices/
+│       ├── authSlice.ts            # Auth state + user profile
+│       ├── languageSlice.ts        # Native/learning/active language + onboarding gate
+│       ├── postSlice.ts            # User posts (will become feed in M4)
+│       ├── modalSlice.ts           # Comment modal state
+│       └── chatSlice.ts            # Chat state (inherited)
 ├── services/
-│   ├── supabase.ts                 # Supabase client
-│   ├── api.ts                      # Go backend client
-│   ├── tts.ts                      # expo-speech + R2 fallback
-│   ├── sync.ts                     # Offline → server sync
-│   └── dictionaryDownloader.ts     # Auto-download on language change
-├── dictionary/
-│   ├── DictionaryFactory.ts        # (sourceLang, targetLang) → adapter
-│   ├── adapters/
-│   │   ├── SimpleDictAdapter.ts    # Standard bilingual (written_rep → trans_list)
-│   │   ├── ChineseSourceAdapter.ts # Simplified/traditional + pinyin
-│   │   ├── EnglishToChineseAdapter.ts
-│   │   ├── RemoteApiAdapter.ts     # Fallback for missing offline pairs
-│   │   └── LlmWrapperAdapter.ts    # Merges local dict + LLM contextual definitions
-│   └── availablePairs.ts           # ~20 offline bilingual pairs
-└── lib/
-    ├── sm2.ts                      # SM-2 spaced repetition
-    └── subtitleParser.ts           # Parse WebVTT with word timestamps
+│   ├── posts.ts                    # Feed data (MOCK — local videos + seed users)
+│   ├── subtitles.ts                # OCR bbox loader (local JSON, M4 → R2 fetch)
+│   ├── user.ts                     # Supabase user profiles, follow/unfollow
+│   ├── language.ts                 # Language prefs, Supabase sync
+│   └── auth.ts                     # OAuth (Google/Apple) + email auth
+├── hooks/
+│   ├── useUser.ts                  # React Query: fetch user by ID
+│   ├── useFollowing.ts             # React Query: follow state
+│   ├── useFollowingMutation.ts     # Mutation: follow/unfollow
+│   └── useCurrentUserId.ts         # Get current user from Redux
+├── lib/
+│   └── supabase.ts                 # Supabase client (expo-secure-store auth)
+└── assets/
+    ├── videos/                     # Local test videos (video_2.mp4 - video_13.mp4)
+    └── subtitles/                  # Pre-extracted OCR bboxes (4 models × 10 videos)
+
+scripts/
+├── pipeline.py                     # M3: Full video processing pipeline
+├── extract_subtitles.py            # Baseline PaddleOCR extraction
+├── extract_subtitles_videocr.py    # videocr (pixel-diff dedup)
+├── extract_subtitles_videocr2.py   # VideOCR (SSIM dedup) ← SELECTED
+├── extract_subtitles_rapid.py      # RapidOCR (ONNX Runtime)
+└── test_pipeline.py                # 48 pipeline tests (pytest)
 ```
 
 ### 3.2 Video Feed
@@ -253,7 +281,7 @@ interface LanguageState {
   activeLearningLanguage: string;   // "en" — filters the feed
 }
 ```
-Stored locally (MMKV) + synced to `users.native_language` / `users.learning_languages` on server.
+Stored in Redux (`languageSlice`) + synced to `users.native_language` / `users.learning_languages` / `users.target_language` on Supabase.
 
 ### 4.3 Lookup Direction
 Always: **video language → user's native language**. The app never guesses direction.
@@ -302,13 +330,20 @@ function createAdapter(sourceLang: string, targetLang: string): DictionaryAdapte
 ```
 
 ### 4.6 LLM Contextual Definitions
-Generated per word, per video, per native language during the AI pipeline. Prompt is in the target language:
+Generated per word, per video, per target language during the pipeline. Each word gets 11 separate LLM calls (one per target language, skipping self-translation). Prompts are localized into the target language for better output quality.
+
 ```
-System: "You are a professional translator. Provide precise, contextual translations."
-User: [word], [sentence context], [source→target lang]
-Output: { translation, contextual_definition, part_of_speech }
+System: "You are a professional translator. Provide precise, contextual translations into {targetName}."
+User: (localized into target language)
+  Translate the {sourceName} word "{word}" into {targetName} as used in this context: "{sentence}"
+  Translation: <word>
+  Contextual Definition: <explanation>
+  Part of Speech: <noun/verb/etc.>
 ```
-Results cached in `subtitles.word_data` JSONB — no runtime LLM calls.
+
+For Chinese targets, labels are 翻译/语境释义/词性. For Japanese, 翻訳/文脈的定義/品詞. Etc.
+
+Results stored in `word_definitions` table (one row per word × target language × video). The app queries by `(video_id, target_language = user.native_language)` — no runtime LLM calls.
 
 ### 4.7 Auto-Download
 On language change, app downloads: bilingual dictionary (learning→native) + monolingual POS database. ~30-50 MB per setup.
@@ -387,50 +422,36 @@ Admin (API key + IP allowlist)
 | Video interactions | 30/min per user |
 | Admin | 10/min per key |
 
-### 5.4 AI Pipeline
-```go
-func (s *PipelineService) ProcessVideo(ctx context.Context, videoID string) error {
-    // 1. Extract text: OCR (burned-in subs) or STT (audio)
-    video, _ := s.db.GetVideo(ctx, videoID)
-    var transcript Transcript
-    if video.HasBurnedInSubs {
-        frames, _ := s.extractFrames(ctx, videoID)                        // Sample frames
-        transcript, _ = s.ocr.ExtractSubtitles(ctx, frames)              // Cloud Vision OCR
-    } else {
-        audio, _ := s.r2.GetObject(ctx, fmt.Sprintf("videos/%s/audio.mp3", videoID))
-        transcript, _ = s.groq.Transcribe(ctx, audio)                    // Groq Whisper STT
-    }
+### 5.4 AI Pipeline (Python — `scripts/pipeline.py`)
 
-    // 2. Upsert unique words into vocab_words
-    for _, word := range transcript.UniqueWords() {
-        s.db.Exec(ctx, "INSERT INTO vocab_words (word, language) VALUES ($1, $2) ON CONFLICT DO NOTHING", word, srcLang)
-    }
+> The Go backend (M10) will eventually port this. Currently runs as a local Python script.
 
-    // 3. Generate contextual definitions for ALL words × 12 native languages
-    // Every word gets a fresh definition because meaning depends on sentence context
-    for _, lang := range s.nativeLanguages {
-        definitions, _ := s.llm.BatchDefine(ctx, transcript.Words, transcript.Text, srcLang, lang)
-        s.bulkInsertDefinitions(ctx, videoID, lang, definitions)
-    }
+```bash
+# Auto-detect language from OCR text, auto-title from first subtitle:
+python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4
 
-    // 4. Link word occurrences to video (timestamps)
-    s.insertVideoWords(ctx, videoID, transcript.Words)
-
-    // 5. Generate WebVTT files → upload to R2
-    for _, lang := range s.nativeLanguages {
-        vtt := s.generateWebVTT(ctx, videoID, lang)
-        s.r2.PutObject(ctx, fmt.Sprintf("videos/%s/subs/%s.vtt", videoID, lang), vtt)
-    }
-
-    // 6. Extract OCR bounding boxes for tappable subtitle overlay → upload to R2
-    // Uses VideOCR (SSIM dedup) at 250ms frame intervals, half-res for speed
-    bboxes := s.extractSubtitleBboxes(ctx, videoID) // per-character tap targets
-    s.r2.PutObject(ctx, fmt.Sprintf("videos/%s/bboxes.json", videoID), bboxes)
-
-    s.db.Exec(ctx, "UPDATE videos SET status='ready' WHERE id=$1", videoID) // 7. Mark ready
-    return nil
-}
+# Or specify explicitly:
+python3 scripts/pipeline.py --video video.mp4 --language zh --title "My Title"
 ```
+
+**Pipeline flow (for videos with burned-in subtitles):**
+
+1. **Normalize** video to 720p with FFmpeg (scale + pad + faststart)
+2. **OCR** — VideOCR (SSIM dedup) extracts subtitle text + bounding boxes at 250ms intervals, half-res for speed
+3. **Auto-detect language** from OCR text (langdetect) if `--language` not provided
+4. **Auto-detect title** from first subtitle caption if `--title` not provided
+5. **Upload** video.mp4 + thumbnail.jpg + bboxes.json to R2 via boto3
+6. **Insert video row** in Supabase (status='processing', cdn_url, language)
+7. **Segment words** — jieba for Chinese, whitespace for others, filter punctuation
+8. **Generate definitions** — Claude Haiku 3.5 via OpenRouter, one call per word × 11 target languages, localized prompts per target language
+9. **Insert into Supabase** — vocab_words (batch upsert), word_definitions (all languages), video_words (timestamps)
+10. **Mark ready** — update video status, insert pipeline_jobs with timestamps
+
+**Error handling:** If Supabase insert fails partway, the pipeline cleans up (deletes partial video data) and raises the error.
+
+**OCR model:** VideOCR uses PaddleOCR PP-OCRv5 with SSIM-based frame dedup — compares only the subtitle region (bottom 50-85% of frame) to skip frames where subtitles haven't changed. Selected after comparing 4 models (PaddleOCR baseline, videocr pixel-diff, VideOCR SSIM, RapidOCR ONNX) in the developer comparison tool.
+
+**STT path (M3.5, deferred):** For videos without burned-in subtitles, Groq Whisper will transcribe audio. Not yet implemented — all current content has burned-in Chinese subtitles.
 
 ### 5.5 Feed Query (Phase 1)
 ```sql
@@ -462,22 +483,23 @@ LIMIT $4;
 
 > Full schema with DDL, indexes, design decisions, and data flows: **[database_design.md](database_design.md)**
 
-### Tables (12)
+### Tables (14)
 
 | Table | Purpose |
 |-------|---------|
 | `users` | Profile, language prefs (native + learning), streak, stats |
 | `videos` | Video metadata, language, status, CDN URLs |
-| `vocab_words` | Canonical word entries per language (word, POS, frequency, TTS URL) |
-| `word_definitions` | LLM contextual definitions per (word, target_lang, sentence_context) |
-| `video_words` | Links words to timestamps in a video + their definitions |
-| `flashcards` | User's saved words with SM-2 SRS state (FKs to vocab_words + word_definitions) |
+| `vocab_words` | Canonical word entries per language (populated by pipeline) |
+| `word_definitions` | LLM contextual definitions per (word, target_lang, video context) — 11 languages per word |
+| `video_words` | Links words to timestamps in a video (word_index, start_ms, end_ms) |
+| `flashcards` | User's saved words with SM-2 SRS state (M6) |
 | `user_views` | Watch tracking (completion %, view count) |
 | `user_likes` | Liked videos |
 | `user_bookmarks` | Bookmarked videos |
+| `user_follows` | Follow relationships (follower_id, following_id) |
 | `comments` | Video comments (max 500 chars) |
 | `daily_progress` | Daily activity stats for streak tracking |
-| `pipeline_jobs` | AI pipeline status per video |
+| `pipeline_jobs` | AI pipeline status per video (pending → ready/failed) |
 
 ### Key Design Decisions
 - **Normalized definitions**: `vocab_words` + `word_definitions` instead of JSONB blobs in subtitles — same word across videos shares definitions, flashcards reference by FK
@@ -568,15 +590,17 @@ Languages have ~100K words. Pronunciation is immutable. **Pre-generate everythin
 ## 9. Video Ingestion
 
 ```bash
-# Standardize to 720p progressive MP4
-ffmpeg -i source.mp4 \
-  -vf "scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2" \
-  -c:v libx264 -preset medium -crf 23 -profile:v main \
-  -c:a aac -b:a 128k -movflags +faststart -t 60 output.mp4
+# Full pipeline: normalize + OCR + definitions + upload + DB insert
+python3 scripts/pipeline.py --video source.mp4
 
-# Upload
-scrollingo-admin upload --file output.mp4 --lang en --title "Ordering Coffee"
+# With explicit options:
+python3 scripts/pipeline.py --video source.mp4 --language zh --title "Ordering Coffee"
+
+# Dry run (OCR + LLM only, no R2/Supabase writes):
+python3 scripts/pipeline.py --video source.mp4 --dry-run
 ```
+
+The pipeline handles FFmpeg normalization internally (720p, faststart, 60s max).
 
 ---
 
@@ -610,10 +634,11 @@ scrollingo-admin upload --file output.mp4 --lang en --title "Ordering Coffee"
 
 ## 11. Security
 
-- PostgREST disabled — all access through Go backend
-- Auth: Supabase JWT → Go middleware verifies via JWKS (cached 1h)
-- Admin: separate `/internal/admin/*` path, API key + IP allowlist
-- Secrets: fly.io secrets
+- **Current (pre-M10):** App uses Supabase PostgREST directly with RLS policies. Pipeline uses service role key (bypasses RLS).
+- **After M10 (Go backend):** PostgREST disabled for writes, all access through Go backend with JWT verification via JWKS.
+- Auth: Supabase Auth (Google/Apple OAuth, email/password)
+- Admin pipeline: runs locally, uses Supabase service role key + R2 API keys from `.env`
+- Secrets: `.env` file (gitignored), fly.io secrets for production
 
 ---
 
@@ -630,14 +655,13 @@ scrollingo-admin upload --file output.mp4 --lang en --title "Ordering Coffee"
 | Component | Service | Monthly |
 |-----------|---------|---------|
 | Database + Auth | Supabase Pro | $25.00 |
-| Compute | fly.io shared-cpu-2x | $5.00 |
+| Compute | fly.io shared-cpu-2x (M10) | $5.00 |
 | Storage + CDN | Cloudflare R2 | $0.00 |
 | Monitoring | Axiom + Sentry + Grafana | $0.00 |
-| STT | Groq Whisper (100 videos) | $0.03 |
-| Translation | Google Translate (100 videos) | $0.80 |
-| Definitions | Claude Haiku 3.5 (100 videos x 12 langs) | ~$1.00 |
+| OCR processing | PaddleOCR (self-hosted, CPU) | $0.04 |
+| Definitions | Claude Haiku 3.5 via OpenRouter (100 videos × 11 langs) | ~$1.00 |
 | TTS storage | R2 (pre-generated audio) | $0.03 |
-| **Total** | | **~$32/mo** |
+| **Total** | | **~$31/mo** |
 | **One-time**: TTS generation (2 langs) | Google Neural2 | $22.40 |
 
 **Breakeven**: ~230 MAU at $7.99/mo subscription, 2% conversion, 15% App Store cut.
