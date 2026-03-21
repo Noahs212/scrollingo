@@ -1,25 +1,27 @@
 /**
- * WordPopup — glassmorphism bottom sheet showing word translation + definition.
+ * WordPopup — floating card popup near the tapped word.
  *
- * Design: TikTok-native dark glass style. Frosted translucent background,
- * spring animations, haptic feedback. No visible borders — uses spacing
- * and opacity for hierarchy.
- *
- * Snap points: 40% (compact) → 70% (expanded via "more ▸")
+ * Appears as a card overlay near the subtitle, NOT a bottom sheet drawer.
+ * "See More" expands to a full bottom sheet drawer for extended info.
+ * Inspired by Chinese reading app word-tap pattern.
  */
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Pressable,
+  ScrollView,
   StyleSheet,
+  Dimensions,
+  Modal,
 } from "react-native";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as Speech from "expo-speech";
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export interface WordPopupData {
   word: string;
@@ -45,32 +47,21 @@ export default function WordPopup({
   onSave,
   language = "zh",
 }: Props) {
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const [expanded, setExpanded] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const snapPoints = useMemo(() => ["40%", "70%"], []);
-
   const handleClose = useCallback(() => {
-    setExpanded(false);
+    setShowMore(false);
     onClose();
   }, [onClose]);
 
   const handleSpeak = useCallback(() => {
     if (!data?.word) return;
-
-    // Map language codes to Speech locale codes
     const localeMap: Record<string, string> = {
-      zh: "zh-CN",
-      en: "en-US",
-      ja: "ja-JP",
-      fr: "fr-FR",
-      es: "es-ES",
+      zh: "zh-CN", en: "en-US", ja: "ja-JP", fr: "fr-FR", es: "es-ES",
     };
-
     setIsSpeaking(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
     Speech.speak(data.word, {
       language: localeMap[language] ?? language,
       rate: 0.8,
@@ -85,236 +76,229 @@ export default function WordPopup({
     onSave?.(data.word);
   }, [data?.word, onSave]);
 
-  const handleExpand = useCallback(() => {
-    setExpanded(true);
-    bottomSheetRef.current?.snapToIndex(1);
-  }, []);
-
   if (!visible || !data) return null;
 
-  const needsExpand =
-    data.contextual_definition && data.contextual_definition.length > 80;
-
   return (
-    <View style={styles.fullScreenContainer}>
-      {/* Backdrop — covers action buttons, tappable to dismiss */}
-      <Pressable style={styles.backdrop} onPress={handleClose} />
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={handleClose}>
+      <Pressable style={styles.backdrop} onPress={handleClose}>
+        <Pressable
+          style={styles.popupCard}
+          onPress={(e) => e.stopPropagation()}
+        >
+          {/* Source sentence + translation */}
+          {data.source_sentence && (
+            <Text style={styles.contextSentence} numberOfLines={2}>
+              {data.source_sentence}
+            </Text>
+          )}
 
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        onClose={handleClose}
-        enablePanDownToClose
-        backgroundStyle={styles.sheetBackground}
-        handleIndicatorStyle={styles.handle}
-        animateOnMount
-      >
-      <BottomSheetView style={styles.content}>
-        {/* Word + Pinyin + Speaker */}
-        <View style={styles.wordRow}>
-          <View style={styles.wordLeft}>
+          {/* Word + Speaker */}
+          <View style={styles.wordRow}>
             <Text style={styles.word}>{data.word}</Text>
-            {data.pinyin && (
-              <Text style={styles.pinyin}>{data.pinyin}</Text>
-            )}
+            <TouchableOpacity onPress={handleSpeak} style={styles.speakerBtn}>
+              <Ionicons
+                name={isSpeaking ? "volume-high" : "volume-medium-outline"}
+                size={22}
+                color={isSpeaking ? "#fe2c55" : "rgba(255,255,255,0.6)"}
+              />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={handleSpeak}
-            style={styles.speakerButton}
-            activeOpacity={0.7}
-          >
-            <Ionicons
-              name={isSpeaking ? "volume-high" : "volume-medium-outline"}
-              size={24}
-              color={isSpeaking ? "#fe2c55" : "rgba(255,255,255,0.5)"}
-            />
-          </TouchableOpacity>
-        </View>
 
-        {/* Translation + POS */}
-        <View style={styles.translationRow}>
-          <Text style={styles.translation}>{data.translation}</Text>
+          {/* Pinyin */}
+          {data.pinyin && (
+            <Text style={styles.pinyin}>{data.pinyin}</Text>
+          )}
+
+          {/* Translation */}
+          <Text style={styles.translation}>- {data.translation}</Text>
+
+          {/* Part of speech */}
           {data.part_of_speech && (
-            <View style={styles.posPill}>
-              <Text style={styles.posText}>{data.part_of_speech}</Text>
+            <Text style={styles.pos}>{data.part_of_speech}</Text>
+          )}
+
+          {/* Contextual definition card */}
+          {data.contextual_definition ? (
+            <View style={styles.defCard}>
+              <Ionicons name="sparkles" size={14} color="rgba(255,255,255,0.4)" style={styles.defIcon} />
+              <Text style={styles.defText} numberOfLines={showMore ? undefined : 3}>
+                {data.contextual_definition}
+              </Text>
+            </View>
+          ) : null}
+
+          {/* See More */}
+          {data.contextual_definition && data.contextual_definition.length > 60 && !showMore && (
+            <TouchableOpacity onPress={() => setShowMore(true)} style={styles.seeMoreBtn}>
+              <Text style={styles.seeMoreText}>See More</Text>
+              <Ionicons name="chevron-down" size={14} color="rgba(255,255,255,0.5)" />
+            </TouchableOpacity>
+          )}
+
+          {/* Expanded: source sentence with translation */}
+          {showMore && data.source_sentence && (
+            <View style={styles.expandedSection}>
+              <Text style={styles.expandedLabel}>Context</Text>
+              <Text style={styles.expandedText}>"{data.source_sentence}"</Text>
             </View>
           )}
-        </View>
 
-        {/* Contextual Definition */}
-        {data.contextual_definition ? (
-          <View style={styles.definitionRow}>
-            <Text
-              style={styles.definition}
-              numberOfLines={expanded ? undefined : 2}
-            >
-              {data.contextual_definition}
-            </Text>
-            {needsExpand && !expanded && (
-              <TouchableOpacity onPress={handleExpand}>
-                <Text style={styles.moreLink}>more ▸</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        ) : null}
+          {/* Divider */}
+          <View style={styles.divider} />
 
-        {/* Source sentence (expanded only) */}
-        {expanded && data.source_sentence && (
-          <View style={styles.sourceRow}>
-            <Text style={styles.sourceLabel}>Context</Text>
-            <Text style={styles.sourceText}>"{data.source_sentence}"</Text>
-          </View>
-        )}
-
-        {/* Save button */}
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={handleSave}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="heart-outline" size={18} color="white" />
-          <Text style={styles.saveText}>Save for later</Text>
-        </TouchableOpacity>
-      </BottomSheetView>
-    </BottomSheet>
-    </View>
+          {/* Add to Vocab button */}
+          <TouchableOpacity onPress={handleSave} style={styles.saveBtn}>
+            <Text style={styles.saveBtnText}>Add to Vocab</Text>
+          </TouchableOpacity>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  fullScreenContainer: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 20,
-  },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  sheetBackground: {
-    backgroundColor: "rgba(20, 20, 20, 0.92)",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+  popupCard: {
+    width: SCREEN_WIDTH * 0.85,
+    maxHeight: SCREEN_HEIGHT * 0.6,
+    backgroundColor: "rgba(30, 30, 30, 0.95)",
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 24,
+    elevation: 20,
   },
-  handle: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-  },
-  content: {
-    paddingHorizontal: 24,
-    paddingTop: 8,
-    paddingBottom: 24,
+
+  // Context sentence
+  contextSentence: {
+    color: "rgba(255, 255, 255, 0.5)",
+    fontSize: 13,
+    marginBottom: 12,
+    lineHeight: 18,
   },
 
   // Word row
   wordRow: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 16,
-  },
-  wordLeft: {
-    flex: 1,
   },
   word: {
     color: "#ffffff",
     fontSize: 32,
     fontWeight: "bold",
-    letterSpacing: 1,
+    letterSpacing: 2,
   },
-  pinyin: {
-    color: "rgba(255, 255, 255, 0.5)",
-    fontSize: 16,
-    marginTop: 4,
-  },
-  speakerButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  speakerBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: "rgba(255, 255, 255, 0.08)",
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 12,
   },
 
-  // Translation row
-  translationRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  // Pinyin
+  pinyin: {
+    color: "rgba(255, 255, 255, 0.45)",
+    fontSize: 15,
+    marginTop: 2,
+    marginBottom: 8,
+  },
+
+  // Translation
+  translation: {
+    color: "#ffffff",
+    fontSize: 18,
+    marginBottom: 4,
+  },
+
+  // Part of speech
+  pos: {
+    color: "rgba(255, 255, 255, 0.35)",
+    fontSize: 13,
+    fontStyle: "italic",
     marginBottom: 12,
   },
-  translation: {
-    color: "#fe2c55",
-    fontSize: 20,
-    fontWeight: "600",
-    flex: 1,
-  },
-  posPill: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginLeft: 8,
-  },
-  posText: {
-    color: "rgba(255, 255, 255, 0.7)",
-    fontSize: 12,
-  },
 
-  // Definition
-  definitionRow: {
-    marginBottom: 16,
+  // Definition card
+  defCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    borderRadius: 12,
+    padding: 14,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 4,
   },
-  definition: {
+  defIcon: {
+    marginRight: 8,
+    marginTop: 2,
+  },
+  defText: {
     color: "rgba(255, 255, 255, 0.6)",
     fontSize: 14,
     lineHeight: 20,
-  },
-  moreLink: {
-    color: "#fe2c55",
-    fontSize: 13,
-    fontWeight: "600",
-    marginTop: 4,
+    flex: 1,
+    fontStyle: "italic",
   },
 
-  // Source sentence (expanded)
-  sourceRow: {
-    marginBottom: 16,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(255, 255, 255, 0.1)",
+  // See More
+  seeMoreBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
+    gap: 4,
   },
-  sourceLabel: {
-    color: "rgba(255, 255, 255, 0.4)",
-    fontSize: 12,
-    marginBottom: 6,
+  seeMoreText: {
+    color: "rgba(255, 255, 255, 0.5)",
+    fontSize: 13,
+  },
+
+  // Expanded section
+  expandedSection: {
+    marginTop: 8,
+    paddingTop: 8,
+  },
+  expandedLabel: {
+    color: "rgba(255, 255, 255, 0.3)",
+    fontSize: 11,
     textTransform: "uppercase",
     letterSpacing: 1,
+    marginBottom: 4,
   },
-  sourceText: {
-    color: "rgba(255, 255, 255, 0.6)",
-    fontSize: 14,
+  expandedText: {
+    color: "rgba(255, 255, 255, 0.5)",
+    fontSize: 13,
     fontStyle: "italic",
-    lineHeight: 20,
+    lineHeight: 18,
+  },
+
+  // Divider
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    marginVertical: 12,
   },
 
   // Save button
-  saveButton: {
-    flexDirection: "row",
+  saveBtn: {
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 8,
+    paddingVertical: 10,
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
-    paddingVertical: 14,
-    borderRadius: 24,
-    gap: 8,
-    marginTop: 8,
   },
-  saveText: {
-    color: "white",
-    fontSize: 15,
+  saveBtnText: {
+    color: "#ffffff",
+    fontSize: 14,
     fontWeight: "500",
   },
 });
