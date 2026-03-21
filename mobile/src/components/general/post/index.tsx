@@ -256,13 +256,20 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
 
               // Look up the word that contains this character
               if (wordDefs && wordDefs.length > 0) {
-                // Find word by: character is in the display_text AND time overlaps
-                const match = wordDefs.find(
+                // Match by character text + time overlap with generous tolerance.
+                // The bboxes (from R2) and video_words (from pipeline) may have
+                // different timestamps due to separate OCR runs. Try tight match
+                // first, then fall back to text-only match.
+                let match = wordDefs.find(
                   (wd) =>
                     wd.display_text.includes(char) &&
-                    currentTimeMs >= wd.start_ms - 500 &&
-                    currentTimeMs < wd.end_ms + 500,
+                    currentTimeMs >= wd.start_ms - 2000 &&
+                    currentTimeMs < wd.end_ms + 2000,
                 );
+                // Fallback: text-only match (ignore timing entirely)
+                if (!match) {
+                  match = wordDefs.find((wd) => wd.display_text.includes(char));
+                }
                 if (match) {
                   setHighlightedWord(match.display_text);
                   setPopupData({
