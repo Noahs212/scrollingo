@@ -30,7 +30,8 @@ import {
   updateActiveLanguage,
 } from "../../services/language";
 import { useFeed } from "../../hooks/useFeed";
-import { trackView } from "../../services/videos";
+import { trackView, fetchVideosByCreator } from "../../services/videos";
+import { useQuery } from "@tanstack/react-query";
 
 type FeedScreenRouteProp =
   | RouteProp<RootStackParamList, "userPosts">
@@ -180,20 +181,25 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
   const navBarHeight = useMaterialNavBarHeight(profile);
   const feedItemHeight = SCREEN_HEIGHT - navBarHeight;
 
-  // Fetch feed from Supabase with infinite scroll pagination
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useFeed(activeLearningLanguage);
+  // Feed mode: paginated feed by language
+  const feedQuery = useFeed(profile ? null : activeLearningLanguage);
+
+  // Profile mode: all videos by a specific creator
+  const profileQuery = useQuery<Video[]>({
+    queryKey: ["userVideos", creator],
+    queryFn: () => fetchVideosByCreator(creator),
+    enabled: profile && !!creator,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const isLoading = profile ? profileQuery.isLoading : feedQuery.isLoading;
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } = feedQuery;
 
   // Flatten pages into a single array
-  const videos = useMemo(
-    () => data?.pages.flatMap((p) => p.videos) ?? [],
-    [data],
-  );
+  const videos = useMemo(() => {
+    if (profile) return profileQuery.data ?? [];
+    return feedQuery.data?.pages.flatMap((p) => p.videos) ?? [];
+  }, [profile, profileQuery.data, feedQuery.data]);
 
   const onViewableItemsChanged = useRef(
     ({ changed }: { changed: VideoViewToken[] }) => {

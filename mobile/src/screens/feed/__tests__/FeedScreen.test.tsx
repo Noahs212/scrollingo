@@ -85,9 +85,16 @@ jest.mock("../../../hooks/useFeed", () => ({
   useFeed: (...args: unknown[]) => mockUseFeed(...args),
 }));
 
-// Mock trackView
+// Mock videos service
 jest.mock("../../../services/videos", () => ({
   trackView: jest.fn(),
+  fetchVideosByCreator: jest.fn().mockResolvedValue([]),
+}));
+
+// Mock useQuery for profile mode (fetchVideosByCreator)
+jest.mock("@tanstack/react-query", () => ({
+  ...jest.requireActual("@tanstack/react-query"),
+  useQuery: jest.fn(() => ({ data: [], isLoading: false })),
 }));
 
 // Mock useSubtitles
