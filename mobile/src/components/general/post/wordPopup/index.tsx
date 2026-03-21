@@ -256,14 +256,17 @@ export default function WordPopup({
           {data.contextual_definition ? (
             <View style={styles.defCard}>
               <Text style={styles.sparkle}>✨</Text>
-              <Text style={styles.defText}>
+              <Text
+                style={styles.defText}
+                numberOfLines={expanded ? undefined : 3}
+              >
                 {data.contextual_definition}
               </Text>
             </View>
           ) : null}
 
-          {/* 6. See More / Expanded source sentence */}
-          {!expanded ? (
+          {/* 6. See More — only when definition overflows OR has source sentence */}
+          {!expanded && (data.contextual_definition.length > 80 || data.source_sentence) ? (
             <TouchableOpacity
               onPress={handleSeeMore}
               style={styles.seeMoreBtn}
@@ -277,18 +280,17 @@ export default function WordPopup({
                 style={{ marginLeft: 3 }}
               />
             </TouchableOpacity>
-          ) : (
+          ) : null}
+
+          {/* Expanded: source sentence context */}
+          {expanded && data.source_sentence ? (
             <View style={styles.expandedSection}>
-              {data.source_sentence ? (
-                <>
-                  <Text style={styles.expandedLabel}>Source sentence</Text>
-                  <Text style={styles.expandedText}>
-                    &ldquo;{data.source_sentence}&rdquo;
-                  </Text>
-                </>
-              ) : null}
+              <Text style={styles.expandedLabel}>Source sentence</Text>
+              <Text style={styles.expandedText}>
+                "{data.source_sentence}"
+              </Text>
             </View>
-          )}
+          ) : null}
 
           {/* 7. Dashed divider */}
           <View style={styles.divider} />

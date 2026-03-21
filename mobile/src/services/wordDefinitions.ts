@@ -1,44 +1,67 @@
+/**
+ * Word definitions service — fetches word translations from Supabase.
+ * Uses two queries (video_words + word_definitions) joined in JS
+ * for reliability — PostgREST FK joins across sibling tables are fragile.
+ */
+
 import { supabase } from "../lib/supabase";
 import { WordDefinition } from "../../types";
-
-interface VideoWordRow {
-  word_index: number;
-  display_text: string;
-  start_ms: number;
-  end_ms: number;
-  vocab_words: { word: string; pinyin: string | null };
-  word_definitions: { translation: string; contextual_definition: string; part_of_speech: string | null };
-}
 
 export async function fetchWordDefinitions(
   videoId: string,
   targetLanguage: string,
 ): Promise<WordDefinition[]> {
-  const { data, error } = await supabase
+  // Query 1: Get video_words with vocab_words (direct FK)
+  const { data: videoWords, error: vwError } = await supabase
     .from("video_words")
-    .select(`
-      word_index, display_text, start_ms, end_ms,
-      vocab_words!inner(word, pinyin),
-      word_definitions!inner(translation, contextual_definition, part_of_speech)
-    `)
+    .select("word_index, display_text, start_ms, end_ms, vocab_word_id, vocab_words(word, pinyin)")
     .eq("video_id", videoId)
-    .eq("word_definitions.target_language", targetLanguage)
-    .eq("word_definitions.video_id", videoId)
     .order("word_index");
 
-  if (error) {
-    throw new Error(`Failed to fetch word definitions: ${error.message}`);
+  if (vwError) {
+    console.warn("Failed to fetch video_words:", vwError.message);
+    return [];
   }
 
-  return ((data as unknown as VideoWordRow[]) ?? []).map((row) => ({
-    word_index: row.word_index,
-    display_text: row.display_text,
-    start_ms: row.start_ms,
-    end_ms: row.end_ms,
-    word: row.vocab_words.word,
-    pinyin: row.vocab_words.pinyin,
-    translation: row.word_definitions.translation,
-    contextual_definition: row.word_definitions.contextual_definition,
-    part_of_speech: row.word_definitions.part_of_speech,
-  }));
+  if (!videoWords || videoWords.length === 0) return [];
+
+  // Query 2: Get word_definitions for this video + target language
+  const { data: definitions, error: wdError } = await supabase
+    .from("word_definitions")
+    .select("vocab_word_id, translation, contextual_definition, part_of_speech")
+    .eq("video_id", videoId)
+    .eq("target_language", targetLanguage);
+
+  if (wdError) {
+    console.warn("Failed to fetch word_definitions:", wdError.message);
+    return [];
+  }
+
+  // Build lookup: vocab_word_id → definition
+  const defMap = new Map<string, { translation: string; contextual_definition: string; part_of_speech: string | null }>();
+  for (const def of (definitions ?? [])) {
+    defMap.set(def.vocab_word_id, {
+      translation: def.translation,
+      contextual_definition: def.contextual_definition,
+      part_of_speech: def.part_of_speech,
+    });
+  }
+
+  // Join in JS
+  return videoWords.map((vw: any) => {
+    const vocabWord = vw.vocab_words;
+    const def = defMap.get(vw.vocab_word_id);
+
+    return {
+      word_index: vw.word_index,
+      display_text: vw.display_text,
+      start_ms: vw.start_ms,
+      end_ms: vw.end_ms,
+      word: vocabWord?.word ?? vw.display_text,
+      pinyin: vocabWord?.pinyin ?? null,
+      translation: def?.translation ?? "",
+      contextual_definition: def?.contextual_definition ?? "",
+      part_of_speech: def?.part_of_speech ?? null,
+    };
+  });
 }
