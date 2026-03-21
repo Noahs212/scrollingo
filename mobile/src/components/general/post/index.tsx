@@ -17,16 +17,20 @@ import {
   Image,
   StyleSheet,
   Animated,
-  Alert,
 } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useEvent } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Video } from "../../../../types";
 import { useUser } from "../../../hooks/useUser";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 import PostSingleOverlay from "./overlay";
 import SubtitleTapOverlay from "./subtitleOverlay";
+import WordPopup, { WordPopupData } from "./wordPopup";
 import { useSubtitles } from "../../../hooks/useSubtitles";
+import { useWordDefinitions } from "../../../hooks/useWordDefinitions";
+import * as Haptics from "expo-haptics";
 
 export interface PostSingleHandles {
   play: () => void;
@@ -39,7 +43,13 @@ const DOUBLE_TAP_DELAY = 300;
 export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
   ({ item }, parentRef) => {
     const user = useUser(item.creator_id).data;
+    const nativeLanguage = useSelector(
+      (state: RootState) => state.language.nativeLanguage,
+    );
+    const { data: wordDefs } = useWordDefinitions(item.id, nativeLanguage);
     const [isPaused, setIsPaused] = useState(false);
+    const [popupData, setPopupData] = useState<WordPopupData | null>(null);
+    const [popupVisible, setPopupVisible] = useState(false);
     const lastTapRef = useRef(0);
     const pauseOpacity = useRef(new Animated.Value(0)).current;
     const heartScale = useRef(new Animated.Value(0)).current;
@@ -227,16 +237,66 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
             containerWidth={containerSize.width}
             containerHeight={containerSize.height}
             onCharTap={(char, fullText) => {
+              // Haptic feedback
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+              // Pause video
               try {
                 player.pause();
                 setIsPaused(true);
               } catch {
                 // Player may be released
               }
-              Alert.alert(char, `From: "${fullText}"`);
+
+              // Look up the word that contains this character
+              if (wordDefs) {
+                const match = wordDefs.find(
+                  (wd) =>
+                    wd.display_text.includes(char) &&
+                    currentTimeMs >= wd.start_ms &&
+                    currentTimeMs < wd.end_ms + 250,
+                );
+                if (match) {
+                  setPopupData({
+                    word: match.word,
+                    pinyin: match.pinyin,
+                    translation: match.translation,
+                    contextual_definition: match.contextual_definition,
+                    part_of_speech: match.part_of_speech,
+                  });
+                  setPopupVisible(true);
+                  return;
+                }
+              }
+
+              // Fallback: show the character if no word match found
+              setPopupData({
+                word: char,
+                pinyin: null,
+                translation: fullText,
+                contextual_definition: "",
+                part_of_speech: null,
+              });
+              setPopupVisible(true);
             }}
           />
         )}
+
+        {/* Word translation popup */}
+        <WordPopup
+          data={popupData}
+          visible={popupVisible}
+          language={item.language}
+          onClose={() => {
+            setPopupVisible(false);
+            try {
+              player.play();
+              setIsPaused(false);
+            } catch {
+              // Player may be released
+            }
+          }}
+        />
 
         {/* Overlay: action buttons + video info + creator */}
         <PostSingleOverlay video={item} user={user ?? null} />

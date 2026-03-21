@@ -76,3 +76,15 @@ export interface Message {
   creator: string;
   message: string;
 }
+
+export interface WordDefinition {
+  word_index: number;
+  display_text: string;
+  start_ms: number;
+  end_ms: number;
+  word: string;
+  pinyin: string | null;
+  translation: string;
+  contextual_definition: string;
+  part_of_speech: string | null;
+}

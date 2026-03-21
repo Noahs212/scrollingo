@@ -70,10 +70,19 @@ warnings.filterwarnings("ignore", module="paddle")
 from supabase import create_client
 from openai import OpenAI
 import boto3
+from pypinyin import pinyin, Style
 
 # Initialize clients
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 llm = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=OPENROUTER_KEY)
+
+def get_pinyin(word: str, language: str) -> str | None:
+    """Generate pinyin with tone marks for a Chinese word. Returns None for non-Chinese."""
+    if language != "zh":
+        return None
+    result = pinyin(word, style=Style.TONE)
+    return " ".join([item[0] for item in result])
+
 
 VIDEOS_DIR = Path(__file__).parent.parent / "mobile" / "assets" / "videos"
 OUTPUT_DIR = Path(__file__).parent.parent / "mobile" / "assets" / "subtitles"
@@ -641,7 +650,7 @@ def insert_vocab_and_definitions(
     """Insert vocab_words, word_definitions (all languages), and video_words into Supabase."""
 
     # Batch upsert vocab_words — single call instead of N+1 queries
-    rows = [{"word": w, "language": language} for w in words]
+    rows = [{"word": w, "language": language, "pinyin": get_pinyin(w, language)} for w in words]
     word_id_map = {}
     for i in range(0, len(rows), 50):
         batch = rows[i:i + 50]
@@ -862,5 +871,57 @@ def main():
     print(f"{'=' * 60}\n")
 
 
+def backfill_pinyin():
+    """Backfill pinyin for all Chinese vocab_words that currently have pinyin=NULL."""
+    print("\n=== Backfilling pinyin for Chinese vocab_words ===\n")
+
+    # Fetch all zh words with NULL pinyin
+    result = (
+        supabase.table("vocab_words")
+        .select("id, word")
+        .eq("language", "zh")
+        .is_("pinyin", "null")
+        .execute()
+    )
+    rows = result.data
+    print(f"  Found {len(rows)} words needing pinyin\n")
+
+    if not rows:
+        print("  Nothing to backfill!")
+        return
+
+    updated = 0
+    for i, row in enumerate(rows):
+        py = get_pinyin(row["word"], "zh")
+        if py:
+            supabase.table("vocab_words").update(
+                {"pinyin": py}
+            ).eq("id", row["id"]).execute()
+            updated += 1
+
+        if (i + 1) % 50 == 0:
+            print(f"    Progress: {i + 1}/{len(rows)}")
+
+    print(f"\n  Backfill complete: updated {updated}/{len(rows)} words")
+
+    # Verify a sample
+    sample = (
+        supabase.table("vocab_words")
+        .select("word, pinyin")
+        .eq("language", "zh")
+        .not_.is_("pinyin", "null")
+        .limit(5)
+        .execute()
+    )
+    if sample.data:
+        print("\n  Sample results:")
+        for s in sample.data:
+            print(f"    {s['word']} → {s['pinyin']}")
+    print()
+
+
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] == "--backfill-pinyin":
+        backfill_pinyin()
+    else:
+        main()

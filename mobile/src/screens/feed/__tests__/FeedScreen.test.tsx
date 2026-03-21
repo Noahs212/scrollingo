@@ -62,6 +62,17 @@ jest.mock("../../../hooks/useSubtitles", () => ({
   useSubtitles: jest.fn(() => ({ data: null })),
 }));
 
+// Mock useWordDefinitions (used by PostSingle for translations)
+jest.mock("../../../hooks/useWordDefinitions", () => ({
+  useWordDefinitions: jest.fn(() => ({ data: null })),
+}));
+
+// Mock expo-haptics
+jest.mock("expo-haptics", () => ({
+  impactAsync: jest.fn(),
+  ImpactFeedbackStyle: { Light: "light", Medium: "medium" },
+}));
+
 // Mock language slice
 jest.mock("../../../redux/slices/languageSlice", () => ({
   setActiveLearningLanguage: jest.fn((code: string) => ({

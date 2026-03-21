@@ -10,4 +10,6 @@ export const keys = {
   ],
   feed: (language: string | null) => ["feed", language] as const,
   subtitles: (videoId: string) => ["subtitles", videoId] as const,
+  wordDefinitions: (videoId: string, lang: string | null) =>
+    ["wordDefinitions", videoId, lang] as const,
 };

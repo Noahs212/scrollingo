@@ -14,6 +14,27 @@ jest.mock("../../../../hooks/useUser", () => ({
   useUser: jest.fn(() => ({ data: null })),
 }));
 
+// Mock useWordDefinitions (PostSingle fetches word translations)
+jest.mock("../../../../hooks/useWordDefinitions", () => ({
+  useWordDefinitions: jest.fn(() => ({ data: null })),
+}));
+
+// Mock expo-haptics
+jest.mock("expo-haptics", () => ({
+  impactAsync: jest.fn(),
+  ImpactFeedbackStyle: { Light: "light", Medium: "medium" },
+}));
+
+// Mock react-redux for nativeLanguage
+jest.mock("react-redux", () => ({
+  useSelector: jest.fn((selector) =>
+    selector({ language: { nativeLanguage: "en" } }),
+  ),
+}));
+
+// Mock redux store
+jest.mock("../../../../redux/store", () => ({ RootState: {} }));
+
 // Mock PostSingleOverlay to isolate PostSingle tests
 jest.mock("../overlay", () => {
   const { View, Text } = require("react-native");

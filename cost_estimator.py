@@ -1804,6 +1804,51 @@ ORDER BY vw.word_index;
 #### Pinyin
 
 Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pinyin`. Not generated client-side.
+
+#### Visual Design: Glassmorphism Word Popup
+
+**Theme**: TikTok-native dark glassmorphism. Frosted glass effect over paused video. No visible borders — spacing and opacity create hierarchy.
+
+```
+┌─────────────────────────────────────┐
+│           ── (thin pill handle) ──  │
+│                                     │
+│      喝酒                      🔊  │
+│      hē jiǔ                        │
+│                                     │
+│      drink alcohol          verb    │
+│                              ░░░░   │
+│      To consume alcoholic           │
+│      beverages              more ▸  │
+│                                     │
+│      ┌┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┐    │
+│      ┊    ♡  Save for later   ┊    │
+│      └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘    │
+│                                     │
+└─────────────────────────────────────┘
+         ▲ frosted glass bg ▲
+```
+
+**Color palette:**
+- Background: `rgba(20,20,20,0.85)` with backdrop blur
+- Word: `#ffffff` 32pt bold
+- Pinyin: `rgba(255,255,255,0.5)` 16pt
+- Translation: `#fe2c55` (TikTok red) 20pt semibold
+- Definition: `rgba(255,255,255,0.6)` 14pt, 2-line cap with "more ▸"
+- POS pill: `rgba(255,255,255,0.1)` bg, `rgba(255,255,255,0.7)` text 12pt
+- Save button: `rgba(255,255,255,0.08)` bg, white text, rounded 24px
+- Speaker icon: `rgba(255,255,255,0.5)`, pulses when playing
+- Handle: `rgba(255,255,255,0.2)`, 4px×36px rounded
+
+**Interactions:**
+- Spring animation on open (bounce via @gorhom/bottom-sheet animationConfigs)
+- Haptic feedback: light on char tap, medium on save (expo-haptics)
+- Character highlight: `rgba(254,44,85,0.25)` bg glow, 150ms spring fade-in
+- Speaker icon pulses while TTS plays
+- "more ▸" expands sheet to 70% with full definition + source sentence
+- Snap points: `['40%', '70%']`
+
+**Dependencies:** expo-haptics, expo-blur (or high-opacity fallback), @gorhom/bottom-sheet v5 (installed)
         """)
 
     st.markdown("---")
