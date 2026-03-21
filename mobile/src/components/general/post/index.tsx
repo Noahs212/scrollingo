@@ -23,6 +23,7 @@ import { useVideoPlayer, VideoView } from "expo-video";
 import { useEvent } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Video } from "../../../../types";
+import { useUser } from "../../../hooks/useUser";
 import PostSingleOverlay from "./overlay";
 import SubtitleTapOverlay from "./subtitleOverlay";
 import { useSubtitles } from "../../../hooks/useSubtitles";
@@ -37,6 +38,7 @@ const DOUBLE_TAP_DELAY = 300;
 
 export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
   ({ item }, parentRef) => {
+    const user = useUser(item.creator_id).data;
     const [isPaused, setIsPaused] = useState(false);
     const lastTapRef = useRef(0);
     const pauseOpacity = useRef(new Animated.Value(0)).current;
@@ -236,8 +238,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           />
         )}
 
-        {/* Overlay: action buttons + video info */}
-        <PostSingleOverlay video={item} />
+        {/* Overlay: action buttons + video info + creator */}
+        <PostSingleOverlay video={item} user={user ?? null} />
       </View>
     );
   },

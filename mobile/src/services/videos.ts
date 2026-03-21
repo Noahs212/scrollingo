@@ -21,7 +21,7 @@ export async function fetchFeedPage(
   let query = supabase
     .from("videos")
     .select(
-      "id, title, description, language, cdn_url, thumbnail_url, duration_sec, like_count, comment_count, view_count, created_at",
+      "id, title, description, language, cdn_url, thumbnail_url, duration_sec, like_count, comment_count, view_count, created_at, creator_id",
     )
     .eq("status", "ready")
     .eq("language", language)

@@ -9,6 +9,11 @@ jest.mock("../../../../hooks/useSubtitles", () => ({
   useSubtitles: jest.fn(() => ({ data: null })),
 }));
 
+// Mock useUser (PostSingle fetches creator profile)
+jest.mock("../../../../hooks/useUser", () => ({
+  useUser: jest.fn(() => ({ data: null })),
+}));
+
 // Mock PostSingleOverlay to isolate PostSingle tests
 jest.mock("../overlay", () => {
   const { View, Text } = require("react-native");
@@ -41,6 +46,7 @@ const createMockVideo = (overrides?: Partial<Video>): Video => ({
   comment_count: 5,
   view_count: 100,
   created_at: new Date().toISOString(),
+  creator_id: "user-001",
   ...overrides,
 });
 

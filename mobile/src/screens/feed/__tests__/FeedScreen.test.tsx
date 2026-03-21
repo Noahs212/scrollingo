@@ -52,6 +52,16 @@ jest.mock("../../../redux/store", () => ({
   RootState: {},
 }));
 
+// Mock useUser (used by PostSingle for creator profiles)
+jest.mock("../../../hooks/useUser", () => ({
+  useUser: jest.fn(() => ({ data: null })),
+}));
+
+// Mock useSubtitles (used by PostSingle for OCR data)
+jest.mock("../../../hooks/useSubtitles", () => ({
+  useSubtitles: jest.fn(() => ({ data: null })),
+}));
+
 // Mock language slice
 jest.mock("../../../redux/slices/languageSlice", () => ({
   setActiveLearningLanguage: jest.fn((code: string) => ({
@@ -103,6 +113,7 @@ const createMockVideo = (overrides?: Partial<Video>): Video => ({
   comment_count: 5,
   view_count: 100,
   created_at: new Date().toISOString(),
+  creator_id: "user-001",
   ...overrides,
 });
 

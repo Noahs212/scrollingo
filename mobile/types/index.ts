@@ -10,6 +10,7 @@ export interface Video {
   comment_count: number;
   view_count: number;
   created_at: string;
+  creator_id: string | null;
 }
 
 export interface FeedPage {

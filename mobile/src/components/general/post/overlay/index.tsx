@@ -1,21 +1,29 @@
 import { useMemo, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { Video } from "../../../../../types";
+import { Video, User } from "../../../../../types";
 import { useDispatch } from "react-redux";
 import { throttle } from "throttle-debounce";
 import { AppDispatch } from "../../../../redux/store";
 import { openCommentModal } from "../../../../redux/slices/modalSlice";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../../navigation/main";
+import { Avatar } from "react-native-paper";
 
 export default function PostSingleOverlay({
   video,
+  user,
 }: {
   video: Video;
+  user: User | null;
 }) {
   const insets = useSafeAreaInsets();
   const dispatch: AppDispatch = useDispatch();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [currentLikeState, setCurrentLikeState] = useState({
     state: false,
@@ -34,7 +42,6 @@ export default function PostSingleOverlay({
             currentLikeStateInst.counter +
             (currentLikeStateInst.state ? -1 : 1),
         });
-        // Real likes will be implemented in M7 when videos have DB rows
       }),
     [],
   );
@@ -54,6 +61,34 @@ export default function PostSingleOverlay({
 
       {/* Right side: vertical action buttons */}
       <View style={styles.actionsColumn} pointerEvents="box-none" testID="actions-column">
+        {/* Avatar with follow badge */}
+        {user && (
+          <TouchableOpacity
+            style={styles.avatarContainer}
+            onPress={() =>
+              navigation.navigate("profileOther", {
+                initialUserId: user.uid,
+              })
+            }
+          >
+            {user.photoURL ? (
+              <Image
+                style={styles.avatar}
+                source={{ uri: user.photoURL }}
+              />
+            ) : (
+              <Avatar.Icon
+                style={styles.defaultAvatar}
+                size={48}
+                icon="account"
+              />
+            )}
+            <View style={styles.followBadge}>
+              <Ionicons name="add-circle" size={20} color="#fe2c55" />
+            </View>
+          </TouchableOpacity>
+        )}
+
         {/* Like */}
         <TouchableOpacity
           style={styles.actionButton}
@@ -74,7 +109,7 @@ export default function PostSingleOverlay({
             dispatch(
               openCommentModal({
                 open: true,
-                data: { id: video.id, creator: "", media: [], description: video.description ?? "", likesCount: video.like_count, commentsCount: video.comment_count, creation: video.created_at },
+                data: { id: video.id, creator: video.creator_id ?? "", media: [], description: video.description ?? "", likesCount: video.like_count, commentsCount: video.comment_count, creation: video.created_at },
                 modalType: 0,
                 onCommentSend: handleUpdateCommentCount,
               }),
@@ -92,16 +127,25 @@ export default function PostSingleOverlay({
         </TouchableOpacity>
       </View>
 
-      {/* Bottom left: title + description */}
+      {/* Bottom left: username + description */}
       <View style={[styles.textContainer, { paddingBottom: 16 + insets.bottom }]} testID="text-container">
-        <Text style={styles.displayName} testID="display-name">
+        {user && (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("profileOther", {
+                initialUserId: user.uid,
+              })
+            }
+            activeOpacity={0.7}
+          >
+            <Text style={styles.displayName} testID="display-name">
+              @{user.displayName || user.email}
+            </Text>
+          </TouchableOpacity>
+        )}
+        <Text style={styles.description} numberOfLines={2} testID="description">
           {video.title}
         </Text>
-        {video.description && (
-          <Text style={styles.description} numberOfLines={2} testID="description">
-            {video.description}
-          </Text>
-        )}
       </View>
     </View>
   );
@@ -130,6 +174,33 @@ const styles = StyleSheet.create({
     bottom: 120,
     alignItems: "center",
     width: 60,
+  },
+  avatarContainer: {
+    marginBottom: 24,
+    alignItems: "center",
+  },
+  avatar: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: "white",
+  },
+  defaultAvatar: {
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: "white",
+  },
+  followBadge: {
+    position: "absolute",
+    bottom: -8,
+    alignSelf: "center",
+    backgroundColor: "white",
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   actionButton: {
     alignItems: "center",

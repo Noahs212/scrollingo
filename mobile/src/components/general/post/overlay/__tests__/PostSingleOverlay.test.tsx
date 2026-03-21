@@ -38,6 +38,7 @@ const createMockVideo = (overrides?: Partial<Video>): Video => ({
   comment_count: 5,
   view_count: 100,
   created_at: new Date().toISOString(),
+  creator_id: "user-001",
   ...overrides,
 });
 
@@ -45,7 +46,7 @@ const mockVideo = createMockVideo();
 
 // Helper that renders the overlay
 function renderOverlay(video: Video = mockVideo) {
-  render(<PostSingleOverlay video={video} />);
+  render(<PostSingleOverlay video={video} user={null} />);
 }
 
 describe("PostSingleOverlay", () => {
@@ -65,7 +66,7 @@ describe("PostSingleOverlay", () => {
 
   it("renders the video description", () => {
     renderOverlay();
-    expect(screen.getByText("Learning Spanish with immersion videos #language #spanish")).toBeTruthy();
+    expect(screen.getByText("Test Video")).toBeTruthy(); // overlay shows video.title
   });
 
   it("renders the like count", () => {
@@ -165,9 +166,9 @@ describe("PostSingleOverlay", () => {
       // Counts
       expect(screen.getByText("42")).toBeTruthy();
       expect(screen.getByText("5")).toBeTruthy();
-      // Video info
-      expect(screen.getByTestId("display-name")).toBeTruthy();
+      // Video info — title shown in description area, no username when user=null
       expect(screen.getByTestId("description")).toBeTruthy();
+      expect(screen.queryByTestId("display-name")).toBeNull(); // user is null
       // Gradient
       expect(screen.getByTestId("linear-gradient")).toBeTruthy();
     });
@@ -176,63 +177,42 @@ describe("PostSingleOverlay", () => {
   // ── Long description / hashtag tests ──
 
   describe("long descriptions and hashtags", () => {
-    it("renders long description with hashtags correctly", () => {
-      const longVideo = createMockVideo({
-        description:
-          "This is a very long description about learning Chinese through immersion " +
-          "with native content creators. Watch real conversations and pick up vocabulary " +
-          "naturally! #中文 #学习 #language #learning #chinese #immersion #tiktok #scrollingo",
-      });
-
-      renderOverlay(longVideo);
+    it("renders title in the description area", () => {
+      const video = createMockVideo({ title: "Chinese Tones Explained #声调" });
+      renderOverlay(video);
       const desc = screen.getByTestId("description");
       expect(desc).toBeTruthy();
-      // Verify numberOfLines limits the display
       expect(desc.props.numberOfLines).toBe(2);
-      // Verify the full text is in the component (even if visually truncated)
-      expect(desc.props.children).toContain("#中文");
-      expect(desc.props.children).toContain("#scrollingo");
+      expect(desc.props.children).toContain("Chinese Tones Explained #声调");
     });
 
-    it("renders Chinese characters in description", () => {
-      const chineseVideo = createMockVideo({
-        description: "学习中文很有趣！#中文学习 #每日一句 #加油",
-      });
-
+    it("renders Chinese title correctly", () => {
+      const chineseVideo = createMockVideo({ title: "学习中文很有趣" });
       renderOverlay(chineseVideo);
-      expect(screen.getByText("学习中文很有趣！#中文学习 #每日一句 #加油")).toBeTruthy();
+      expect(screen.getByText("学习中文很有趣")).toBeTruthy();
     });
 
-    it("renders description with many hashtags", () => {
-      const hashtagVideo = createMockVideo({
-        description:
-          "#fyp #foryou #foryoupage #chinese #中文 #mandarin #learn #language " +
-          "#study #daily #motivation #viral #trending #scrollingo #education",
+    it("renders long title with truncation", () => {
+      const longVideo = createMockVideo({
+        title: "A very long title that should be limited to two lines of text on the display",
       });
-
-      renderOverlay(hashtagVideo);
+      renderOverlay(longVideo);
       const desc = screen.getByTestId("description");
       expect(desc.props.numberOfLines).toBe(2);
-      expect(desc.props.children).toContain("#fyp");
-      expect(desc.props.children).toContain("#scrollingo");
     });
 
-    it("renders null description gracefully", () => {
-      const nullDescVideo = createMockVideo({ description: null });
+    it("renders title even when description is null", () => {
+      const nullDescVideo = createMockVideo({ description: null, title: "Still has title" });
       renderOverlay(nullDescVideo);
-      // description element should not be rendered when null
-      expect(screen.queryByTestId("description")).toBeNull();
+      expect(screen.getByText("Still has title")).toBeTruthy();
     });
 
-    it("renders description with emojis", () => {
+    it("renders title with emojis", () => {
       const emojiVideo = createMockVideo({
-        description: "🔥 Best Chinese learning content 🇨🇳 #中文 #学习 💪 Keep going!",
+        title: "🔥 Best Chinese Learning 🇨🇳 #中文",
       });
-
       renderOverlay(emojiVideo);
-      expect(
-        screen.getByText("🔥 Best Chinese learning content 🇨🇳 #中文 #学习 💪 Keep going!"),
-      ).toBeTruthy();
+      expect(screen.getByText("🔥 Best Chinese Learning 🇨🇳 #中文")).toBeTruthy();
     });
 
     it("renders very long title without breaking layout", () => {
