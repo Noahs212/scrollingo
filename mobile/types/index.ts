@@ -1,3 +1,22 @@
+export interface Video {
+  id: string;
+  title: string;
+  description: string | null;
+  language: string;
+  cdn_url: string;
+  thumbnail_url: string | null;
+  duration_sec: number;
+  like_count: number;
+  comment_count: number;
+  view_count: number;
+  created_at: string;
+}
+
+export interface FeedPage {
+  videos: Video[];
+  nextCursor: { created_at: string; id: string } | null;
+}
+
 export interface Post {
   id: string;
   creator: string;

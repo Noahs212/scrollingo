@@ -6,30 +6,12 @@ if (typeof window !== "undefined" && !window.dispatchEvent) {
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react-native";
 import FeedScreen from "../index";
-import { Post } from "../../../../types";
-import { getFeed, getPostsByUserId } from "../../../services/posts";
+import { Video } from "../../../../types";
 
 // Mock useMaterialNavBarHeight
 jest.mock("../../../hooks/useMaterialNavBarHeight", () => ({
   __esModule: true,
   default: jest.fn(() => 80),
-}));
-
-// Mock the useUser hook used by PostSingle -> PostSingleOverlay
-jest.mock("../../../hooks/useUser", () => ({
-  useUser: jest.fn(() => ({
-    data: {
-      uid: "user-001",
-      email: "test@example.com",
-      displayName: "TestUser",
-      photoURL: null,
-      followingCount: 5,
-      followersCount: 10,
-      likesCount: 50,
-    },
-    isLoading: false,
-    error: null,
-  })),
 }));
 
 // Mock the CurrentUserProfileItemInViewContext - use require inside factory
@@ -87,33 +69,58 @@ jest.mock("../../../services/language", () => ({
   updateActiveLanguage: jest.fn().mockResolvedValue(undefined),
 }));
 
-// Mock posts service
+// Mock useFeed hook
+const mockUseFeed = jest.fn();
+jest.mock("../../../hooks/useFeed", () => ({
+  useFeed: (...args: unknown[]) => mockUseFeed(...args),
+}));
+
+// Mock trackView
+jest.mock("../../../services/videos", () => ({
+  trackView: jest.fn(),
+}));
+
+// Mock useSubtitles
+jest.mock("../../../hooks/useSubtitles", () => ({
+  useSubtitles: jest.fn(() => ({ data: null })),
+}));
+
+// Mock posts service (may still be used by overlay)
 jest.mock("../../../services/posts", () => ({
-  getFeed: jest.fn(),
-  getPostsByUserId: jest.fn(),
   getLikeById: jest.fn().mockResolvedValue(false),
   updateLike: jest.fn(),
 }));
 
-const mockPosts: Post[] = [
-  {
-    id: "post-001",
-    creator: "user-001",
-    media: ["https://example.com/video1.mp4", ""],
+const createMockVideo = (overrides?: Partial<Video>): Video => ({
+  id: "video-001",
+  title: "Test Video",
+  description: "Test description",
+  language: "zh",
+  cdn_url: "https://example.com/videos/test/video.mp4",
+  thumbnail_url: "https://example.com/videos/test/thumbnail.jpg",
+  duration_sec: 30,
+  like_count: 42,
+  comment_count: 5,
+  view_count: 100,
+  created_at: new Date().toISOString(),
+  ...overrides,
+});
+
+const mockVideos: Video[] = [
+  createMockVideo({
+    id: "video-001",
+    title: "Learning Spanish",
     description: "Learning Spanish with immersion videos #language #spanish",
-    likesCount: 42,
-    commentsCount: 5,
-    creation: new Date().toISOString(),
-  },
-  {
-    id: "post-002",
-    creator: "user-002",
-    media: ["https://example.com/video2.mp4", ""],
+    like_count: 42,
+    comment_count: 5,
+  }),
+  createMockVideo({
+    id: "video-002",
+    title: "Japanese Phrases",
     description: "Japanese phrases for daily life #japanese",
-    likesCount: 128,
-    commentsCount: 12,
-    creation: new Date().toISOString(),
-  },
+    like_count: 128,
+    comment_count: 12,
+  }),
 ];
 
 const createRoute = (params: { creator?: string; profile?: boolean } = {}) => ({
@@ -130,9 +137,14 @@ describe("FeedScreen", () => {
     jest.clearAllMocks();
   });
 
-  it("shows a loading state initially before posts load", () => {
-    // Make getFeed return a promise that never resolves, keeping loading=true
-    (getFeed as jest.Mock).mockReturnValue(new Promise(() => {}));
+  it("shows a loading state initially before videos load", () => {
+    mockUseFeed.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
 
     const { toJSON } = render(<FeedScreen route={createRoute()} />);
 
@@ -143,50 +155,48 @@ describe("FeedScreen", () => {
     expect(toJSON()).not.toBeNull();
   });
 
-  it("renders posts after loading completes", async () => {
-    (getFeed as jest.Mock).mockResolvedValue(mockPosts);
+  it("renders videos after loading completes", async () => {
+    mockUseFeed.mockReturnValue({
+      data: { pages: [{ videos: mockVideos, nextCursor: null }] },
+      isLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
 
     render(<FeedScreen route={createRoute()} />);
 
-    // Wait for the loading state to clear and posts to render
+    // Wait for the loading state to clear and videos to render
     await waitFor(() => {
       const videoViews = screen.getAllByTestId("video-view");
       expect(videoViews.length).toBeGreaterThanOrEqual(1);
     });
   });
 
-  it("calls getFeed when profile param is false", async () => {
-    (getFeed as jest.Mock).mockResolvedValue(mockPosts);
+  it("calls useFeed with the active learning language", () => {
+    mockUseFeed.mockReturnValue({
+      data: { pages: [{ videos: mockVideos, nextCursor: null }] },
+      isLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
+    });
 
     render(<FeedScreen route={createRoute({ profile: false })} />);
 
-    await waitFor(() => {
-      expect(getFeed).toHaveBeenCalled();
-    });
+    expect(mockUseFeed).toHaveBeenCalledWith("zh");
   });
 
-  it("calls getPostsByUserId when profile param is true with a creator", async () => {
-    (getPostsByUserId as jest.Mock).mockResolvedValue([mockPosts[0]]);
-
-    render(
-      <FeedScreen
-        route={createRoute({ profile: true, creator: "user-001" })}
-      />,
-    );
-
-    await waitFor(() => {
-      expect(getPostsByUserId).toHaveBeenCalledWith("user-001");
+  it("renders empty state when no videos are returned", () => {
+    mockUseFeed.mockReturnValue({
+      data: { pages: [{ videos: [], nextCursor: null }] },
+      isLoading: false,
+      fetchNextPage: jest.fn(),
+      hasNextPage: false,
+      isFetchingNextPage: false,
     });
-  });
-
-  it("renders empty state when no posts are returned", async () => {
-    (getFeed as jest.Mock).mockResolvedValue([]);
 
     render(<FeedScreen route={createRoute()} />);
-
-    await waitFor(() => {
-      expect(getFeed).toHaveBeenCalled();
-    });
 
     // Should show empty state, not video views
     expect(screen.queryAllByTestId("video-view")).toHaveLength(0);

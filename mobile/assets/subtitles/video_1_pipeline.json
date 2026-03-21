@@ -1,0 +1,5016 @@
+{
+  "video": "6e0ab35a-8083-4fa9-8859-28eadd21d6ab",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 215900,
+  "frame_interval_ms": 250,
+  "segments": [
+    {
+      "start_ms": 750,
+      "end_ms": 1500,
+      "detections": [
+        {
+          "text": "你先念一下",
+          "confidence": 0.9986,
+          "bbox": {
+            "x": 212,
+            "y": 752,
+            "width": 294,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 212,
+              "y": 752,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "先",
+              "x": 271,
+              "y": 752,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "念",
+              "x": 330,
+              "y": 752,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "一",
+              "x": 388,
+              "y": 752,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "下",
+              "x": 447,
+              "y": 752,
+              "width": 59,
+              "height": 76
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9664,
+          "bbox": {
+            "x": 78,
+            "y": 160,
+            "width": 558,
+            "height": 62
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 78,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "民",
+              "x": 134,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "工",
+              "x": 190,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "大",
+              "x": 245,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "哥",
+              "x": 301,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "写",
+              "x": 357,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "器",
+              "x": 524,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "了",
+              "x": 580,
+              "y": 160,
+              "width": 56,
+              "height": 62
+            }
+          ]
+        },
+        {
+          "text": "5元",
+          "confidence": 0.7815,
+          "bbox": {
+            "x": 0,
+            "y": 118,
+            "width": 52,
+            "height": 62
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 0,
+              "y": 118,
+              "width": 26,
+              "height": 62
+            },
+            {
+              "char": "元",
+              "x": 26,
+              "y": 118,
+              "width": 26,
+              "height": 62
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2000,
+      "end_ms": 2750,
+      "detections": [
+        {
+          "text": "你在天堂还好吗",
+          "confidence": 0.9978,
+          "bbox": {
+            "x": 144,
+            "y": 750,
+            "width": 428,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 144,
+              "y": 750,
+              "width": 61,
+              "height": 82
+            },
+            {
+              "char": "在",
+              "x": 205,
+              "y": 750,
+              "width": 61,
+              "height": 82
+            },
+            {
+              "char": "天",
+              "x": 266,
+              "y": 750,
+              "width": 61,
+              "height": 82
+            },
+            {
+              "char": "堂",
+              "x": 327,
+              "y": 750,
+              "width": 61,
+              "height": 82
+            },
+            {
+              "char": "还",
+              "x": 389,
+              "y": 750,
+              "width": 61,
+              "height": 82
+            },
+            {
+              "char": "好",
+              "x": 450,
+              "y": 750,
+              "width": 61,
+              "height": 82
+            },
+            {
+              "char": "吗",
+              "x": 511,
+              "y": 750,
+              "width": 61,
+              "height": 82
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.741,
+          "bbox": {
+            "x": 132,
+            "y": 398,
+            "width": 90,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 132,
+              "y": 398,
+              "width": 22,
+              "height": 68
+            },
+            {
+              "char": "元",
+              "x": 154,
+              "y": 398,
+              "width": 22,
+              "height": 68
+            },
+            {
+              "char": "/",
+              "x": 177,
+              "y": 398,
+              "width": 22,
+              "height": 68
+            },
+            {
+              "char": "碗",
+              "x": 200,
+              "y": 398,
+              "width": 22,
+              "height": 68
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9755,
+          "bbox": {
+            "x": 76,
+            "y": 156,
+            "width": 564,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 76,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "民",
+              "x": 132,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "工",
+              "x": 189,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 245,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 302,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "写",
+              "x": 358,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "作",
+              "x": 414,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "文",
+              "x": 471,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "器",
+              "x": 527,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            },
+            {
+              "char": "了",
+              "x": 584,
+              "y": 156,
+              "width": 56,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 20250,
+      "end_ms": 21000,
+      "detections": [
+        {
+          "text": "这个红包给您来",
+          "confidence": 0.9979,
+          "bbox": {
+            "x": 150,
+            "y": 756,
+            "width": 418,
+            "height": 70
+          },
+          "chars": [
+            {
+              "char": "这",
+              "x": 150,
+              "y": 756,
+              "width": 60,
+              "height": 70
+            },
+            {
+              "char": "个",
+              "x": 210,
+              "y": 756,
+              "width": 60,
+              "height": 70
+            },
+            {
+              "char": "红",
+              "x": 269,
+              "y": 756,
+              "width": 60,
+              "height": 70
+            },
+            {
+              "char": "包",
+              "x": 329,
+              "y": 756,
+              "width": 60,
+              "height": 70
+            },
+            {
+              "char": "给",
+              "x": 389,
+              "y": 756,
+              "width": 60,
+              "height": 70
+            },
+            {
+              "char": "您",
+              "x": 449,
+              "y": 756,
+              "width": 60,
+              "height": 70
+            },
+            {
+              "char": "来",
+              "x": 508,
+              "y": 756,
+              "width": 60,
+              "height": 70
+            }
+          ]
+        },
+        {
+          "text": "走路文明行车",
+          "confidence": 0.9876,
+          "bbox": {
+            "x": 358,
+            "y": 460,
+            "width": 98,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "走",
+              "x": 358,
+              "y": 460,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "路",
+              "x": 374,
+              "y": 460,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "文",
+              "x": 391,
+              "y": 460,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 407,
+              "y": 460,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "行",
+              "x": 423,
+              "y": 460,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "车",
+              "x": 440,
+              "y": 460,
+              "width": 16,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "文明乘车",
+          "confidence": 0.9233,
+          "bbox": {
+            "x": 358,
+            "y": 374,
+            "width": 72,
+            "height": 34
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 358,
+              "y": 374,
+              "width": 18,
+              "height": 34
+            },
+            {
+              "char": "明",
+              "x": 376,
+              "y": 374,
+              "width": 18,
+              "height": 34
+            },
+            {
+              "char": "乘",
+              "x": 394,
+              "y": 374,
+              "width": 18,
+              "height": 34
+            },
+            {
+              "char": "车",
+              "x": 412,
+              "y": 374,
+              "width": 18,
+              "height": 34
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.9836,
+          "bbox": {
+            "x": 392,
+            "y": 346,
+            "width": 70,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 392,
+              "y": 346,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 410,
+              "y": 346,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "走",
+              "x": 427,
+              "y": 346,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "路",
+              "x": 444,
+              "y": 346,
+              "width": 18,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9977,
+          "bbox": {
+            "x": 74,
+            "y": 156,
+            "width": 568,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 74,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 131,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 188,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 244,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 301,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 358,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 415,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 472,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 528,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 585,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 21750,
+      "end_ms": 22500,
+      "detections": [
+        {
+          "text": "谢谢谢谢",
+          "confidence": 0.9782,
+          "bbox": {
+            "x": 240,
+            "y": 754,
+            "width": 236,
+            "height": 72
+          },
+          "chars": [
+            {
+              "char": "谢",
+              "x": 240,
+              "y": 754,
+              "width": 59,
+              "height": 72
+            },
+            {
+              "char": "谢",
+              "x": 299,
+              "y": 754,
+              "width": 59,
+              "height": 72
+            },
+            {
+              "char": "谢",
+              "x": 358,
+              "y": 754,
+              "width": 59,
+              "height": 72
+            },
+            {
+              "char": "谢",
+              "x": 417,
+              "y": 754,
+              "width": 59,
+              "height": 72
+            }
+          ]
+        },
+        {
+          "text": "走路文明",
+          "confidence": 0.9848,
+          "bbox": {
+            "x": 348,
+            "y": 460,
+            "width": 70,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "走",
+              "x": 348,
+              "y": 460,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "路",
+              "x": 366,
+              "y": 460,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "文",
+              "x": 383,
+              "y": 460,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 400,
+              "y": 460,
+              "width": 18,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "文明乘车",
+          "confidence": 0.922,
+          "bbox": {
+            "x": 352,
+            "y": 372,
+            "width": 72,
+            "height": 34
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 352,
+              "y": 372,
+              "width": 18,
+              "height": 34
+            },
+            {
+              "char": "明",
+              "x": 370,
+              "y": 372,
+              "width": 18,
+              "height": 34
+            },
+            {
+              "char": "乘",
+              "x": 388,
+              "y": 372,
+              "width": 18,
+              "height": 34
+            },
+            {
+              "char": "车",
+              "x": 406,
+              "y": 372,
+              "width": 18,
+              "height": 34
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.9586,
+          "bbox": {
+            "x": 380,
+            "y": 344,
+            "width": 78,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 380,
+              "y": 344,
+              "width": 20,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 400,
+              "y": 344,
+              "width": 20,
+              "height": 28
+            },
+            {
+              "char": "走",
+              "x": 419,
+              "y": 344,
+              "width": 20,
+              "height": 28
+            },
+            {
+              "char": "路",
+              "x": 438,
+              "y": 344,
+              "width": 20,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9975,
+          "bbox": {
+            "x": 74,
+            "y": 156,
+            "width": 570,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 74,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 131,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 188,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 245,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 359,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 416,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 473,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 530,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 587,
+              "y": 156,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 24250,
+      "end_ms": 25250,
+      "detections": [
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9928,
+          "bbox": {
+            "x": 76,
+            "y": 158,
+            "width": 564,
+            "height": 62
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "晨",
+              "x": 132,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "务",
+              "x": 245,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "场",
+              "x": 358,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "偶",
+              "x": 414,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "遇",
+              "x": 471,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "大",
+              "x": 527,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "哥",
+              "x": 584,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 25500,
+      "end_ms": 29000,
+      "detections": [
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.993,
+          "bbox": {
+            "x": 76,
+            "y": 158,
+            "width": 564,
+            "height": 62
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "晨",
+              "x": 132,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "务",
+              "x": 245,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "场",
+              "x": 358,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "偶",
+              "x": 414,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "遇",
+              "x": 471,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "大",
+              "x": 527,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "哥",
+              "x": 584,
+              "y": 158,
+              "width": 56,
+              "height": 62
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 29250,
+      "end_ms": 31250,
+      "detections": [
+        {
+          "text": "大哥你你是啥地方人",
+          "confidence": 0.9977,
+          "bbox": {
+            "x": 94,
+            "y": 748,
+            "width": 530,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "大",
+              "x": 94,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "哥",
+              "x": 153,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "你",
+              "x": 212,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "你",
+              "x": 271,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "是",
+              "x": 330,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "啥",
+              "x": 388,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "地",
+              "x": 447,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "方",
+              "x": 506,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            },
+            {
+              "char": "人",
+              "x": 565,
+              "y": 748,
+              "width": 59,
+              "height": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 31500,
+      "end_ms": 33000,
+      "detections": [
+        {
+          "text": "临潼临潼人",
+          "confidence": 0.9973,
+          "bbox": {
+            "x": 198,
+            "y": 742,
+            "width": 318,
+            "height": 90
+          },
+          "chars": [
+            {
+              "char": "临",
+              "x": 198,
+              "y": 742,
+              "width": 64,
+              "height": 90
+            },
+            {
+              "char": "潼",
+              "x": 262,
+              "y": 742,
+              "width": 64,
+              "height": 90
+            },
+            {
+              "char": "临",
+              "x": 325,
+              "y": 742,
+              "width": 64,
+              "height": 90
+            },
+            {
+              "char": "潼",
+              "x": 389,
+              "y": 742,
+              "width": 64,
+              "height": 90
+            },
+            {
+              "char": "人",
+              "x": 452,
+              "y": 742,
+              "width": 64,
+              "height": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 33000,
+      "end_ms": 34250,
+      "detections": [
+        {
+          "text": "嗯哦",
+          "confidence": 0.9991,
+          "bbox": {
+            "x": 292,
+            "y": 750,
+            "width": 134,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "嗯",
+              "x": 292,
+              "y": 750,
+              "width": 67,
+              "height": 78
+            },
+            {
+              "char": "哦",
+              "x": 359,
+              "y": 750,
+              "width": 67,
+              "height": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 34250,
+      "end_ms": 36500,
+      "detections": [
+        {
+          "text": "那你文化程度是",
+          "confidence": 0.9973,
+          "bbox": {
+            "x": 138,
+            "y": 748,
+            "width": 438,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "那",
+              "x": 138,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "你",
+              "x": 201,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "文",
+              "x": 263,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "化",
+              "x": 326,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "程",
+              "x": 388,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "度",
+              "x": 451,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "是",
+              "x": 513,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 37500,
+      "end_ms": 38250,
+      "detections": [
+        {
+          "text": "干81年",
+          "confidence": 0.8651,
+          "bbox": {
+            "x": 248,
+            "y": 776,
+            "width": 216,
+            "height": 92
+          },
+          "chars": [
+            {
+              "char": "干",
+              "x": 248,
+              "y": 776,
+              "width": 54,
+              "height": 92
+            },
+            {
+              "char": "8",
+              "x": 302,
+              "y": 776,
+              "width": 54,
+              "height": 92
+            },
+            {
+              "char": "1",
+              "x": 356,
+              "y": 776,
+              "width": 54,
+              "height": 92
+            },
+            {
+              "char": "年",
+              "x": 410,
+              "y": 776,
+              "width": 54,
+              "height": 92
+            }
+          ]
+        },
+        {
+          "text": "我是原来的高中毕业",
+          "confidence": 0.9974,
+          "bbox": {
+            "x": 98,
+            "y": 712,
+            "width": 524,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 98,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "是",
+              "x": 156,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "原",
+              "x": 214,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "来",
+              "x": 273,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "的",
+              "x": 331,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "高",
+              "x": 389,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "中",
+              "x": 447,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "毕",
+              "x": 506,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            },
+            {
+              "char": "业",
+              "x": 564,
+              "y": 712,
+              "width": 58,
+              "height": 76
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 40000,
+      "end_ms": 41250,
+      "detections": [
+        {
+          "text": "那你在你那个年代",
+          "confidence": 0.9996,
+          "bbox": {
+            "x": 126,
+            "y": 752,
+            "width": 468,
+            "height": 70
+          },
+          "chars": [
+            {
+              "char": "那",
+              "x": 126,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            },
+            {
+              "char": "你",
+              "x": 184,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            },
+            {
+              "char": "在",
+              "x": 243,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            },
+            {
+              "char": "你",
+              "x": 302,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            },
+            {
+              "char": "那",
+              "x": 360,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            },
+            {
+              "char": "个",
+              "x": 418,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            },
+            {
+              "char": "年",
+              "x": 477,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            },
+            {
+              "char": "代",
+              "x": 536,
+              "y": 752,
+              "width": 58,
+              "height": 70
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 42000,
+      "end_ms": 43000,
+      "detections": [
+        {
+          "text": "学历比较高",
+          "confidence": 0.9984,
+          "bbox": {
+            "x": 190,
+            "y": 780,
+            "width": 336,
+            "height": 84
+          },
+          "chars": [
+            {
+              "char": "学",
+              "x": 190,
+              "y": 780,
+              "width": 67,
+              "height": 84
+            },
+            {
+              "char": "历",
+              "x": 257,
+              "y": 780,
+              "width": 67,
+              "height": 84
+            },
+            {
+              "char": "比",
+              "x": 324,
+              "y": 780,
+              "width": 67,
+              "height": 84
+            },
+            {
+              "char": "较",
+              "x": 392,
+              "y": 780,
+              "width": 67,
+              "height": 84
+            },
+            {
+              "char": "高",
+              "x": 459,
+              "y": 780,
+              "width": 67,
+              "height": 84
+            }
+          ]
+        },
+        {
+          "text": "高中应该算是还",
+          "confidence": 0.9979,
+          "bbox": {
+            "x": 152,
+            "y": 708,
+            "width": 416,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "高",
+              "x": 152,
+              "y": 708,
+              "width": 59,
+              "height": 82
+            },
+            {
+              "char": "中",
+              "x": 211,
+              "y": 708,
+              "width": 59,
+              "height": 82
+            },
+            {
+              "char": "应",
+              "x": 271,
+              "y": 708,
+              "width": 59,
+              "height": 82
+            },
+            {
+              "char": "该",
+              "x": 330,
+              "y": 708,
+              "width": 59,
+              "height": 82
+            },
+            {
+              "char": "算",
+              "x": 390,
+              "y": 708,
+              "width": 59,
+              "height": 82
+            },
+            {
+              "char": "是",
+              "x": 449,
+              "y": 708,
+              "width": 59,
+              "height": 82
+            },
+            {
+              "char": "还",
+              "x": 509,
+              "y": 708,
+              "width": 59,
+              "height": 82
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 44250,
+      "end_ms": 45000,
+      "detections": [
+        {
+          "text": "在我年代",
+          "confidence": 0.9998,
+          "bbox": {
+            "x": 238,
+            "y": 748,
+            "width": 242,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "在",
+              "x": 238,
+              "y": 748,
+              "width": 60,
+              "height": 80
+            },
+            {
+              "char": "我",
+              "x": 298,
+              "y": 748,
+              "width": 60,
+              "height": 80
+            },
+            {
+              "char": "年",
+              "x": 359,
+              "y": 748,
+              "width": 60,
+              "height": 80
+            },
+            {
+              "char": "代",
+              "x": 420,
+              "y": 748,
+              "width": 60,
+              "height": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 46250,
+      "end_ms": 48000,
+      "detections": [
+        {
+          "text": "下来就是中专么",
+          "confidence": 0.9896,
+          "bbox": {
+            "x": 146,
+            "y": 742,
+            "width": 430,
+            "height": 90
+          },
+          "chars": [
+            {
+              "char": "下",
+              "x": 146,
+              "y": 742,
+              "width": 61,
+              "height": 90
+            },
+            {
+              "char": "来",
+              "x": 207,
+              "y": 742,
+              "width": 61,
+              "height": 90
+            },
+            {
+              "char": "就",
+              "x": 269,
+              "y": 742,
+              "width": 61,
+              "height": 90
+            },
+            {
+              "char": "是",
+              "x": 330,
+              "y": 742,
+              "width": 61,
+              "height": 90
+            },
+            {
+              "char": "中",
+              "x": 392,
+              "y": 742,
+              "width": 61,
+              "height": 90
+            },
+            {
+              "char": "专",
+              "x": 453,
+              "y": 742,
+              "width": 61,
+              "height": 90
+            },
+            {
+              "char": "么",
+              "x": 515,
+              "y": 742,
+              "width": 61,
+              "height": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 48000,
+      "end_ms": 48750,
+      "detections": [
+        {
+          "text": "中专下来",
+          "confidence": 0.9988,
+          "bbox": {
+            "x": 238,
+            "y": 748,
+            "width": 244,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "中",
+              "x": 238,
+              "y": 748,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "专",
+              "x": 299,
+              "y": 748,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "下",
+              "x": 360,
+              "y": 748,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "来",
+              "x": 421,
+              "y": 748,
+              "width": 61,
+              "height": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 48750,
+      "end_ms": 49750,
+      "detections": [
+        {
+          "text": "就是那个",
+          "confidence": 0.9995,
+          "bbox": {
+            "x": 238,
+            "y": 748,
+            "width": 242,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "就",
+              "x": 238,
+              "y": 748,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "是",
+              "x": 298,
+              "y": 748,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "那",
+              "x": 359,
+              "y": 748,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "个",
+              "x": 420,
+              "y": 748,
+              "width": 60,
+              "height": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 50000,
+      "end_ms": 51750,
+      "detections": [
+        {
+          "text": "可以",
+          "confidence": 0.9999,
+          "bbox": {
+            "x": 292,
+            "y": 778,
+            "width": 138,
+            "height": 86
+          },
+          "chars": [
+            {
+              "char": "可",
+              "x": 292,
+              "y": 778,
+              "width": 69,
+              "height": 86
+            },
+            {
+              "char": "以",
+              "x": 361,
+              "y": 778,
+              "width": 69,
+              "height": 86
+            }
+          ]
+        },
+        {
+          "text": "那个时候中专都相当",
+          "confidence": 0.9957,
+          "bbox": {
+            "x": 98,
+            "y": 716,
+            "width": 522,
+            "height": 74
+          },
+          "chars": [
+            {
+              "char": "那",
+              "x": 98,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "个",
+              "x": 156,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "时",
+              "x": 214,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "候",
+              "x": 272,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "中",
+              "x": 330,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "专",
+              "x": 388,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "都",
+              "x": 446,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "相",
+              "x": 504,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "当",
+              "x": 562,
+              "y": 716,
+              "width": 58,
+              "height": 74
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 51750,
+      "end_ms": 52500,
+      "detections": [
+        {
+          "text": "哈哈哈",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 262,
+            "y": 748,
+            "width": 188,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "哈",
+              "x": 262,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "哈",
+              "x": 325,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "哈",
+              "x": 387,
+              "y": 748,
+              "width": 63,
+              "height": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 52750,
+      "end_ms": 56000,
+      "detections": [
+        {
+          "text": "文凭也沒干些啥",
+          "confidence": 0.9374,
+          "bbox": {
+            "x": 156,
+            "y": 784,
+            "width": 410,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 156,
+              "y": 784,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "凭",
+              "x": 215,
+              "y": 784,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "也",
+              "x": 273,
+              "y": 784,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "沒",
+              "x": 332,
+              "y": 784,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "干",
+              "x": 390,
+              "y": 784,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "些",
+              "x": 449,
+              "y": 784,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "啥",
+              "x": 507,
+              "y": 784,
+              "width": 59,
+              "height": 76
+            }
+          ]
+        },
+        {
+          "text": "那你这当时有这高中",
+          "confidence": 0.9978,
+          "bbox": {
+            "x": 96,
+            "y": 716,
+            "width": 528,
+            "height": 74
+          },
+          "chars": [
+            {
+              "char": "那",
+              "x": 96,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "你",
+              "x": 155,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "这",
+              "x": 213,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "当",
+              "x": 272,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "时",
+              "x": 331,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "有",
+              "x": 389,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "这",
+              "x": 448,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "高",
+              "x": 507,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "中",
+              "x": 565,
+              "y": 716,
+              "width": 59,
+              "height": 74
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 56000,
+      "end_ms": 57000,
+      "detections": [
+        {
+          "text": "沒有沒有沒有",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 182,
+            "y": 750,
+            "width": 352,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "沒",
+              "x": 182,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "有",
+              "x": 241,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "沒",
+              "x": 299,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "有",
+              "x": 358,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "沒",
+              "x": 417,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "有",
+              "x": 475,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 57000,
+      "end_ms": 59000,
+      "detections": [
+        {
+          "text": "那一直家里给研务农",
+          "confidence": 0.9727,
+          "bbox": {
+            "x": 96,
+            "y": 750,
+            "width": 528,
+            "height": 74
+          },
+          "chars": [
+            {
+              "char": "那",
+              "x": 96,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "一",
+              "x": 155,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "直",
+              "x": 213,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "家",
+              "x": 272,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "里",
+              "x": 331,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "给",
+              "x": 389,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "研",
+              "x": 448,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "务",
+              "x": 507,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            },
+            {
+              "char": "农",
+              "x": 565,
+              "y": 750,
+              "width": 59,
+              "height": 74
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 59750,
+      "end_ms": 62250,
+      "detections": [
+        {
+          "text": "哦啊家里这个负担重",
+          "confidence": 0.9986,
+          "bbox": {
+            "x": 82,
+            "y": 744,
+            "width": 554,
+            "height": 88
+          },
+          "chars": [
+            {
+              "char": "哦",
+              "x": 82,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "啊",
+              "x": 144,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "家",
+              "x": 205,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "里",
+              "x": 267,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "这",
+              "x": 328,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "个",
+              "x": 390,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "负",
+              "x": 451,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "担",
+              "x": 513,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "重",
+              "x": 574,
+              "y": 744,
+              "width": 62,
+              "height": 88
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 63500,
+      "end_ms": 65000,
+      "detections": [
+        {
+          "text": "我母亲额钱",
+          "confidence": 0.9948,
+          "bbox": {
+            "x": 212,
+            "y": 750,
+            "width": 300,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 212,
+              "y": 750,
+              "width": 60,
+              "height": 76
+            },
+            {
+              "char": "母",
+              "x": 272,
+              "y": 750,
+              "width": 60,
+              "height": 76
+            },
+            {
+              "char": "亲",
+              "x": 332,
+              "y": 750,
+              "width": 60,
+              "height": 76
+            },
+            {
+              "char": "额",
+              "x": 392,
+              "y": 750,
+              "width": 60,
+              "height": 76
+            },
+            {
+              "char": "钱",
+              "x": 452,
+              "y": 750,
+              "width": 60,
+              "height": 76
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 65500,
+      "end_ms": 68000,
+      "detections": [
+        {
+          "text": "在农村累的弯下了腰",
+          "confidence": 0.9944,
+          "bbox": {
+            "x": 94,
+            "y": 748,
+            "width": 528,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "在",
+              "x": 94,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "农",
+              "x": 153,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "村",
+              "x": 211,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "累",
+              "x": 270,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "的",
+              "x": 329,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "弯",
+              "x": 387,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "下",
+              "x": 446,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "了",
+              "x": 505,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            },
+            {
+              "char": "腰",
+              "x": 563,
+              "y": 748,
+              "width": 59,
+              "height": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 69250,
+      "end_ms": 70250,
+      "detections": [
+        {
+          "text": "今天么寻哈活",
+          "confidence": 0.9631,
+          "bbox": {
+            "x": 184,
+            "y": 750,
+            "width": 352,
+            "height": 76
+          },
+          "chars": [
+            {
+              "char": "今",
+              "x": 184,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "天",
+              "x": 243,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "么",
+              "x": 301,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "寻",
+              "x": 360,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "哈",
+              "x": 419,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            },
+            {
+              "char": "活",
+              "x": 477,
+              "y": 750,
+              "width": 59,
+              "height": 76
+            }
+          ]
+        },
+        {
+          "text": "江苏炒货工坊",
+          "confidence": 0.8922,
+          "bbox": {
+            "x": 416,
+            "y": 522,
+            "width": 212,
+            "height": 34
+          },
+          "chars": [
+            {
+              "char": "江",
+              "x": 416,
+              "y": 522,
+              "width": 35,
+              "height": 34
+            },
+            {
+              "char": "苏",
+              "x": 451,
+              "y": 522,
+              "width": 35,
+              "height": 34
+            },
+            {
+              "char": "炒",
+              "x": 487,
+              "y": 522,
+              "width": 35,
+              "height": 34
+            },
+            {
+              "char": "货",
+              "x": 522,
+              "y": 522,
+              "width": 35,
+              "height": 34
+            },
+            {
+              "char": "工",
+              "x": 557,
+              "y": 522,
+              "width": 35,
+              "height": 34
+            },
+            {
+              "char": "坊",
+              "x": 593,
+              "y": 522,
+              "width": 35,
+              "height": 34
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 75250,
+      "end_ms": 76500,
+      "detections": [
+        {
+          "text": "咱坐这额",
+          "confidence": 0.998,
+          "bbox": {
+            "x": 238,
+            "y": 752,
+            "width": 244,
+            "height": 72
+          },
+          "chars": [
+            {
+              "char": "咱",
+              "x": 238,
+              "y": 752,
+              "width": 61,
+              "height": 72
+            },
+            {
+              "char": "坐",
+              "x": 299,
+              "y": 752,
+              "width": 61,
+              "height": 72
+            },
+            {
+              "char": "这",
+              "x": 360,
+              "y": 752,
+              "width": 61,
+              "height": 72
+            },
+            {
+              "char": "额",
+              "x": 421,
+              "y": 752,
+              "width": 61,
+              "height": 72
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 77250,
+      "end_ms": 78000,
+      "detections": [
+        {
+          "text": "吃过咧",
+          "confidence": 0.9916,
+          "bbox": {
+            "x": 262,
+            "y": 742,
+            "width": 192,
+            "height": 86
+          },
+          "chars": [
+            {
+              "char": "吃",
+              "x": 262,
+              "y": 742,
+              "width": 64,
+              "height": 86
+            },
+            {
+              "char": "过",
+              "x": 326,
+              "y": 742,
+              "width": 64,
+              "height": 86
+            },
+            {
+              "char": "咧",
+              "x": 390,
+              "y": 742,
+              "width": 64,
+              "height": 86
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 84500,
+      "end_ms": 85500,
+      "detections": [
+        {
+          "text": "3元/碗",
+          "confidence": 0.8047,
+          "bbox": {
+            "x": 180,
+            "y": 390,
+            "width": 84,
+            "height": 52
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 180,
+              "y": 390,
+              "width": 21,
+              "height": 52
+            },
+            {
+              "char": "元",
+              "x": 201,
+              "y": 390,
+              "width": 21,
+              "height": 52
+            },
+            {
+              "char": "/",
+              "x": 222,
+              "y": 390,
+              "width": 21,
+              "height": 52
+            },
+            {
+              "char": "碗",
+              "x": 243,
+              "y": 390,
+              "width": 21,
+              "height": 52
+            }
+          ]
+        },
+        {
+          "text": "元/碗",
+          "confidence": 0.9323,
+          "bbox": {
+            "x": 0,
+            "y": 358,
+            "width": 74,
+            "height": 58
+          },
+          "chars": [
+            {
+              "char": "元",
+              "x": 0,
+              "y": 358,
+              "width": 25,
+              "height": 58
+            },
+            {
+              "char": "/",
+              "x": 25,
+              "y": 358,
+              "width": 25,
+              "height": 58
+            },
+            {
+              "char": "碗",
+              "x": 49,
+              "y": 358,
+              "width": 25,
+              "height": 58
+            }
+          ]
+        },
+        {
+          "text": "跟大哥沟通作文选题",
+          "confidence": 0.9871,
+          "bbox": {
+            "x": 104,
+            "y": 156,
+            "width": 508,
+            "height": 62
+          },
+          "chars": [
+            {
+              "char": "跟",
+              "x": 104,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "大",
+              "x": 160,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "哥",
+              "x": 217,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "沟",
+              "x": 273,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "通",
+              "x": 330,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "作",
+              "x": 386,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "文",
+              "x": 443,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "选",
+              "x": 499,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            },
+            {
+              "char": "题",
+              "x": 556,
+              "y": 156,
+              "width": 56,
+              "height": 62
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 91250,
+      "end_ms": 99000,
+      "detections": [
+        {
+          "text": "写作中…",
+          "confidence": 0.9184,
+          "bbox": {
+            "x": 240,
+            "y": 152,
+            "width": 238,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "写",
+              "x": 240,
+              "y": 152,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "作",
+              "x": 300,
+              "y": 152,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "中",
+              "x": 359,
+              "y": 152,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "…",
+              "x": 418,
+              "y": 152,
+              "width": 60,
+              "height": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 101000,
+      "end_ms": 102000,
+      "detections": [
+        {
+          "text": "写完以后感觉",
+          "confidence": 0.9988,
+          "bbox": {
+            "x": 168,
+            "y": 750,
+            "width": 388,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "写",
+              "x": 168,
+              "y": 750,
+              "width": 65,
+              "height": 82
+            },
+            {
+              "char": "完",
+              "x": 233,
+              "y": 750,
+              "width": 65,
+              "height": 82
+            },
+            {
+              "char": "以",
+              "x": 297,
+              "y": 750,
+              "width": 65,
+              "height": 82
+            },
+            {
+              "char": "后",
+              "x": 362,
+              "y": 750,
+              "width": 65,
+              "height": 82
+            },
+            {
+              "char": "感",
+              "x": 427,
+              "y": 750,
+              "width": 65,
+              "height": 82
+            },
+            {
+              "char": "觉",
+              "x": 491,
+              "y": 750,
+              "width": 65,
+              "height": 82
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.829,
+          "bbox": {
+            "x": 264,
+            "y": 372,
+            "width": 100,
+            "height": 62
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 264,
+              "y": 372,
+              "width": 25,
+              "height": 62
+            },
+            {
+              "char": "元",
+              "x": 289,
+              "y": 372,
+              "width": 25,
+              "height": 62
+            },
+            {
+              "char": "／",
+              "x": 314,
+              "y": 372,
+              "width": 25,
+              "height": 62
+            },
+            {
+              "char": "碗",
+              "x": 339,
+              "y": 372,
+              "width": 25,
+              "height": 62
+            }
+          ]
+        },
+        {
+          "text": "5元/碗",
+          "confidence": 0.9543,
+          "bbox": {
+            "x": 0,
+            "y": 338,
+            "width": 122,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 0,
+              "y": 338,
+              "width": 30,
+              "height": 78
+            },
+            {
+              "char": "元",
+              "x": 30,
+              "y": 338,
+              "width": 30,
+              "height": 78
+            },
+            {
+              "char": "/",
+              "x": 61,
+              "y": 338,
+              "width": 30,
+              "height": 78
+            },
+            {
+              "char": "碗",
+              "x": 92,
+              "y": 338,
+              "width": 30,
+              "height": 78
+            }
+          ]
+        },
+        {
+          "text": "写作完成",
+          "confidence": 0.9974,
+          "bbox": {
+            "x": 206,
+            "y": 150,
+            "width": 238,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "写",
+              "x": 206,
+              "y": 150,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "作",
+              "x": 266,
+              "y": 150,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "完",
+              "x": 325,
+              "y": 150,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "成",
+              "x": 384,
+              "y": 150,
+              "width": 60,
+              "height": 78
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 109250,
+      "end_ms": 110000,
+      "detections": [
+        {
+          "text": "起母亲了",
+          "confidence": 0.9971,
+          "bbox": {
+            "x": 222,
+            "y": 784,
+            "width": 268,
+            "height": 90
+          },
+          "chars": [
+            {
+              "char": "起",
+              "x": 222,
+              "y": 784,
+              "width": 67,
+              "height": 90
+            },
+            {
+              "char": "母",
+              "x": 289,
+              "y": 784,
+              "width": 67,
+              "height": 90
+            },
+            {
+              "char": "亲",
+              "x": 356,
+              "y": 784,
+              "width": 67,
+              "height": 90
+            },
+            {
+              "char": "了",
+              "x": 423,
+              "y": 784,
+              "width": 67,
+              "height": 90
+            }
+          ]
+        },
+        {
+          "text": "就可能很长时间没想",
+          "confidence": 0.978,
+          "bbox": {
+            "x": 86,
+            "y": 706,
+            "width": 542,
+            "height": 88
+          },
+          "chars": [
+            {
+              "char": "就",
+              "x": 86,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "可",
+              "x": 146,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "能",
+              "x": 206,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "很",
+              "x": 267,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "长",
+              "x": 327,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "时",
+              "x": 387,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "间",
+              "x": 447,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "没",
+              "x": 508,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "想",
+              "x": 568,
+              "y": 706,
+              "width": 60,
+              "height": 88
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8408,
+          "bbox": {
+            "x": 276,
+            "y": 152,
+            "width": 134,
+            "height": 90
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 276,
+              "y": 152,
+              "width": 34,
+              "height": 90
+            },
+            {
+              "char": "元",
+              "x": 310,
+              "y": 152,
+              "width": 34,
+              "height": 90
+            },
+            {
+              "char": "／",
+              "x": 343,
+              "y": 152,
+              "width": 34,
+              "height": 90
+            },
+            {
+              "char": "碗",
+              "x": 376,
+              "y": 152,
+              "width": 34,
+              "height": 90
+            }
+          ]
+        },
+        {
+          "text": "5元/碗",
+          "confidence": 0.8779,
+          "bbox": {
+            "x": 8,
+            "y": 90,
+            "width": 154,
+            "height": 102
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 8,
+              "y": 90,
+              "width": 38,
+              "height": 102
+            },
+            {
+              "char": "元",
+              "x": 46,
+              "y": 90,
+              "width": 38,
+              "height": 102
+            },
+            {
+              "char": "/",
+              "x": 85,
+              "y": 90,
+              "width": 38,
+              "height": 102
+            },
+            {
+              "char": "碗",
+              "x": 124,
+              "y": 90,
+              "width": 38,
+              "height": 102
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 117750,
+      "end_ms": 118500,
+      "detections": [
+        {
+          "text": "我沒有母亲了",
+          "confidence": 0.9959,
+          "bbox": {
+            "x": 178,
+            "y": 752,
+            "width": 360,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 178,
+              "y": 752,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "沒",
+              "x": 238,
+              "y": 752,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "有",
+              "x": 298,
+              "y": 752,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "母",
+              "x": 358,
+              "y": 752,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "亲",
+              "x": 418,
+              "y": 752,
+              "width": 60,
+              "height": 78
+            },
+            {
+              "char": "了",
+              "x": 478,
+              "y": 752,
+              "width": 60,
+              "height": 78
+            }
+          ]
+        },
+        {
+          "text": "元/碗",
+          "confidence": 0.9281,
+          "bbox": {
+            "x": 0,
+            "y": 148,
+            "width": 88,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "元",
+              "x": 0,
+              "y": 148,
+              "width": 29,
+              "height": 82
+            },
+            {
+              "char": "/",
+              "x": 29,
+              "y": 148,
+              "width": 29,
+              "height": 82
+            },
+            {
+              "char": "碗",
+              "x": 59,
+              "y": 148,
+              "width": 29,
+              "height": 82
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 122500,
+      "end_ms": 123250,
+      "detections": [
+        {
+          "text": "我就会泪流满面",
+          "confidence": 0.9968,
+          "bbox": {
+            "x": 132,
+            "y": 750,
+            "width": 440,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 132,
+              "y": 750,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "就",
+              "x": 195,
+              "y": 750,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "会",
+              "x": 258,
+              "y": 750,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "泪",
+              "x": 321,
+              "y": 750,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "流",
+              "x": 383,
+              "y": 750,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "满",
+              "x": 446,
+              "y": 750,
+              "width": 63,
+              "height": 80
+            },
+            {
+              "char": "面",
+              "x": 509,
+              "y": 750,
+              "width": 63,
+              "height": 80
+            }
+          ]
+        },
+        {
+          "text": "3元/",
+          "confidence": 0.9032,
+          "bbox": {
+            "x": 328,
+            "y": 248,
+            "width": 80,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 328,
+              "y": 248,
+              "width": 27,
+              "height": 64
+            },
+            {
+              "char": "元",
+              "x": 355,
+              "y": 248,
+              "width": 27,
+              "height": 64
+            },
+            {
+              "char": "/",
+              "x": 381,
+              "y": 248,
+              "width": 27,
+              "height": 64
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.893,
+          "bbox": {
+            "x": 124,
+            "y": 178,
+            "width": 126,
+            "height": 96
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 124,
+              "y": 178,
+              "width": 32,
+              "height": 96
+            },
+            {
+              "char": "元",
+              "x": 156,
+              "y": 178,
+              "width": 32,
+              "height": 96
+            },
+            {
+              "char": "/",
+              "x": 187,
+              "y": 178,
+              "width": 32,
+              "height": 96
+            },
+            {
+              "char": "碗",
+              "x": 218,
+              "y": 178,
+              "width": 32,
+              "height": 96
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.9998,
+          "bbox": {
+            "x": 258,
+            "y": 42,
+            "width": 96,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 258,
+              "y": 42,
+              "width": 48,
+              "height": 82
+            },
+            {
+              "char": "浆",
+              "x": 306,
+              "y": 42,
+              "width": 48,
+              "height": 82
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 130000,
+      "end_ms": 130750,
+      "detections": [
+        {
+          "text": "在农业社干活累弯了",
+          "confidence": 0.9943,
+          "bbox": {
+            "x": 96,
+            "y": 722,
+            "width": 516,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "在",
+              "x": 96,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "农",
+              "x": 153,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "业",
+              "x": 211,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "社",
+              "x": 268,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "干",
+              "x": 325,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "活",
+              "x": 383,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "累",
+              "x": 440,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "弯",
+              "x": 497,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "了",
+              "x": 555,
+              "y": 722,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.9473,
+          "bbox": {
+            "x": 122,
+            "y": 170,
+            "width": 126,
+            "height": 96
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 122,
+              "y": 170,
+              "width": 32,
+              "height": 96
+            },
+            {
+              "char": "元",
+              "x": 154,
+              "y": 170,
+              "width": 32,
+              "height": 96
+            },
+            {
+              "char": "/",
+              "x": 185,
+              "y": 170,
+              "width": 32,
+              "height": 96
+            },
+            {
+              "char": "碗",
+              "x": 216,
+              "y": 170,
+              "width": 32,
+              "height": 96
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.9988,
+          "bbox": {
+            "x": 262,
+            "y": 42,
+            "width": 86,
+            "height": 72
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 262,
+              "y": 42,
+              "width": 43,
+              "height": 72
+            },
+            {
+              "char": "浆",
+              "x": 305,
+              "y": 42,
+              "width": 43,
+              "height": 72
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 132250,
+      "end_ms": 133000,
+      "detections": [
+        {
+          "text": "为什么会累弯了腰呢",
+          "confidence": 0.9963,
+          "bbox": {
+            "x": 78,
+            "y": 748,
+            "width": 560,
+            "height": 88
+          },
+          "chars": [
+            {
+              "char": "为",
+              "x": 78,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "什",
+              "x": 140,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "么",
+              "x": 202,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "会",
+              "x": 265,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "累",
+              "x": 327,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "弯",
+              "x": 389,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "了",
+              "x": 451,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "腰",
+              "x": 514,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            },
+            {
+              "char": "呢",
+              "x": 576,
+              "y": 748,
+              "width": 62,
+              "height": 88
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.8949,
+          "bbox": {
+            "x": 134,
+            "y": 176,
+            "width": 124,
+            "height": 94
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 134,
+              "y": 176,
+              "width": 31,
+              "height": 94
+            },
+            {
+              "char": "元",
+              "x": 165,
+              "y": 176,
+              "width": 31,
+              "height": 94
+            },
+            {
+              "char": "/",
+              "x": 196,
+              "y": 176,
+              "width": 31,
+              "height": 94
+            },
+            {
+              "char": "碗",
+              "x": 227,
+              "y": 176,
+              "width": 31,
+              "height": 94
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 133750,
+      "end_ms": 134500,
+      "detections": [
+        {
+          "text": "因为农业社上上工",
+          "confidence": 0.9937,
+          "bbox": {
+            "x": 114,
+            "y": 750,
+            "width": 488,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "因",
+              "x": 114,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "为",
+              "x": 175,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "农",
+              "x": 236,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "业",
+              "x": 297,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "社",
+              "x": 358,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "上",
+              "x": 419,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "上",
+              "x": 480,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "工",
+              "x": 541,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.9064,
+          "bbox": {
+            "x": 128,
+            "y": 176,
+            "width": 122,
+            "height": 90
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 128,
+              "y": 176,
+              "width": 30,
+              "height": 90
+            },
+            {
+              "char": "元",
+              "x": 158,
+              "y": 176,
+              "width": 30,
+              "height": 90
+            },
+            {
+              "char": "/",
+              "x": 189,
+              "y": 176,
+              "width": 30,
+              "height": 90
+            },
+            {
+              "char": "碗",
+              "x": 220,
+              "y": 176,
+              "width": 30,
+              "height": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 134500,
+      "end_ms": 135250,
+      "detections": [
+        {
+          "text": "因为农业社上上工",
+          "confidence": 0.9942,
+          "bbox": {
+            "x": 114,
+            "y": 750,
+            "width": 488,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "因",
+              "x": 114,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "为",
+              "x": 175,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "农",
+              "x": 236,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "业",
+              "x": 297,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "社",
+              "x": 358,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "上",
+              "x": 419,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "上",
+              "x": 480,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "工",
+              "x": 541,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8872,
+          "bbox": {
+            "x": 124,
+            "y": 176,
+            "width": 128,
+            "height": 94
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 124,
+              "y": 176,
+              "width": 32,
+              "height": 94
+            },
+            {
+              "char": "元",
+              "x": 156,
+              "y": 176,
+              "width": 32,
+              "height": 94
+            },
+            {
+              "char": "／",
+              "x": 188,
+              "y": 176,
+              "width": 32,
+              "height": 94
+            },
+            {
+              "char": "碗",
+              "x": 220,
+              "y": 176,
+              "width": 32,
+              "height": 94
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 135250,
+      "end_ms": 136500,
+      "detections": [
+        {
+          "text": "因为农业社上上工",
+          "confidence": 0.9918,
+          "bbox": {
+            "x": 114,
+            "y": 750,
+            "width": 488,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "因",
+              "x": 114,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "为",
+              "x": 175,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "农",
+              "x": 236,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "业",
+              "x": 297,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "社",
+              "x": 358,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "上",
+              "x": 419,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "上",
+              "x": 480,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            },
+            {
+              "char": "工",
+              "x": 541,
+              "y": 750,
+              "width": 61,
+              "height": 80
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.8953,
+          "bbox": {
+            "x": 126,
+            "y": 178,
+            "width": 126,
+            "height": 100
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 126,
+              "y": 178,
+              "width": 32,
+              "height": 100
+            },
+            {
+              "char": "元",
+              "x": 158,
+              "y": 178,
+              "width": 32,
+              "height": 100
+            },
+            {
+              "char": "/",
+              "x": 189,
+              "y": 178,
+              "width": 32,
+              "height": 100
+            },
+            {
+              "char": "碗",
+              "x": 220,
+              "y": 178,
+              "width": 32,
+              "height": 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 142250,
+      "end_ms": 143500,
+      "detections": [
+        {
+          "text": "父亲是个木工",
+          "confidence": 0.9936,
+          "bbox": {
+            "x": 176,
+            "y": 752,
+            "width": 364,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "父",
+              "x": 176,
+              "y": 752,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "亲",
+              "x": 237,
+              "y": 752,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "是",
+              "x": 297,
+              "y": 752,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "个",
+              "x": 358,
+              "y": 752,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "木",
+              "x": 419,
+              "y": 752,
+              "width": 61,
+              "height": 78
+            },
+            {
+              "char": "工",
+              "x": 479,
+              "y": 752,
+              "width": 61,
+              "height": 78
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.9038,
+          "bbox": {
+            "x": 130,
+            "y": 174,
+            "width": 124,
+            "height": 92
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 130,
+              "y": 174,
+              "width": 31,
+              "height": 92
+            },
+            {
+              "char": "元",
+              "x": 161,
+              "y": 174,
+              "width": 31,
+              "height": 92
+            },
+            {
+              "char": "/",
+              "x": 192,
+              "y": 174,
+              "width": 31,
+              "height": 92
+            },
+            {
+              "char": "碗",
+              "x": 223,
+              "y": 174,
+              "width": 31,
+              "height": 92
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 171250,
+      "end_ms": 172000,
+      "detections": [
+        {
+          "text": "了眼泪",
+          "confidence": 0.9799,
+          "bbox": {
+            "x": 266,
+            "y": 786,
+            "width": 194,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "了",
+              "x": 266,
+              "y": 786,
+              "width": 65,
+              "height": 82
+            },
+            {
+              "char": "眼",
+              "x": 331,
+              "y": 786,
+              "width": 65,
+              "height": 82
+            },
+            {
+              "char": "泪",
+              "x": 395,
+              "y": 786,
+              "width": 65,
+              "height": 82
+            }
+          ]
+        },
+        {
+          "text": "我就不由自主的掉下",
+          "confidence": 0.9987,
+          "bbox": {
+            "x": 88,
+            "y": 708,
+            "width": 538,
+            "height": 86
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 88,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "就",
+              "x": 148,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "不",
+              "x": 208,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "由",
+              "x": 267,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "自",
+              "x": 327,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "主",
+              "x": 387,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "的",
+              "x": 447,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "掉",
+              "x": 506,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            },
+            {
+              "char": "下",
+              "x": 566,
+              "y": 708,
+              "width": 60,
+              "height": 86
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.8739,
+          "bbox": {
+            "x": 116,
+            "y": 240,
+            "width": 118,
+            "height": 84
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 116,
+              "y": 240,
+              "width": 30,
+              "height": 84
+            },
+            {
+              "char": "元",
+              "x": 146,
+              "y": 240,
+              "width": 30,
+              "height": 84
+            },
+            {
+              "char": "/",
+              "x": 175,
+              "y": 240,
+              "width": 30,
+              "height": 84
+            },
+            {
+              "char": "碗",
+              "x": 204,
+              "y": 240,
+              "width": 30,
+              "height": 84
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.9991,
+          "bbox": {
+            "x": 248,
+            "y": 98,
+            "width": 98,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 248,
+              "y": 98,
+              "width": 49,
+              "height": 82
+            },
+            {
+              "char": "浆",
+              "x": 297,
+              "y": 98,
+              "width": 49,
+              "height": 82
+            }
+          ]
+        },
+        {
+          "text": "小米南瓜粥",
+          "confidence": 0.9976,
+          "bbox": {
+            "x": 10,
+            "y": 0,
+            "width": 224,
+            "height": 130
+          },
+          "chars": [
+            {
+              "char": "小",
+              "x": 10,
+              "y": 0,
+              "width": 45,
+              "height": 130
+            },
+            {
+              "char": "米",
+              "x": 55,
+              "y": 0,
+              "width": 45,
+              "height": 130
+            },
+            {
+              "char": "南",
+              "x": 100,
+              "y": 0,
+              "width": 45,
+              "height": 130
+            },
+            {
+              "char": "瓜",
+              "x": 144,
+              "y": 0,
+              "width": 45,
+              "height": 130
+            },
+            {
+              "char": "粥",
+              "x": 189,
+              "y": 0,
+              "width": 45,
+              "height": 130
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 193500,
+      "end_ms": 194500,
+      "detections": [
+        {
+          "text": "了自己的孩子",
+          "confidence": 0.9397,
+          "bbox": {
+            "x": 180,
+            "y": 780,
+            "width": 360,
+            "height": 88
+          },
+          "chars": [
+            {
+              "char": "了",
+              "x": 180,
+              "y": 780,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "自",
+              "x": 240,
+              "y": 780,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "己",
+              "x": 300,
+              "y": 780,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "的",
+              "x": 360,
+              "y": 780,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "孩",
+              "x": 420,
+              "y": 780,
+              "width": 60,
+              "height": 88
+            },
+            {
+              "char": "子",
+              "x": 480,
+              "y": 780,
+              "width": 60,
+              "height": 88
+            }
+          ]
+        },
+        {
+          "text": "因为她把所有的爱给",
+          "confidence": 0.9983,
+          "bbox": {
+            "x": 100,
+            "y": 714,
+            "width": 522,
+            "height": 74
+          },
+          "chars": [
+            {
+              "char": "因",
+              "x": 100,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "为",
+              "x": 158,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "她",
+              "x": 216,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "把",
+              "x": 274,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "所",
+              "x": 332,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "有",
+              "x": 390,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "的",
+              "x": 448,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "爱",
+              "x": 506,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "给",
+              "x": 564,
+              "y": 714,
+              "width": 58,
+              "height": 74
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 195250,
+      "end_ms": 196000,
+      "detections": [
+        {
+          "text": "了自己的孩子",
+          "confidence": 0.9756,
+          "bbox": {
+            "x": 178,
+            "y": 780,
+            "width": 364,
+            "height": 88
+          },
+          "chars": [
+            {
+              "char": "了",
+              "x": 178,
+              "y": 780,
+              "width": 61,
+              "height": 88
+            },
+            {
+              "char": "自",
+              "x": 239,
+              "y": 780,
+              "width": 61,
+              "height": 88
+            },
+            {
+              "char": "己",
+              "x": 299,
+              "y": 780,
+              "width": 61,
+              "height": 88
+            },
+            {
+              "char": "的",
+              "x": 360,
+              "y": 780,
+              "width": 61,
+              "height": 88
+            },
+            {
+              "char": "孩",
+              "x": 421,
+              "y": 780,
+              "width": 61,
+              "height": 88
+            },
+            {
+              "char": "子",
+              "x": 481,
+              "y": 780,
+              "width": 61,
+              "height": 88
+            }
+          ]
+        },
+        {
+          "text": "因为她把所有的爱给",
+          "confidence": 0.9972,
+          "bbox": {
+            "x": 100,
+            "y": 712,
+            "width": 518,
+            "height": 74
+          },
+          "chars": [
+            {
+              "char": "因",
+              "x": 100,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "为",
+              "x": 158,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "她",
+              "x": 215,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "把",
+              "x": 273,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "所",
+              "x": 330,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "有",
+              "x": 388,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "的",
+              "x": 445,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "爱",
+              "x": 503,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            },
+            {
+              "char": "给",
+              "x": 560,
+              "y": 712,
+              "width": 58,
+              "height": 74
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 205750,
+      "end_ms": 206500,
+      "detections": [
+        {
+          "text": "很真实的一个故事",
+          "confidence": 0.9987,
+          "bbox": {
+            "x": 114,
+            "y": 780,
+            "width": 486,
+            "height": 86
+          },
+          "chars": [
+            {
+              "char": "很",
+              "x": 114,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            },
+            {
+              "char": "真",
+              "x": 175,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            },
+            {
+              "char": "实",
+              "x": 236,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            },
+            {
+              "char": "的",
+              "x": 296,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            },
+            {
+              "char": "一",
+              "x": 357,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            },
+            {
+              "char": "个",
+              "x": 418,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            },
+            {
+              "char": "故",
+              "x": 478,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            },
+            {
+              "char": "事",
+              "x": 539,
+              "y": 780,
+              "width": 61,
+              "height": 86
+            }
+          ]
+        },
+        {
+          "text": "分享这么",
+          "confidence": 0.9988,
+          "bbox": {
+            "x": 242,
+            "y": 712,
+            "width": 234,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "分",
+              "x": 242,
+              "y": 712,
+              "width": 58,
+              "height": 78
+            },
+            {
+              "char": "享",
+              "x": 300,
+              "y": 712,
+              "width": 58,
+              "height": 78
+            },
+            {
+              "char": "这",
+              "x": 359,
+              "y": 712,
+              "width": 58,
+              "height": 78
+            },
+            {
+              "char": "么",
+              "x": 418,
+              "y": 712,
+              "width": 58,
+              "height": 78
+            }
+          ]
+        },
+        {
+          "text": "元/碗",
+          "confidence": 0.9469,
+          "bbox": {
+            "x": 0,
+            "y": 212,
+            "width": 82,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "元",
+              "x": 0,
+              "y": 212,
+              "width": 27,
+              "height": 80
+            },
+            {
+              "char": "/",
+              "x": 27,
+              "y": 212,
+              "width": 27,
+              "height": 80
+            },
+            {
+              "char": "碗",
+              "x": 55,
+              "y": 212,
+              "width": 27,
+              "height": 80
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.9997,
+          "bbox": {
+            "x": 94,
+            "y": 46,
+            "width": 124,
+            "height": 104
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 94,
+              "y": 46,
+              "width": 62,
+              "height": 104
+            },
+            {
+              "char": "浆",
+              "x": 156,
+              "y": 46,
+              "width": 62,
+              "height": 104
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 210750,
+      "end_ms": 211500,
+      "detections": [
+        {
+          "text": "3元／碗",
+          "confidence": 0.8812,
+          "bbox": {
+            "x": 190,
+            "y": 0,
+            "width": 122,
+            "height": 74
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 190,
+              "y": 0,
+              "width": 30,
+              "height": 74
+            },
+            {
+              "char": "元",
+              "x": 220,
+              "y": 0,
+              "width": 30,
+              "height": 74
+            },
+            {
+              "char": "／",
+              "x": 251,
+              "y": 0,
+              "width": 30,
+              "height": 74
+            },
+            {
+              "char": "碗",
+              "x": 282,
+              "y": 0,
+              "width": 30,
+              "height": 74
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 211750,
+      "end_ms": 213000,
+      "detections": [
+        {
+          "text": "3元／碗",
+          "confidence": 0.904,
+          "bbox": {
+            "x": 106,
+            "y": 72,
+            "width": 144,
+            "height": 108
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 106,
+              "y": 72,
+              "width": 36,
+              "height": 108
+            },
+            {
+              "char": "元",
+              "x": 142,
+              "y": 72,
+              "width": 36,
+              "height": 108
+            },
+            {
+              "char": "／",
+              "x": 178,
+              "y": 72,
+              "width": 36,
+              "height": 108
+            },
+            {
+              "char": "碗",
+              "x": 214,
+              "y": 72,
+              "width": 36,
+              "height": 108
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 213750,
+      "end_ms": 214750,
+      "detections": [
+        {
+          "text": "3元／碗",
+          "confidence": 0.8944,
+          "bbox": {
+            "x": 136,
+            "y": 102,
+            "width": 140,
+            "height": 106
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 136,
+              "y": 102,
+              "width": 35,
+              "height": 106
+            },
+            {
+              "char": "元",
+              "x": 171,
+              "y": 102,
+              "width": 35,
+              "height": 106
+            },
+            {
+              "char": "／",
+              "x": 206,
+              "y": 102,
+              "width": 35,
+              "height": 106
+            },
+            {
+              "char": "碗",
+              "x": 241,
+              "y": 102,
+              "width": 35,
+              "height": 106
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 import PostSingleOverlay from "../index";
-import { Post, User } from "../../../../../../types";
+import { Video } from "../../../../../../types";
 import { useDispatch } from "react-redux";
 
 // Mock the services
@@ -26,46 +26,26 @@ jest.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: () => mockInsets,
 }));
 
-const mockUser: User = {
-  uid: "user-001",
-  email: "test@example.com",
-  displayName: "TestCreator",
-  photoURL: undefined,
-  followingCount: 5,
-  followersCount: 10,
-  likesCount: 50,
-  nativeLanguage: "en",
-  targetLanguage: "es",
-  learningLanguages: ["es"],
-  streakDays: 0,
-  longestStreak: 0,
-  totalWordsLearned: 0,
-  totalVideosWatched: 0,
-  dailyGoalMinutes: 10,
-  premium: false,
-};
-
-const mockUserWithPhoto: User = {
-  ...mockUser,
-  photoURL: "https://example.com/avatar.jpg",
-};
-
-const mockPost: Post = {
-  id: "post-001",
-  creator: "user-001",
-  media: ["https://example.com/video1.mp4", ""],
+const createMockVideo = (overrides?: Partial<Video>): Video => ({
+  id: "video-001",
+  title: "Test Video",
   description: "Learning Spanish with immersion videos #language #spanish",
-  likesCount: 42,
-  commentsCount: 5,
-  creation: new Date().toISOString(),
-};
+  language: "zh",
+  cdn_url: "https://example.com/videos/test/video.mp4",
+  thumbnail_url: "https://example.com/videos/test/thumbnail.jpg",
+  duration_sec: 30,
+  like_count: 42,
+  comment_count: 5,
+  view_count: 100,
+  created_at: new Date().toISOString(),
+  ...overrides,
+});
 
-// Helper that renders and waits for the getLikeById effect to settle
-async function renderOverlay(user: User, post: Post) {
-  render(<PostSingleOverlay user={user} post={post} />);
-  await waitFor(() => {
-    expect(screen.getByText("heart-outline")).toBeTruthy();
-  });
+const mockVideo = createMockVideo();
+
+// Helper that renders the overlay
+function renderOverlay(video: Video = mockVideo) {
+  render(<PostSingleOverlay video={video} />);
 }
 
 describe("PostSingleOverlay", () => {
@@ -78,80 +58,60 @@ describe("PostSingleOverlay", () => {
 
   // ── Existing tests ──
 
-  it("renders the user display name with @ prefix", async () => {
-    await renderOverlay(mockUser, mockPost);
-    expect(screen.getByText("@TestCreator")).toBeTruthy();
+  it("renders the video title", () => {
+    renderOverlay();
+    expect(screen.getByText("Test Video")).toBeTruthy();
   });
 
-  it("falls back to email when displayName is null", async () => {
-    const userWithoutName: User = { ...mockUser, displayName: null };
-    render(<PostSingleOverlay user={userWithoutName} post={mockPost} />);
-    await waitFor(() => {
-      expect(screen.getByText("@test@example.com")).toBeTruthy();
-    });
-  });
-
-  it("renders the post description", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("renders the video description", () => {
+    renderOverlay();
     expect(screen.getByText("Learning Spanish with immersion videos #language #spanish")).toBeTruthy();
   });
 
-  it("renders the like count", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("renders the like count", () => {
+    renderOverlay();
     expect(screen.getByText("42")).toBeTruthy();
   });
 
-  it("renders the comment count", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("renders the comment count", () => {
+    renderOverlay();
     expect(screen.getByText("5")).toBeTruthy();
   });
 
-  it("renders the share button text", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("renders the share button text", () => {
+    renderOverlay();
     expect(screen.getByText("Share")).toBeTruthy();
   });
 
-  it("renders the like button with heart-outline icon initially", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("renders the like button with heart-outline icon initially", () => {
+    renderOverlay();
     expect(screen.getByText("heart-outline")).toBeTruthy();
   });
 
-  it("toggles the like state when the like button is pressed", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("toggles the like state when the like button is pressed", () => {
+    renderOverlay();
     expect(screen.getByText("heart-outline")).toBeTruthy();
     fireEvent.press(screen.getByText("heart-outline"));
     expect(screen.getByText("heart")).toBeTruthy();
     expect(screen.getByText("43")).toBeTruthy();
   });
 
-  it("dispatches openCommentModal when comment button is pressed", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("dispatches openCommentModal when comment button is pressed", () => {
+    renderOverlay();
     fireEvent.press(screen.getByText("chatbubble-ellipses"));
     expect(mockDispatchFn).toHaveBeenCalled();
   });
 
-  it("renders the LinearGradient for readability", async () => {
-    await renderOverlay(mockUser, mockPost);
+  it("renders the LinearGradient for readability", () => {
+    renderOverlay();
     expect(screen.getByTestId("linear-gradient")).toBeTruthy();
-  });
-
-  it("renders avatar-icon when user has no photoURL", async () => {
-    await renderOverlay(mockUser, mockPost);
-    expect(screen.getByTestId("avatar-icon")).toBeTruthy();
-  });
-
-  it("renders a user avatar image when photoURL is present", async () => {
-    render(<PostSingleOverlay user={mockUserWithPhoto} post={mockPost} />);
-    await waitFor(() => {
-      expect(screen.queryByTestId("avatar-icon")).toBeNull();
-    });
   });
 
   // ── Layout & formatting tests ──
 
   describe("layout and formatting", () => {
-    it("overlay container is absolutely positioned to fill parent", async () => {
-      await renderOverlay(mockUser, mockPost);
+    it("overlay container is absolutely positioned to fill parent", () => {
+      renderOverlay();
       const container = screen.getByTestId("overlay-container");
       const style = container.props.style;
       // Flatten if array
@@ -163,8 +123,8 @@ describe("PostSingleOverlay", () => {
       expect(flatStyle.right).toBe(0);
     });
 
-    it("text container includes safe area bottom inset padding", async () => {
-      await renderOverlay(mockUser, mockPost);
+    it("text container includes safe area bottom inset padding", () => {
+      renderOverlay();
       const textContainer = screen.getByTestId("text-container");
       const styles = textContainer.props.style;
       // Style is an array: [staticStyle, { paddingBottom: 16 + insets.bottom }]
@@ -172,16 +132,16 @@ describe("PostSingleOverlay", () => {
       expect(dynamicStyle.paddingBottom).toBe(16 + 34); // 16 base + 34 inset
     });
 
-    it("text container has right padding to avoid overlapping action buttons", async () => {
-      await renderOverlay(mockUser, mockPost);
+    it("text container has right padding to avoid overlapping action buttons", () => {
+      renderOverlay();
       const textContainer = screen.getByTestId("text-container");
       const styles = textContainer.props.style;
       const staticStyle = Array.isArray(styles) ? styles[0] : styles;
       expect(staticStyle.paddingRight).toBeGreaterThanOrEqual(70);
     });
 
-    it("actions column is positioned on the right side", async () => {
-      await renderOverlay(mockUser, mockPost);
+    it("actions column is positioned on the right side", () => {
+      renderOverlay();
       const actionsColumn = screen.getByTestId("actions-column");
       const style = actionsColumn.props.style;
       const flatStyle = Array.isArray(style) ? Object.assign({}, ...style) : style;
@@ -189,16 +149,14 @@ describe("PostSingleOverlay", () => {
       expect(flatStyle.right).toBeLessThanOrEqual(16);
     });
 
-    it("description text is limited to 2 lines", async () => {
-      await renderOverlay(mockUser, mockPost);
+    it("description text is limited to 2 lines", () => {
+      renderOverlay();
       const description = screen.getByTestId("description");
       expect(description.props.numberOfLines).toBe(2);
     });
 
-    it("all overlay elements are present (complete overlay check)", async () => {
-      await renderOverlay(mockUser, mockPost);
-      // Avatar area
-      expect(screen.getByTestId("avatar-icon") || screen.queryByTestId("avatar-icon")).toBeTruthy();
+    it("all overlay elements are present (complete overlay check)", () => {
+      renderOverlay();
       // Action buttons
       expect(screen.getByText("heart-outline")).toBeTruthy();
       expect(screen.getByText("chatbubble-ellipses")).toBeTruthy();
@@ -207,7 +165,7 @@ describe("PostSingleOverlay", () => {
       // Counts
       expect(screen.getByText("42")).toBeTruthy();
       expect(screen.getByText("5")).toBeTruthy();
-      // User info
+      // Video info
       expect(screen.getByTestId("display-name")).toBeTruthy();
       expect(screen.getByTestId("description")).toBeTruthy();
       // Gradient
@@ -218,92 +176,74 @@ describe("PostSingleOverlay", () => {
   // ── Long description / hashtag tests ──
 
   describe("long descriptions and hashtags", () => {
-    it("renders long description with hashtags correctly", async () => {
-      const longPost: Post = {
-        ...mockPost,
+    it("renders long description with hashtags correctly", () => {
+      const longVideo = createMockVideo({
         description:
           "This is a very long description about learning Chinese through immersion " +
           "with native content creators. Watch real conversations and pick up vocabulary " +
           "naturally! #中文 #学习 #language #learning #chinese #immersion #tiktok #scrollingo",
-      };
-
-      render(<PostSingleOverlay user={mockUser} post={longPost} />);
-      await waitFor(() => {
-        const desc = screen.getByTestId("description");
-        expect(desc).toBeTruthy();
-        // Verify numberOfLines limits the display
-        expect(desc.props.numberOfLines).toBe(2);
-        // Verify the full text is in the component (even if visually truncated)
-        expect(desc.props.children).toContain("#中文");
-        expect(desc.props.children).toContain("#scrollingo");
       });
+
+      renderOverlay(longVideo);
+      const desc = screen.getByTestId("description");
+      expect(desc).toBeTruthy();
+      // Verify numberOfLines limits the display
+      expect(desc.props.numberOfLines).toBe(2);
+      // Verify the full text is in the component (even if visually truncated)
+      expect(desc.props.children).toContain("#中文");
+      expect(desc.props.children).toContain("#scrollingo");
     });
 
-    it("renders Chinese characters in description", async () => {
-      const chinesePost: Post = {
-        ...mockPost,
+    it("renders Chinese characters in description", () => {
+      const chineseVideo = createMockVideo({
         description: "学习中文很有趣！#中文学习 #每日一句 #加油",
-      };
-
-      render(<PostSingleOverlay user={mockUser} post={chinesePost} />);
-      await waitFor(() => {
-        expect(screen.getByText("学习中文很有趣！#中文学习 #每日一句 #加油")).toBeTruthy();
       });
+
+      renderOverlay(chineseVideo);
+      expect(screen.getByText("学习中文很有趣！#中文学习 #每日一句 #加油")).toBeTruthy();
     });
 
-    it("renders description with many hashtags", async () => {
-      const hashtagPost: Post = {
-        ...mockPost,
+    it("renders description with many hashtags", () => {
+      const hashtagVideo = createMockVideo({
         description:
           "#fyp #foryou #foryoupage #chinese #中文 #mandarin #learn #language " +
           "#study #daily #motivation #viral #trending #scrollingo #education",
-      };
-
-      render(<PostSingleOverlay user={hashtagPost.creator === mockUser.uid ? mockUser : mockUser} post={hashtagPost} />);
-      await waitFor(() => {
-        const desc = screen.getByTestId("description");
-        expect(desc.props.numberOfLines).toBe(2);
-        expect(desc.props.children).toContain("#fyp");
-        expect(desc.props.children).toContain("#scrollingo");
       });
+
+      renderOverlay(hashtagVideo);
+      const desc = screen.getByTestId("description");
+      expect(desc.props.numberOfLines).toBe(2);
+      expect(desc.props.children).toContain("#fyp");
+      expect(desc.props.children).toContain("#scrollingo");
     });
 
-    it("renders empty description gracefully", async () => {
-      const emptyPost: Post = { ...mockPost, description: "" };
-      render(<PostSingleOverlay user={mockUser} post={emptyPost} />);
-      await waitFor(() => {
-        const desc = screen.getByTestId("description");
-        expect(desc).toBeTruthy();
-        expect(desc.props.children).toBe("");
-      });
+    it("renders null description gracefully", () => {
+      const nullDescVideo = createMockVideo({ description: null });
+      renderOverlay(nullDescVideo);
+      // description element should not be rendered when null
+      expect(screen.queryByTestId("description")).toBeNull();
     });
 
-    it("renders description with emojis", async () => {
-      const emojiPost: Post = {
-        ...mockPost,
+    it("renders description with emojis", () => {
+      const emojiVideo = createMockVideo({
         description: "🔥 Best Chinese learning content 🇨🇳 #中文 #学习 💪 Keep going!",
-      };
-
-      render(<PostSingleOverlay user={mockUser} post={emojiPost} />);
-      await waitFor(() => {
-        expect(
-          screen.getByText("🔥 Best Chinese learning content 🇨🇳 #中文 #学习 💪 Keep going!"),
-        ).toBeTruthy();
       });
+
+      renderOverlay(emojiVideo);
+      expect(
+        screen.getByText("🔥 Best Chinese learning content 🇨🇳 #中文 #学习 💪 Keep going!"),
+      ).toBeTruthy();
     });
 
-    it("renders very long username without breaking layout", async () => {
-      const longNameUser: User = {
-        ...mockUser,
-        displayName: "AVeryLongUsernameWithManyCharactersThatMightOverflow",
-      };
-
-      render(<PostSingleOverlay user={longNameUser} post={mockPost} />);
-      await waitFor(() => {
-        expect(
-          screen.getByText("@AVeryLongUsernameWithManyCharactersThatMightOverflow"),
-        ).toBeTruthy();
+    it("renders very long title without breaking layout", () => {
+      const longTitleVideo = createMockVideo({
+        title: "A Very Long Video Title With Many Characters That Might Overflow The Display",
       });
+
+      renderOverlay(longTitleVideo);
+      expect(
+        screen.getByText("A Very Long Video Title With Many Characters That Might Overflow The Display"),
+      ).toBeTruthy();
     });
   });
 });

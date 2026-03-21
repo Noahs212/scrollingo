@@ -1,35 +1,12 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import PostSingle from "../index";
-import { Post, User } from "../../../../../types";
+import { Video } from "../../../../../types";
 import { useVideoPlayer } from "expo-video";
 
-// Mock the useUser hook
-const mockUser: User = {
-  uid: "user-001",
-  email: "test@example.com",
-  displayName: "TestUser",
-  photoURL: undefined,
-  followingCount: 5,
-  followersCount: 10,
-  likesCount: 50,
-  nativeLanguage: "en",
-  targetLanguage: "es",
-  learningLanguages: ["es"],
-  streakDays: 0,
-  longestStreak: 0,
-  totalWordsLearned: 0,
-  totalVideosWatched: 0,
-  dailyGoalMinutes: 10,
-  premium: false,
-};
-
-jest.mock("../../../../hooks/useUser", () => ({
-  useUser: jest.fn(() => ({
-    data: mockUser,
-    isLoading: false,
-    error: null,
-  })),
+// Mock the useSubtitles hook
+jest.mock("../../../../hooks/useSubtitles", () => ({
+  useSubtitles: jest.fn(() => ({ data: null })),
 }));
 
 // Mock PostSingleOverlay to isolate PostSingle tests
@@ -37,10 +14,10 @@ jest.mock("../overlay", () => {
   const { View, Text } = require("react-native");
   return {
     __esModule: true,
-    default: ({ user, post }: { user: User; post: Post }) => (
+    default: ({ video }: { video: Video }) => (
       <View testID="post-overlay">
-        <Text testID="overlay-username">@{user.displayName}</Text>
-        <Text testID="overlay-description">{post.description}</Text>
+        <Text testID="overlay-title">{video.title}</Text>
+        <Text testID="overlay-description">{video.description}</Text>
       </View>
     ),
   };
@@ -52,15 +29,22 @@ jest.mock("../../../../services/posts", () => ({
   updateLike: jest.fn(),
 }));
 
-const mockPost: Post = {
-  id: "post-001",
-  creator: "user-001",
-  media: ["https://example.com/video1.mp4", ""],
-  description: "Test video description #test",
-  likesCount: 42,
-  commentsCount: 5,
-  creation: new Date().toISOString(),
-};
+const createMockVideo = (overrides?: Partial<Video>): Video => ({
+  id: "video-001",
+  title: "Test Video",
+  description: "Test description",
+  language: "zh",
+  cdn_url: "https://example.com/videos/test/video.mp4",
+  thumbnail_url: "https://example.com/videos/test/thumbnail.jpg",
+  duration_sec: 30,
+  like_count: 42,
+  comment_count: 5,
+  view_count: 100,
+  created_at: new Date().toISOString(),
+  ...overrides,
+});
+
+const mockVideo = createMockVideo();
 
 describe("PostSingle", () => {
   beforeEach(() => {
@@ -68,17 +52,17 @@ describe("PostSingle", () => {
   });
 
   it("renders the VideoView component", () => {
-    render(<PostSingle item={mockPost} />);
+    render(<PostSingle item={mockVideo} />);
 
     const videoView = screen.getByTestId("video-view");
     expect(videoView).toBeTruthy();
   });
 
-  it("initializes the video player with the post media URL", () => {
-    render(<PostSingle item={mockPost} />);
+  it("initializes the video player with the video cdn_url", () => {
+    render(<PostSingle item={mockVideo} />);
 
     expect(useVideoPlayer).toHaveBeenCalledWith(
-      "https://example.com/video1.mp4",
+      "https://example.com/videos/test/video.mp4",
       expect.any(Function),
     );
   });
@@ -104,32 +88,32 @@ describe("PostSingle", () => {
       return mockPlayer;
     });
 
-    render(<PostSingle item={mockPost} />);
+    render(<PostSingle item={mockVideo} />);
 
     // The setup callback should set loop to true
     expect(mockPlayer.loop).toBe(true);
   });
 
-  it("renders the overlay with user info when user data is available", () => {
-    render(<PostSingle item={mockPost} />);
+  it("renders the overlay with video title", () => {
+    render(<PostSingle item={mockVideo} />);
 
     const overlay = screen.getByTestId("post-overlay");
     expect(overlay).toBeTruthy();
 
-    expect(screen.getByTestId("overlay-username")).toBeTruthy();
-    expect(screen.getByText("@TestUser")).toBeTruthy();
+    expect(screen.getByTestId("overlay-title")).toBeTruthy();
+    expect(screen.getByText("Test Video")).toBeTruthy();
   });
 
-  it("renders the post description in the overlay", () => {
-    render(<PostSingle item={mockPost} />);
+  it("renders the video description in the overlay", () => {
+    render(<PostSingle item={mockVideo} />);
 
-    expect(screen.getByText("Test video description #test")).toBeTruthy();
+    expect(screen.getByText("Test description")).toBeTruthy();
   });
 
   it("exposes play and stop methods via ref", () => {
     const ref = React.createRef<{ play: () => void; stop: () => void; unload: () => void }>();
 
-    render(<PostSingle item={mockPost} ref={ref} />);
+    render(<PostSingle item={mockVideo} ref={ref} />);
 
     expect(ref.current).not.toBeNull();
     expect(typeof ref.current?.play).toBe("function");

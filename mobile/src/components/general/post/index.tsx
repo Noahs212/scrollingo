@@ -14,6 +14,7 @@ import {
 import {
   TouchableWithoutFeedback,
   View,
+  Image,
   StyleSheet,
   Animated,
   Alert,
@@ -21,11 +22,10 @@ import {
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useEvent } from "expo";
 import { Ionicons } from "@expo/vector-icons";
-import { Post } from "../../../../types";
-import { useUser } from "../../../hooks/useUser";
+import { Video } from "../../../../types";
 import PostSingleOverlay from "./overlay";
 import SubtitleTapOverlay from "./subtitleOverlay";
-import { getSubtitleData } from "../../../services/subtitles";
+import { useSubtitles } from "../../../hooks/useSubtitles";
 
 export interface PostSingleHandles {
   play: () => void;
@@ -35,9 +35,8 @@ export interface PostSingleHandles {
 
 const DOUBLE_TAP_DELAY = 300;
 
-export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
+export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
   ({ item }, parentRef) => {
-    const user = useUser(item.creator).data;
     const [isPaused, setIsPaused] = useState(false);
     const lastTapRef = useRef(0);
     const pauseOpacity = useRef(new Animated.Value(0)).current;
@@ -45,17 +44,14 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
     const heartOpacity = useRef(new Animated.Value(0)).current;
     const [showHeart, setShowHeart] = useState(false);
     const playerRef = useRef<ReturnType<typeof useVideoPlayer> | null>(null);
-    const subtitleData = getSubtitleData(item.id);
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
-    const videoUrl = item.media?.[0] ?? null;
-    const player = useVideoPlayer(videoUrl, (p) => {
+    // Fetch subtitle bounding boxes from R2 CDN
+    const { data: subtitleData } = useSubtitles(item.id, item.cdn_url);
+
+    const player = useVideoPlayer(item.cdn_url, (p) => {
       p.loop = true;
-      // Enable native time update events at ~50ms intervals (fires from
-      // AVPlayer's addPeriodicTimeObserver on iOS — no JS polling needed)
-      if (subtitleData) {
-        p.timeUpdateEventInterval = 0.05;
-      }
+      p.timeUpdateEventInterval = 0.05;
     });
 
     // Event-driven time tracking from native side — replaces setInterval polling
@@ -171,7 +167,16 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
           setContainerSize({ width, height });
         }}
       >
-        {/* Video fills the entire container */}
+        {/* Thumbnail placeholder — shows instantly while video buffers */}
+        {item.thumbnail_url && (
+          <Image
+            source={{ uri: item.thumbnail_url }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="contain"
+          />
+        )}
+
+        {/* Video fills the entire container — paints over thumbnail when ready */}
         <VideoView
           player={player}
           style={StyleSheet.absoluteFill}
@@ -231,8 +236,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Post }>(
           />
         )}
 
-        {/* Overlay: action buttons + user info — renders ON TOP of tap target */}
-        {user && <PostSingleOverlay user={user} post={item} />}
+        {/* Overlay: action buttons + video info */}
+        <PostSingleOverlay video={item} />
       </View>
     );
   },

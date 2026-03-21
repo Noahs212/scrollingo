@@ -11,10 +11,9 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PostSingle, { PostSingleHandles } from "../../components/general/post";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getFeed, getPostsByUserId } from "../../services/posts";
-import { Post } from "../../../types";
+import { Video } from "../../../types";
 import { RouteProp, useIsFocused } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/main";
 import { HomeStackParamList } from "../../navigation/home";
@@ -30,14 +29,16 @@ import {
   LEARNING_LANGUAGES,
   updateActiveLanguage,
 } from "../../services/language";
+import { useFeed } from "../../hooks/useFeed";
+import { trackView } from "../../services/videos";
 
 type FeedScreenRouteProp =
   | RouteProp<RootStackParamList, "userPosts">
   | RouteProp<HomeStackParamList, "feed">
   | RouteProp<FeedStackParamList, "feedList">;
 
-interface PostViewToken extends ViewToken {
-  item: Post;
+interface VideoViewToken extends ViewToken {
+  item: Video;
 }
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -167,50 +168,47 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
   };
 
   const isFocused = useIsFocused();
+  const userId = useCurrentUserId();
+  const { activeLearningLanguage } = useSelector(
+    (state: RootState) => state.language,
+  );
 
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
   const mediaRefs = useRef<Record<string, PostSingleHandles | null>>({});
   const currentViewableKey = useRef<string | null>(null);
+  const viewedVideos = useRef(new Set<string>());
 
   const navBarHeight = useMaterialNavBarHeight(profile);
   const feedItemHeight = SCREEN_HEIGHT - navBarHeight;
 
-  const fetchPosts = useCallback(async () => {
-    try {
-      setLoading(true);
-      const result =
-        profile && creator
-          ? await getPostsByUserId(creator)
-          : await getFeed();
-      setPosts(result);
-    } finally {
-      setLoading(false);
-    }
-  }, [profile, creator]);
+  // Fetch feed from Supabase with infinite scroll pagination
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useFeed(activeLearningLanguage);
 
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
-
-  const handleLanguageChange = useCallback(
-    (_code: string) => {
-      fetchPosts();
-    },
-    [fetchPosts],
+  // Flatten pages into a single array
+  const videos = useMemo(
+    () => data?.pages.flatMap((p) => p.videos) ?? [],
+    [data],
   );
 
   const onViewableItemsChanged = useRef(
-    ({ changed }: { changed: PostViewToken[] }) => {
+    ({ changed }: { changed: VideoViewToken[] }) => {
       changed.forEach((element) => {
         const cell = mediaRefs.current[element.key];
         if (cell) {
           if (element.isViewable) {
             currentViewableKey.current = element.key;
-            if (!profile && setCurrentUserProfileItemInView) {
-              setCurrentUserProfileItemInView(element.item.creator);
-            }
             cell.play();
+
+            // Track view (fire once per video per session)
+            if (userId && !viewedVideos.current.has(element.item.id)) {
+              viewedVideos.current.add(element.item.id);
+              trackView(userId, element.item.id);
+            }
           } else {
             cell.stop();
           }
@@ -235,7 +233,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
   }, [isFocused]);
 
   const getItemLayout = useCallback(
-    (_data: ArrayLike<Post> | null | undefined, index: number) => ({
+    (_data: ArrayLike<Video> | null | undefined, index: number) => ({
       length: feedItemHeight,
       offset: feedItemHeight * index,
       index,
@@ -244,10 +242,8 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: Post }) => (
-      <View
-        style={[styles.feedItem, { height: feedItemHeight }]}
-      >
+    ({ item }: { item: Video }) => (
+      <View style={[styles.feedItem, { height: feedItemHeight }]}>
         <PostSingle
           item={item}
           ref={(ref) => {
@@ -259,9 +255,16 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     [feedItemHeight],
   );
 
-  const keyExtractor = useCallback((item: Post) => item.id, []);
+  const keyExtractor = useCallback((item: Video) => item.id, []);
 
-  if (loading) {
+  // Fetch next page when user is near the end
+  const handleEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <StatusBar hidden />
@@ -270,7 +273,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
     );
   }
 
-  if (posts.length === 0) {
+  if (videos.length === 0) {
     return (
       <View style={styles.emptyContainer}>
         <StatusBar hidden />
@@ -286,11 +289,9 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      {!profile && (
-        <LanguageDropdown onLanguageChange={handleLanguageChange} />
-      )}
+      {!profile && <LanguageDropdown onLanguageChange={() => {}} />}
       <FlatList
-        data={posts}
+        data={videos}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         getItemLayout={getItemLayout}
@@ -299,7 +300,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
         showsVerticalScrollIndicator={false}
         snapToInterval={feedItemHeight}
         snapToAlignment="start"
-        windowSize={3}
+        windowSize={5}
         initialNumToRender={1}
         maxToRenderPerBatch={2}
         removeClippedSubviews
@@ -307,7 +308,16 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
           itemVisiblePercentThreshold: 50,
         }}
         onViewableItemsChanged={onViewableItemsChanged.current}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.3}
         bounces={false}
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <View style={[styles.feedItem, { height: feedItemHeight, justifyContent: "center", alignItems: "center" }]}>
+              <ActivityIndicator size="large" color="white" />
+            </View>
+          ) : null
+        }
       />
     </View>
   );

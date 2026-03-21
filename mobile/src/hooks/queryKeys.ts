@@ -8,4 +8,6 @@ export const keys = {
     "following",
     userId + otherUserId,
   ],
+  feed: (language: string | null) => ["feed", language] as const,
+  subtitles: (videoId: string) => ["subtitles", videoId] as const,
 };

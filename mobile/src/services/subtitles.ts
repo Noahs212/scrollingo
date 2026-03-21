@@ -28,6 +28,40 @@ const SUBTITLE_FILES: Record<string, SubtitleData> = {
   "local-video-10": require("../../assets/subtitles/video_13_videocr2.json"),
 };
 
-export function getSubtitleData(postId: string): SubtitleData | null {
+/**
+ * Get subtitle data from local bundled assets (dev/testing only).
+ */
+export function getLocalSubtitleData(postId: string): SubtitleData | null {
   return SUBTITLE_FILES[postId] ?? null;
+}
+
+/** @deprecated Use getLocalSubtitleData — kept for backward compatibility */
+export function getSubtitleData(postId: string): SubtitleData | null {
+  return getLocalSubtitleData(postId);
+}
+
+/**
+ * Derive the bboxes.json URL from a video's CDN URL.
+ * e.g. "https://cdn.example.com/videos/abc123/video.mp4"
+ *    → "https://cdn.example.com/videos/abc123/bboxes.json"
+ */
+function deriveBboxesUrl(cdnUrl: string): string {
+  const lastSlash = cdnUrl.lastIndexOf("/");
+  if (lastSlash === -1) {
+    throw new Error(`Invalid CDN URL: ${cdnUrl}`);
+  }
+  return cdnUrl.substring(0, lastSlash + 1) + "bboxes.json";
+}
+
+/**
+ * Fetch subtitle/OCR bounding box data from the CDN for a given video.
+ * Used when videos are served from Supabase + R2 (M4+).
+ */
+export async function fetchSubtitleData(cdnUrl: string): Promise<SubtitleData> {
+  const bboxesUrl = deriveBboxesUrl(cdnUrl);
+  const response = await fetch(bboxesUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch subtitles: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
 }
