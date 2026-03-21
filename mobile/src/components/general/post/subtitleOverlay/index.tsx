@@ -174,7 +174,16 @@ export default function SubtitleTapOverlay({
           return (
             <Pressable
               key={`${di}-${ci}`}
-              onPress={() => handleCharTap(ch.char, det.text, screenX + screenW / 2, screenY)}
+              onPress={() => {
+                // Find which characters in this detection belong to the word
+                // containing the tapped character, and compute their center X.
+                // The word boundary is found by looking for the tapped char
+                // within the detection text and finding the jieba word around it.
+                // For now, pass the tapped char's center — PostSingle will
+                // adjust if needed. Pass screenY + screenH as the bottom edge
+                // of the character (arrow should point just below the word).
+                handleCharTap(ch.char, det.text, screenX + screenW / 2, screenY + screenH + 15);
+              }}
               style={[
                 styles.charTarget,
                 {

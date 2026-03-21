@@ -251,8 +251,47 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                 // Player may be released
               }
 
-              // Store tap position for popup placement
-              setPopupPosition({ x: tapX, y: tapY });
+              // Compute word center X from OCR data
+              // Find the matched word's characters in the subtitle segment
+              // and center the popup arrow on them
+              let wordCenterX = tapX;
+              if (subtitleData) {
+                const segment = subtitleData.segments.find(
+                  (seg) => seg.detections.some((det) => det.text === fullText),
+                );
+                if (segment) {
+                  const det = segment.detections.find((d) => d.text === fullText);
+                  if (det) {
+                    // Find the word's chars within the detection
+                    const { scale, offsetX } = (() => {
+                      const vW = subtitleData.resolution.width;
+                      const vH = subtitleData.resolution.height;
+                      const cW = containerSize.width;
+                      const cH = containerSize.height;
+                      const vAspect = vW / vH;
+                      const cAspect = cW / cH;
+                      if (vAspect > cAspect) {
+                        return { scale: cW / vW, offsetX: 0 };
+                      }
+                      return { scale: cH / vH, offsetX: (cW - vW * (cH / vH)) / 2 };
+                    })();
+
+                    // Find start index of the matched word in the detection text
+                    const wordText = wordDefs?.find((wd) => wd.display_text.includes(char))?.display_text ?? char;
+                    const startIdx = fullText.indexOf(wordText);
+                    if (startIdx >= 0 && startIdx < det.chars.length) {
+                      const endIdx = Math.min(startIdx + wordText.length, det.chars.length);
+                      const firstChar = det.chars[startIdx];
+                      const lastChar = det.chars[endIdx - 1];
+                      const x0 = firstChar.x * scale + offsetX;
+                      const x1 = (lastChar.x + lastChar.width) * scale + offsetX;
+                      wordCenterX = (x0 + x1) / 2;
+                    }
+                  }
+                }
+              }
+
+              setPopupPosition({ x: wordCenterX, y: tapY });
 
               // Look up the word that contains this character
               if (wordDefs && wordDefs.length > 0) {
