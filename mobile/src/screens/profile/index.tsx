@@ -1,14 +1,10 @@
-// INHERITED: This file is from the kirkwat/tiktok base repo.
-// It will likely undergo significant changes as Scrollingo features are built.
-// Do not assume this code follows Scrollingo patterns — verify before modifying.
-
 import { ScrollView } from "react-native";
 import styles from "./styles";
 import ProfileNavBar from "../../components/profile/navBar";
 import ProfileHeader from "../../components/profile/header";
 import ProfilePostList from "../../components/profile/postList";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useSelector } from "react-redux";
 import {
   CurrentUserProfileItemInViewContext,
@@ -16,12 +12,13 @@ import {
 } from "../../navigation/feed";
 import { useUser } from "../../hooks/useUser";
 import { useCurrentUserId } from "../../hooks/useCurrentUserId";
-import { getPostsByUserId } from "../../services/posts";
-import { Post, User } from "../../../types";
+import { fetchVideosByCreator } from "../../services/videos";
+import { User, Video } from "../../../types";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/main";
 import { HomeStackParamList } from "../../navigation/home";
 import { RootState } from "../../redux/store";
+import { useQuery } from "@tanstack/react-query";
 
 type ProfileScreenRouteProp =
   | RouteProp<RootStackParamList, "profileOther">
@@ -34,7 +31,6 @@ export default function ProfileScreen({
   route: ProfileScreenRouteProp;
 }) {
   const { initialUserId } = route.params;
-  const [userPosts, setUserPosts] = useState<Post[]>([]);
 
   const currentUserId = useCurrentUserId();
   const providerUserId = useContext(CurrentUserProfileItemInViewContext);
@@ -49,10 +45,13 @@ export default function ProfileScreen({
 
   const user: User | null = isOwnProfile ? currentUser : (otherUserQuery.data ?? null);
 
-  useEffect(() => {
-    if (!user) return;
-    getPostsByUserId(user.uid).then((posts) => setUserPosts(posts));
-  }, [user?.uid]);
+  // Fetch creator's videos from Supabase (cached by React Query)
+  const { data: userVideos = [] } = useQuery<Video[]>({
+    queryKey: ["userVideos", targetUserId],
+    queryFn: () => fetchVideosByCreator(targetUserId ?? ""),
+    enabled: !!targetUserId,
+    staleTime: 5 * 60 * 1000,
+  });
 
   if (!user) {
     return <></>;
@@ -63,7 +62,7 @@ export default function ProfileScreen({
       <ProfileNavBar user={user} />
       <ScrollView>
         <ProfileHeader user={user} />
-        <ProfilePostList posts={userPosts} />
+        <ProfilePostList videos={userVideos} />
       </ScrollView>
     </SafeAreaView>
   );

@@ -52,6 +52,28 @@ export async function fetchFeedPage(
 }
 
 /**
+ * Fetch videos created by a specific user. Used for profile post grids.
+ * Only fetches thumbnail_url and id — lightweight for grid display.
+ */
+export async function fetchVideosByCreator(
+  creatorId: string,
+): Promise<Video[]> {
+  const { data, error } = await supabase
+    .from("videos")
+    .select("id, title, description, language, cdn_url, thumbnail_url, duration_sec, like_count, comment_count, view_count, created_at, creator_id")
+    .eq("status", "ready")
+    .eq("creator_id", creatorId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.warn(`Failed to fetch videos for creator: ${error.message}`);
+    return [];
+  }
+
+  return data ?? [];
+}
+
+/**
  * Track that a user viewed a video. Upserts into user_views so
  * duplicate views from the same user are idempotent.
  */

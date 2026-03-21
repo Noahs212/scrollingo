@@ -1,16 +1,12 @@
-// INHERITED: This file is from the kirkwat/tiktok base repo.
-// It will likely undergo significant changes as Scrollingo features are built.
-// Do not assume this code follows Scrollingo patterns — verify before modifying.
-
 import { View, FlatList } from "react-native";
 import ProfilePostListItem from "./item";
 import styles from "./styles";
-import { RootState } from "../../../redux/store";
+import { Video } from "../../../../types";
 
 export default function ProfilePostList({
-  posts,
+  videos,
 }: {
-  posts: RootState["post"]["currentUserPosts"];
+  videos: Video[];
 }) {
   return (
     <View style={styles.container}>
@@ -19,7 +15,7 @@ export default function ProfilePostList({
         scrollEnabled={false}
         removeClippedSubviews
         nestedScrollEnabled
-        data={posts}
+        data={videos}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <ProfilePostListItem item={item} />}
       />
