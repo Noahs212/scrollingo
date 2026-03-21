@@ -1685,18 +1685,20 @@ This affects M5 (tappable subtitles) — the SubtitleOverlay component needs to 
 
     st.markdown("---")
 
-    # ── Milestone 4: Video Feed in App ──
+    # ── Milestone 4: Video Feed in App (DONE) ──
     st.subheader("Milestone 4: Video Feed in App")
     st.caption("Display videos from M3 in the app. Optimized for TikTok-style rapid swiping (15-20 skips before a full watch).")
 
-    st.checkbox("4.1 — Query videos from Supabase (WHERE status='ready' AND language=target_language, LEFT JOIN user_views to exclude watched)", key="m4_1")
-    st.checkbox("4.2 — Wire up feedSlice (Redux Toolkit) with cursor pagination (10-15 items/page, fetch next page when 3-5 from end)", key="m4_2")
-    st.checkbox("4.3 — Adapt PostSingle to use videos table data directly (cdn_url, thumbnail_url) — NOT a mapping layer", key="m4_3")
-    st.checkbox("4.4 — Thumbnail placeholders: show thumbnail_url as <Image> behind <VideoView> to eliminate black flash on swipe", key="m4_4")
-    st.checkbox("4.5 — Prefetch next 2 videos: pre-initialize expo-video players for N+1 and N+2 while current video plays", key="m4_5")
-    st.checkbox("4.6 — Auto play/pause based on scroll visibility (onViewableItemsChanged) — already working with local videos", key="m4_6")
-    st.checkbox("4.7 — Track views: INSERT/UPDATE user_views on watch (buffered, not every frame)", key="m4_7")
-    st.checkbox("4.8 — Test: app plays videos from R2 CDN, <200ms time-to-first-frame on swipe, smooth rapid swiping", key="m4_8")
+    st.checkbox("4.1 — Query videos from Supabase via useFeed (useInfiniteQuery, language-keyed cache)", value=True, key="m4_1")
+    st.checkbox("4.2 — Cursor pagination (10 items/page, onEndReached triggers fetchNextPage)", value=True, key="m4_2")
+    st.checkbox("4.3 — PostSingle accepts Video type, plays from cdn_url, fetches subtitles from R2 via useSubtitles", value=True, key="m4_3")
+    st.checkbox("4.4 — Thumbnail placeholders: <Image> behind <VideoView> with thumbnail_url from R2", value=True, key="m4_4")
+    st.checkbox("4.5 — Prefetch via windowSize=5 (renders ~2 screens ahead, players start buffering)", value=True, key="m4_5")
+    st.checkbox("4.6 — Auto play/pause on scroll + tab focus/blur", value=True, key="m4_6")
+    st.checkbox("4.7 — Track views: upsert user_views on viewability change (per-session dedup via Set ref)", value=True, key="m4_7")
+    st.checkbox("4.8 — Creator attribution: avatar + tappable username → profile navigation", value=True, key="m4_8")
+    st.checkbox("4.9 — Profile post grid: thumbnails from R2, tap navigates to correct video (initialScrollIndex)", value=True, key="m4_9")
+    st.checkbox("4.10 — Language dropdown on loading/empty/feed states for switching", value=True, key="m4_10")
 
     with st.expander("M4 Details: TikTok-style playback optimization"):
         st.markdown("""
@@ -1749,24 +1751,44 @@ Trigger next page fetch when user is 3-5 items from the end of the current page.
 
     # ── Milestone 5: Tappable Subtitles (Core Feature) ──
     st.subheader("Milestone 5: Tappable Subtitles")
-    st.caption("THE core language learning feature. User taps a word → sees translation + definition.")
+    st.caption("THE core language learning feature. User taps a character in the burned-in subtitles → sees word translation + definition.")
 
-    st.checkbox("5.1 — Fetch all subtitle data for video: video_words JOIN vocab_words JOIN word_definitions (single query, filtered by user's native_language)", key="m5_1")
-    st.checkbox("5.2 — Build SubtitleOverlay component: render current sentence's words based on playback position", key="m5_2")
-    st.checkbox("5.3 — Highlight active word as video plays (sync word_index to currentTime)", key="m5_3")
-    st.checkbox("5.4 — Make each word individually tappable (onPress per word)", key="m5_4")
-    st.checkbox("5.5 — Build WordPopup bottom sheet (@gorhom/bottom-sheet): translation, contextual definition, POS", key="m5_5")
-    st.checkbox("5.6 — TTS in popup: expo-speech for instant pronunciation (R2 audio available after M12, expo-speech only until then)", key="m5_6")
+    st.checkbox("5.1 — Add pinyin generation to pipeline (pypinyin → vocab_words.pinyin), backfill existing 554 words", key="m5_1")
+    st.checkbox("5.2 — Fetch word definitions from Supabase: video_words JOIN vocab_words JOIN word_definitions (filtered by user's native_language)", key="m5_2")
+    st.checkbox("5.3 — Map character tap → word lookup: when user taps a character, match it to the jieba-segmented word in video_words by text + timestamp", key="m5_3")
+    st.checkbox("5.4 — Build WordPopup bottom sheet (@gorhom/bottom-sheet): word, pinyin, translation, contextual definition, POS", key="m5_4")
+    st.checkbox("5.5 — Install expo-speech, play pronunciation on word tap", key="m5_5")
+    st.checkbox("5.6 — Highlight tapped word: apply highlight style to ALL character boxes belonging to the matched word", key="m5_6")
     st.checkbox("5.7 — Pause video when popup opens, resume on close", key="m5_7")
-    st.checkbox("5.8 — Test: tap word in subtitle → correct translation in user's native language + audio plays", key="m5_8")
+    st.checkbox("5.8 — Add 'Save' button placeholder in popup (actual flashcard save is M6)", key="m5_8")
+    st.checkbox("5.9 — Test: tap character → correct word identified → translation in user's native language + pinyin + audio", key="m5_9")
 
-    with st.expander("M5 Details: The subtitle data query"):
+    with st.expander("M5 Details: Architecture"):
         st.markdown("""
-**One query loads everything the subtitle overlay needs:**
+#### What's already done (from M1.5 + M3 + M4)
+
+- **Word segmentation**: jieba ran in the pipeline (M3). `video_words` has proper Chinese words (喝酒, 未成年人, etc.), not raw characters.
+- **Definitions**: All 554 words have translations in 11 languages in `word_definitions`.
+- **Tap targets**: SubtitleTapOverlay renders invisible Pressable components over burned-in characters (from OCR bboxes.json on R2).
+- **Time sync**: Native `useEvent` from expo-video, O(1) lookup table.
+
+#### Character → Word mapping strategy
+
+OCR gives us per-CHARACTER bounding boxes. jieba gives us WORDS (2-3 characters each). When a user taps a character:
+
+1. Get the tapped character + current timestamp from the tap event
+2. Find the `video_word` entry where `start_ms <= timestamp < end_ms` AND `display_text` contains the tapped character
+3. Look up that word's definition from the pre-fetched Supabase data
+
+#### Highlighting strategy
+
+When highlighting the tapped word, highlight ALL character boxes that belong to it — don't merge into one rectangle. Each box stays at its OCR-validated position. This avoids misalignment from rounding errors in merged boxes.
+
+#### Data query (one call per video, cached)
 
 ```sql
 SELECT vw.word_index, vw.display_text, vw.start_ms, vw.end_ms,
-       v.word, v.tts_url, v.pinyin,
+       v.word, v.pinyin,
        wd.translation, wd.contextual_definition, wd.part_of_speech
 FROM video_words vw
 JOIN vocab_words v ON v.id = vw.vocab_word_id
@@ -1777,7 +1799,11 @@ WHERE vw.video_id = $video_id
 ORDER BY vw.word_index;
 ```
 
-This returns ~50 rows per video. The app caches this per video — no extra queries on word tap. The WordPopup just reads from the already-loaded data.
+~50 rows per video. Cached by React Query (`staleTime: Infinity`). The WordPopup reads from the already-loaded data — no network call on tap.
+
+#### Pinyin
+
+Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pinyin`. Not generated client-side.
         """)
 
     st.markdown("---")
@@ -1912,7 +1938,7 @@ This returns ~50 rows per video. The app caches this per video — no extra quer
 | **M2** | R2 Storage + CDN | — | **Done** |
 | **M3** | First video end-to-end — OCR pipeline (burned-in subtitles) | M1.5, M2 | **Done** |
 | **M3.5** | STT subtitle path — Whisper for videos without burned-in subs | M3 | 1 day |
-| **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | 2-3 days |
+| **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | **Done** |
 | **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | 1-2 days |
 | **M6** | Flashcard save + SM-2 review + offline | M5 | 2-3 days |
 | **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
