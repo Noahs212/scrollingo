@@ -404,12 +404,6 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           onClose={() => {
             setPopupVisible(false);
             setHighlightRange(null);
-            try {
-              player.play();
-              setIsPaused(false);
-            } catch {
-              // Player may be released
-            }
           }}
         />
 

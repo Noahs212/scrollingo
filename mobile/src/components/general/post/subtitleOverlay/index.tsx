@@ -211,7 +211,7 @@ export default function SubtitleTapOverlay({
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 5,
+    zIndex: 31,
   },
   charTarget: {
     position: "absolute",
