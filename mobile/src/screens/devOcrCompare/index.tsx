@@ -121,72 +121,85 @@ function safeLoad(loader: () => any): SubtitleData | null {
 const VIDEO_LOADERS: Record<string, Record<string, () => any>> = {
   video_1: {
     videocr2: () => require("../../../assets/subtitles/video_1_videocr2.json"),
+    dense: () => require("../../../assets/subtitles/video_1_dense.json"),
   },
   video_2: {
     baseline: () => require("../../../assets/subtitles/video_2.json"),
     videocr: () => require("../../../assets/subtitles/video_2_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_2_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_2_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_2_dense.json"),
   },
   video_3: {
     baseline: () => require("../../../assets/subtitles/video_3.json"),
     videocr: () => require("../../../assets/subtitles/video_3_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_3_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_3_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_3_dense.json"),
   },
   video_4: {
     baseline: () => require("../../../assets/subtitles/video_4.json"),
     videocr: () => require("../../../assets/subtitles/video_4_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_4_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_4_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_4_dense.json"),
   },
   video_5: {
     videocr2: () => require("../../../assets/subtitles/video_5_videocr2.json"),
+    dense: () => require("../../../assets/subtitles/video_5_dense.json"),
   },
   video_6: {
     baseline: () => require("../../../assets/subtitles/video_6.json"),
     videocr: () => require("../../../assets/subtitles/video_6_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_6_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_6_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_6_dense.json"),
   },
   video_7: {
     videocr2: () => require("../../../assets/subtitles/video_7_videocr2.json"),
+    dense: () => require("../../../assets/subtitles/video_7_dense.json"),
   },
   video_8: {
     baseline: () => require("../../../assets/subtitles/video_8.json"),
     videocr: () => require("../../../assets/subtitles/video_8_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_8_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_8_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_8_dense.json"),
   },
   video_9: {
     baseline: () => require("../../../assets/subtitles/video_9.json"),
     videocr: () => require("../../../assets/subtitles/video_9_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_9_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_9_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_9_dense.json"),
   },
   video_10: {
     baseline: () => require("../../../assets/subtitles/video_10.json"),
     videocr: () => require("../../../assets/subtitles/video_10_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_10_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_10_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_10_dense.json"),
   },
   video_11: {
     baseline: () => require("../../../assets/subtitles/video_11.json"),
     videocr: () => require("../../../assets/subtitles/video_11_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_11_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_11_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_11_dense.json"),
   },
   video_12: {
     baseline: () => require("../../../assets/subtitles/video_12.json"),
     videocr: () => require("../../../assets/subtitles/video_12_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_12_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_12_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_12_dense.json"),
   },
   video_13: {
     baseline: () => require("../../../assets/subtitles/video_13.json"),
     videocr: () => require("../../../assets/subtitles/video_13_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_13_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_13_rapid.json"),
+    dense: () => require("../../../assets/subtitles/video_13_dense.json"),
   },
 };
 
@@ -195,17 +208,32 @@ const MODEL_CONFIGS: { key: string; name: string; color: string }[] = [
   { key: "videocr", name: "videocr (pixel-diff dedup)", color: "#4285f4" },
   { key: "videocr2", name: "VideOCR (SSIM dedup)", color: "#34a853" },
   { key: "rapid", name: "RapidOCR (ONNX)", color: "#ff9800" },
+  { key: "dense", name: "Dense (100ms, no dedup)", color: "#e040fb" },
 ];
 
-function getModelsForVideo(videoId: string): ModelConfig[] {
+function getModelsForVideo(videoId: string, visibleKeys: Set<string>): ModelConfig[] {
   const loaders = VIDEO_LOADERS[videoId];
   if (!loaders) return [];
 
-  return MODEL_CONFIGS.map((cfg) => ({
-    name: cfg.name,
-    color: cfg.color,
-    data: safeLoad(loaders[cfg.key] ?? (() => null)),
-  })).filter((m) => m.data !== null && m.data.segments.length > 0);
+  return MODEL_CONFIGS
+    .filter((cfg) => visibleKeys.has(cfg.key))
+    .map((cfg) => ({
+      name: cfg.name,
+      color: cfg.color,
+      data: safeLoad(loaders[cfg.key] ?? (() => null)),
+    }))
+    .filter((m) => m.data !== null && m.data.segments.length > 0);
+}
+
+function getAvailableModelsForVideo(videoId: string): string[] {
+  const loaders = VIDEO_LOADERS[videoId];
+  if (!loaders) return [];
+  return MODEL_CONFIGS
+    .filter((cfg) => {
+      const data = safeLoad(loaders[cfg.key] ?? (() => null));
+      return data !== null && data.segments.length > 0;
+    })
+    .map((cfg) => cfg.key);
 }
 
 // ─── Coordinate Transform (same as SubtitleTapOverlay) ───
@@ -293,13 +321,36 @@ export default function DevOcrCompareScreen() {
   const [currentTimeMs, setCurrentTimeMs] = useState(0);
   const [containerSize, setContainerSize] = useState({ width: SCREEN_WIDTH, height: 300 });
   const [isPaused, setIsPaused] = useState(false);
+  const [visibleModelKeys, setVisibleModelKeys] = useState<Set<string>>(
+    () => new Set(MODEL_CONFIGS.map((c) => c.key)),
+  );
   const timeRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const player = useVideoPlayer(selectedVideo.source, (p) => {
     p.loop = true;
   });
 
-  const models = useMemo(() => getModelsForVideo(selectedVideo.id), [selectedVideo.id]);
+  const availableKeys = useMemo(
+    () => getAvailableModelsForVideo(selectedVideo.id),
+    [selectedVideo.id],
+  );
+
+  const toggleModel = useCallback((key: string) => {
+    setVisibleModelKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  }, []);
+
+  const models = useMemo(
+    () => getModelsForVideo(selectedVideo.id, visibleModelKeys),
+    [selectedVideo.id, visibleModelKeys],
+  );
 
   // Track playback time
   useEffect(() => {
@@ -388,6 +439,32 @@ export default function DevOcrCompareScreen() {
               </Text>
             </TouchableOpacity>
           ))}
+        </View>
+
+        {/* Model visibility toggles */}
+        <View style={s.modelToggles}>
+          {MODEL_CONFIGS.map((cfg) => {
+            const isAvailable = availableKeys.includes(cfg.key);
+            const isVisible = visibleModelKeys.has(cfg.key);
+            if (!isAvailable) return null;
+            return (
+              <TouchableOpacity
+                key={cfg.key}
+                style={[
+                  s.modelToggle,
+                  { borderColor: cfg.color },
+                  isVisible && { backgroundColor: cfg.color },
+                ]}
+                onPress={() => toggleModel(cfg.key)}
+                activeOpacity={0.7}
+              >
+                <View style={[s.modelDot, { backgroundColor: isVisible ? "white" : cfg.color }]} />
+                <Text style={[s.modelToggleText, isVisible && s.modelToggleTextActive]}>
+                  {cfg.name.split(" (")[0]}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* Video player */}
@@ -573,6 +650,12 @@ const s = StyleSheet.create({
   videoPillActive: { backgroundColor: "#fe2c55" },
   videoPillText: { color: "#aaa", fontSize: 13 },
   videoPillTextActive: { color: "white", fontWeight: "600" },
+
+  modelToggles: { flexDirection: "row", flexWrap: "wrap", gap: 6, paddingHorizontal: 12, paddingBottom: 8 },
+  modelToggle: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, borderWidth: 1.5 },
+  modelToggleText: { color: "#aaa", fontSize: 11, fontWeight: "500" },
+  modelToggleTextActive: { color: "white" },
+  modelDot: { width: 8, height: 8, borderRadius: 4 },
 
   videoContainer: { width: SCREEN_WIDTH, height: SCREEN_WIDTH * (16 / 9), backgroundColor: "black" },
   videoTapTarget: { ...StyleSheet.absoluteFillObject, zIndex: 5 },
