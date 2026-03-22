@@ -88,9 +88,19 @@ interface ModelConfig {
 // ─── Test Videos ───
 
 const TEST_VIDEOS: { id: string; label: string; source: any }[] = [
+  { id: "video_1", label: "Video 1 (216s)", source: require("../../../assets/videos/video_1.mp4") },
   { id: "video_2", label: "Video 2 (12s)", source: require("../../../assets/videos/video_2.mp4") },
   { id: "video_3", label: "Video 3 (11s)", source: require("../../../assets/videos/video_3.mp4") },
   { id: "video_4", label: "Video 4 (19s)", source: require("../../../assets/videos/video_4.mp4") },
+  { id: "video_5", label: "Video 5 (91s)", source: require("../../../assets/videos/video_5.mp4") },
+  { id: "video_6", label: "Video 6 (20s)", source: require("../../../assets/videos/video_6.mp4") },
+  { id: "video_7", label: "Video 7 (64s)", source: require("../../../assets/videos/video_7.mp4") },
+  { id: "video_8", label: "Video 8 (17s)", source: require("../../../assets/videos/video_8.mp4") },
+  { id: "video_9", label: "Video 9 (10s)", source: require("../../../assets/videos/video_9.mp4") },
+  { id: "video_10", label: "Video 10 (53s)", source: require("../../../assets/videos/video_10.mp4") },
+  { id: "video_11", label: "Video 11 (31s)", source: require("../../../assets/videos/video_11.mp4") },
+  { id: "video_12", label: "Video 12 (32s)", source: require("../../../assets/videos/video_12.mp4") },
+  { id: "video_13", label: "Video 13 (43s)", source: require("../../../assets/videos/video_13.mp4") },
 ];
 
 // ─── Models ───
@@ -109,6 +119,9 @@ function safeLoad(loader: () => any): SubtitleData | null {
 // Loaders for each video × model combination.
 // require() needs static strings — can't be dynamic in React Native.
 const VIDEO_LOADERS: Record<string, Record<string, () => any>> = {
+  video_1: {
+    videocr2: () => require("../../../assets/subtitles/video_1_videocr2.json"),
+  },
   video_2: {
     baseline: () => require("../../../assets/subtitles/video_2.json"),
     videocr: () => require("../../../assets/subtitles/video_2_videocr.json"),
@@ -126,6 +139,54 @@ const VIDEO_LOADERS: Record<string, Record<string, () => any>> = {
     videocr: () => require("../../../assets/subtitles/video_4_videocr.json"),
     videocr2: () => require("../../../assets/subtitles/video_4_videocr2.json"),
     rapid: () => require("../../../assets/subtitles/video_4_rapid.json"),
+  },
+  video_5: {
+    videocr2: () => require("../../../assets/subtitles/video_5_videocr2.json"),
+  },
+  video_6: {
+    baseline: () => require("../../../assets/subtitles/video_6.json"),
+    videocr: () => require("../../../assets/subtitles/video_6_videocr.json"),
+    videocr2: () => require("../../../assets/subtitles/video_6_videocr2.json"),
+    rapid: () => require("../../../assets/subtitles/video_6_rapid.json"),
+  },
+  video_7: {
+    videocr2: () => require("../../../assets/subtitles/video_7_videocr2.json"),
+  },
+  video_8: {
+    baseline: () => require("../../../assets/subtitles/video_8.json"),
+    videocr: () => require("../../../assets/subtitles/video_8_videocr.json"),
+    videocr2: () => require("../../../assets/subtitles/video_8_videocr2.json"),
+    rapid: () => require("../../../assets/subtitles/video_8_rapid.json"),
+  },
+  video_9: {
+    baseline: () => require("../../../assets/subtitles/video_9.json"),
+    videocr: () => require("../../../assets/subtitles/video_9_videocr.json"),
+    videocr2: () => require("../../../assets/subtitles/video_9_videocr2.json"),
+    rapid: () => require("../../../assets/subtitles/video_9_rapid.json"),
+  },
+  video_10: {
+    baseline: () => require("../../../assets/subtitles/video_10.json"),
+    videocr: () => require("../../../assets/subtitles/video_10_videocr.json"),
+    videocr2: () => require("../../../assets/subtitles/video_10_videocr2.json"),
+    rapid: () => require("../../../assets/subtitles/video_10_rapid.json"),
+  },
+  video_11: {
+    baseline: () => require("../../../assets/subtitles/video_11.json"),
+    videocr: () => require("../../../assets/subtitles/video_11_videocr.json"),
+    videocr2: () => require("../../../assets/subtitles/video_11_videocr2.json"),
+    rapid: () => require("../../../assets/subtitles/video_11_rapid.json"),
+  },
+  video_12: {
+    baseline: () => require("../../../assets/subtitles/video_12.json"),
+    videocr: () => require("../../../assets/subtitles/video_12_videocr.json"),
+    videocr2: () => require("../../../assets/subtitles/video_12_videocr2.json"),
+    rapid: () => require("../../../assets/subtitles/video_12_rapid.json"),
+  },
+  video_13: {
+    baseline: () => require("../../../assets/subtitles/video_13.json"),
+    videocr: () => require("../../../assets/subtitles/video_13_videocr.json"),
+    videocr2: () => require("../../../assets/subtitles/video_13_videocr2.json"),
+    rapid: () => require("../../../assets/subtitles/video_13_rapid.json"),
   },
 };
 

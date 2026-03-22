@@ -160,7 +160,7 @@ export default function WordPopup({
                 <Ionicons
                   name={isSpeaking ? "volume-high" : "volume-medium-outline"}
                   size={20}
-                  color={isSpeaking ? "#60a5fa" : "rgba(255,255,255,0.5)"}
+                  color={isSpeaking ? "#3b82f6" : "rgba(0,0,0,0.4)"}
                 />
               </Animated.View>
             </TouchableOpacity>
@@ -221,7 +221,7 @@ export default function WordPopup({
   );
 }
 
-const BG = "rgba(35,35,35,0.94)";
+const BG = "rgba(245,245,245,0.92)";
 
 const s = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFillObject },
@@ -262,47 +262,47 @@ const s = StyleSheet.create({
     flex: 1,
     gap: 8,
   },
-  word: { color: "#fff", fontSize: 28, fontWeight: "bold", letterSpacing: 1 },
-  pinyin: { color: "rgba(255,255,255,0.4)", fontSize: 14 },
+  word: { color: "#1a1a1a", fontSize: 28, fontWeight: "bold", letterSpacing: 1 },
+  pinyin: { color: "rgba(0,0,0,0.4)", fontSize: 14 },
   speaker: {
     width: 36, height: 36, borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(0,0,0,0.06)",
     justifyContent: "center", alignItems: "center",
     marginLeft: 8,
   },
 
   // Row 2: translation
-  translation: { color: "#fff", fontSize: 16, marginBottom: 3 },
+  translation: { color: "#1a1a1a", fontSize: 16, marginBottom: 3 },
 
   // Row 3: POS
-  pos: { color: "rgba(255,255,255,0.3)", fontSize: 12, fontStyle: "italic", marginBottom: 10 },
+  pos: { color: "rgba(0,0,0,0.35)", fontSize: 12, fontStyle: "italic", marginBottom: 10 },
 
   // Row 4: definition
   defBox: {
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(0,0,0,0.04)",
     borderRadius: 10, padding: 12,
     flexDirection: "row", alignItems: "flex-start",
     marginBottom: 4,
   },
   sparkle: { fontSize: 13, marginRight: 6, marginTop: 1 },
-  defText: { color: "rgba(255,255,255,0.55)", fontSize: 13, lineHeight: 18, flex: 1, fontStyle: "italic" },
+  defText: { color: "rgba(0,0,0,0.5)", fontSize: 13, lineHeight: 18, flex: 1, fontStyle: "italic" },
 
   // Row 5: see more
   seeMore: { flexDirection: "row", alignItems: "center", justifyContent: "center", paddingVertical: 6 },
-  seeMoreText: { color: "rgba(255,255,255,0.4)", fontSize: 12 },
+  seeMoreText: { color: "rgba(0,0,0,0.4)", fontSize: 12 },
 
   // Expanded
   expandedBox: { marginTop: 6, marginBottom: 2 },
-  expandedLabel: { color: "rgba(255,255,255,0.25)", fontSize: 10, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
-  expandedText: { color: "rgba(255,255,255,0.5)", fontSize: 12, fontStyle: "italic", lineHeight: 17 },
+  expandedLabel: { color: "rgba(0,0,0,0.3)", fontSize: 10, textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 },
+  expandedText: { color: "rgba(0,0,0,0.5)", fontSize: 12, fontStyle: "italic", lineHeight: 17 },
 
   // Row 6: divider
-  divider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(255,255,255,0.1)", borderStyle: "dashed", marginVertical: 10 },
+  divider: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: "rgba(0,0,0,0.1)", borderStyle: "dashed", marginVertical: 10 },
 
   // Row 7: save
-  saveBtn: { borderWidth: 1, borderColor: "rgba(255,255,255,0.2)", borderRadius: 8, paddingVertical: 10, alignItems: "center" },
+  saveBtn: { borderWidth: 1, borderColor: "rgba(0,0,0,0.15)", borderRadius: 8, paddingVertical: 10, alignItems: "center" },
   saveBtnDone: { borderColor: "rgba(34,197,94,0.3)", backgroundColor: "rgba(34,197,94,0.15)" },
-  saveBtnText: { color: "#fff", fontSize: 13, fontWeight: "500" },
+  saveBtnText: { color: "#1a1a1a", fontSize: 13, fontWeight: "500" },
   saveBtnTextDone: { color: "#22c55e", fontSize: 13, fontWeight: "500" },
   savedRow: { flexDirection: "row", alignItems: "center" },
 });
