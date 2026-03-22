@@ -26,7 +26,7 @@ import { useUser } from "../../../hooks/useUser";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import PostSingleOverlay from "./overlay";
-import SubtitleTapOverlay from "./subtitleOverlay";
+import SubtitleTapOverlay, { HighlightRange } from "./subtitleOverlay";
 import WordPopup, { WordPopupData } from "./wordPopup";
 import { useSubtitles } from "../../../hooks/useSubtitles";
 import { useWordDefinitions } from "../../../hooks/useWordDefinitions";
@@ -51,7 +51,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     const [popupData, setPopupData] = useState<WordPopupData | null>(null);
     const [popupVisible, setPopupVisible] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-    const [highlightedWord, setHighlightedWord] = useState<string | null>(null);
+    const [highlightRange, setHighlightRange] = useState<HighlightRange | null>(null);
     const lastTapRef = useRef(0);
     const pauseOpacity = useRef(new Animated.Value(0)).current;
     const heartScale = useRef(new Animated.Value(0)).current;
@@ -238,8 +238,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
             currentTimeMs={currentTimeMs}
             containerWidth={containerSize.width}
             containerHeight={containerSize.height}
-            highlightedWord={highlightedWord}
-            onCharTap={(char, fullText, tapX, tapY) => {
+            highlightRange={highlightRange}
+            onCharTap={(char, fullText, tapX, tapY, detectionIndex, charIndex) => {
               // Haptic feedback
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
@@ -252,8 +252,6 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
               }
 
               // Compute word center X from OCR data
-              // Find the matched word's characters in the subtitle segment
-              // and center the popup arrow on them
               let wordCenterX = tapX;
               if (subtitleData) {
                 const segment = subtitleData.segments.find(
@@ -262,7 +260,6 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                 if (segment) {
                   const det = segment.detections.find((d) => d.text === fullText);
                   if (det) {
-                    // Find the word's chars within the detection
                     const { scale, offsetX } = (() => {
                       const vW = subtitleData.resolution.width;
                       const vH = subtitleData.resolution.height;
@@ -276,9 +273,33 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                       return { scale: cH / vH, offsetX: (cW - vW * (cH / vH)) / 2 };
                     })();
 
-                    // Find start index of the matched word in the detection text
-                    const wordText = wordDefs?.find((wd) => wd.display_text.includes(char))?.display_text ?? char;
-                    const startIdx = fullText.indexOf(wordText);
+                    // Find the word containing the tapped character index
+                    const wordText = wordDefs?.find((wd) => {
+                      const idx = fullText.indexOf(wd.display_text);
+                      if (idx < 0) return false;
+                      // Check all occurrences to find the one containing charIndex
+                      let searchFrom = 0;
+                      while (searchFrom <= fullText.length) {
+                        const pos = fullText.indexOf(wd.display_text, searchFrom);
+                        if (pos < 0) break;
+                        if (charIndex >= pos && charIndex < pos + wd.display_text.length) return true;
+                        searchFrom = pos + 1;
+                      }
+                      return false;
+                    })?.display_text ?? char;
+                    // Find the occurrence of wordText that contains charIndex
+                    let startIdx = -1;
+                    let searchFrom = 0;
+                    while (searchFrom <= fullText.length) {
+                      const pos = fullText.indexOf(wordText, searchFrom);
+                      if (pos < 0) break;
+                      if (charIndex >= pos && charIndex < pos + wordText.length) {
+                        startIdx = pos;
+                        break;
+                      }
+                      searchFrom = pos + 1;
+                    }
+                    if (startIdx < 0) startIdx = fullText.indexOf(wordText);
                     if (startIdx >= 0 && startIdx < det.chars.length) {
                       const endIdx = Math.min(startIdx + wordText.length, det.chars.length);
                       const firstChar = det.chars[startIdx];
@@ -295,22 +316,52 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
 
               // Look up the word that contains this character
               if (wordDefs && wordDefs.length > 0) {
-                // Match by character text + time overlap with generous tolerance.
-                // The bboxes (from R2) and video_words (from pipeline) may have
-                // different timestamps due to separate OCR runs. Try tight match
-                // first, then fall back to text-only match.
-                let match = wordDefs.find(
-                  (wd) =>
-                    wd.display_text.includes(char) &&
-                    currentTimeMs >= wd.start_ms - 2000 &&
-                    currentTimeMs < wd.end_ms + 2000,
-                );
-                // Fallback: text-only match (ignore timing entirely)
+                // Match word definition where the tapped charIndex falls within
+                // an occurrence of the word in fullText
+                let match = wordDefs.find((wd) => {
+                  let searchFrom = 0;
+                  while (searchFrom <= fullText.length) {
+                    const pos = fullText.indexOf(wd.display_text, searchFrom);
+                    if (pos < 0) break;
+                    if (charIndex >= pos && charIndex < pos + wd.display_text.length) {
+                      // Also check time overlap
+                      return currentTimeMs >= wd.start_ms - 2000 && currentTimeMs < wd.end_ms + 2000;
+                    }
+                    searchFrom = pos + 1;
+                  }
+                  return false;
+                });
+                // Fallback: text-only match by charIndex position
                 if (!match) {
-                  match = wordDefs.find((wd) => wd.display_text.includes(char));
+                  match = wordDefs.find((wd) => {
+                    let searchFrom = 0;
+                    while (searchFrom <= fullText.length) {
+                      const pos = fullText.indexOf(wd.display_text, searchFrom);
+                      if (pos < 0) break;
+                      if (charIndex >= pos && charIndex < pos + wd.display_text.length) return true;
+                      searchFrom = pos + 1;
+                    }
+                    return false;
+                  });
                 }
                 if (match) {
-                  setHighlightedWord(match.display_text);
+                  // Find the specific occurrence containing charIndex for highlight
+                  let wordStart = charIndex;
+                  let searchFrom = 0;
+                  while (searchFrom <= fullText.length) {
+                    const pos = fullText.indexOf(match.display_text, searchFrom);
+                    if (pos < 0) break;
+                    if (charIndex >= pos && charIndex < pos + match.display_text.length) {
+                      wordStart = pos;
+                      break;
+                    }
+                    searchFrom = pos + 1;
+                  }
+                  setHighlightRange({
+                    detectionIndex,
+                    startCharIndex: wordStart,
+                    endCharIndex: wordStart + match.display_text.length,
+                  });
                   setPopupData({
                     word: match.word,
                     pinyin: match.pinyin,
@@ -324,8 +375,12 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                 }
               }
 
-              // Fallback: show the character if no word match found
-              setHighlightedWord(char);
+              // Fallback: highlight just the tapped character
+              setHighlightRange({
+                detectionIndex,
+                startCharIndex: charIndex,
+                endCharIndex: charIndex + 1,
+              });
               setPopupData({
                 word: char,
                 pinyin: null,
@@ -348,7 +403,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           tapY={popupPosition.y}
           onClose={() => {
             setPopupVisible(false);
-            setHighlightedWord(null);
+            setHighlightRange(null);
             try {
               player.play();
               setIsPaused(false);

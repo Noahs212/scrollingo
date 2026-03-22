@@ -51,13 +51,20 @@ export interface SubtitleData {
   segments: SubtitleSegment[];
 }
 
+/** Identifies the exact character range to highlight within a specific detection */
+export interface HighlightRange {
+  detectionIndex: number;
+  startCharIndex: number;
+  endCharIndex: number; // exclusive
+}
+
 interface Props {
   subtitleData: SubtitleData | null;
   currentTimeMs: number;
   containerWidth: number;
   containerHeight: number;
-  highlightedWord?: string | null;
-  onCharTap?: (char: string, fullText: string, screenX: number, screenY: number) => void;
+  highlightRange?: HighlightRange | null;
+  onCharTap?: (char: string, fullText: string, screenX: number, screenY: number, detectionIndex: number, charIndex: number) => void;
 }
 
 /**
@@ -123,7 +130,7 @@ export default function SubtitleTapOverlay({
   currentTimeMs,
   containerWidth,
   containerHeight,
-  highlightedWord,
+  highlightRange,
   onCharTap,
 }: Props) {
   // Build lookup table once — O(1) access at runtime instead of O(n) search
@@ -141,9 +148,9 @@ export default function SubtitleTapOverlay({
   }, [lookupTable, currentTimeMs]);
 
   const handleCharTap = useCallback(
-    (char: string, fullText: string, x: number, y: number) => {
+    (char: string, fullText: string, x: number, y: number, detectionIndex: number, charIndex: number) => {
       if (onCharTap) {
-        onCharTap(char, fullText, x, y);
+        onCharTap(char, fullText, x, y, detectionIndex, charIndex);
       }
     },
     [onCharTap],
@@ -168,21 +175,17 @@ export default function SubtitleTapOverlay({
           const screenW = ch.width * scale;
           const screenH = ch.height * scale;
 
-          // Check if this character belongs to the highlighted word
-          const isHighlighted = highlightedWord && det.text.includes(highlightedWord) && highlightedWord.includes(ch.char);
+          // Check if this specific character is in the highlighted range
+          const isHighlighted = highlightRange &&
+            highlightRange.detectionIndex === di &&
+            ci >= highlightRange.startCharIndex &&
+            ci < highlightRange.endCharIndex;
 
           return (
             <Pressable
               key={`${di}-${ci}`}
               onPress={() => {
-                // Find which characters in this detection belong to the word
-                // containing the tapped character, and compute their center X.
-                // The word boundary is found by looking for the tapped char
-                // within the detection text and finding the jieba word around it.
-                // For now, pass the tapped char's center — PostSingle will
-                // adjust if needed. Pass screenY + screenH as the bottom edge
-                // of the character (arrow should point just below the word).
-                handleCharTap(ch.char, det.text, screenX + screenW / 2, screenY + screenH + 15);
+                handleCharTap(ch.char, det.text, screenX + screenW / 2, screenY + screenH + 15, di, ci);
               }}
               style={[
                 styles.charTarget,
