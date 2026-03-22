@@ -165,9 +165,11 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
   };
 
   const isFocused = useIsFocused();
+  const isFocusedRef = useRef(isFocused);
+  isFocusedRef.current = isFocused;
   const userId = useCurrentUserId();
-  const { activeLearningLanguage } = useSelector(
-    (state: RootState) => state.language,
+  const activeLearningLanguage = useSelector(
+    (state: RootState) => state.language.activeLearningLanguage,
   );
 
   const mediaRefs = useRef<Record<string, PostSingleHandles | null>>({});
@@ -204,6 +206,7 @@ export default function FeedScreen({ route }: { route: FeedScreenRouteProp }) {
         if (cell) {
           if (element.isViewable) {
             currentViewableKey.current = element.key;
+            if (!isFocusedRef.current) return;
             cell.play();
 
             // Track view (fire once per video per session)
