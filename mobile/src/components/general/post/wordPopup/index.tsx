@@ -50,6 +50,8 @@ export interface WordPopupData {
   contextual_definition: string;
   part_of_speech: string | null;
   source_sentence?: string;
+  vocab_word_id: string;
+  definition_id: string;
 }
 
 interface Props {
@@ -58,7 +60,7 @@ interface Props {
   tapX: number;
   tapY: number;
   onClose: () => void;
-  onSave?: (word: string) => void;
+  onSave?: (data: WordPopupData) => void;
   language?: string;
 }
 
@@ -115,9 +117,9 @@ export default function WordPopup({
   const handleSave = useCallback(() => {
     if (!data?.word || saved) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    onSave?.(data.word);
+    onSave?.(data);
     setSaved(true);
-  }, [data?.word, onSave, saved]);
+  }, [data, onSave, saved]);
 
   const handleSeeMore = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

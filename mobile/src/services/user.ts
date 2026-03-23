@@ -24,6 +24,7 @@ function mapDbUser(
     totalWordsLearned: row.total_words_learned ?? 0,
     totalVideosWatched: row.total_videos_watched ?? 0,
     dailyGoalMinutes: row.daily_goal_minutes ?? 10,
+    maxReviewsPerDay: row.max_reviews_per_day ?? 20,
     premium: row.premium ?? false,
   };
 }
@@ -69,6 +70,7 @@ export async function saveUserField(
     nativeLanguage: "native_language",
     targetLanguage: "target_language",
     dailyGoalMinutes: "daily_goal_minutes",
+    maxReviewsPerDay: "max_reviews_per_day",
   };
 
   const dbField = fieldMap[field];
@@ -77,7 +79,7 @@ export async function saveUserField(
   }
 
   // Convert numeric fields from string to number
-  const numericFields = new Set(["daily_goal_minutes"]);
+  const numericFields = new Set(["daily_goal_minutes", "max_reviews_per_day"]);
   const dbValue = numericFields.has(dbField) ? parseInt(value, 10) : value;
 
   const { error } = await supabase

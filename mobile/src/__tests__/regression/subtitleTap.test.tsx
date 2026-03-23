@@ -257,6 +257,8 @@ describe("FLOW: Word popup display and behavior", () => {
     contextual_definition: "to be aware of or have knowledge about something",
     part_of_speech: "verb",
     source_sentence: "你知道你最让人佩服的地方是什么吗",
+    vocab_word_id: "test-vocab-id",
+    definition_id: "test-def-id",
   };
 
   beforeEach(() => {
@@ -404,7 +406,7 @@ describe("FLOW: Word popup display and behavior", () => {
     );
 
     fireEvent.press(screen.getByText("Add to Vocab"));
-    expect(onSave).toHaveBeenCalledWith("知道");
+    expect(onSave).toHaveBeenCalledWith(mockWordData);
     expect(screen.getByText("Saved")).toBeTruthy();
   });
 });

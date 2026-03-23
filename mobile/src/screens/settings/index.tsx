@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../navigation/main";
 import { AppDispatch, RootState } from "../../redux/store";
-import { saveLanguages } from "../../redux/slices/languageSlice";
+import { saveLanguages, toggleDevMuted } from "../../redux/slices/languageSlice";
 import { logout, updateUserField } from "../../redux/slices/authSlice";
 import { saveUserField } from "../../services/user";
 import { useCurrentUserId } from "../../hooks/useCurrentUserId";
@@ -39,6 +39,7 @@ const GOAL_OPTIONS = [
   { minutes: 30, label: "30 min", description: "Hardcore" },
 ];
 
+
 export default function SettingsScreen() {
   const dispatch = useDispatch<AppDispatch>();
   const userId = useCurrentUserId();
@@ -48,6 +49,7 @@ export default function SettingsScreen() {
 
   const currentNative = language.nativeLanguage ?? "en";
   const currentLearning = language.learningLanguages ?? [];
+  const devMuted = language.devMuted;
   const currentGoal = auth.currentUser?.dailyGoalMinutes ?? 10;
 
   const [nativeModalVisible, setNativeModalVisible] = useState(false);
@@ -113,6 +115,7 @@ export default function SettingsScreen() {
     },
     [currentGoal, dispatch],
   );
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -223,6 +226,16 @@ export default function SettingsScreen() {
           <Feather name="eye" size={18} color="#fe2c55" />
           <Text style={styles.devItemText}>OCR Model Comparison</Text>
           <Feather name="chevron-right" size={18} color="gray" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.devItem}
+          onPress={() => dispatch(toggleDevMuted())}
+        >
+          <Feather name={devMuted ? "volume-x" : "volume-2"} size={18} color="#fe2c55" />
+          <Text style={styles.devItemText}>Mute Audio</Text>
+          <View style={[styles.devToggle, devMuted && styles.devToggleOn]}>
+            <View style={[styles.devToggleThumb, devMuted && styles.devToggleThumbOn]} />
+          </View>
         </TouchableOpacity>
       </ScrollView>
 
@@ -457,5 +470,25 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#333",
     flex: 1,
+  },
+  devToggle: {
+    width: 44,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#e0e0e0",
+    justifyContent: "center",
+    paddingHorizontal: 2,
+  },
+  devToggleOn: {
+    backgroundColor: "#fe2c55",
+  },
+  devToggleThumb: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: "white",
+  },
+  devToggleThumbOn: {
+    alignSelf: "flex-end",
   },
 });

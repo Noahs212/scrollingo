@@ -53,6 +53,7 @@ export interface User {
   totalWordsLearned: number;
   totalVideosWatched: number;
   dailyGoalMinutes: number;
+  maxReviewsPerDay: number;
   premium: boolean;
 }
 
@@ -87,4 +88,41 @@ export interface WordDefinition {
   translation: string;
   contextual_definition: string;
   part_of_speech: string | null;
+  vocab_word_id: string;
+  definition_id: string;
+}
+
+export interface Flashcard {
+  id: string;
+  user_id: string;
+  vocab_word_id: string;
+  definition_id: string;
+  source_video_id: string | null;
+  // FSRS fields (must match ts-fsrs Card interface)
+  state: number;           // 0=new, 1=learning, 2=review, 3=relearning
+  stability: number;
+  difficulty: number;
+  due: string;
+  last_review_at: string | null;
+  elapsed_days: number;
+  scheduled_days: number;
+  reps: number;
+  lapses: number;
+  learning_steps: number;
+  // Display data (joined from vocab_words + word_definitions)
+  word: string;
+  pinyin: string | null;
+  translation: string;
+  contextual_definition: string;
+  part_of_speech: string | null;
+  language: string;
+  created_at: string;
+}
+
+export interface ReviewLog {
+  id: string;
+  flashcard_id: string;
+  rating: number;
+  review_duration_ms: number | null;
+  reviewed_at: string;
 }

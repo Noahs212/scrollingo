@@ -1,6 +1,6 @@
 # Scrollingo — Phase 1 Database Design
 
-> Supabase PostgreSQL | 14 tables | Covers requirements R1-R37
+> Supabase PostgreSQL | 15 tables | Covers requirements R1-R37
 
 ---
 
@@ -31,14 +31,15 @@ users ─────┬──────────┬───────�
 | 3 | `vocab_words` | Canonical word entries per language (word, frequency, TTS URL, pinyin) | R11, R26, R36 |
 | 4 | `word_definitions` | LLM contextual definitions per (word, target_lang, sentence) | R11, R28, R34 |
 | 5 | `video_words` | Links words in a video to timestamps + sentence context | R10, R11, R16 |
-| 6 | `flashcards` | User's saved words with SM-2 SRS state | R17-R19, R21 |
-| 7 | `user_views` | Watch tracking (completion %, view count) | R2, R3, R31 |
-| 8 | `user_likes` | Liked videos | R6 |
-| 9 | `user_bookmarks` | Bookmarked videos | R6 |
-| 10 | `comments` | Video comments | R6 |
-| 11 | `user_follows` | Follower/following relationships | R7 |
-| 12 | `daily_progress` | Daily streak + activity stats | R30-R32 |
-| 13 | `pipeline_jobs` | AI pipeline tracking per video | R33, R34, R37 |
+| 6 | `flashcards` | User's saved words with FSRS SRS state | R17-R19, R21 |
+| 7 | `review_logs` | Per-review analytics (rating, duration) | R18 |
+| 8 | `user_views` | Watch tracking (completion %, view count) | R2, R3, R31 |
+| 9 | `user_likes` | Liked videos | R6 |
+| 10 | `user_bookmarks` | Bookmarked videos | R6 |
+| 11 | `comments` | Video comments | R6 |
+| 12 | `user_follows` | Follower/following relationships | R7 |
+| 13 | `daily_progress` | Daily streak + activity stats | R30-R32 |
+| 14 | `pipeline_jobs` | AI pipeline tracking per video | R33, R34, R37 |
 
 ---
 
@@ -87,6 +88,9 @@ CREATE TABLE users (
 
     -- Subscription
     premium             BOOLEAN NOT NULL DEFAULT FALSE,
+
+    -- Review settings
+    max_reviews_per_day SMALLINT NOT NULL DEFAULT 20,      -- Caps flashcards pulled per review session
 
     -- User preferences (extensible without schema changes)
     preferences         JSONB NOT NULL DEFAULT '{}',       -- {notifications: true, theme: "dark", ...}
@@ -222,7 +226,9 @@ CREATE INDEX idx_video_words_vocab ON video_words(vocab_word_id);
 -- ============================================================
 -- 6. FLASHCARDS (User Saved Words)
 -- ============================================================
--- SM-2 spaced repetition fields for review scheduling (R18).
+-- FSRS (Free Spaced Repetition Scheduler) fields for review scheduling (R18).
+-- Uses ts-fsrs package — modern replacement for SM-2 with per-card
+-- stability and difficulty tracking.
 -- Display data (word, translation, TTS) resolved via JOINs.
 -- Client MMKV caches display data for offline review (R19).
 -- client_updated_at allows last-write-wins conflict resolution on sync.
@@ -234,12 +240,17 @@ CREATE TABLE flashcards (
     definition_id    UUID NOT NULL REFERENCES word_definitions(id) ON DELETE RESTRICT,
     source_video_id  UUID REFERENCES videos(id) ON DELETE SET NULL,
 
-    -- SM-2 SRS fields (R18)
-    ease_factor      REAL NOT NULL DEFAULT 2.5,
-    interval_days    INT NOT NULL DEFAULT 0,
-    repetitions      INT NOT NULL DEFAULT 0,
-    next_review      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    last_review      TIMESTAMPTZ,
+    -- FSRS SRS fields (R18) — mirrors ts-fsrs Card interface
+    state            SMALLINT NOT NULL DEFAULT 0,    -- 0=new, 1=learning, 2=review, 3=relearning
+    stability        DOUBLE PRECISION NOT NULL DEFAULT 0,  -- FSRS stability — retention strength
+    difficulty       DOUBLE PRECISION NOT NULL DEFAULT 0,  -- FSRS difficulty — inherent card hardness
+    elapsed_days     DOUBLE PRECISION NOT NULL DEFAULT 0,  -- Days since last review
+    scheduled_days   DOUBLE PRECISION NOT NULL DEFAULT 0,  -- Days until next scheduled review
+    reps             INT NOT NULL DEFAULT 0,               -- Total successful repetitions
+    lapses           INT NOT NULL DEFAULT 0,               -- Times card lapsed (forgot after learning)
+    learning_steps   INT NOT NULL DEFAULT 0,               -- Current learning/relearning step
+    due              TIMESTAMPTZ NOT NULL DEFAULT NOW(),    -- Next review due date (UTC)
+    last_review_at   TIMESTAMPTZ,                          -- When last reviewed
 
     -- Offline sync (R19, N4)
     client_updated_at TIMESTAMPTZ,             -- Set by client; last-write-wins conflict resolution
@@ -248,8 +259,33 @@ CREATE TABLE flashcards (
     updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_flashcards_due ON flashcards(user_id, next_review);
+CREATE INDEX idx_flashcards_due ON flashcards(user_id, due);
 CREATE UNIQUE INDEX idx_flashcards_dedup ON flashcards(user_id, vocab_word_id, definition_id);
+
+-- ============================================================
+-- 7. REVIEW LOGS (Per-Review Analytics)
+-- ============================================================
+-- Recorded per review for analytics and future FSRS parameter optimization.
+-- FSRS supports per-user weight tuning based on review history.
+
+CREATE TABLE review_logs (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id          UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    flashcard_id     UUID NOT NULL REFERENCES flashcards(id) ON DELETE CASCADE,
+    rating           SMALLINT NOT NULL CHECK (rating BETWEEN 1 AND 4), -- 1=Again, 2=Hard, 3=Good, 4=Easy
+    review_duration_ms INT,                    -- Milliseconds spent on card (optional)
+    -- FSRS state snapshot at time of review (for parameter optimization)
+    state            SMALLINT,
+    stability        DOUBLE PRECISION,
+    difficulty       DOUBLE PRECISION,
+    elapsed_days     DOUBLE PRECISION,
+    last_elapsed_days DOUBLE PRECISION,
+    scheduled_days   DOUBLE PRECISION,
+    learning_steps   INT,
+    reviewed_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_review_logs_user ON review_logs(user_id, reviewed_at DESC);
 
 -- ============================================================
 -- 7. USER VIEWS
@@ -388,6 +424,7 @@ ALTER TABLE videos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vocab_words ENABLE ROW LEVEL SECURITY;
 ALTER TABLE word_definitions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE video_words ENABLE ROW LEVEL SECURITY;
+ALTER TABLE review_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pipeline_jobs ENABLE ROW LEVEL SECURITY;
 
 -- Users: anyone can read profiles (R7), own can insert/update/delete
@@ -416,6 +453,9 @@ CREATE POLICY videos_read ON videos FOR SELECT USING (status = 'ready');
 CREATE POLICY vocab_read ON vocab_words FOR SELECT USING (true);
 CREATE POLICY definitions_read ON word_definitions FOR SELECT USING (true);
 CREATE POLICY video_words_read ON video_words FOR SELECT USING (true);
+
+-- Review logs: own data only
+CREATE POLICY review_logs_own ON review_logs FOR ALL USING (user_id = auth.uid());
 
 -- Pipeline jobs: service-role only (no user-facing policy)
 ```
@@ -447,25 +487,28 @@ WHERE vw.video_id = $video_id
 ORDER BY vw.word_index;
 ```
 
-### 4. Flashcard `definition_id` is NOT NULL
+### 4. FSRS over SM-2
+FSRS (Free Spaced Repetition Scheduler) replaces SM-2 for better retention modeling. Per-card state includes stability (retention strength) and difficulty (inherent hardness). The `ts-fsrs` package provides the algorithm. Review logs enable per-user FSRS parameter optimization in the future.
+
+### 5. Flashcard `definition_id` is NOT NULL
 Made NOT NULL (with ON DELETE RESTRICT) to prevent the NULL-in-UNIQUE problem. A flashcard always has a specific definition. If the definition is deleted, the flashcard is protected (RESTRICT prevents deletion).
 
-### 5. `client_updated_at` for offline sync
+### 6. `client_updated_at` for offline sync
 When two devices edit the same flashcard offline, the server uses `client_updated_at` for last-write-wins conflict resolution. The `updated_at` column is server-managed (trigger); `client_updated_at` is set by the client.
 
-### 6. Flashcards reference, don't snapshot
-Flashcards store only FKs + SRS state. Display data resolved via JOINs. Client MMKV caches display data for offline use.
+### 7. Flashcards reference, don't snapshot
+Flashcards store only FKs + FSRS state. Display data resolved via JOINs. Client MMKV caches display data for offline use.
 
-### 7. `subtitle_source` defaults to NULL
+### 8. `subtitle_source` defaults to NULL
 NULL means "not yet determined." The pipeline auto-detects whether to use OCR or STT, then sets the value. No misleading default.
 
-### 8. Feed pagination uses compound cursor `(created_at, id)`
+### 9. Feed pagination uses compound cursor `(created_at, id)`
 Both columns are in the index key (not just INCLUDE) so the keyset cursor `WHERE (created_at, id) < ($cursor_ts, $cursor_id)` works efficiently.
 
-### 9. Covering index on `videos` for feed query
+### 10. Covering index on `videos` for feed query
 `idx_videos_feed` INCLUDEs the columns needed by the feed query, avoiding heap lookups.
 
-### 10. RLS as defense-in-depth
+### 11. RLS as defense-in-depth
 Primary access control is the Go backend (service-role key bypasses RLS). RLS policies are a safety net against accidental PostgREST exposure. User profiles are readable by anyone (R7 requires viewing other profiles).
 
 ---
@@ -527,6 +570,7 @@ Primary access control is the Go backend (service-role key bypasses RLS). RLS po
 | word_definitions | ~60,000 | ~720,000 | ~50 words × 1,200 videos × 12 langs |
 | video_words | ~5,000 | ~60,000 | ~50 words/video × 1,200 |
 | flashcards | ~500 | ~50,000 | ~10 cards/user × 5K users |
+| review_logs | ~2,000 | ~500,000 | ~100 reviews/user × 5K users |
 | user_views | ~2,000 | ~100,000 | Users × videos watched |
 | user_follows | ~500 | ~25,000 | ~5 follows/user |
 | user_likes | ~200 | ~10,000 | ~2 likes/user |

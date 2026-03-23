@@ -28,7 +28,7 @@ export async function fetchWordDefinitions(
   // Query 2: Get word_definitions for this video + target language
   const { data: definitions, error: wdError } = await supabase
     .from("word_definitions")
-    .select("vocab_word_id, translation, contextual_definition, part_of_speech")
+    .select("id, vocab_word_id, translation, contextual_definition, part_of_speech")
     .eq("video_id", videoId)
     .eq("target_language", targetLanguage);
 
@@ -37,10 +37,11 @@ export async function fetchWordDefinitions(
     return [];
   }
 
-  // Build lookup: vocab_word_id → definition
-  const defMap = new Map<string, { translation: string; contextual_definition: string; part_of_speech: string | null }>();
+  // Build lookup: vocab_word_id → definition (including definition_id for flashcard save)
+  const defMap = new Map<string, { id: string; translation: string; contextual_definition: string; part_of_speech: string | null }>();
   for (const def of (definitions ?? [])) {
     defMap.set(def.vocab_word_id, {
+      id: def.id,
       translation: def.translation,
       contextual_definition: def.contextual_definition,
       part_of_speech: def.part_of_speech,
@@ -62,6 +63,8 @@ export async function fetchWordDefinitions(
       translation: def?.translation ?? "",
       contextual_definition: def?.contextual_definition ?? "",
       part_of_speech: def?.part_of_speech ?? null,
+      vocab_word_id: vw.vocab_word_id,
+      definition_id: def?.id ?? "",
     };
   });
 }

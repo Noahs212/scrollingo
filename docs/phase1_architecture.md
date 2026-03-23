@@ -43,7 +43,7 @@
 
 **Flashcards & Vocab**
 - R17: Save any word as a flashcard (from word tap or subtitle context)
-- R18: Flashcard review with SM-2 spaced repetition algorithm
+- R18: Flashcard review with FSRS (Free Spaced Repetition Scheduler) algorithm via `ts-fsrs`
 - R19: Flashcards work offline (MMKV persistence, sync on reconnect)
 - R20: On-device TTS for instant word pronunciation (expo-speech, free)
 - R21: High-quality pre-generated TTS audio from R2 for flashcard review
@@ -123,7 +123,8 @@
   "react-native-reanimated": "4.2.1",
   "@gorhom/bottom-sheet": "^5",
   "react-native-paper": "^5.13.0",
-  "@expo/vector-icons": "^15.1.1"
+  "@expo/vector-icons": "^15.1.1",
+  "ts-fsrs": "^5"
 }
 ```
 
@@ -245,20 +246,26 @@ const VideoCard = ({ video, isActive, prefetchUrls }: {
 };
 ```
 
-### 3.3 SM-2 Algorithm
+### 3.3 FSRS Algorithm (Free Spaced Repetition Scheduler)
+
+We use the `ts-fsrs` npm package — a modern replacement for SM-2 with better retention modeling. FSRS tracks per-card state (new/learning/review/relearning), stability, and difficulty. Implementations exist in all languages (Python, Go, Swift, Kotlin).
+
 ```typescript
-export function sm2(card: Flashcard, quality: 0 | 1 | 2 | 3 | 4 | 5): Flashcard {
-  let { easeFactor, interval, repetitions } = card;
-  if (quality >= 3) {
-    if (repetitions === 0) interval = 1;
-    else if (repetitions === 1) interval = 6;
-    else interval = Math.round(interval * easeFactor);
-    repetitions++;
-  } else { repetitions = 0; interval = 1; }
-  easeFactor = Math.max(1.3, easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)));
-  return { ...card, easeFactor, interval, repetitions, nextReview: addDays(new Date(), interval) };
-}
+import { fsrs, Card, Rating } from 'ts-fsrs';
+
+const scheduler = fsrs();
+
+// On review: pass card + rating → get updated scheduling
+const card: Card = { /* state, step, stability, difficulty, due, last_review */ };
+const result = scheduler.repeat(card, new Date());
+const updated = result[Rating.Good]; // or Again/Hard/Easy
+// updated.card has new state, stability, difficulty, due
+// updated.log has review metadata
 ```
+
+Four ratings: Again (1) = forgot, Hard (2) = tough, Good (3) = got it, Easy (4) = easy.
+
+Re-queue logic: if new `due` is within 20 minutes, card stays in the session queue.
 
 ---
 
@@ -483,16 +490,17 @@ LIMIT $4;
 
 > Full schema with DDL, indexes, design decisions, and data flows: **[database_design.md](database_design.md)**
 
-### Tables (14)
+### Tables (15)
 
 | Table | Purpose |
 |-------|---------|
-| `users` | Profile, language prefs (native + learning), streak, stats |
+| `users` | Profile, language prefs (native + learning), streak, stats, max_reviews_per_day |
 | `videos` | Video metadata, language, status, CDN URLs |
 | `vocab_words` | Canonical word entries per language (populated by pipeline) |
 | `word_definitions` | LLM contextual definitions per (word, target_lang, video context) — 11 languages per word |
 | `video_words` | Links words to timestamps in a video (word_index, start_ms, end_ms) |
-| `flashcards` | User's saved words with SM-2 SRS state (M6) |
+| `flashcards` | User's saved words with FSRS SRS state (state, step, stability, difficulty, due) |
+| `review_logs` | Per-review analytics (rating, duration, timestamp) |
 | `user_views` | Watch tracking (completion %, view count) |
 | `user_likes` | Liked videos |
 | `user_bookmarks` | Bookmarked videos |
@@ -503,7 +511,9 @@ LIMIT $4;
 
 ### Key Design Decisions
 - **Normalized definitions**: `vocab_words` + `word_definitions` instead of JSONB blobs in subtitles — same word across videos shares definitions, flashcards reference by FK
-- **Flashcard references**: Cards store FKs to vocab_words + word_definitions + SRS state. Client MMKV caches display data for offline
+- **Flashcard references**: Cards store FKs to vocab_words + word_definitions + FSRS state. Client MMKV caches display data for offline
+- **FSRS algorithm**: `ts-fsrs` package — modern replacement for SM-2 with per-card stability/difficulty tracking
+- **Review logs**: Per-review analytics for future FSRS parameter optimization
 - **No decks**: Single implicit deck per user in Phase 1
 - **Contextual**: Same word gets different definitions per sentence context ("bank" = river bank vs financial bank)
 

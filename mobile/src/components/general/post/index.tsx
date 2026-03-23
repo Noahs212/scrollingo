@@ -25,6 +25,7 @@ import { Video } from "../../../../types";
 import { useUser } from "../../../hooks/useUser";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
+import { useSaveFlashcard } from "../../../hooks/useSaveFlashcard";
 import PostSingleOverlay from "./overlay";
 import SubtitleTapOverlay, { HighlightRange } from "./subtitleOverlay";
 import WordPopup, { WordPopupData } from "./wordPopup";
@@ -46,7 +47,11 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     const nativeLanguage = useSelector(
       (state: RootState) => state.language.nativeLanguage,
     );
+    const devMuted = useSelector(
+      (state: RootState) => state.language.devMuted,
+    );
     const { data: wordDefs } = useWordDefinitions(item.id, nativeLanguage);
+    const saveFlashcard = useSaveFlashcard();
     const [isPaused, setIsPaused] = useState(false);
     const [popupData, setPopupData] = useState<WordPopupData | null>(null);
     const [popupVisible, setPopupVisible] = useState(false);
@@ -80,6 +85,10 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     useEffect(() => {
       playerRef.current = player;
     }, [player]);
+
+    useEffect(() => {
+      try { player.muted = devMuted; } catch {}
+    }, [devMuted, player]);
 
     useImperativeHandle(parentRef, () => ({
       play: () => {
@@ -369,6 +378,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                     contextual_definition: match.contextual_definition,
                     part_of_speech: match.part_of_speech,
                     source_sentence: fullText,
+                    vocab_word_id: match.vocab_word_id,
+                    definition_id: match.definition_id,
                   });
                   setPopupVisible(true);
                   return;
@@ -388,6 +399,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
                 contextual_definition: "",
                 part_of_speech: null,
                 source_sentence: fullText,
+                vocab_word_id: "",
+                definition_id: "",
               });
               setPopupVisible(true);
             }}
@@ -404,6 +417,16 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           onClose={() => {
             setPopupVisible(false);
             setHighlightRange(null);
+          }}
+          onSave={(data) => {
+            if (data.vocab_word_id && data.definition_id) {
+              saveFlashcard.mutate({
+                vocabWordId: data.vocab_word_id,
+                definitionId: data.definition_id,
+                sourceVideoId: item.id,
+                language: item.language,
+              });
+            }
           }}
         />
 

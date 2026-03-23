@@ -385,7 +385,7 @@ def get_architecture_diagram(lean_mode=False):
 
                 AppFeed [label="Video Feed\\n(FlashList + expo-video)\\nTappable Subtitles", fillcolor="#c6dafc"];
                 AppWordPopup [label="Word Popup\\ntranslation + definition\\n+ POS + pronunciation", fillcolor="#c6dafc"];
-                AppFlashcards [label="Flashcard Review\\n(SM-2 SRS)\\nMMKV offline", fillcolor="#c6dafc"];
+                AppFlashcards [label="Flashcard Review\\n(FSRS via ts-fsrs)\\nMMKV offline", fillcolor="#c6dafc"];
                 AppTTS [label="On-Device TTS\\n(expo-speech)", fillcolor="#c6dafc"];
                 AppDict [label="Offline Dictionary\\n(SQLite)\\nauto-downloaded", fillcolor="#c6dafc"];
                 AppSocial [label="Likes / Comments\\nBookmarks / Follows\\nProfiles / Streaks", fillcolor="#c6dafc"];
@@ -418,7 +418,7 @@ def get_architecture_diagram(lean_mode=False):
                 fontcolor="#5c3d00";
                 fontsize=13;
 
-                PostgreSQL [label="PostgreSQL (14 tables)\\nusers · videos · vocab_words\\nword_definitions · video_words\\nflashcards · user_views\\nuser_likes · user_bookmarks\\ncomments · user_follows\\ndaily_progress · pipeline_jobs", shape=cylinder, fillcolor="#fce8b2"];
+                PostgreSQL [label="PostgreSQL (15 tables)\\nusers · videos · vocab_words\\nword_definitions · video_words\\nflashcards · review_logs · user_views\\nuser_likes · user_bookmarks\\ncomments · user_follows\\ndaily_progress · pipeline_jobs", shape=cylinder, fillcolor="#fce8b2"];
                 SupaAuth [label="Auth\\n(JWT · OAuth\\nGoogle / Apple)", fillcolor="#fce8b2"];
                 Realtime [label="Realtime\\n(video ready\\nnotifications)", fillcolor="#fce8b2"];
             }
@@ -1069,7 +1069,7 @@ with tab4:
 | ID | Requirement |
 |----|-------------|
 | R17 | Save any word as a flashcard (from word tap or subtitle context) |
-| R18 | Flashcard review with SM-2 spaced repetition algorithm |
+| R18 | Flashcard review with FSRS (Free Spaced Repetition Scheduler) via ts-fsrs |
 | R19 | Flashcards work offline (MMKV persistence, sync on reconnect) |
 | R20 | On-device TTS for instant word pronunciation (expo-speech, free) |
 | R21 | High-quality pre-generated TTS audio from R2 for flashcard review |
@@ -1163,7 +1163,8 @@ users ─────────────┬──────────�
 | `vocab_words` | Canonical word entries per language (word, frequency, TTS URL, pinyin) | R11, R22, R31 |
 | `word_definitions` | LLM contextual definitions per (word, target_lang, sentence_context) | R11, R24, R30 |
 | `video_words` | Links words in a video to their timestamps + definitions | R10, R11 |
-| `flashcards` | User's saved words with SM-2 SRS state | R13-R15, R17 |
+| `flashcards` | User's saved words with FSRS SRS state (ts-fsrs) | R17-R19, R21 |
+| `review_logs` | Per-review analytics + FSRS state snapshots | R18 |
 | `user_views` | Watch tracking (completion %, view count) | R2, R3, R27 |
 | `user_likes` | Liked videos | R6 |
 | `user_bookmarks` | Bookmarked videos | R6 |
@@ -1264,21 +1265,44 @@ users ─────────────┬──────────�
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
-    with st.expander("6. flashcards", expanded=False):
-        st.markdown("User's saved words with SM-2 SRS. References `vocab_words` and `word_definitions` by FK — no data duplication. Client MMKV caches display data for offline.")
+    with st.expander("6. flashcards + review_logs", expanded=False):
+        st.markdown("User's saved words with FSRS SRS state (ts-fsrs). References `vocab_words` and `word_definitions` by FK — no data duplication. `review_logs` stores per-review snapshots for future FSRS parameter optimization.")
         st.code("""CREATE TABLE flashcards (
-    id               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id          UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    vocab_word_id    UUID NOT NULL REFERENCES vocab_words(id),
-    definition_id    UUID REFERENCES word_definitions(id),
-    source_video_id  UUID REFERENCES videos(id),
-    ease_factor      REAL NOT NULL DEFAULT 2.5,
-    interval_days    INT NOT NULL DEFAULT 0,
-    repetitions      INT NOT NULL DEFAULT 0,
-    next_review      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    last_review      TIMESTAMPTZ,
+    vocab_word_id    UUID NOT NULL REFERENCES vocab_words(id) ON DELETE RESTRICT,
+    definition_id    UUID NOT NULL REFERENCES word_definitions(id) ON DELETE RESTRICT,
+    source_video_id  UUID REFERENCES videos(id) ON DELETE SET NULL,
+    -- FSRS fields (mirrors ts-fsrs Card interface)
+    state            SMALLINT NOT NULL DEFAULT 0,
+    stability        DOUBLE PRECISION NOT NULL DEFAULT 0,
+    difficulty       DOUBLE PRECISION NOT NULL DEFAULT 0,
+    elapsed_days     DOUBLE PRECISION NOT NULL DEFAULT 0,
+    scheduled_days   DOUBLE PRECISION NOT NULL DEFAULT 0,
+    reps             INT NOT NULL DEFAULT 0,
+    lapses           INT NOT NULL DEFAULT 0,
+    learning_steps   INT NOT NULL DEFAULT 0,
+    due              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_review_at   TIMESTAMPTZ,
+    client_updated_at TIMESTAMPTZ,
     created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE review_logs (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id          UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    flashcard_id     UUID NOT NULL REFERENCES flashcards(id) ON DELETE CASCADE,
+    rating           SMALLINT NOT NULL CHECK (rating BETWEEN 1 AND 4),
+    review_duration_ms INT,
+    state            SMALLINT,
+    stability        DOUBLE PRECISION,
+    difficulty       DOUBLE PRECISION,
+    elapsed_days     DOUBLE PRECISION,
+    last_elapsed_days DOUBLE PRECISION,
+    scheduled_days   DOUBLE PRECISION,
+    learning_steps   INT,
+    reviewed_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
     with st.expander("7-10. Interactions (views, likes, bookmarks, comments)", expanded=False):
@@ -1349,8 +1373,8 @@ CREATE TABLE comments (
    - Look up `video_words.definition_id` → `word_definitions` (get `translation`, `contextual_definition`)
    - Bottom sheet shows: **café** → "coffee" + "The beverage, ordering context" + play audio
 4. User taps **Save**
-   - `POST /api/v1/flashcards` with `vocab_word_id`, `definition_id`, snapshots
-   - Flashcard created with SM-2 defaults (`ease=2.5`, `interval=0`)
+   - `POST /api/v1/flashcards` with `vocab_word_id`, `definition_id`
+   - Flashcard created with FSRS defaults (`state=0/new`, `stability=0`, `difficulty=0`)
    - Saved to MMKV locally + synced to server
         """)
 
@@ -1382,6 +1406,7 @@ CREATE TABLE comments (
 | word_definitions | ~60,000 | ~180,000 | 15K words × 12 langs |
 | video_words | ~5,000 | ~60,000 | ~50 words/video × 1,200 |
 | flashcards | ~500 | ~50,000 | ~10 cards/user × 5K users |
+| review_logs | ~2,000 | ~500,000 | ~100 reviews/user × 5K users |
 | user_views | ~2,000 | ~100,000 | Users × videos watched |
 | daily_progress | ~3,000 | ~150,000 | Users × active days |
 
@@ -1391,9 +1416,10 @@ CREATE TABLE comments (
     st.subheader("Design Decisions")
     st.markdown("""
 1. **Normalized definitions** — `vocab_words` + `word_definitions` instead of JSONB blobs. Same word across videos shares definitions, flashcards reference by FK.
-2. **Flashcards reference, don't snapshot** — Cards store FKs to `vocab_words` + `word_definitions` + SRS state. Client MMKV caches display data for offline.
-3. **No decks** — Single implicit deck per user in Phase 1. Add deck management in Phase 2.
-4. **No subtitles table** — Replaced by `video_words`. WebVTT files are R2 rendering artifacts, not source of truth.
+2. **FSRS over SM-2** — `ts-fsrs` package provides modern spaced repetition with per-card stability/difficulty. Review logs enable future per-user parameter optimization.
+3. **Flashcards reference, don't snapshot** — Cards store FKs to `vocab_words` + `word_definitions` + FSRS state. Client MMKV caches display data for offline.
+4. **No decks** — Single implicit deck per user in Phase 1. Add deck management in Phase 2.
+5. **No subtitles table** — Replaced by `video_words`. WebVTT files are R2 rendering artifacts, not source of truth.
 5. **Contextual definitions** — Same word gets different definitions per sentence context ("bank" = river bank vs financial bank).
 6. **No tts_cache** — TTS is pre-generated, tracked via `vocab_words.tts_url`.
     """)
@@ -1857,14 +1883,16 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
     st.subheader("Milestone 6: Flashcards")
     st.caption("Save words from videos, review with spaced repetition.")
 
-    st.checkbox("6.1 — Add 'Save' button in WordPopup → INSERT flashcard (vocab_word_id, definition_id, source_video_id)", key="m6_1")
-    st.checkbox("6.2 — Dedup: UNIQUE index prevents saving same word+definition twice, show 'Saved' state", key="m6_2")
-    st.checkbox("6.3 — Implement SM-2 algorithm (lib/sm2.ts)", key="m6_3")
-    st.checkbox("6.4 — Build FlashcardReview screen: show word, flip to reveal translation + definition", key="m6_4")
-    st.checkbox("6.5 — SRS controls: Again / Hard / Good / Easy → update ease_factor, interval, next_review", key="m6_5")
-    st.checkbox("6.6 — Fetch due cards from Supabase: flashcards JOIN vocab_words JOIN word_definitions WHERE next_review <= now()", key="m6_6")
-    st.checkbox("6.7 — Build flashcardStore (Zustand + MMKV): cache cards locally for offline review", key="m6_7")
-    st.checkbox("6.8 — Offline sync: queue SRS updates in MMKV, bulk sync to server on reconnect (client_updated_at for conflict resolution)", key="m6_8")
+    st.checkbox("6.1 — Add 'Save' button in WordPopup → INSERT flashcard (vocab_word_id, definition_id, source_video_id)", value=True, key="m6_1")
+    st.checkbox("6.2 — Dedup: UNIQUE index prevents saving same word+definition twice, show 'Saved' state", value=True, key="m6_2")
+    st.checkbox("6.3 — FSRS algorithm via ts-fsrs (replaces SM-2)", value=True, key="m6_3")
+    st.checkbox("6.4 — Review Hub screen: due count, stats, settings panel, start button", value=True, key="m6_4")
+    st.checkbox("6.5 — Card Viewer: 3D card flip, progress bar, rating buttons (Again/Hard/Good/Easy)", value=True, key="m6_5")
+    st.checkbox("6.6 — FSRS scheduling: update all card fields (state, stability, difficulty, elapsed_days, scheduled_days, reps, lapses, learning_steps)", value=True, key="m6_6")
+    st.checkbox("6.7 — Review logs: store full FSRS state snapshot per review for parameter optimization", value=True, key="m6_7")
+    st.checkbox("6.8 — Session Complete screen: trophy, stats grid (reviewed, accuracy, streak, to relearn)", value=True, key="m6_8")
+    st.checkbox("6.9 — Re-queue logic: cards due within 20 min stay in session (max 2 re-queues per card)", value=True, key="m6_9")
+    st.checkbox("6.10 — Offline sync: queue SRS updates in MMKV, bulk sync to server on reconnect (client_updated_at for conflict resolution)", key="m6_10")
 
     st.markdown("---")
 
@@ -1985,7 +2013,7 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 | **M3.5** | STT subtitle path — Whisper for videos without burned-in subs | M3 | 1 day |
 | **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | **Done** |
 | **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | 1-2 days |
-| **M6** | Flashcard save + SM-2 review + offline | M5 | 2-3 days |
+| **M6** | Flashcard save + FSRS review (ts-fsrs) + review hub | M5 | **Done** |
 | **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
 | **M8** | Offline dictionaries + adapter factory | M5 | 3-5 days |
 | **M9** | Progress tracking + streaks | M4, M6 | 1-2 days |

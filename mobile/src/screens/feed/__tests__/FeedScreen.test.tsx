@@ -67,6 +67,10 @@ jest.mock("../../../hooks/useWordDefinitions", () => ({
   useWordDefinitions: jest.fn(() => ({ data: null })),
 }));
 
+jest.mock("../../../hooks/useSaveFlashcard", () => ({
+  useSaveFlashcard: jest.fn(() => ({ mutate: jest.fn() })),
+}));
+
 // Mock expo-haptics
 jest.mock("expo-haptics", () => ({
   impactAsync: jest.fn(),
