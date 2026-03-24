@@ -69,7 +69,7 @@ export async function fetchDueFlashcards(
       id, user_id, vocab_word_id, definition_id, source_video_id,
       state, stability, difficulty, due, last_review_at,
       elapsed_days, scheduled_days, reps, lapses, learning_steps,
-      created_at,
+      starred, created_at,
       vocab_words!inner(word, pinyin, language),
       word_definitions!inner(translation, contextual_definition, part_of_speech)
     `)
@@ -100,6 +100,7 @@ export async function fetchDueFlashcards(
     reps: row.reps ?? 0,
     lapses: row.lapses ?? 0,
     learning_steps: row.learning_steps ?? 0,
+    starred: row.starred ?? false,
     word: row.vocab_words.word,
     pinyin: row.vocab_words.pinyin,
     translation: row.word_definitions.translation,
@@ -189,6 +190,74 @@ export async function deleteFlashcard(id: string): Promise<void> {
     .from("flashcards")
     .delete()
     .eq("id", id);
+
+  if (error) throw error;
+}
+
+export async function fetchAllFlashcards(
+  language: string,
+): Promise<Flashcard[]> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("flashcards")
+    .select(`
+      id, user_id, vocab_word_id, definition_id, source_video_id,
+      state, stability, difficulty, due, last_review_at,
+      elapsed_days, scheduled_days, reps, lapses, learning_steps,
+      starred, created_at,
+      vocab_words!inner(word, pinyin, language),
+      word_definitions!inner(translation, contextual_definition, part_of_speech)
+    `)
+    .eq("user_id", user.id)
+    .eq("vocab_words.language", language)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.warn("Failed to fetch all flashcards:", error.message);
+    return [];
+  }
+
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    user_id: row.user_id,
+    vocab_word_id: row.vocab_word_id,
+    definition_id: row.definition_id,
+    source_video_id: row.source_video_id,
+    state: row.state,
+    stability: row.stability ?? 0,
+    difficulty: row.difficulty ?? 0,
+    due: row.due,
+    last_review_at: row.last_review_at,
+    elapsed_days: row.elapsed_days ?? 0,
+    scheduled_days: row.scheduled_days ?? 0,
+    reps: row.reps ?? 0,
+    lapses: row.lapses ?? 0,
+    learning_steps: row.learning_steps ?? 0,
+    starred: row.starred ?? false,
+    word: row.vocab_words.word,
+    pinyin: row.vocab_words.pinyin,
+    translation: row.word_definitions.translation,
+    contextual_definition: row.word_definitions.contextual_definition,
+    part_of_speech: row.word_definitions.part_of_speech,
+    language: row.vocab_words.language,
+    created_at: row.created_at,
+  }));
+}
+
+export async function toggleStarred(
+  id: string,
+  starred: boolean,
+): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("flashcards")
+    .update({ starred })
+    .eq("id", id)
+    .eq("user_id", user.id);
 
   if (error) throw error;
 }

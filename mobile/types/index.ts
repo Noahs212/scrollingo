@@ -11,6 +11,7 @@ export interface Video {
   view_count: number;
   created_at: string;
   creator_id: string | null;
+  subtitle_source: "stt" | "ocr" | null;
 }
 
 export interface FeedPage {
@@ -109,6 +110,7 @@ export interface Flashcard {
   reps: number;
   lapses: number;
   learning_steps: number;
+  starred: boolean;
   // Display data (joined from vocab_words + word_definitions)
   word: string;
   pinyin: string | null;

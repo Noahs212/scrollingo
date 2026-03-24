@@ -28,6 +28,7 @@ import { RootState } from "../../../redux/store";
 import { useSaveFlashcard } from "../../../hooks/useSaveFlashcard";
 import PostSingleOverlay from "./overlay";
 import SubtitleTapOverlay, { HighlightRange } from "./subtitleOverlay";
+import VisibleSubtitleOverlay from "./visibleSubtitleOverlay";
 import WordPopup, { WordPopupData } from "./wordPopup";
 import { useSubtitles } from "../../../hooks/useSubtitles";
 import { useWordDefinitions } from "../../../hooks/useWordDefinitions";
@@ -64,6 +65,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     const [showHeart, setShowHeart] = useState(false);
     const playerRef = useRef<ReturnType<typeof useVideoPlayer> | null>(null);
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+
+    const isSTT = item.subtitle_source === "stt";
 
     // Fetch subtitle bounding boxes from R2 CDN
     const { data: subtitleData } = useSubtitles(item.id, item.cdn_url);
@@ -240,8 +243,71 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           </Animated.View>
         )}
 
-        {/* Invisible subtitle tap targets — over the burned-in text */}
-        {subtitleData && containerSize.width > 0 && (
+        {/* Visible subtitle text for STT-sourced videos */}
+        {isSTT && subtitleData && containerSize.width > 0 && (
+          <VisibleSubtitleOverlay
+            subtitleData={subtitleData}
+            currentTimeMs={currentTimeMs}
+            containerWidth={containerSize.width}
+            containerHeight={containerSize.height}
+            highlightRange={highlightRange}
+            onWordTap={(word, fullText, tapX, tapY, detectionIndex, charIndex) => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              try { player.pause(); setIsPaused(true); } catch {}
+
+              setPopupPosition({ x: tapX, y: tapY });
+
+              // Direct word-level match (simpler than OCR char-index matching)
+              let match = wordDefs?.find(
+                (wd) =>
+                  wd.display_text === word &&
+                  currentTimeMs >= wd.start_ms - 2000 &&
+                  currentTimeMs < wd.end_ms + 2000,
+              );
+              if (!match) {
+                match = wordDefs?.find((wd) => wd.display_text === word);
+              }
+
+              if (match) {
+                setHighlightRange({
+                  detectionIndex,
+                  startCharIndex: charIndex,
+                  endCharIndex: charIndex + match.display_text.length,
+                });
+                setPopupData({
+                  word: match.word,
+                  pinyin: match.pinyin,
+                  translation: match.translation,
+                  contextual_definition: match.contextual_definition,
+                  part_of_speech: match.part_of_speech,
+                  source_sentence: fullText,
+                  vocab_word_id: match.vocab_word_id,
+                  definition_id: match.definition_id,
+                });
+              } else {
+                setHighlightRange({
+                  detectionIndex,
+                  startCharIndex: charIndex,
+                  endCharIndex: charIndex + word.length,
+                });
+                setPopupData({
+                  word,
+                  pinyin: null,
+                  translation: "",
+                  contextual_definition: "",
+                  part_of_speech: null,
+                  source_sentence: fullText,
+                  vocab_word_id: "",
+                  definition_id: "",
+                });
+              }
+              setPopupVisible(true);
+            }}
+          />
+        )}
+
+        {/* Invisible subtitle tap targets — over the burned-in text (OCR only) */}
+        {!isSTT && subtitleData && containerSize.width > 0 && (
           <SubtitleTapOverlay
             subtitleData={subtitleData}
             currentTimeMs={currentTimeMs}
@@ -419,6 +485,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
             setHighlightRange(null);
           }}
           onSave={(data) => {
+            console.log("[SaveFlashcard] onSave fired:", data.word, data.vocab_word_id, data.definition_id);
             if (data.vocab_word_id && data.definition_id) {
               saveFlashcard.mutate({
                 vocabWordId: data.vocab_word_id,

@@ -15,4 +15,6 @@ export const keys = {
   flashcards: (language: string | null) => ["flashcards", language] as const,
   flashcardCount: (language: string | null) =>
     ["flashcardCount", language] as const,
+  allFlashcards: (language: string | null) =>
+    ["allFlashcards", language] as const,
 };

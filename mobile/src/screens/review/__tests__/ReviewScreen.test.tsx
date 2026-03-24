@@ -51,10 +51,53 @@ jest.mock("expo-haptics", () => ({
   ImpactFeedbackStyle: { Light: "light", Medium: "medium", Heavy: "heavy" },
 }));
 
-// Real ts-fsrs for integration-like testing
+// Mock ts-fsrs with realistic scheduling behavior
 jest.mock("ts-fsrs", () => {
-  const actual = jest.requireActual("ts-fsrs");
-  return actual;
+  const Rating = { Again: 1, Hard: 2, Good: 3, Easy: 4 };
+  const State = { New: 0, Learning: 1, Review: 2, Relearning: 3 };
+  return {
+    fsrs: () => ({
+      repeat: (card: any, now: Date) => {
+        const makeResult = (rating: number) => {
+          const isAgain = rating === 1;
+          return {
+            card: {
+              due: new Date(now.getTime() + (isAgain ? 60000 : 86400000)),
+              stability: isAgain ? 0.2 : 2.3,
+              difficulty: isAgain ? 6.4 : 2.1,
+              elapsed_days: 0,
+              scheduled_days: isAgain ? 0 : 1,
+              reps: (card.reps ?? 0) + 1,
+              lapses: card.lapses ?? 0,
+              learning_steps: isAgain ? 0 : 1,
+              state: isAgain ? State.Learning : State.Learning,
+              last_review: now,
+            },
+            log: {
+              rating,
+              state: card.state ?? 0,
+              stability: card.stability ?? 0,
+              difficulty: card.difficulty ?? 0,
+              elapsed_days: 0,
+              last_elapsed_days: 0,
+              scheduled_days: 0,
+              learning_steps: card.learning_steps ?? 0,
+              review: now,
+            },
+          };
+        };
+        return {
+          [Rating.Again]: makeResult(Rating.Again),
+          [Rating.Hard]: makeResult(Rating.Hard),
+          [Rating.Good]: makeResult(Rating.Good),
+          [Rating.Easy]: makeResult(Rating.Easy),
+        };
+      },
+    }),
+    createEmptyCard: jest.fn(() => ({})),
+    Rating,
+    State,
+  };
 });
 
 import ReviewScreen from "../index";

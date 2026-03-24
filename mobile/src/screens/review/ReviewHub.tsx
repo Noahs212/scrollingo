@@ -16,6 +16,7 @@ import SettingsPanel from "./components/SettingsPanel";
 
 interface Props {
   onStartReview: () => void;
+  onViewVocab: () => void;
 }
 
 function getMotivation(count: number): string {
@@ -29,7 +30,7 @@ function estimateMinutes(count: number): number {
   return Math.max(1, Math.round(count * 0.5));
 }
 
-export default function ReviewHub({ onStartReview }: Props) {
+export default function ReviewHub({ onStartReview, onViewVocab }: Props) {
   const activeLearningLanguage = useSelector(
     (state: RootState) => state.language.activeLearningLanguage,
   );
@@ -100,6 +101,10 @@ export default function ReviewHub({ onStartReview }: Props) {
               <Text style={styles.caughtUpStatText}>{savedCount} words saved</Text>
             </View>
           </View>
+          <TouchableOpacity onPress={onViewVocab} style={styles.viewVocabLink}>
+            <Ionicons name="list-outline" size={14} color="#60a5fa" />
+            <Text style={styles.viewVocabText}>View saved words</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -131,6 +136,10 @@ export default function ReviewHub({ onStartReview }: Props) {
           <Text style={styles.heroCount}>{dueCount}</Text>
           <Text style={styles.heroLabel}>cards ready</Text>
           <Text style={styles.heroMotivation}>{getMotivation(dueCount)}</Text>
+          <TouchableOpacity onPress={onViewVocab} style={styles.viewVocabLink}>
+            <Ionicons name="list-outline" size={14} color="#60a5fa" />
+            <Text style={styles.viewVocabText}>View saved words</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Stats Row */}
@@ -275,6 +284,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     marginTop: 8,
+  },
+  viewVocabLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginTop: 14,
+  },
+  viewVocabText: {
+    color: "#60a5fa",
+    fontSize: 13,
   },
   // Stats row
   statsRow: {

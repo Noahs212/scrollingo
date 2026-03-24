@@ -20,6 +20,9 @@ export function useSaveFlashcard() {
         params.sourceVideoId,
         params.language,
       ),
+    onError: (error, variables) => {
+      console.warn("Failed to save flashcard:", error, variables);
+    },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: keys.flashcardCount(variables.language),
