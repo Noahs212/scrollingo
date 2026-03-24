@@ -1017,6 +1017,8 @@ with tab3:
     **Phase 2 (10K-100K MAU):** Scale
     - Enable user uploads with delayed transcoding
     - Redis, multi-instance HA, push notifications
+    - Offline flashcard sync (MMKV cache + bulk sync on reconnect)
+    - Pre-generated TTS audio (Google Neural2) for higher quality word pronunciation
     - Expected cost: **$100-600/mo**
 
     **Phase 3 (100K+ MAU):** Growth
@@ -1072,7 +1074,7 @@ with tab4:
 | R18 | Flashcard review with FSRS (Free Spaced Repetition Scheduler) via ts-fsrs |
 | R19 | Flashcards work offline (MMKV persistence, sync on reconnect) |
 | R20 | On-device TTS for instant word pronunciation (expo-speech, free) |
-| R21 | High-quality pre-generated TTS audio from R2 for flashcard review |
+| R21 | ~~High-quality pre-generated TTS audio from R2~~ → Deferred to Phase 2 (on-device TTS sufficient for launch) |
     """)
 
     st.subheader("Language System")
@@ -1083,10 +1085,10 @@ with tab4:
 | R23 | Learning languages (Phase 1): **English, Chinese** |
 | R24 | Native languages (12): en, es, zh, ja, ko, hi, fr, de, pt, ar, it, ru |
 | R25 | English and Chinese can be both learning AND native |
-| R26 | Offline bilingual dictionaries (SQLite, ~20 pairs), auto-downloaded on language change |
-| R27 | Chinese dictionaries handle simplified/traditional characters + pinyin |
+| R26 | ~~Offline bilingual dictionaries (SQLite)~~ → Removed (LLM definitions sufficient) |
+| R27 | ~~Chinese dictionaries handle simplified/traditional + pinyin~~ → Removed (pipeline handles pinyin) |
 | R28 | LLM contextual definitions for every word in every video, per native language |
-| R29 | Dictionary adapter factory with fallback to remote API for missing offline pairs |
+| R29 | ~~Dictionary adapter factory~~ → Removed (LLM definitions serve all lookup needs) |
     """)
 
     st.subheader("Progress")
@@ -1105,7 +1107,7 @@ with tab4:
 | R33 | Admin CLI uploads video → triggers AI pipeline |
 | R34 | Pipeline: detect subtitle source (OCR or STT) → Translation → Definitions (LLM) → store in R2 |
 | R35 | OCR via cloud vision API for burned-in subs; STT via Groq Whisper for audio-only |
-| R36 | Pre-generated TTS for all ~100K words per learning language, stored in R2 |
+| R36 | ~~Pre-generated TTS for all ~100K words~~ → Deferred to Phase 2 (on-device expo-speech for now) |
 | R37 | Videos marked "ready" after pipeline completes; Supabase Realtime notifies clients |
     """)
 
@@ -1129,7 +1131,7 @@ with tab4:
 | N2 | App binary < 50 MB (dictionaries downloaded on-demand) |
 | N3 | Video start-to-play < 2 seconds on 4G |
 | N4 | Flashcard review works fully offline |
-| N5 | Dictionary lookup < 100ms (local SQLite) |
+| N5 | ~~Dictionary lookup < 100ms (local SQLite)~~ → Removed (definitions served from Supabase, pre-loaded per video) |
     """)
 
 with tab5:
@@ -1473,7 +1475,7 @@ with tab6:
    - When changed: update `users.native_language` in Supabase
    - Feed stays the same (content language unchanged)
    - Word definitions switch to new native language on next video load
-   - Trigger dictionary re-download if offline dictionaries are set up (M8)
+   - No dictionary re-download needed — LLM definitions are per-native-language in Supabase
 
 4. **Profile language display** — show current native + learning languages on the profile screen (e.g., "Learning: 🇺🇸 English, 🇨🇳 Chinese · Native: 🇪🇸 Spanish")
 
@@ -1511,7 +1513,7 @@ with tab6:
 | `user_likes` / `user_bookmarks` / `comments` | M4 (need videos to interact with) | Can't like/comment without videos |
 | `user_follows` | M7 (need other users' profiles visible via videos) | Can't follow users you can't discover |
 | `user_views` | M4 (need videos to watch) | Can't track views without videos |
-| `flashcards` | M5-M6 (need tappable subtitles first) | Save button lives in WordPopup |
+| `flashcards` | M6 (**Done**) | Save from WordPopup, FSRS review, vocab list |
 | `daily_progress` | M4+ (need activity to track) | Start tracking when videos exist |
 | `pipeline_jobs` | M3 (first pipeline run) | Admin tool creates these |
 
@@ -1786,7 +1788,7 @@ Trigger next page fetch when user is 3-5 items from the end of the current page.
     st.checkbox("5.5 — Install expo-speech, play pronunciation on word tap", key="m5_5")
     st.checkbox("5.6 — Highlight tapped word: apply highlight style to ALL character boxes belonging to the matched word", key="m5_6")
     st.checkbox("5.7 — Pause video when popup opens, resume on close", key="m5_7")
-    st.checkbox("5.8 — Add 'Save' button placeholder in popup (actual flashcard save is M6)", key="m5_8")
+    st.checkbox("5.8 — Add 'Save' button in popup → functional flashcard save (wired in M6)", value=True, key="m5_8")
     st.checkbox("5.9 — Test: tap character → correct word identified → translation in user's native language + pinyin + audio", key="m5_9")
 
     with st.expander("M5 Details: Architecture"):
@@ -1886,13 +1888,20 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
     st.checkbox("6.1 — Add 'Save' button in WordPopup → INSERT flashcard (vocab_word_id, definition_id, source_video_id)", value=True, key="m6_1")
     st.checkbox("6.2 — Dedup: UNIQUE index prevents saving same word+definition twice, show 'Saved' state", value=True, key="m6_2")
     st.checkbox("6.3 — FSRS algorithm via ts-fsrs (replaces SM-2)", value=True, key="m6_3")
-    st.checkbox("6.4 — Review Hub screen: due count, stats, settings panel, start button", value=True, key="m6_4")
-    st.checkbox("6.5 — Card Viewer: 3D card flip, progress bar, rating buttons (Again/Hard/Good/Easy)", value=True, key="m6_5")
-    st.checkbox("6.6 — FSRS scheduling: update all card fields (state, stability, difficulty, elapsed_days, scheduled_days, reps, lapses, learning_steps)", value=True, key="m6_6")
-    st.checkbox("6.7 — Review logs: store full FSRS state snapshot per review for parameter optimization", value=True, key="m6_7")
-    st.checkbox("6.8 — Session Complete screen: trophy, stats grid (reviewed, accuracy, streak, to relearn)", value=True, key="m6_8")
-    st.checkbox("6.9 — Re-queue logic: cards due within 20 min stay in session (max 2 re-queues per card)", value=True, key="m6_9")
-    st.checkbox("6.10 — Offline sync: queue SRS updates in MMKV, bulk sync to server on reconnect (client_updated_at for conflict resolution)", key="m6_10")
+    st.checkbox("6.4 — Review Hub screen: due count, stats row, motivational message, start button with time estimate", value=True, key="m6_4")
+    st.checkbox("6.5 — Collapsible settings panel in Review Hub (max reviews per day, TextInput + save)", value=True, key="m6_5")
+    st.checkbox("6.6 — Card Viewer: 3D Y-axis card flip (FlashcardView), WORD/MEANING badges, Show Pinyin toggle", value=True, key="m6_6")
+    st.checkbox("6.7 — Progress bar with animated fill + 'X of Y cards' label", value=True, key="m6_7")
+    st.checkbox("6.8 — Rating buttons: Forgot/Tough/Got it/Easy with icons, per-button haptic feedback", value=True, key="m6_8")
+    st.checkbox("6.9 — FSRS scheduling: persist all 10 card fields (state, stability, difficulty, elapsed_days, scheduled_days, reps, lapses, learning_steps, due, last_review_at)", value=True, key="m6_9")
+    st.checkbox("6.10 — Review logs: full FSRS state snapshot per review for future parameter optimization", value=True, key="m6_10")
+    st.checkbox("6.11 — Re-queue logic: cards due within 10 min re-queued once per session, separate from progress count", value=True, key="m6_11")
+    st.checkbox("6.12 — Session Complete screen: trophy bounce animation, performance message, 2×2 stats grid, Done button", value=True, key="m6_12")
+    st.checkbox("6.13 — Empty states: no saved words (with instructions), all caught up (with streak/saved stats)", value=True, key="m6_13")
+    st.checkbox("6.14 — Vocab List screen: view all saved words, star/unstar (optimistic), delete with confirmation, All/Starred filter tabs, FSRS state badges", value=True, key="m6_14")
+    st.checkbox("6.15 — RLS fix: split flashcards FOR ALL policy into separate SELECT/INSERT/UPDATE/DELETE with WITH CHECK", value=True, key="m6_15")
+    st.checkbox("6.16 — Test coverage: 28 review-feature tests (service layer, VocabList, all screen states, FSRS data persistence)", value=True, key="m6_16")
+    # 6.17 (Offline sync via MMKV) moved to Phase 2 — not needed for launch
 
     st.markdown("---")
 
@@ -1911,18 +1920,9 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 
     st.markdown("---")
 
-    # ── Milestone 8: Language System (Advanced) ──
-    st.subheader("Milestone 8: Language System (Advanced)")
-    st.caption("Offline dictionaries, adapter factory, auto-download. Basic language selection is in M1.")
-
-    st.checkbox("8.1 — Offline dictionary: download SQLite files from R2 on first launch", key="m8_1")
-    st.checkbox("8.2 — DictionaryFactory: route (sourceLang, targetLang) → correct adapter", key="m8_2")
-    st.checkbox("8.3 — SimpleDictAdapter: lookup word in local SQLite (written_rep → trans_list)", key="m8_3")
-    st.checkbox("8.4 — ChineseSourceAdapter: handle simplified/traditional + pinyin", key="m8_4")
-    st.checkbox("8.5 — LlmWrapperAdapter: merge local dict result with cached LLM definition", key="m8_5")
-    st.checkbox("8.6 — RemoteApiAdapter: fallback for missing offline pairs (queries word_definitions from Supabase; switches to Go API after M10)", key="m8_6")
-    st.checkbox("8.7 — Auto-download new dictionaries when user changes language", key="m8_7")
-    st.checkbox("8.8 — Test: word tap works with offline dictionary (airplane mode)", key="m8_8")
+    # ── Milestone 8: Offline Dictionaries — REMOVED ──
+    st.subheader("Milestone 8: Offline Dictionaries (Removed)")
+    st.caption("Removed — LLM-generated definitions from the pipeline cover all words with contextual accuracy. Offline SQLite dictionaries and the adapter factory are unnecessary complexity for Phase 1. Can revisit in Phase 2 if offline word lookup without network is needed.")
 
     st.markdown("---")
 
@@ -1974,9 +1974,9 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 
     st.markdown("---")
 
-    # ── Milestone 12: TTS Pre-generation ──
-    st.subheader("Milestone 12: TTS Pre-generation")
-    st.caption("Pre-generate pronunciation audio for all words. One-time batch job.")
+    # ── Milestone 12: TTS Pre-generation — DEFERRED TO PHASE 2 ──
+    st.subheader("Milestone 12: TTS Pre-generation (Phase 2)")
+    st.caption("Deferred — on-device expo-speech is sufficient for launch. Pre-generated Google Neural2 audio improves quality but isn't blocking.")
 
     st.checkbox("12.1 — Get word frequency lists for English (~100K words) and Chinese (~100K)", key="m12_1")
     st.checkbox("12.2 — Write batch script: word list → Google Neural2 TTS → MP3 files", key="m12_2")
@@ -2015,11 +2015,11 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 | **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | 1-2 days |
 | **M6** | Flashcard save + FSRS review (ts-fsrs) + review hub | M5 | **Done** |
 | **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
-| **M8** | Offline dictionaries + adapter factory | M5 | 3-5 days |
+| **M8** | ~~Offline dictionaries + adapter factory~~ — **Removed** (LLM definitions sufficient) | — | — |
 | **M9** | Progress tracking + streaks | M4, M6 | 1-2 days |
 | **M10** | Go backend (centralize API + port pipeline) | M1, M2, M3 | 5-7 days |
 | **M11** | Content pipeline (batch 100 videos) | M10 | 3-5 days |
-| **M12** | TTS pre-generation (can run anytime after M2) | M2 | 1 day |
+| **M12** | TTS pre-generation (Google Neural2) — **Phase 2** | M2 | 1 day |
 | **M13** | Polish & launch | All above | 3-5 days |
 
 **Critical path**: M0 → M1 → M1.5 → M2 → **M3** → M4 → M5 (first magic moment: tap word → see definition)
@@ -2028,7 +2028,7 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 - M3.5 (STT path) can be done after M3 or in parallel with M4 — only needed for videos without burned-in subs
 - M7 (social) can start after M4
 - M9 (progress) can start after M6
-- M12 (TTS) can run anytime after M2 — doesn't block anything
+- M12 (TTS pre-generation) deferred to Phase 2 — on-device expo-speech is sufficient for launch
     """)
 
 with tab7:

@@ -11,6 +11,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DOWNLOADS_DIR = os.path.join(BASE_DIR, "downloads")
 os.makedirs(DOWNLOADS_DIR, exist_ok=True)
 
+# Cache TikTok cookies from the parse step for use during download
+_tiktok_cookies = {}
+
 MOBILE_UA = (
     "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) "
     "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 "
@@ -24,23 +27,43 @@ DESKTOP_UA = (
 )
 
 
+def _is_tiktok_url(url):
+    """Check if a URL is a TikTok link."""
+    return any(
+        domain in url
+        for domain in ("tiktok.com", "vm.tiktok.com", "vt.tiktok.com")
+    )
+
+
+def _is_douyin_url(url):
+    """Check if a URL is a Douyin link."""
+    return any(
+        domain in url
+        for domain in ("douyin.com", "iesdouyin.com")
+    )
+
+
 def _extract_aweme_id(url):
-    """Extract the numeric aweme_id from a Douyin URL."""
+    """Extract the numeric aweme_id from a Douyin or TikTok URL."""
     match = re.search(r"/video/(\d+)", url)
     if match:
         return match.group(1)
     match = re.search(r"modal_id=(\d+)", url)
     if match:
         return match.group(1)
+    # TikTok photo posts
+    match = re.search(r"/photo/(\d+)", url)
+    if match:
+        return match.group(1)
     return None
 
 
-def _resolve_short_url(short_url):
-    """Follow redirects on v.douyin.com short links to get the real URL."""
+def _resolve_short_url(short_url, referer="https://www.douyin.com/"):
+    """Follow redirects on short links to get the real URL."""
     try:
         resp = requests.get(
             short_url,
-            headers={"User-Agent": MOBILE_UA, "Referer": "https://www.douyin.com/"},
+            headers={"User-Agent": MOBILE_UA, "Referer": referer},
             allow_redirects=True,
             timeout=15,
         )
@@ -49,7 +72,10 @@ def _resolve_short_url(short_url):
         return None
 
 
-def _fetch_video_info(aweme_id):
+# ── Douyin helpers ─────────────────────────────────────────────────────
+
+
+def _fetch_douyin_video_info(aweme_id):
     """Fetch video info via the iesdouyin.com share page (bypasses anti-crawler JS)."""
     url = f"https://www.iesdouyin.com/share/video/{aweme_id}/"
     headers = {"User-Agent": MOBILE_UA}
@@ -72,6 +98,120 @@ def _fetch_video_info(aweme_id):
             pass
 
     return None, "Could not extract video info from share page"
+
+
+# ── TikTok helpers ─────────────────────────────────────────────────────
+
+
+def _fetch_tiktok_video_info(aweme_id, url=None):
+    """Fetch video info from TikTok via the web page's embedded JSON."""
+    # Use the full URL if available, otherwise construct one
+    if url and "tiktok.com" in url:
+        page_url = url
+    else:
+        page_url = f"https://www.tiktok.com/@_/video/{aweme_id}"
+
+    headers = {
+        "User-Agent": DESKTOP_UA,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+    }
+
+    # Use a session to capture cookies for later download
+    session = requests.Session()
+    try:
+        resp = session.get(page_url, headers=headers, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        return None, f"Failed to fetch TikTok page: {e}"
+
+    # Store cookies for the download step
+    _tiktok_cookies.update(session.cookies.get_dict())
+
+    # Try __UNIVERSAL_DATA_FOR_REHYDRATION__ (current TikTok format)
+    match = re.search(
+        r'<script\s+id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>\s*({.+?})\s*</script>',
+        resp.text,
+        re.DOTALL,
+    )
+    if match:
+        try:
+            data = json.loads(match.group(1))
+            detail = _deep_find(data, "itemInfo") or {}
+            item = detail.get("itemStruct") if isinstance(detail, dict) else None
+            if not item:
+                # Also check webapp.video-detail path
+                item = _deep_find(data, "itemStruct")
+            if item:
+                return _extract_from_tiktok_item(item, aweme_id), None
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    # Fallback: try SIGI_STATE (older TikTok format)
+    match = re.search(
+        r'<script\s+id="SIGI_STATE"[^>]*>\s*({.+?})\s*</script>',
+        resp.text,
+        re.DOTALL,
+    )
+    if match:
+        try:
+            data = json.loads(match.group(1))
+            items = _deep_find(data, "ItemModule") or {}
+            if isinstance(items, dict) and items:
+                item = next(iter(items.values()))
+                return _extract_from_tiktok_item(item, aweme_id), None
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    return None, "Could not extract video info from TikTok page"
+
+
+def _extract_from_tiktok_item(item, aweme_id):
+    """Extract structured info from a TikTok item object."""
+    video = item.get("video", {})
+    author = item.get("author", {})
+    stats = item.get("stats", {})
+
+    # Get video download URL
+    video_url = (
+        video.get("downloadAddr")
+        or video.get("playAddr")
+        or video.get("play_addr", {}).get("url_list", [None])[0]
+    )
+
+    if video_url and not video_url.startswith("http"):
+        video_url = "https:" + video_url
+
+    # Get cover/thumbnail
+    cover_url = (
+        video.get("cover")
+        or video.get("originCover")
+        or video.get("dynamicCover")
+    )
+
+    duration = video.get("duration", 0)
+
+    # Author can be a dict or a string (username)
+    if isinstance(author, dict):
+        author_name = author.get("nickname") or author.get("uniqueId", "Unknown")
+        author_id = author.get("uniqueId") or author.get("id", "")
+    else:
+        author_name = str(author) if author else "Unknown"
+        author_id = ""
+
+    return {
+        "aweme_id": item.get("id") or aweme_id,
+        "title": item.get("desc", "Untitled"),
+        "author": author_name,
+        "author_id": author_id,
+        "duration": duration,
+        "thumbnail": cover_url,
+        "video_url": video_url,
+        "likes": stats.get("diggCount", 0),
+        "comments": stats.get("commentCount", 0),
+        "shares": stats.get("shareCount", 0),
+        "platform": "tiktok",
+    }
 
 
 def _deep_find(obj, target_key):
@@ -151,7 +291,7 @@ def index():
 
 @app.route("/api/parse", methods=["POST"])
 def parse_url():
-    """Parse a Douyin URL and return video info."""
+    """Parse a Douyin or TikTok URL and return video info."""
     body = request.get_json(force=True)
     raw_url = (body.get("url") or "").strip()
 
@@ -163,18 +303,30 @@ def parse_url():
     if url_match:
         raw_url = url_match.group(0)
 
+    is_tiktok = _is_tiktok_url(raw_url)
+
     # Resolve short link if needed
     if "v.douyin.com" in raw_url or "vm.douyin.com" in raw_url:
         resolved = _resolve_short_url(raw_url)
         if not resolved:
             return jsonify({"error": "Failed to resolve short link"}), 400
         raw_url = resolved
+    elif "vm.tiktok.com" in raw_url or "vt.tiktok.com" in raw_url:
+        resolved = _resolve_short_url(raw_url, referer="https://www.tiktok.com/")
+        if not resolved:
+            return jsonify({"error": "Failed to resolve short link"}), 400
+        raw_url = resolved
+        is_tiktok = True
 
     aweme_id = _extract_aweme_id(raw_url)
     if not aweme_id:
         return jsonify({"error": "Could not extract video ID from URL"}), 400
 
-    info, err = _fetch_video_info(aweme_id)
+    if is_tiktok:
+        info, err = _fetch_tiktok_video_info(aweme_id, url=raw_url)
+    else:
+        info, err = _fetch_douyin_video_info(aweme_id)
+
     if not info:
         return jsonify({"error": err or "Failed to get video info"}), 400
 
@@ -189,6 +341,7 @@ def download_video():
     title = body.get("title", "video")
     author = body.get("author", "unknown")
     aweme_id = body.get("aweme_id", "")
+    platform = body.get("platform", "")
 
     if not video_url:
         return jsonify({"error": "No video URL provided"}), 400
@@ -201,12 +354,28 @@ def download_video():
     if os.path.exists(filepath):
         return jsonify({"status": "exists", "filename": filename})
 
-    headers = {
-        "User-Agent": MOBILE_UA,
-    }
+    is_tiktok = platform == "tiktok" or "tiktok.com" in video_url
+
+    if is_tiktok:
+        headers = {
+            "User-Agent": DESKTOP_UA,
+            "Referer": "https://www.tiktok.com/",
+            "Accept": "*/*",
+            "Accept-Encoding": "identity;q=1, *;q=0",
+            "Range": "bytes=0-",
+        }
+        cookies = _tiktok_cookies
+    else:
+        headers = {
+            "User-Agent": MOBILE_UA,
+        }
+        cookies = None
 
     try:
-        resp = requests.get(video_url, headers=headers, stream=True, timeout=60)
+        resp = requests.get(
+            video_url, headers=headers, cookies=cookies,
+            stream=True, timeout=60,
+        )
         resp.raise_for_status()
 
         with open(filepath, "wb") as f:
