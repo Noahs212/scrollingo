@@ -1954,6 +1954,72 @@ Trigger next page fetch when user is 3-5 items from the end of the current page.
     st.checkbox("5.8 — Add 'Save' button in popup → functional flashcard save (wired in M6)", value=True, key="m5_8")
     st.checkbox("5.9 — Regression tests: tap → word match → highlight → popup → save (subtitleTap.test.tsx)", value=True, key="m5_9")
     st.checkbox("5.10 — Robust word matching: handles CJK single-char taps on multi-char words, punctuation normalization, wider time window (±3s), shared wordMatcher utility", value=True, key="m5_10")
+    st.checkbox("5.11 — SubtitleDrawer: 3-line collapsed bar (pinyin/hanzi/translation) below video, expandable transcript overlay (45% screen) over video", value=True, key="m5_11")
+    st.checkbox("5.12 — Transcript seek: tap any line in expanded transcript → video seeks to that timestamp", value=True, key="m5_12")
+    st.checkbox("5.13 — Language filtering: only show target language segments in subtitle bar (filters out multi-lang clutter)", value=True, key="m5_13")
+    st.checkbox("5.14 — Pinyin construction: build per-line pinyin from wordDefs for CJK videos, hidden for English", value=True, key="m5_14")
+    st.checkbox("5.15 — Fixed-height collapsed bar with safe area insets (no flashing, no clipping behind tab bar)", value=True, key="m5_15")
+
+    with st.expander("M5 Details: Subtitle Bar Design"):
+        st.markdown("""
+#### SubtitleDrawer Component (`SubtitleDrawer.tsx`)
+
+**Collapsed State** (~100px, fixed height, below video):
+```
+┌──────────────────────────────────┐
+│  nǐ zhī dào nǐ zuì ràng rén     │  ← Line 1: Pinyin (12px, cyan #00E5FF, CJK only)
+│  你 知道 你 最 让人 佩服 的       │  ← Line 2: Hanzi (24px, bold white, tappable chars)
+│  Tap words for translation       │  ← Line 3: Placeholder (14px, grey #ADAAAA)
+│                              ▲   │  ← Expand arrow
+└──────────────────────────────────┘
+```
+
+- Tapping the bar → expands to transcript overlay
+- Tapping individual characters → WordPopup with definition
+- Fixed height prevents layout flashing
+- Includes safe area bottom padding (above tab bar)
+- Hidden for OCR-only videos (no burned-in subtitle overlap)
+
+**Expanded State** (45% screen, overlays video):
+```
+┌──────────────────────────────────┐
+│           ─── handle ───         │
+│  TRANSCRIPT                  ▼   │
+│                                  │
+│  0:01  nǐ zhī dào...            │  ← Dimmed pinyin
+│        你知道你最让人佩服的       │  ← 18px hanzi, dimmed
+│        Tap words for translation │
+│                                  │
+│  0:03  néng bǎ zì jǐ...         │  ← Active: cyan pinyin
+│        能把自己喝醉的 ████        │  ← Active: white, highlighted bg
+│        Tap words for translation │
+│                                  │
+│  0:05  méi yǒu yí gè...         │
+│        没有一个是存种             │
+│        Tap words for translation │
+└──────────────────────────────────┘
+```
+
+- Background: `rgba(10, 10, 10, 0.95)` — near-opaque
+- Top corners: 24px border radius
+- Drag handle bar at top
+- Auto-scrolls to keep active segment visible
+- Tap line → seeks video to segment start_ms
+- Tap word → WordPopup opens over video
+- Inactive lines: dimmed text (#777 hanzi, 50% opacity pinyin)
+- Active line: white hanzi, cyan pinyin, subtle bg highlight
+
+**Language Filtering:**
+- CJK target language (zh, ja, ko): only show segments with >30% CJK characters
+- Latin target language (en, es, etc.): only show segments with ≤30% CJK characters
+- Prevents multi-language subtitle clutter
+
+**Pinyin Construction:**
+- Built per-segment from `wordDefs` array (matched by `display_text`)
+- Greedy longest-match from position 0 through segment text
+- Joins matched pinyin values: "nǐ zhī dào nǐ zuì ràng rén pèi fú de"
+- Skipped entirely for non-CJK languages
+        """)
 
     with st.expander("M5 Details: Architecture"):
         st.markdown("""
