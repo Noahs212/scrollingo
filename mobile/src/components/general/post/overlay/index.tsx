@@ -16,9 +16,11 @@ import { Avatar } from "react-native-paper";
 export default function PostSingleOverlay({
   video,
   user,
+  hasSubtitleDrawer = false,
 }: {
   video: Video;
   user: User | null;
+  hasSubtitleDrawer?: boolean;
 }) {
   const insets = useSafeAreaInsets();
   const dispatch: AppDispatch = useDispatch();
@@ -128,7 +130,7 @@ export default function PostSingleOverlay({
       </View>
 
       {/* Bottom left: username + description */}
-      <View style={[styles.textContainer, { paddingBottom: 16 + insets.bottom }]} testID="text-container">
+      <View style={[styles.textContainer, { paddingBottom: hasSubtitleDrawer ? 16 : 16 + insets.bottom }]} testID="text-container">
         {user && (
           <TouchableOpacity
             onPress={() =>

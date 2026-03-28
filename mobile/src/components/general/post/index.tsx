@@ -26,12 +26,14 @@ import { useUser } from "../../../hooks/useUser";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { useSaveFlashcard } from "../../../hooks/useSaveFlashcard";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PostSingleOverlay from "./overlay";
 import SubtitleTapOverlay, { HighlightRange } from "./subtitleOverlay";
-import VisibleSubtitleOverlay from "./visibleSubtitleOverlay";
+import SubtitleDrawer, { COLLAPSED_HEIGHT } from "./SubtitleDrawer";
 import WordPopup, { WordPopupData } from "./wordPopup";
-import { useSubtitles } from "../../../hooks/useSubtitles";
+import { useSubtitles, useSttSubtitles } from "../../../hooks/useSubtitles";
 import { useWordDefinitions } from "../../../hooks/useWordDefinitions";
+import { findWordMatch } from "./wordMatcher";
 import * as Haptics from "expo-haptics";
 
 export interface PostSingleHandles {
@@ -66,14 +68,18 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     const playerRef = useRef<ReturnType<typeof useVideoPlayer> | null>(null);
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
-    const isSTT = item.subtitle_source === "stt";
+    // Fetch both OCR (bboxes.json) and STT (stt.json) data
+    const { data: ocrData } = useSubtitles(item.id, item.cdn_url);
+    const { data: sttData } = useSttSubtitles(item.id, item.cdn_url);
 
-    // Fetch subtitle bounding boxes from R2 CDN
-    const { data: subtitleData } = useSubtitles(item.id, item.cdn_url);
+    // OCR data for tap targets, STT data for subtitle drawer
+    // Fall back to OCR data for drawer if STT unavailable
+    const subtitleData = ocrData;  // Used by SubtitleTapOverlay
+    const drawerData = sttData ?? ocrData;  // Used by SubtitleDrawer
 
     const player = useVideoPlayer(item.cdn_url, (p) => {
       p.loop = true;
-      p.timeUpdateEventInterval = 0.05;
+      p.timeUpdateEventInterval = 0.033;
     });
 
     // Event-driven time tracking from native side — replaces setInterval polling
@@ -185,14 +191,19 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
       }
     }, [isPaused, player, showPauseIndicator, showHeartAnimation]);
 
+    // Always show the subtitle drawer when we have transcript data
+    const hasDrawer = drawerData && drawerData.segments.length > 0;
+
     return (
-      <View
-        style={styles.container}
-        onLayout={(e) => {
-          const { width, height } = e.nativeEvent.layout;
-          setContainerSize({ width, height });
-        }}
-      >
+      <View style={styles.container}>
+        {/* Video area — shrinks when drawer is present */}
+        <View
+          style={[styles.videoArea, hasDrawer && { marginBottom: 0 }]}
+          onLayout={(e) => {
+            const { width, height } = e.nativeEvent.layout;
+            setContainerSize({ width, height });
+          }}
+        >
         {/* Thumbnail placeholder — shows instantly while video buffers */}
         {item.thumbnail_url && (
           <Image
@@ -243,71 +254,8 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
           </Animated.View>
         )}
 
-        {/* Visible subtitle text for STT-sourced videos */}
-        {isSTT && subtitleData && containerSize.width > 0 && (
-          <VisibleSubtitleOverlay
-            subtitleData={subtitleData}
-            currentTimeMs={currentTimeMs}
-            containerWidth={containerSize.width}
-            containerHeight={containerSize.height}
-            highlightRange={highlightRange}
-            onWordTap={(word, fullText, tapX, tapY, detectionIndex, charIndex) => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              try { player.pause(); setIsPaused(true); } catch {}
-
-              setPopupPosition({ x: tapX, y: tapY });
-
-              // Direct word-level match (simpler than OCR char-index matching)
-              let match = wordDefs?.find(
-                (wd) =>
-                  wd.display_text === word &&
-                  currentTimeMs >= wd.start_ms - 2000 &&
-                  currentTimeMs < wd.end_ms + 2000,
-              );
-              if (!match) {
-                match = wordDefs?.find((wd) => wd.display_text === word);
-              }
-
-              if (match) {
-                setHighlightRange({
-                  detectionIndex,
-                  startCharIndex: charIndex,
-                  endCharIndex: charIndex + match.display_text.length,
-                });
-                setPopupData({
-                  word: match.word,
-                  pinyin: match.pinyin,
-                  translation: match.translation,
-                  contextual_definition: match.contextual_definition,
-                  part_of_speech: match.part_of_speech,
-                  source_sentence: fullText,
-                  vocab_word_id: match.vocab_word_id,
-                  definition_id: match.definition_id,
-                });
-              } else {
-                setHighlightRange({
-                  detectionIndex,
-                  startCharIndex: charIndex,
-                  endCharIndex: charIndex + word.length,
-                });
-                setPopupData({
-                  word,
-                  pinyin: null,
-                  translation: "",
-                  contextual_definition: "",
-                  part_of_speech: null,
-                  source_sentence: fullText,
-                  vocab_word_id: "",
-                  definition_id: "",
-                });
-              }
-              setPopupVisible(true);
-            }}
-          />
-        )}
-
-        {/* Invisible subtitle tap targets — over the burned-in text (OCR only) */}
-        {!isSTT && subtitleData && containerSize.width > 0 && (
+        {/* Invisible subtitle tap targets — over burned-in text (from OCR bboxes) */}
+        {subtitleData && containerSize.width > 0 && (
           <SubtitleTapOverlay
             subtitleData={subtitleData}
             currentTimeMs={currentTimeMs}
@@ -390,66 +338,26 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
               setPopupPosition({ x: wordCenterX, y: tapY });
 
               // Look up the word that contains this character
-              if (wordDefs && wordDefs.length > 0) {
-                // Match word definition where the tapped charIndex falls within
-                // an occurrence of the word in fullText
-                let match = wordDefs.find((wd) => {
-                  let searchFrom = 0;
-                  while (searchFrom <= fullText.length) {
-                    const pos = fullText.indexOf(wd.display_text, searchFrom);
-                    if (pos < 0) break;
-                    if (charIndex >= pos && charIndex < pos + wd.display_text.length) {
-                      // Also check time overlap
-                      return currentTimeMs >= wd.start_ms - 2000 && currentTimeMs < wd.end_ms + 2000;
-                    }
-                    searchFrom = pos + 1;
-                  }
-                  return false;
+              const result = findWordMatch(wordDefs, fullText, charIndex, currentTimeMs, char);
+
+              if (result) {
+                setHighlightRange({
+                  detectionIndex,
+                  startCharIndex: result.wordStart,
+                  endCharIndex: result.wordStart + result.match.display_text.length,
                 });
-                // Fallback: text-only match by charIndex position
-                if (!match) {
-                  match = wordDefs.find((wd) => {
-                    let searchFrom = 0;
-                    while (searchFrom <= fullText.length) {
-                      const pos = fullText.indexOf(wd.display_text, searchFrom);
-                      if (pos < 0) break;
-                      if (charIndex >= pos && charIndex < pos + wd.display_text.length) return true;
-                      searchFrom = pos + 1;
-                    }
-                    return false;
-                  });
-                }
-                if (match) {
-                  // Find the specific occurrence containing charIndex for highlight
-                  let wordStart = charIndex;
-                  let searchFrom = 0;
-                  while (searchFrom <= fullText.length) {
-                    const pos = fullText.indexOf(match.display_text, searchFrom);
-                    if (pos < 0) break;
-                    if (charIndex >= pos && charIndex < pos + match.display_text.length) {
-                      wordStart = pos;
-                      break;
-                    }
-                    searchFrom = pos + 1;
-                  }
-                  setHighlightRange({
-                    detectionIndex,
-                    startCharIndex: wordStart,
-                    endCharIndex: wordStart + match.display_text.length,
-                  });
-                  setPopupData({
-                    word: match.word,
-                    pinyin: match.pinyin,
-                    translation: match.translation,
-                    contextual_definition: match.contextual_definition,
-                    part_of_speech: match.part_of_speech,
-                    source_sentence: fullText,
-                    vocab_word_id: match.vocab_word_id,
-                    definition_id: match.definition_id,
-                  });
-                  setPopupVisible(true);
-                  return;
-                }
+                setPopupData({
+                  word: result.match.word,
+                  pinyin: result.match.pinyin,
+                  translation: result.match.translation,
+                  contextual_definition: result.match.contextual_definition,
+                  part_of_speech: result.match.part_of_speech,
+                  source_sentence: fullText,
+                  vocab_word_id: result.match.vocab_word_id,
+                  definition_id: result.match.definition_id,
+                });
+                setPopupVisible(true);
+                return;
               }
 
               // Fallback: highlight just the tapped character
@@ -498,7 +406,69 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
         />
 
         {/* Overlay: action buttons + video info + creator */}
-        <PostSingleOverlay video={item} user={user ?? null} />
+        <PostSingleOverlay video={item} user={user ?? null} hasSubtitleDrawer={!!hasDrawer} />
+        </View>
+
+        {/* Subtitle Drawer — visible transcript below video */}
+        {hasDrawer && (
+          <SubtitleDrawer
+            subtitleData={drawerData}
+            currentTimeMs={currentTimeMs}
+            highlightRange={highlightRange}
+            wordDefs={wordDefs}
+            language={item.language}
+            onWordTap={(word, fullText, tapX, tapY, detectionIndex, charIndex) => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              try { player.pause(); setIsPaused(true); } catch {}
+
+              setPopupPosition({ x: tapX, y: tapY });
+
+              const result = findWordMatch(wordDefs, fullText, charIndex, currentTimeMs, word);
+
+              if (result) {
+                setHighlightRange({
+                  detectionIndex,
+                  startCharIndex: result.wordStart,
+                  endCharIndex: result.wordStart + result.match.display_text.length,
+                });
+                setPopupData({
+                  word: result.match.word,
+                  pinyin: result.match.pinyin,
+                  translation: result.match.translation,
+                  contextual_definition: result.match.contextual_definition,
+                  part_of_speech: result.match.part_of_speech,
+                  source_sentence: fullText,
+                  vocab_word_id: result.match.vocab_word_id,
+                  definition_id: result.match.definition_id,
+                });
+              } else {
+                setHighlightRange({
+                  detectionIndex,
+                  startCharIndex: charIndex,
+                  endCharIndex: charIndex + word.length,
+                });
+                setPopupData({
+                  word,
+                  pinyin: null,
+                  translation: "",
+                  contextual_definition: "",
+                  part_of_speech: null,
+                  source_sentence: fullText,
+                  vocab_word_id: "",
+                  definition_id: "",
+                });
+              }
+              setPopupVisible(true);
+            }}
+            onSeek={(timeMs) => {
+              try {
+                player.currentTime = timeMs / 1000;
+              } catch {
+                // Player may be released
+              }
+            }}
+          />
+        )}
       </View>
     );
   },
@@ -508,6 +478,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+  },
+  videoArea: {
+    flex: 1,
   },
   tapTarget: {
     ...StyleSheet.absoluteFillObject,

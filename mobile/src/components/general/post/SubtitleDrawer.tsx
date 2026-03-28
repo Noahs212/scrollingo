@@ -1,0 +1,491 @@
+/**
+ * SubtitleDrawer — 3-line subtitle bar + expandable transcript overlay.
+ *
+ * Collapsed (~100px, below video):
+ *   Line 1: Pinyin (cyan, Chinese only)
+ *   Line 2: Hanzi/text (white, bold, tappable characters)
+ *   Line 3: Translation placeholder (grey)
+ *
+ * Expanded (60% screen, overlays video):
+ *   Semi-transparent overlay with scrollable transcript.
+ *   Tap line to seek. Auto-scrolls to active line.
+ */
+
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SubtitleData } from "./subtitleOverlay";
+import { HighlightRange } from "./subtitleOverlay";
+import { WordDefinition } from "../../../../types";
+
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const COLLAPSED_HEIGHT = 100;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const EXPANDED_HEIGHT = Math.round(SCREEN_HEIGHT * 0.45);
+
+interface Props {
+  subtitleData: SubtitleData | null;
+  currentTimeMs: number;
+  highlightRange?: HighlightRange | null;
+  wordDefs?: WordDefinition[];
+  language?: string;
+  onWordTap: (
+    word: string,
+    fullText: string,
+    screenX: number,
+    screenY: number,
+    detectionIndex: number,
+    charIndex: number,
+  ) => void;
+  onSeek: (timeMs: number) => void;
+}
+
+/** Split text into tappable units — CJK chars or Latin words. */
+function splitIntoWords(text: string): { word: string; startIdx: number }[] {
+  const words: { word: string; startIdx: number }[] = [];
+  const cjkCount = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) || []).length;
+  if (cjkCount > text.length * 0.3) {
+    for (let i = 0; i < text.length; i++) {
+      if (text[i].trim()) {
+        words.push({ word: text[i], startIdx: i });
+      }
+    }
+  } else {
+    let idx = 0;
+    for (const part of text.split(/(\s+)/)) {
+      if (part.trim()) {
+        words.push({ word: part, startIdx: idx });
+      }
+      idx += part.length;
+    }
+  }
+  return words;
+}
+
+/** Build pinyin string for a segment by matching words to wordDefs. */
+function buildPinyin(segmentText: string, wordDefs?: WordDefinition[]): string {
+  if (!wordDefs || wordDefs.length === 0) return "";
+
+  const chars = segmentText.split("");
+  const pinyinParts: string[] = [];
+  let i = 0;
+
+  while (i < chars.length) {
+    // Try to find the longest matching wordDef starting at position i
+    let matched = false;
+    for (let len = Math.min(4, chars.length - i); len >= 1; len--) {
+      const substr = chars.slice(i, i + len).join("");
+      const wd = wordDefs.find((w) => w.display_text === substr && w.pinyin);
+      if (wd && wd.pinyin) {
+        pinyinParts.push(wd.pinyin);
+        i += len;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      // Skip non-matching characters (punctuation, spaces)
+      i++;
+    }
+  }
+
+  return pinyinParts.join(" ");
+}
+
+/** Format timestamp as "0:05". */
+function formatTime(ms: number): string {
+  const totalSec = Math.floor(ms / 1000);
+  const min = Math.floor(totalSec / 60);
+  const sec = totalSec % 60;
+  return `${min}:${sec.toString().padStart(2, "0")}`;
+}
+
+/** Check if language has CJK pinyin. */
+function hasPinyin(language?: string): boolean {
+  return language === "zh" || language === "ja";
+}
+
+export { COLLAPSED_HEIGHT, EXPANDED_HEIGHT };
+
+export default function SubtitleDrawer({
+  subtitleData,
+  currentTimeMs,
+  highlightRange,
+  wordDefs,
+  language,
+  onWordTap,
+  onSeek,
+}: Props) {
+  const [expanded, setExpanded] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
+  const activeIndexRef = useRef(-1);
+  const insets = useSafeAreaInsets();
+
+  const showPinyin = hasPinyin(language);
+
+  // Filter segments to target language only — avoid clutter from multi-lang subtitles
+  const segments = useMemo(() => {
+    const all = subtitleData?.segments ?? [];
+    if (!language) return all;
+
+    const isCJKLang = language === "zh" || language === "ja" || language === "ko";
+
+    return all.filter((seg) => {
+      const text = seg.detections.map((d) => d.text).join("");
+      if (!text.trim()) return false;
+      const cjkCount = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g) || []).length;
+      const cjkRatio = cjkCount / Math.max(text.length, 1);
+      // For CJK target: keep segments with >30% CJK chars
+      // For Latin target: keep segments with <30% CJK chars
+      return isCJKLang ? cjkRatio > 0.3 : cjkRatio <= 0.3;
+    });
+  }, [subtitleData, language]);
+
+  // Find active segment index
+  const activeSegmentIndex = useMemo(() => {
+    for (let i = 0; i < segments.length; i++) {
+      if (currentTimeMs >= segments[i].start_ms && currentTimeMs < segments[i].end_ms) {
+        return i;
+      }
+    }
+    return -1;
+  }, [segments, currentTimeMs]);
+
+  const activeSegment = activeSegmentIndex >= 0 ? segments[activeSegmentIndex] : null;
+  const activeText = activeSegment?.detections.map((d) => d.text).join("") ?? "";
+  const activePinyin = showPinyin ? buildPinyin(activeText, wordDefs) : "";
+
+  // Auto-scroll in expanded mode
+  useEffect(() => {
+    if (expanded && activeSegmentIndex >= 0 && activeSegmentIndex !== activeIndexRef.current) {
+      activeIndexRef.current = activeSegmentIndex;
+      scrollRef.current?.scrollTo({ y: Math.max(0, activeSegmentIndex * 80 - 60), animated: true });
+    }
+  }, [expanded, activeSegmentIndex]);
+
+  const toggleExpanded = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpanded((e) => !e);
+  }, []);
+
+  const handleLineTap = useCallback(
+    (segIndex: number) => {
+      const seg = segments[segIndex];
+      if (seg) onSeek(seg.start_ms);
+    },
+    [segments, onSeek],
+  );
+
+  if (!subtitleData || segments.length === 0) return null;
+
+  // --- Collapsed: 3-line bar below video ---
+  const collapsedContent = (
+    <Pressable style={[styles.collapsed, { height: COLLAPSED_HEIGHT + insets.bottom, paddingBottom: insets.bottom }]} onPress={toggleExpanded}>
+      {/* Line 1: Pinyin */}
+      {showPinyin && activePinyin ? (
+        <Text style={styles.pinyinLine} numberOfLines={1}>{activePinyin}</Text>
+      ) : null}
+
+      {/* Line 2: Hanzi / text — tappable characters */}
+      <View style={styles.hanziRow}>
+        {activeText ? (
+          activeSegment?.detections.map((det, di) =>
+            splitIntoWords(det.text).map((w, wi) => {
+              const isHighlighted =
+                highlightRange &&
+                highlightRange.detectionIndex === di &&
+                w.startIdx >= highlightRange.startCharIndex &&
+                w.startIdx < highlightRange.endCharIndex;
+
+              return (
+                <Pressable
+                  key={`c-${di}-${wi}`}
+                  onPress={(e) => {
+                    e.stopPropagation?.();
+                    onWordTap(w.word, det.text, e.nativeEvent.pageX, e.nativeEvent.pageY, di, w.startIdx);
+                  }}
+                  style={[styles.charPressable, isHighlighted && styles.charHighlighted]}
+                >
+                  <Text style={[styles.hanziText, isHighlighted && styles.hanziTextHighlighted]}>
+                    {w.word}
+                  </Text>
+                </Pressable>
+              );
+            }),
+          )
+        ) : (
+          <Text style={styles.hanziText}>...</Text>
+        )}
+      </View>
+
+      {/* Line 3: Translation placeholder */}
+      <Text style={styles.translationLine} numberOfLines={1}>
+        Tap words for translation
+      </Text>
+
+      {/* Expand arrow */}
+      <View style={styles.expandArrow}>
+        <Ionicons name="chevron-up" size={16} color="#555" />
+      </View>
+    </Pressable>
+  );
+
+  // --- Expanded: overlay on video ---
+  const expandedContent = (
+    <View style={[styles.expandedOverlay, { height: EXPANDED_HEIGHT }]}>
+      {/* Handle bar + header */}
+      <View style={styles.expandedHeader}>
+        <View style={styles.handleBar} />
+        <View style={styles.headerRow}>
+          <Text style={styles.headerTitle}>Transcript</Text>
+          <TouchableOpacity onPress={toggleExpanded} style={styles.dismissButton}>
+            <Ionicons name="chevron-down" size={20} color="#888" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Scrollable transcript */}
+      <ScrollView
+        ref={scrollRef}
+        style={styles.transcriptScroll}
+        contentContainerStyle={styles.transcriptContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {segments.map((seg, si) => {
+          const isActive = si === activeSegmentIndex;
+          const text = seg.detections.map((d) => d.text).join("");
+          const pinyin = showPinyin ? buildPinyin(text, wordDefs) : "";
+
+          return (
+            <Pressable
+              key={si}
+              style={[styles.transcriptItem, isActive && styles.transcriptItemActive]}
+              onPress={() => handleLineTap(si)}
+            >
+              <Text style={styles.timestamp}>{formatTime(seg.start_ms)}</Text>
+              <View style={styles.transcriptStack}>
+                {/* Pinyin */}
+                {showPinyin && pinyin ? (
+                  <Text style={[styles.transcriptPinyin, isActive && styles.transcriptPinyinActive]} numberOfLines={1}>
+                    {pinyin}
+                  </Text>
+                ) : null}
+
+                {/* Hanzi — tappable words */}
+                <View style={styles.hanziRow}>
+                  {seg.detections.map((det, di) =>
+                    splitIntoWords(det.text).map((w, wi) => {
+                      const isHighlighted =
+                        isActive &&
+                        highlightRange &&
+                        highlightRange.detectionIndex === di &&
+                        w.startIdx >= highlightRange.startCharIndex &&
+                        w.startIdx < highlightRange.endCharIndex;
+
+                      return (
+                        <Pressable
+                          key={`t-${si}-${di}-${wi}`}
+                          onPress={(e) => {
+                            e.stopPropagation?.();
+                            onWordTap(w.word, det.text, e.nativeEvent.pageX, e.nativeEvent.pageY, di, w.startIdx);
+                          }}
+                          style={[styles.charPressable, isHighlighted && styles.charHighlighted]}
+                        >
+                          <Text
+                            style={[
+                              styles.transcriptHanzi,
+                              isActive && styles.transcriptHanziActive,
+                              isHighlighted && styles.hanziTextHighlighted,
+                            ]}
+                          >
+                            {w.word}
+                          </Text>
+                        </Pressable>
+                      );
+                    }),
+                  )}
+                </View>
+
+                {/* Translation placeholder */}
+                <Text style={styles.transcriptTranslation} numberOfLines={1}>
+                  Tap words for translation
+                </Text>
+              </View>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+
+  return (
+    <>
+      {/* Collapsed bar — ALWAYS rendered to hold layout space */}
+      {collapsedContent}
+
+      {/* Expanded overlay — absolute positioned ON TOP of video, doesn't affect layout */}
+      {expanded && expandedContent}
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  // ─── Collapsed ───
+  collapsed: {
+    backgroundColor: "rgba(0, 0, 0, 0.95)",
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(255, 255, 255, 0.08)",
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    height: COLLAPSED_HEIGHT,
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  pinyinLine: {
+    color: "#00E5FF",
+    fontSize: 12,
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  hanziRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  charPressable: {
+    paddingHorizontal: 1,
+    paddingVertical: 1,
+    borderRadius: 3,
+  },
+  charHighlighted: {
+    backgroundColor: "rgba(0, 229, 255, 0.25)",
+  },
+  hanziText: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "700",
+  },
+  hanziTextHighlighted: {
+    color: "#00E5FF",
+  },
+  translationLine: {
+    color: "#ADAAAA",
+    fontSize: 14,
+    marginTop: 4,
+  },
+  expandArrow: {
+    position: "absolute",
+    right: 12,
+    top: 10,
+  },
+
+  // ─── Expanded Overlay ───
+  expandedOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(10, 10, 10, 0.95)",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    zIndex: 50,
+  },
+  expandedHeader: {
+    alignItems: "center",
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  handleBar: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    marginBottom: 8,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  headerTitle: {
+    color: "#888",
+    fontSize: 13,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  dismissButton: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  // ─── Transcript List ───
+  transcriptScroll: {
+    flex: 1,
+  },
+  transcriptContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  transcriptItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    marginBottom: 4,
+  },
+  transcriptItemActive: {
+    backgroundColor: "rgba(255, 255, 255, 0.06)",
+  },
+  timestamp: {
+    color: "#555",
+    fontSize: 11,
+    width: 36,
+    marginTop: 4,
+    marginRight: 8,
+  },
+  transcriptStack: {
+    flex: 1,
+  },
+  transcriptPinyin: {
+    color: "rgba(0, 229, 255, 0.5)",
+    fontSize: 11,
+    fontWeight: "500",
+    marginBottom: 2,
+  },
+  transcriptPinyinActive: {
+    color: "#00E5FF",
+  },
+  transcriptHanzi: {
+    color: "#777",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  transcriptHanziActive: {
+    color: "#FFFFFF",
+  },
+  transcriptTranslation: {
+    color: "#555",
+    fontSize: 12,
+    marginTop: 2,
+  },
+});

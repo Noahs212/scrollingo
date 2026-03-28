@@ -7,6 +7,7 @@ import { useVideoPlayer } from "expo-video";
 // Mock the useSubtitles hook
 jest.mock("../../../../hooks/useSubtitles", () => ({
   useSubtitles: jest.fn(() => ({ data: null })),
+  useSttSubtitles: jest.fn(() => ({ data: null })),
 }));
 
 // Mock useUser (PostSingle fetches creator profile)

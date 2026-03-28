@@ -89,7 +89,7 @@ AD_PROGRAMMATIC_FILL = 0.70                 # % of ad slots that fill programmat
 TTS_CACHE_REDUCTION = 0.67                  # Top 10K words cover 95-97% of requests
 
 # === Lean Mode Hard Limits ===
-LEAN_MODE_MAX_MAU = 100_000                 # Above this, lean infra can't handle the load
+LEAN_MODE_MAX_MAU = 1_000_000                # Lean mode now scales to 1M MAU with Supabase + fly.io
 # Free tier breakpoints (videos/month thresholds)
 GROQ_MAX_VIDEOS_PER_MONTH = 60_000          # 2K requests/day * 30 days
 GOOGLE_TTS_FREE_CHARS = 1_000_000           # Neural2 free tier chars/month
@@ -112,6 +112,7 @@ def calculate_financials(
     total_platform_videos=0,
     llm_provider="Claude 3.5 Haiku",
     num_target_languages=12,
+    videos_per_user_per_day=15,
 ):
     """Calculates all cost, revenue, and profit components."""
 
@@ -131,10 +132,17 @@ def calculate_financials(
         dau = mau * (dau_percent / 100.0)
         chars_per_video = (video_length_sec / 30.0) * 400
 
+        # New videos added to the platform per month (pipeline processing cost)
         if user_uploads_enabled:
-            videos_per_month = dau * (upload_percent / 100.0) * 30
+            new_videos_per_month = dau * (upload_percent / 100.0) * 30
         else:
-            videos_per_month = seeded_videos_per_month
+            new_videos_per_month = seeded_videos_per_month
+
+        # Total video views per month (bandwidth/delivery cost)
+        total_monthly_video_views = dau * videos_per_user_per_day * 30
+
+        # Legacy alias for downstream calculations
+        videos_per_month = new_videos_per_month
 
         # --- Media Processing ---
         # Transcoding
@@ -167,16 +175,24 @@ def calculate_financials(
             tts_storage_gb = num_learning_languages * 0.95
             tts_cost = tts_storage_gb * PRICE_PER_GB_STORAGE  # R2 storage only
 
-        # Translation
-        translate_rate = TRANSLATION_PRICING[translation_provider]
-        translate_cost = (videos_per_month * chars_per_video / 1_000_000) * translate_rate
+        # Translation — NOTE: in our pipeline, the LLM generates definitions directly
+        # in each target language (localized prompts). Google Translate is NOT used for
+        # word definitions. This cost only applies if a separate translation step exists
+        # (e.g., for full subtitle translation, which we don't do).
+        # Setting to $0 for curated content; only relevant if user uploads need bulk translation.
+        if user_uploads_enabled:
+            translate_rate = TRANSLATION_PRICING[translation_provider]
+            translate_cost = (new_videos_per_month * chars_per_video / 1_000_000) * translate_rate
+        else:
+            translate_cost = 0
 
-        # Contextual Definitions (LLM) — per word, per video, per target language
-        # Batch mode: ~1,590 input + ~1,500 output tokens per video per language
+        # Contextual Definitions (LLM) — generated ONCE per video per target language
+        # Definitions are cached in Supabase (word_definitions table) and reused for all users.
+        # Cost scales with NEW videos added, NOT with MAU or views.
         llm_input_price, llm_output_price = LLM_PRICING[llm_provider]
         input_cost_per_video = (LLM_INPUT_TOKENS_PER_VIDEO / 1_000_000) * llm_input_price
         output_cost_per_video = (LLM_OUTPUT_TOKENS_PER_VIDEO / 1_000_000) * llm_output_price
-        definitions_cost = (input_cost_per_video + output_cost_per_video) * videos_per_month * num_target_languages
+        definitions_cost = (input_cost_per_video + output_cost_per_video) * new_videos_per_month * num_target_languages
 
         costs["media_processing"] = transcode_cost + stt_cost + tts_cost + translate_cost + definitions_cost
         cost_detail["transcode"] = transcode_cost
@@ -207,8 +223,7 @@ def calculate_financials(
             write_ops_cost = write_ops_millions * PRICE_PER_MILLION_WRITE_OPS
 
         avg_mb_per_view = (video_length_sec / 30.0) * 15
-        views_per_user = (data_consumption_gb * 1024) / avg_mb_per_view if avg_mb_per_view > 0 else 0
-        total_views = mau * views_per_user
+        total_views = total_monthly_video_views
 
         if transcode_strategy in ("Mux (Managed)", "Cloudflare Stream"):
             read_ops_cost = 0  # Delivery included
@@ -228,37 +243,86 @@ def calculate_financials(
 
         # --- Infrastructure ---
         if lean_mode:
-            # Supabase Pro: $25/mo base, compute addons for scale
-            # Auth: 100K MAU included, then $0.00325/MAU overage
+            # === Supabase Pro ($25/mo base) + Compute Add-ons ===
+            # Pro includes $10 compute credit (covers Micro).
+            # Compute tiers: Micro $10, Small $15, Medium $60, Large $110,
+            #   XL $210, 2XL $410, 4XL $960, 8XL $1870
+            # Effective cost = tier price - $10 credit
             if mau <= 10_000:
-                db_base = 25                         # Supabase Pro (Nano compute included)
+                db_compute = 10       # Micro (covered by $10 credit → net $0)
+                db_tier = "Micro (1GB, 200 pooled clients)"
             elif mau <= 50_000:
-                db_base = 25 + 50                    # Pro + Medium compute addon ($50)
+                db_compute = 15       # Small (2GB, 400 pooled)
+                db_tier = "Small (2GB, 400 pooled clients)"
             elif mau <= 100_000:
-                db_base = 25 + 100                   # Pro + Large compute addon ($100)
+                db_compute = 60       # Medium (4GB, 600 pooled)
+                db_tier = "Medium (4GB, 600 pooled clients)"
+            elif mau <= 250_000:
+                db_compute = 110      # Large (8GB, 800 pooled)
+                db_tier = "Large (8GB, 800 pooled clients)"
+            elif mau <= 500_000:
+                db_compute = 210      # XL (16GB, 1K pooled)
+                db_tier = "XL (16GB, 1,000 pooled clients)"
+            elif mau <= 750_000:
+                db_compute = 410      # 2XL (32GB, 1.5K pooled)
+                db_tier = "2XL (32GB, 1,500 pooled clients)"
             else:
-                db_base = 25 + 100
-                warnings.append(f"Supabase Pro connection limits (~200 pooled) may throttle at {mau:,} MAU. Consider migrating to dedicated PostgreSQL.")
+                db_compute = 960      # 4XL (64GB, 3K pooled)
+                db_tier = "4XL (64GB, 3,000 pooled clients)"
 
-            # Auth overage beyond 100K MAU
+            db_base = 25 + max(0, db_compute - 10)  # Pro base + compute (minus $10 credit)
+
+            # Auth overage beyond 100K MAU: $0.00325/MAU
             auth_overage = max(0, mau - SUPABASE_PRO_AUTH_MAU) * 0.00325
             if auth_overage > 0:
                 warnings.append(f"Supabase Auth overage: {mau - SUPABASE_PRO_AUTH_MAU:,} MAU beyond 100K free = ${auth_overage:,.0f}/mo")
 
-            costs["database"] = db_base + auth_overage
+            # Supabase bandwidth: Pro includes 250GB egress/mo
+            # Each API call returns ~1-5KB. Feed queries, word definitions, flashcards, auth.
+            # Estimate: ~20 API calls per video view × avg 2KB response = 40KB per view
+            api_calls_per_view = 20
+            kb_per_api_call = 2
+            total_api_egress_gb = (total_monthly_video_views * api_calls_per_view * kb_per_api_call) / 1024 / 1024
+            supabase_free_egress_gb = 250
+            supabase_egress_overage = max(0, total_api_egress_gb - supabase_free_egress_gb) * 0.09
+            if supabase_egress_overage > 0:
+                warnings.append(f"Supabase egress: {total_api_egress_gb:,.0f} GB exceeds 250 GB free. Overage: ${supabase_egress_overage:,.0f}/mo at $0.09/GB.")
 
-            # Compute: fly.io shared CPU (Go monolith)
-            if mau <= 5_000:
-                costs["compute_recommendation"] = 5    # shared-cpu-2x 512MB
-            elif mau <= 25_000:
-                costs["compute_recommendation"] = 15   # shared-cpu-4x 1GB
+            # Supabase storage: Pro includes 8GB database storage
+            # Estimate: ~0.5KB per word_definition row, ~0.1KB per video_word, ~0.2KB per flashcard
+            total_definitions = new_videos_per_month * 12 * 50 * 12  # cumulative over ~12 months
+            est_db_size_gb = total_definitions * 0.5 / 1024 / 1024  # very rough
+            supabase_storage_overage = max(0, est_db_size_gb - 8) * 0.125
+
+            costs["database"] = db_base + auth_overage + supabase_egress_overage + supabase_storage_overage
+            cost_detail["db_tier"] = db_tier
+            cost_detail["db_base"] = db_base
+            cost_detail["auth_overage"] = auth_overage
+            cost_detail["supabase_egress_overage"] = supabase_egress_overage
+
+            # === fly.io Compute (Go monolith) ===
+            # Go is highly efficient — goroutines handle thousands of concurrent connections.
+            # Assume ~1-3% of MAU concurrent at peak.
+            if mau <= 10_000:
+                costs["compute_recommendation"] = 3    # 1x shared-cpu-1x 512MB
+                compute_tier = "1× shared-cpu-1x 512MB"
             elif mau <= 50_000:
-                costs["compute_recommendation"] = 60   # performance-1x dedicated 2GB
+                costs["compute_recommendation"] = 13   # 2x shared-cpu-2x 1GB (HA)
+                compute_tier = "2× shared-cpu-2x 1GB (HA)"
             elif mau <= 100_000:
-                costs["compute_recommendation"] = 125  # performance-2x dedicated 4GB
+                costs["compute_recommendation"] = 64   # 2x performance-1x 2GB
+                compute_tier = "2× performance-1x 2GB (HA)"
+            elif mau <= 250_000:
+                costs["compute_recommendation"] = 129  # 2x performance-2x 4GB
+                compute_tier = "2× performance-2x 4GB (HA)"
+            elif mau <= 500_000:
+                costs["compute_recommendation"] = 386  # 3x performance-4x 8GB
+                compute_tier = "3× performance-4x 8GB (HA)"
             else:
-                costs["compute_recommendation"] = 250  # 2x performance-2x (HA)
-                warnings.append(f"fly.io shared CPU is unreliable at {mau:,} MAU. Dedicated CPU required ($62+/mo per instance). Consider migrating to managed Kubernetes or ECS.")
+                costs["compute_recommendation"] = 773  # 3x performance-8x 16GB
+                compute_tier = "3× performance-8x 16GB (HA)"
+
+            cost_detail["compute_tier"] = compute_tier
 
             # Platform ops: free tiers with stepped upgrades
             monitoring_cost = 0   # Axiom free (500GB/mo) + Grafana Cloud free
@@ -267,11 +331,9 @@ def calculate_financials(
             auth_service_cost = 0 # Supabase Auth (included in DB cost above)
 
             # Sentry: free tier breaks at ~25K-50K MAU (assuming 0.5% error rate)
-            estimated_errors = mau * 0.005 * 20 * 0.005  # MAU * error_rate * sessions/user * errors/session
+            estimated_errors = mau * 0.005 * 20 * 0.005
             if estimated_errors > SENTRY_FREE_ERRORS:
                 sentry_cost = 26  # Sentry Team plan
-                if mau <= 50_000:
-                    warnings.append(f"Sentry free tier (5K errors/mo) likely exceeded at {mau:,} MAU. Upgrade to Team plan ($26/mo).")
 
             # Cloudflare: Pro at 50K+ for better WAF, Business at 250K+
             if mau >= 50_000:
@@ -279,7 +341,14 @@ def calculate_financials(
             if mau >= 250_000:
                 cdn_cost = 200    # Cloudflare Business
 
-            costs["platform_ops"] = monitoring_cost + sentry_cost + cdn_cost + auth_service_cost
+            # fly.io support plan at scale
+            flyio_support = 0
+            if mau >= 100_000:
+                flyio_support = 29   # Standard support
+            if mau >= 500_000:
+                flyio_support = 199  # Premium support
+
+            costs["platform_ops"] = monitoring_cost + sentry_cost + cdn_cost + auth_service_cost + flyio_support
 
             # --- Free Tier Warnings ---
             # Groq rate limits
@@ -299,6 +368,11 @@ def calculate_financials(
             # R2 storage accumulation
             if total_gb_stored > R2_FREE_STORAGE_GB:
                 warnings.append(f"Cloudflare R2 free storage (10 GB) exceeded: {total_gb_stored:.0f} GB stored. Overage: ${(total_gb_stored - R2_FREE_STORAGE_GB) * PRICE_PER_GB_STORAGE:.2f}/mo (negligible).")
+
+            # Video delivery at scale — R2 egress is free but may need evaluation
+            total_bandwidth_tb = (total_views * avg_mb_per_view) / 1024 / 1024
+            if total_bandwidth_tb > 50:
+                warnings.append(f"Video delivery: {total_bandwidth_tb:,.0f} TB/mo bandwidth. R2 free egress works today, but at this volume consider Cloudflare Stream (~${total_views * (video_length_sec/60) / 1000:,.0f}/mo) or enterprise CDN pricing.")
         else:
             # --- Full Stack ---
             scale_factor = math.log10(mau + 1) / math.log10(100000)
@@ -325,10 +399,10 @@ def calculate_financials(
     subscription_revenue_net = subscription_revenue_gross - platform_fees
 
     non_subscriber_mau = mau * (1 - sub_percent / 100.0)
-    avg_mb_per_view = (video_length_sec / 30.0) * 15
-    gb_per_video = avg_mb_per_view / 1024
-    views_per_user = data_consumption_gb / gb_per_video if gb_per_video > 0 else 0
-    total_monthly_views = non_subscriber_mau * views_per_user
+    dau = mau * (dau_percent / 100.0)
+    # Ad views = non-subscriber DAUs × videos per day × 30 days
+    non_sub_dau = non_subscriber_mau * (dau_percent / 100.0)
+    total_monthly_views = non_sub_dau * videos_per_user_per_day * 30
 
     ad_revenue = 0
     ad_eligibility_message = ""
@@ -355,7 +429,9 @@ def calculate_financials(
         "total_revenue": total_revenue,
         "net_profit": net_profit,
         "ad_eligibility_message": ad_eligibility_message,
-        "videos_per_month": (mau * (dau_percent / 100.0) * (upload_percent / 100.0) * 30) if (mau > 0 and user_uploads_enabled) else seeded_videos_per_month,
+        "new_videos_per_month": (mau * (dau_percent / 100.0) * (upload_percent / 100.0) * 30) if (mau > 0 and user_uploads_enabled) else seeded_videos_per_month,
+        "total_monthly_video_views": (mau * (dau_percent / 100.0) * videos_per_user_per_day * 30) if mau > 0 else 0,
+        "videos_per_user_per_day": videos_per_user_per_day,
     }
 
 
@@ -732,12 +808,22 @@ with st.sidebar:
         if lean_mode_toggle and mau > LEAN_MODE_MAX_MAU:
             lean_mode = False
         dau_percent = st.slider("Daily Active Users (% of MAU)", 5, 50, 20, 1)
-        data_consumption_gb = st.slider("Monthly Data Consumption per User (GB)", 0.1, 20.0, 2.0, 0.1)
 
     with st.expander("Content & Uploads", expanded=True):
         upload_percent = st.slider("Content Uploads (% of DAU per day)", 0, 20, 5, 1,
                                    disabled=not user_uploads_enabled)
         video_length_sec = st.slider("Average Video Length (seconds)", 5, 120, 30, 5)
+
+    with st.expander("User Viewing Behavior", expanded=True):
+        videos_per_user_per_day = st.slider("Videos Watched per User per Day", 1, 100, 15, 1,
+            help="Average number of short videos a daily active user watches per session. TikTok avg is ~15-30.")
+
+        # Auto-calculate data consumption from videos/day + video length
+        # ~8MB per 30s of 720p progressive MP4 streamed
+        mb_per_video = (video_length_sec / 30.0) * 8
+        data_consumption_gb = round((videos_per_user_per_day * 30 * mb_per_video) / 1024, 2)
+        st.metric("Estimated Monthly Data per User", f"{data_consumption_gb:.1f} GB",
+                  help=f"Auto-calculated: {videos_per_user_per_day} videos/day × 30 days × {mb_per_video:.1f} MB/video")
         total_platform_videos = st.number_input(
             "Total Videos on Platform",
             min_value=0, max_value=10_000_000, value=0, step=100,
@@ -750,7 +836,9 @@ with st.sidebar:
         sub_percent = st.slider("% of MAUs that Subscribe", 0.25, 40.0, 2.0, 0.25, format="%.2f%%")
 
     with st.expander("Advertising Model", expanded=True):
-        ad_rpm = st.slider("Ad RPM (per 1,000 views)", 0.04, 0.50, 0.10, 0.01, format="$%.2f")
+        ad_rpm = st.slider("Ad eCPM (revenue per 1,000 ad impressions)", 1.0, 30.0, 8.0, 0.5, format="$%.1f",
+            help="eCPM for mobile video ads. Interstitial: $3-15, Rewarded video: $10-30, Banner: $0.50-2. Default $8 is mid-range interstitial.")
+        st.caption(f"Ads shown every ~{int(1/(AD_FILL_RATE))} videos ({AD_FILL_RATE*100:.0f}% fill rate) × {AD_PROGRAMMATIC_FILL*100:.0f}% programmatic fill")
 
 financials = calculate_financials(
     mau, dau_percent, upload_percent, video_length_sec,
@@ -767,6 +855,7 @@ financials = calculate_financials(
     total_platform_videos=total_platform_videos,
     llm_provider=llm_provider,
     num_target_languages=num_target_languages,
+    videos_per_user_per_day=videos_per_user_per_day,
 )
 
 # --- Tabbed Interface ---
@@ -775,7 +864,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["Financial Dashboard", "Syst
 with tab1:
     # Mode indicators
     if lean_mode:
-        st.info(f"LEAN STARTUP MODE (max {LEAN_MODE_MAX_MAU:,} MAU): Supabase DB + Auth, fly.io hosting, free monitoring (Axiom + Sentry), Cloudflare free CDN.")
+        st.info(f"LEAN STARTUP MODE (up to {LEAN_MODE_MAX_MAU:,.0f} MAU): Supabase Pro + fly.io Go backend. Scales from $28/mo at 10K MAU to ~$4,700/mo at 1M MAU.")
     if not user_uploads_enabled:
         st.info(f"CURATED CONTENT MODE: No user uploads. Team seeds {seeded_videos_per_month} videos/month.")
 
@@ -788,17 +877,33 @@ with tab1:
     provider_summary += f" | {num_target_languages} languages"
     st.caption(provider_summary)
 
-    st.header("Financial Summary")
+    # --- Key Activity Metrics ---
+    st.header("Activity Metrics")
+    m1, m2, m3, m4 = st.columns(4)
+    dau_count = mau * (dau_percent / 100.0)
+    m1.metric("Daily Active Users", f"{dau_count:,.0f}")
+    m2.metric("Videos/User/Day", f"{videos_per_user_per_day}")
+    m3.metric("Total Views/Month", f"{financials.get('total_monthly_video_views', 0):,.0f}")
+    m4.metric("New Videos/Month", f"{financials.get('new_videos_per_month', 0):,.0f}")
+
+    st.markdown("---")
+
+    # --- Financial Summary ---
+    st.header("Monthly P&L")
     profit_color = "normal"
     if financials['net_profit'] > 0: profit_color = "inverse"
     elif financials['net_profit'] < 0: profit_color = "off"
-    st.metric(label="Net Monthly Profit (Revenue - Costs)", value=f"${financials['net_profit']:,.0f}", delta_color=profit_color)
+
+    p1, p2, p3 = st.columns(3)
+    p1.metric(label="Revenue", value=f"${financials['total_revenue']:,.0f}")
+    p2.metric(label="Costs", value=f"${financials['costs']['total']:,.0f}")
+    p3.metric(label="Net Profit", value=f"${financials['net_profit']:,.0f}", delta_color=profit_color)
+
     st.markdown("---")
 
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Revenue Breakdown")
-        st.metric(label="Total Monthly Revenue (Net)", value=f"${financials['total_revenue']:,.0f}")
         st.metric(label="Subscription Revenue (Gross)", value=f"${financials['subscription_revenue_gross']:,.0f}")
         st.metric(label="App Store Commission (15%)", value=f"-${financials['platform_fees']:,.0f}")
         st.metric(label="Subscription Revenue (Net)", value=f"${financials['subscription_revenue_net']:,.0f}")
@@ -819,9 +924,65 @@ with tab1:
             cols[3].caption(f"Translate: ${detail.get('translate', 0):,.2f}")
             cols[4].caption(f"Definitions: ${detail.get('definitions', 0):,.2f}")
 
+        st.caption(f"*Definitions cost scales with new videos ({financials.get('new_videos_per_month', 0):,.0f}/mo), not MAU — results are cached in Supabase.*")
+
         st.metric(label="Storage & Delivery", value=f"${financials['costs']['storage_delivery']:,.0f}")
         st.metric(label="Database & Compute", value=f"${financials['costs']['database'] + financials['costs']['compute_recommendation']:,.0f}")
         st.metric(label="Platform Ops (CDN, Auth, Monitoring, Moderation)", value=f"${financials['costs']['platform_ops']:,.0f}")
+
+    st.markdown("---")
+
+    # Profit breakdown — waterfall showing where profit comes from
+    st.subheader("Profit Breakdown")
+
+    total_costs = financials['costs']['total']
+    sub_net = financials['subscription_revenue_net']
+    ad_rev = financials['ad_revenue']
+    net = financials['net_profit']
+    detail = financials.get("cost_detail", {})
+
+    # Revenue sources
+    st.markdown("**Revenue Sources**")
+    rev_cols = st.columns(3)
+    rev_cols[0].metric("Subscriptions (net)", f"${sub_net:,.0f}",
+                       delta=f"{mau * (sub_percent / 100.0):,.0f} subscribers × ${sub_price:.2f} − 15% fee")
+    rev_cols[1].metric("Advertising", f"${ad_rev:,.0f}",
+                       delta=f"${ad_rpm:.2f} RPM × {AD_FILL_RATE*100:.0f}% fill")
+    rev_cols[2].metric("Total Revenue", f"${sub_net + ad_rev:,.0f}")
+
+    # Cost breakdown with per-unit costs
+    st.markdown("**Cost Drivers**")
+    cost_items = [
+        ("Media Processing", financials['costs']['media_processing'],
+         f"STT ${detail.get('stt',0):,.2f} + Defs ${detail.get('definitions',0):,.2f} + Trans ${detail.get('transcode',0):,.2f}"),
+        ("Storage & Delivery", financials['costs']['storage_delivery'],
+         f"R2 storage + CDN reads for {financials.get('total_monthly_video_views',0):,.0f} views"),
+        ("Database", financials['costs']['database'],
+         f"Supabase Pro — {detail.get('db_tier', 'Micro')}" + (f" + ${detail.get('auth_overage', 0):,.0f} auth overage" if detail.get('auth_overage', 0) > 0 else "") if lean_mode else "Managed PostgreSQL"),
+        ("Compute", financials['costs']['compute_recommendation'],
+         f"fly.io — {detail.get('compute_tier', 'shared')}" if lean_mode else "Dedicated servers"),
+        ("Platform Ops", financials['costs']['platform_ops'],
+         "Monitoring + CDN + Auth"),
+    ]
+
+    for name, amount, desc in cost_items:
+        if amount > 0:
+            c1, c2, c3 = st.columns([2, 1, 3])
+            c1.markdown(f"**{name}**")
+            c2.markdown(f"**−${amount:,.2f}**")
+            c3.caption(desc)
+
+    st.markdown("---")
+
+    # Per-user economics
+    st.markdown("**Unit Economics (per MAU per month)**")
+    if mau > 0:
+        unit_cols = st.columns(4)
+        unit_cols[0].metric("Revenue/MAU", f"${(sub_net + ad_rev) / mau:.4f}")
+        unit_cols[1].metric("Cost/MAU", f"${total_costs / mau:.4f}")
+        unit_cols[2].metric("Profit/MAU", f"${net / mau:.4f}")
+        margin = ((sub_net + ad_rev - total_costs) / max(sub_net + ad_rev, 0.01)) * 100
+        unit_cols[3].metric("Margin", f"{margin:.1f}%")
 
     st.markdown("---")
 
@@ -836,7 +997,8 @@ with tab1:
         else:
             st.warning("Set subscription price and conversion rate to calculate breakeven.")
 
-        st.markdown(f"**Videos processed this month:** {financials['videos_per_month']:,.0f}")
+        st.markdown(f"**New videos processed this month:** {financials.get('new_videos_per_month', 0):,.0f}")
+        st.markdown(f"**Total video views this month:** {financials.get('total_monthly_video_views', 0):,.0f}")
         mode_label = "Lean" if lean_mode else "Full Stack"
         uploads_label = "Curated Only" if not user_uploads_enabled else "User Uploads"
         st.markdown(f"**Mode:** {mode_label} | **Content:** {uploads_label}")
@@ -925,6 +1087,7 @@ with tab3:
             total_platform_videos=total_platform_videos,
             llm_provider=llm_provider,
             num_target_languages=num_target_languages,
+            videos_per_user_per_day=videos_per_user_per_day,
         )
         defaults.update(overrides)
         return calculate_financials(**defaults)
@@ -1781,15 +1944,16 @@ Trigger next page fetch when user is 3-5 items from the end of the current page.
     st.subheader("Milestone 5: Tappable Subtitles")
     st.caption("THE core language learning feature. User taps a character in the burned-in subtitles → sees word translation + definition.")
 
-    st.checkbox("5.1 — Add pinyin generation to pipeline (pypinyin → vocab_words.pinyin), backfill existing 554 words", key="m5_1")
-    st.checkbox("5.2 — Fetch word definitions from Supabase: video_words JOIN vocab_words JOIN word_definitions (filtered by user's native_language)", key="m5_2")
-    st.checkbox("5.3 — Map character tap → word lookup: when user taps a character, match it to the jieba-segmented word in video_words by text + timestamp", key="m5_3")
-    st.checkbox("5.4 — Build WordPopup bottom sheet (@gorhom/bottom-sheet): word, pinyin, translation, contextual definition, POS", key="m5_4")
-    st.checkbox("5.5 — Install expo-speech, play pronunciation on word tap", key="m5_5")
-    st.checkbox("5.6 — Highlight tapped word: apply highlight style to ALL character boxes belonging to the matched word", key="m5_6")
-    st.checkbox("5.7 — Pause video when popup opens, resume on close", key="m5_7")
+    st.checkbox("5.1 — Add pinyin generation to pipeline (pypinyin → vocab_words.pinyin), backfill existing 554 words", value=True, key="m5_1")
+    st.checkbox("5.2 — Fetch word definitions from Supabase: video_words JOIN vocab_words JOIN word_definitions (filtered by user's native_language)", value=True, key="m5_2")
+    st.checkbox("5.3 — Map character tap → word lookup: when user taps a character, match it to the jieba-segmented word in video_words by text + timestamp", value=True, key="m5_3")
+    st.checkbox("5.4 — Build WordPopup (custom frosted glass card): word, pinyin, translation, contextual definition, POS", value=True, key="m5_4")
+    st.checkbox("5.5 — Install expo-speech, play pronunciation on word tap", value=True, key="m5_5")
+    st.checkbox("5.6 — Highlight tapped word: apply highlight style to ALL character boxes belonging to the matched word", value=True, key="m5_6")
+    st.checkbox("5.7 — Pause video when popup opens (does NOT auto-resume on close)", value=True, key="m5_7")
     st.checkbox("5.8 — Add 'Save' button in popup → functional flashcard save (wired in M6)", value=True, key="m5_8")
-    st.checkbox("5.9 — Test: tap character → correct word identified → translation in user's native language + pinyin + audio", key="m5_9")
+    st.checkbox("5.9 — Regression tests: tap → word match → highlight → popup → save (subtitleTap.test.tsx)", value=True, key="m5_9")
+    st.checkbox("5.10 — Robust word matching: handles CJK single-char taps on multi-char words, punctuation normalization, wider time window (±3s), shared wordMatcher utility", value=True, key="m5_10")
 
     with st.expander("M5 Details: Architecture"):
         st.markdown("""
@@ -1920,9 +2084,25 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 
     st.markdown("---")
 
-    # ── Milestone 8: Offline Dictionaries — REMOVED ──
-    st.subheader("Milestone 8: Offline Dictionaries (Removed)")
-    st.caption("Removed — LLM-generated definitions from the pipeline cover all words with contextual accuracy. Offline SQLite dictionaries and the adapter factory are unnecessary complexity for Phase 1. Can revisit in Phase 2 if offline word lookup without network is needed.")
+    # ── Milestone 8: Hybrid OCR+STT Subtitle System ──
+    st.subheader("Milestone 8: Hybrid OCR+STT Subtitles")
+    st.caption("Run both OCR and STT on every video, merge results for 92-96% accuracy. Experiment with 3 approaches: remove+re-render all, remove subtitle region only, or hybrid overlay (no removal).")
+
+    st.checkbox("8.0 — Experiment: build prototype script comparing 3 approaches (remove all, remove region, overlay) on 3-5 test videos", key="m8_0")
+    st.checkbox("8.1 — Decision point: pick winning approach based on visual quality, accuracy, processing time", key="m8_1")
+    st.checkbox("8.2 — Add merge_ocr_stt() to pipeline: fuzzy-match OCR+STT, tag detections as 'ocr'/'stt'/'both'", key="m8_2")
+    st.checkbox("8.3 — Always run both OCR and STT (remove auto-detect branch)", key="m8_3")
+    st.checkbox("8.4 — LLM disambiguation: Claude Haiku resolves OCR/STT disagreements", key="m8_4")
+    st.checkbox("8.5 — Inpainting step (if approach A/B wins): LaMa/ProPainter subtitle removal", key="m8_5")
+    st.checkbox("8.6 — Pipeline tests: merge algorithm, temporal overlap, fuzzy match, backward compat", key="m8_6")
+    st.checkbox("8.7 — DB migration: videos.subtitle_source CHECK → add 'hybrid'", key="m8_7")
+    st.checkbox("8.8 — Mobile: extend Detection type with source field", key="m8_8")
+    st.checkbox("8.9 — Mobile: update PostSingle rendering (approach-dependent)", key="m8_9")
+    st.checkbox("8.10 — Mobile: backward compat for existing OCR-only videos", key="m8_10")
+    st.checkbox("8.11 — Mobile tests: hybrid rendering, backward compat, word tap from all sources", key="m8_11")
+    st.checkbox("8.12 — Backfill script: reprocess existing videos through hybrid pipeline", key="m8_12")
+    st.checkbox("8.13 — Accuracy validation: manual verification on 3-5 videos", key="m8_13")
+    st.checkbox("8.14 — Update Streamlit + architecture docs", key="m8_14")
 
     st.markdown("---")
 
@@ -2012,7 +2192,7 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 | **M3** | First video end-to-end — OCR pipeline (burned-in subtitles) | M1.5, M2 | **Done** |
 | **M3.5** | STT subtitle path — Whisper for videos without burned-in subs | M3 | 1 day |
 | **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | **Done** |
-| **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | 1-2 days |
+| **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | **Done** |
 | **M6** | Flashcard save + FSRS review (ts-fsrs) + review hub | M5 | **Done** |
 | **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
 | **M8** | ~~Offline dictionaries + adapter factory~~ — **Removed** (LLM definitions sufficient) | — | — |
