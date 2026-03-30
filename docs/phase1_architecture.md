@@ -44,19 +44,19 @@
 **Flashcards & Vocab**
 - R17: Save any word as a flashcard (from word tap or subtitle context)
 - R18: Flashcard review with FSRS (Free Spaced Repetition Scheduler) algorithm via `ts-fsrs`
-- R19: Flashcards work offline (MMKV persistence, sync on reconnect)
+- R19: ~~Flashcards work offline (MMKV persistence, sync on reconnect)~~ → Deferred to Phase 2
 - R20: On-device TTS for instant word pronunciation (expo-speech, free)
-- R21: High-quality pre-generated TTS audio from R2 for flashcard review
+- R21: ~~High-quality pre-generated TTS audio from R2~~ → Deferred to Phase 2 (on-device expo-speech sufficient)
 
 **Language System**
 - R22: User sets one native language + one or more learning languages
 - R23: Learning languages (Phase 1): English, Chinese
 - R24: Native languages (definitions target): English, Spanish, Chinese, Japanese, Korean, Hindi, French, German, Portuguese, Arabic, Italian, Russian (12 total)
 - R25: English and Chinese can be both learning AND native
-- R26: Offline bilingual dictionaries (SQLite, ~20 pairs), auto-downloaded on language change
-- R27: Chinese dictionaries handle simplified/traditional characters + pinyin
+- R26: ~~Offline bilingual dictionaries (SQLite)~~ → Removed (LLM definitions sufficient)
+- R27: ~~Chinese dictionaries handle simplified/traditional + pinyin~~ → Removed (pipeline handles pinyin)
 - R28: LLM contextual definitions for every word in every video, per native language
-- R29: Dictionary adapter factory with fallback to remote API for missing offline pairs
+- R29: ~~Dictionary adapter factory~~ → Removed (LLM definitions serve all lookup needs)
 
 **Progress**
 - R30: Daily streak tracking with streak badges
@@ -67,7 +67,7 @@
 - R33: Admin CLI uploads video → triggers AI pipeline
 - R34: Pipeline: detect subtitle source (OCR or STT) → Translation → Contextual Definitions (LLM) → store in R2
 - R35: OCR via PaddleOCR PP-OCRv5 (VideOCR SSIM dedup) for videos with burned-in subtitles; STT via Groq Whisper for videos with audio only (M3.5)
-- R36: Pre-generated TTS for all ~100K words per learning language, stored in R2
+- R36: ~~Pre-generated TTS for all ~100K words~~ → Deferred to Phase 2 (on-device expo-speech for now)
 - R37: Videos marked "ready" after pipeline completes; Supabase Realtime notifies clients
 
 ### 1.3 Phase 1.5 Requirements (Deferred)
@@ -84,8 +84,8 @@
 - N3: Video time-to-first-frame < 200ms (prefetch next 2 videos while current plays)
 - N3a: Thumbnail placeholder shown instantly while video buffers (eliminates black flash on swipe)
 - N3b: Design for TikTok-style swiping: users skip 15-20 videos (within 1-3s each) before fully watching one
-- N4: Flashcard review works fully offline
-- N5: Dictionary lookup < 100ms (local SQLite)
+- N4: ~~Flashcard review works fully offline~~ → Deferred to Phase 2 (requires MMKV)
+- N5: ~~Dictionary lookup < 100ms (local SQLite)~~ → Removed (definitions pre-loaded from Supabase per video)
 
 ---
 

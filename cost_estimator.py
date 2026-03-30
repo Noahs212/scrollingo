@@ -1427,6 +1427,7 @@ users ─────────────┬──────────�
     end_ms          INT NOT NULL,
     word_index      SMALLINT NOT NULL,
     display_text    TEXT NOT NULL,
+    transcript_source TEXT CHECK (transcript_source IN ('stt', 'ocr', 'merged')),  -- M6.5: tracks extraction method
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
@@ -1842,7 +1843,7 @@ This means M11.4 ("batch LLM definitions for all languages") is already handled 
     st.checkbox("3.5.5 — Generate bboxes.json with centered subtitle positions (no burned-in text to overlay — app renders visible subtitles)", key="m3_5_5")
     st.checkbox("3.5.6 — Auto-detect subtitle source: check if video has burned-in text (OCR on 3 sample frames) → route to OCR or STT path", key="m3_5_6")
     st.checkbox("3.5.7 — Upload audio.mp3 to R2 for future reference", key="m3_5_7")
-    st.checkbox("3.5.8 — Set video.subtitle_source = 'stt' or 'ocr' in DB", key="m3_5_8")
+    st.checkbox("3.5.8 — Set video.subtitle_source = 'stt', 'ocr', or 'both' in DB", key="m3_5_8")
     st.checkbox("3.5.9 — Test: process one video without subtitles → verify app shows generated subtitles", key="m3_5_9")
 
     with st.expander("M3.5 Details: OCR vs STT auto-detection"):
@@ -2150,25 +2151,25 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 
     st.markdown("---")
 
-    # ── Milestone 8: Hybrid OCR+STT Subtitle System ──
-    st.subheader("Milestone 8: Hybrid OCR+STT Subtitles")
-    st.caption("Run both OCR and STT on every video, merge results for 92-96% accuracy. Experiment with 3 approaches: remove+re-render all, remove subtitle region only, or hybrid overlay (no removal).")
+    # ── Milestone 6.5: Unified OCR+STT Transcript ──
+    st.subheader("Milestone 6.5: Unified OCR+STT Transcript")
+    st.caption("Merge OCR content (accurate text) + STT timing (word-level alignment). Subtitle drawer shows only spoken subtitles. Title cards filtered out via cross-referencing.")
 
-    st.checkbox("8.0 — Experiment: build prototype script comparing 3 approaches (remove all, remove region, overlay) on 3-5 test videos", key="m8_0")
-    st.checkbox("8.1 — Decision point: pick winning approach based on visual quality, accuracy, processing time", key="m8_1")
-    st.checkbox("8.2 — Add merge_ocr_stt() to pipeline: fuzzy-match OCR+STT, tag detections as 'ocr'/'stt'/'both'", key="m8_2")
-    st.checkbox("8.3 — Always run both OCR and STT (remove auto-detect branch)", key="m8_3")
-    st.checkbox("8.4 — LLM disambiguation: Claude Haiku resolves OCR/STT disagreements", key="m8_4")
-    st.checkbox("8.5 — Inpainting step (if approach A/B wins): LaMa/ProPainter subtitle removal", key="m8_5")
-    st.checkbox("8.6 — Pipeline tests: merge algorithm, temporal overlap, fuzzy match, backward compat", key="m8_6")
-    st.checkbox("8.7 — DB migration: videos.subtitle_source CHECK → add 'hybrid'", key="m8_7")
-    st.checkbox("8.8 — Mobile: extend Detection type with source field", key="m8_8")
-    st.checkbox("8.9 — Mobile: update PostSingle rendering (approach-dependent)", key="m8_9")
-    st.checkbox("8.10 — Mobile: backward compat for existing OCR-only videos", key="m8_10")
-    st.checkbox("8.11 — Mobile tests: hybrid rendering, backward compat, word tap from all sources", key="m8_11")
-    st.checkbox("8.12 — Backfill script: reprocess existing videos through hybrid pipeline", key="m8_12")
-    st.checkbox("8.13 — Accuracy validation: manual verification on 3-5 videos", key="m8_13")
-    st.checkbox("8.14 — Update Streamlit + architecture docs", key="m8_14")
+    st.checkbox("6.5.1 — Pipeline: always run both OCR + STT on every video (remove auto-detect branch)", value=True, key="m6_5_1")
+    st.checkbox("6.5.2 — Pipeline: merge_ocr_stt() — fuzzy match OCR text to STT timing (≥50% char Jaccard = match, <50% = title)", value=True, key="m6_5_2")
+    st.checkbox("6.5.3 — Pipeline: upload 3 files per video to R2: bboxes.json (OCR), stt.json (raw STT), transcript.json (merged)", value=True, key="m6_5_3")
+    st.checkbox("6.5.4 — DB: subtitle_source CHECK updated to allow 'both'", value=True, key="m6_5_4")
+    st.checkbox("6.5.5 — DB: video_words.transcript_source column (stt/ocr/merged)", value=True, key="m6_5_5")
+    st.checkbox("6.5.6 — Mobile: useTranscript hook fetches transcript.json (falls back stt.json → bboxes.json)", value=True, key="m6_5_6")
+    st.checkbox("6.5.7 — Mobile: SubtitleDrawer uses transcript data (only spoken, STT-timed)", value=True, key="m6_5_7")
+    st.checkbox("6.5.8 — Mobile: SubtitleTapOverlay uses OCR bboxes.json (tap targets, unchanged)", value=True, key="m6_5_8")
+    st.checkbox("6.5.9 — Pipeline tests: T1-T10 (merge exact match, fuzzy match, title filtering, gap filling, time tolerance, empty inputs)", key="m6_5_9")
+    st.checkbox("6.5.10 — Mobile tests: T11-T16 (transcript fallback, drawer spoken-only, timing alignment, word tap, regression)", key="m6_5_10")
+    st.checkbox("6.5.11 — Integration test: full pipeline → app displays both overlays correctly", key="m6_5_11")
+    st.checkbox("6.5.12 — Backfill existing videos with transcript.json", key="m6_5_12")
+    st.checkbox("6.5.13 — Update Streamlit + architecture docs", value=True, key="m6_5_13")
+
+    st.markdown("---")
 
     st.markdown("---")
 
@@ -2256,12 +2257,12 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 | **M1.5** | OCR + tappable subtitles spike (validate core UX) | M1 | **Done** |
 | **M2** | R2 Storage + CDN | — | **Done** |
 | **M3** | First video end-to-end — OCR pipeline (burned-in subtitles) | M1.5, M2 | **Done** |
-| **M3.5** | STT subtitle path — Whisper for videos without burned-in subs | M3 | 1 day |
+| **M3.5** | STT subtitle path — Whisper for videos without burned-in subs | M3 | **Done** |
 | **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | **Done** |
 | **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | **Done** |
 | **M6** | Flashcard save + FSRS review (ts-fsrs) + review hub | M5 | **Done** |
+| **M6.5** | Unified OCR+STT transcript — merge OCR text + STT timing, filter titles | M3.5, M5 | **In Progress** |
 | **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
-| **M8** | ~~Offline dictionaries + adapter factory~~ — **Removed** (LLM definitions sufficient) | — | — |
 | **M9** | Progress tracking + streaks | M4, M6 | 1-2 days |
 | **M10** | Go backend (centralize API + port pipeline) | M1, M2, M3 | 5-7 days |
 | **M11** | Content pipeline (batch 100 videos) | M10 | 3-5 days |

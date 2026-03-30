@@ -124,7 +124,7 @@ CREATE TABLE videos (
 
     -- Subtitle extraction (R13-R15)
     subtitle_source   TEXT                               -- NULL = not yet determined; set by pipeline
-        CHECK (subtitle_source IN ('stt', 'ocr')),
+        CHECK (subtitle_source IN ('stt', 'ocr', 'both')),  -- M6.5: 'both' = unified OCR+STT
 
     -- Processing (R33, R37)
     status            TEXT NOT NULL DEFAULT 'processing'
@@ -216,6 +216,7 @@ CREATE TABLE video_words (
     end_ms          INT NOT NULL,
     word_index      SMALLINT NOT NULL,         -- Position in transcript (0-based)
     display_text    TEXT NOT NULL,             -- How the word appears in subtitles
+    transcript_source TEXT CHECK (transcript_source IN ('stt', 'ocr', 'merged')),  -- M6.5: which extraction method
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CHECK (end_ms > start_ms)
 );

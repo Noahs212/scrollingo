@@ -72,6 +72,7 @@ jest.mock("../../hooks/useUser", () => ({
 
 jest.mock("../../hooks/useSubtitles", () => ({
   useSubtitles: () => ({ data: null, isLoading: false }),
+  useTranscript: () => ({ data: null, isLoading: false }),
 }));
 
 jest.mock("../../hooks/useWordDefinitions", () => ({

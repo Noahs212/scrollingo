@@ -60,7 +60,7 @@ jest.mock("../../../hooks/useUser", () => ({
 // Mock useSubtitles (used by PostSingle for OCR data)
 jest.mock("../../../hooks/useSubtitles", () => ({
   useSubtitles: jest.fn(() => ({ data: null })),
-  useSttSubtitles: jest.fn(() => ({ data: null })),
+  useTranscript: jest.fn(() => ({ data: null })),
 }));
 
 // Mock useWordDefinitions (used by PostSingle for translations)
@@ -116,7 +116,7 @@ jest.mock("@tanstack/react-query", () => ({
 // Mock useSubtitles
 jest.mock("../../../hooks/useSubtitles", () => ({
   useSubtitles: jest.fn(() => ({ data: null })),
-  useSttSubtitles: jest.fn(() => ({ data: null })),
+  useTranscript: jest.fn(() => ({ data: null })),
 }));
 
 // Mock posts service (may still be used by overlay)
