@@ -1,399 +1,512 @@
 {
-  "video": "f6a8c079-0a01-4b3c-92c8-0fe278b6699b",
+  "video": "03924b3f-ff82-48ba-992b-6d06537484df",
   "resolution": {
     "width": 720,
     "height": 1280
   },
-  "duration_ms": 32300,
-  "frame_interval_ms": 250,
+  "duration_ms": 32000,
+  "subtitle_source": "stt",
   "segments": [
     {
-      "start_ms": 8750,
-      "end_ms": 10500,
+      "start_ms": 0,
+      "end_ms": 3000,
       "detections": [
         {
-          "text": "Wonde",
-          "confidence": 0.9116,
+          "text": "我记得Daniel Caesar 有首歌好像是这样唱的",
+          "confidence": 1.0,
           "bbox": {
-            "x": 282,
-            "y": 616,
-            "width": 136,
-            "height": 36
+            "x": 63,
+            "y": 1049,
+            "width": 594,
+            "height": 64
           },
           "chars": [
             {
-              "char": "W",
-              "x": 282,
-              "y": 616,
-              "width": 27,
-              "height": 36
+              "char": "我",
+              "x": 63,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
-              "char": "o",
-              "x": 309,
-              "y": 616,
-              "width": 27,
-              "height": 36
+              "char": "记",
+              "x": 85,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
-              "char": "n",
-              "x": 336,
-              "y": 616,
-              "width": 27,
-              "height": 36
+              "char": "得",
+              "x": 107,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
-              "char": "d",
-              "x": 364,
-              "y": 616,
-              "width": 27,
-              "height": 36
-            },
-            {
-              "char": "e",
-              "x": 391,
-              "y": 616,
-              "width": 27,
-              "height": 36
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 12750,
-      "end_ms": 14000,
-      "detections": [
-        {
-          "text": "rain",
-          "confidence": 0.9884,
-          "bbox": {
-            "x": 322,
-            "y": 622,
-            "width": 68,
-            "height": 28
-          },
-          "chars": [
-            {
-              "char": "r",
-              "x": 322,
-              "y": 622,
-              "width": 17,
-              "height": 28
+              "char": "D",
+              "x": 129,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
               "char": "a",
-              "x": 339,
-              "y": 622,
-              "width": 17,
-              "height": 28
+              "x": 151,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 173,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
               "char": "i",
-              "x": 356,
-              "y": 622,
-              "width": 17,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 373,
-              "y": 622,
-              "width": 17,
-              "height": 28
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 15750,
-      "end_ms": 17000,
-      "detections": [
-        {
-          "text": "thunder",
-          "confidence": 0.996,
-          "bbox": {
-            "x": 284,
-            "y": 620,
-            "width": 146,
-            "height": 28
-          },
-          "chars": [
-            {
-              "char": "t",
-              "x": 284,
-              "y": 620,
-              "width": 21,
-              "height": 28
-            },
-            {
-              "char": "h",
-              "x": 305,
-              "y": 620,
-              "width": 21,
-              "height": 28
-            },
-            {
-              "char": "u",
-              "x": 326,
-              "y": 620,
-              "width": 21,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 347,
-              "y": 620,
-              "width": 21,
-              "height": 28
-            },
-            {
-              "char": "d",
-              "x": 367,
-              "y": 620,
-              "width": 21,
-              "height": 28
+              "x": 195,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
               "char": "e",
-              "x": 388,
-              "y": 620,
-              "width": 21,
-              "height": 28
-            },
-            {
-              "char": "r",
-              "x": 409,
-              "y": 620,
-              "width": 21,
-              "height": 28
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 19500,
-      "end_ms": 20500,
-      "detections": [
-        {
-          "text": "around",
-          "confidence": 0.9736,
-          "bbox": {
-            "x": 292,
-            "y": 618,
-            "width": 134,
-            "height": 36
-          },
-          "chars": [
-            {
-              "char": "a",
-              "x": 292,
-              "y": 618,
+              "x": 217,
+              "y": 1049,
               "width": 22,
-              "height": 36
+              "height": 64
             },
-            {
-              "char": "r",
-              "x": 314,
-              "y": 618,
-              "width": 22,
-              "height": 36
-            },
-            {
-              "char": "o",
-              "x": 337,
-              "y": 618,
-              "width": 22,
-              "height": 36
-            },
-            {
-              "char": "u",
-              "x": 359,
-              "y": 618,
-              "width": 22,
-              "height": 36
-            },
-            {
-              "char": "n",
-              "x": 381,
-              "y": 618,
-              "width": 22,
-              "height": 36
-            },
-            {
-              "char": "d",
-              "x": 404,
-              "y": 618,
-              "width": 22,
-              "height": 36
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 22750,
-      "end_ms": 24250,
-      "detections": [
-        {
-          "text": "狸小路店",
-          "confidence": 0.973,
-          "bbox": {
-            "x": 658,
-            "y": 438,
-            "width": 38,
-            "height": 106
-          },
-          "chars": [
-            {
-              "char": "狸",
-              "x": 658,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            },
-            {
-              "char": "小",
-              "x": 668,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            },
-            {
-              "char": "路",
-              "x": 677,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            },
-            {
-              "char": "店",
-              "x": 686,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 25250,
-      "end_ms": 26750,
-      "detections": [
-        {
-          "text": "狸小路店",
-          "confidence": 0.9344,
-          "bbox": {
-            "x": 658,
-            "y": 438,
-            "width": 38,
-            "height": 106
-          },
-          "chars": [
-            {
-              "char": "狸",
-              "x": 658,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            },
-            {
-              "char": "小",
-              "x": 668,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            },
-            {
-              "char": "路",
-              "x": 677,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            },
-            {
-              "char": "店",
-              "x": 686,
-              "y": 438,
-              "width": 10,
-              "height": 106
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 28000,
-      "end_ms": 30250,
-      "detections": [
-        {
-          "text": "loose...",
-          "confidence": 0.9561,
-          "bbox": {
-            "x": 292,
-            "y": 616,
-            "width": 132,
-            "height": 40
-          },
-          "chars": [
             {
               "char": "l",
-              "x": 292,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "x": 239,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
-              "char": "o",
-              "x": 308,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "char": " ",
+              "x": 261,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
-              "char": "o",
-              "x": 325,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "char": "C",
+              "x": 283,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 305,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 327,
+              "y": 1049,
+              "width": 22,
+              "height": 64
             },
             {
               "char": "s",
-              "x": 342,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "x": 349,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 371,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 393,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 415,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "有",
+              "x": 437,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "首",
+              "x": 459,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "歌",
+              "x": 481,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "好",
+              "x": 503,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "像",
+              "x": 525,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "是",
+              "x": 547,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "这",
+              "x": 569,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "样",
+              "x": 591,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "唱",
+              "x": 613,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            },
+            {
+              "char": "的",
+              "x": 635,
+              "y": 1049,
+              "width": 22,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 30000,
+      "end_ms": 32299,
+      "detections": [
+        {
+          "text": "优优独播剧场——YoYo Television Series Exclusive",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 60,
+            "y": 1049,
+            "width": 600,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "优",
+              "x": 60,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "优",
+              "x": 75,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "独",
+              "x": 90,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "播",
+              "x": 105,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "剧",
+              "x": 120,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "场",
+              "x": 135,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "—",
+              "x": 150,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "—",
+              "x": 165,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "Y",
+              "x": 180,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 195,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "Y",
+              "x": 210,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 225,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 240,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "T",
+              "x": 255,
+              "y": 1049,
+              "width": 15,
+              "height": 64
             },
             {
               "char": "e",
-              "x": 358,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "x": 270,
+              "y": 1049,
+              "width": 15,
+              "height": 64
             },
             {
-              "char": ".",
-              "x": 374,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "char": "l",
+              "x": 285,
+              "y": 1049,
+              "width": 15,
+              "height": 64
             },
             {
-              "char": ".",
-              "x": 391,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "char": "e",
+              "x": 300,
+              "y": 1049,
+              "width": 15,
+              "height": 64
             },
             {
-              "char": ".",
-              "x": 408,
-              "y": 616,
-              "width": 16,
-              "height": 40
+              "char": "v",
+              "x": 315,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 330,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 345,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 360,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 375,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 390,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 405,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "S",
+              "x": 420,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 435,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 450,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 465,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 480,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 495,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 510,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "E",
+              "x": 525,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "x",
+              "x": 540,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "c",
+              "x": 555,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 570,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "u",
+              "x": 585,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 600,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 615,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "v",
+              "x": 630,
+              "y": 1049,
+              "width": 15,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 645,
+              "y": 1049,
+              "width": 15,
+              "height": 64
             }
           ]
         }

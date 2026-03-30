@@ -1,346 +1,528 @@
 {
-  "video": "13ae0119-b9f3-42f4-9a98-3739f30b35f0",
+  "video": "47170b04-1551-4e7a-b3f5-59a4a6251b05",
   "resolution": {
     "width": 720,
     "height": 1280
   },
   "duration_ms": 11633,
-  "frame_interval_ms": 250,
+  "subtitle_source": "ocr",
+  "frame_interval_ms": 100,
   "segments": [
     {
-      "start_ms": 250,
-      "end_ms": 1250,
+      "start_ms": 0,
+      "end_ms": 100,
+      "detections": [
+        {
+          "text": "灌醉",
+          "confidence": 0.9942,
+          "bbox": {
+            "x": 257,
+            "y": 760,
+            "width": 423,
+            "height": 250
+          },
+          "chars": [
+            {
+              "char": "灌",
+              "x": 257,
+              "y": 760,
+              "width": 212,
+              "height": 250
+            },
+            {
+              "char": "醉",
+              "x": 468,
+              "y": 760,
+              "width": 212,
+              "height": 250
+            }
+          ]
+        },
+        {
+          "text": "把自己",
+          "confidence": 0.9945,
+          "bbox": {
+            "x": 38,
+            "y": 655,
+            "width": 404,
+            "height": 167
+          },
+          "chars": [
+            {
+              "char": "把",
+              "x": 38,
+              "y": 655,
+              "width": 135,
+              "height": 167
+            },
+            {
+              "char": "自",
+              "x": 173,
+              "y": 655,
+              "width": 135,
+              "height": 167
+            },
+            {
+              "char": "己",
+              "x": 307,
+              "y": 655,
+              "width": 135,
+              "height": 167
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 100,
+      "end_ms": 300,
+      "detections": [
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9921,
+          "bbox": {
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "有",
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "害",
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "康",
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "年",
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "禁",
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 300,
+      "end_ms": 1100,
       "detections": [
         {
           "text": "自己一个人",
           "confidence": 0.9996,
           "bbox": {
-            "x": 202,
-            "y": 858,
-            "width": 320,
-            "height": 74
+            "x": 207,
+            "y": 859,
+            "width": 316,
+            "height": 69
           },
           "chars": [
             {
               "char": "自",
-              "x": 202,
-              "y": 858,
-              "width": 64,
-              "height": 74
+              "x": 207,
+              "y": 859,
+              "width": 63,
+              "height": 69
             },
             {
               "char": "己",
-              "x": 266,
-              "y": 858,
-              "width": 64,
-              "height": 74
+              "x": 270,
+              "y": 859,
+              "width": 63,
+              "height": 69
             },
             {
               "char": "一",
-              "x": 330,
-              "y": 858,
-              "width": 64,
-              "height": 74
+              "x": 333,
+              "y": 859,
+              "width": 63,
+              "height": 69
             },
             {
               "char": "个",
-              "x": 394,
-              "y": 858,
-              "width": 64,
-              "height": 74
+              "x": 397,
+              "y": 859,
+              "width": 63,
+              "height": 69
             },
             {
               "char": "人",
-              "x": 458,
-              "y": 858,
-              "width": 64,
-              "height": 74
+              "x": 460,
+              "y": 859,
+              "width": 63,
+              "height": 69
             }
           ]
         },
         {
           "text": "喝酒有害健康未成年人禁止饮酒",
-          "confidence": 0.9983,
+          "confidence": 0.9933,
           "bbox": {
-            "x": 288,
-            "y": 36,
-            "width": 414,
-            "height": 34
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
           },
           "chars": [
             {
               "char": "喝",
-              "x": 288,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
-              "x": 318,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "有",
-              "x": 347,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "害",
-              "x": 377,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "健",
-              "x": 406,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "康",
-              "x": 436,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "未",
-              "x": 465,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "成",
-              "x": 495,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "年",
-              "x": 525,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "人",
-              "x": 554,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "禁",
-              "x": 584,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "止",
-              "x": 613,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "饮",
               "x": 643,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
-              "x": 672,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 1250,
-      "end_ms": 2750,
+      "start_ms": 1100,
+      "end_ms": 2700,
       "detections": [
         {
           "text": "能把自己喝醉的",
-          "confidence": 0.9993,
+          "confidence": 0.9994,
           "bbox": {
-            "x": 144,
-            "y": 862,
-            "width": 432,
-            "height": 62
+            "x": 139,
+            "y": 856,
+            "width": 442,
+            "height": 75
           },
           "chars": [
             {
               "char": "能",
-              "x": 144,
-              "y": 862,
-              "width": 62,
-              "height": 62
+              "x": 139,
+              "y": 856,
+              "width": 63,
+              "height": 75
             },
             {
               "char": "把",
-              "x": 206,
-              "y": 862,
-              "width": 62,
-              "height": 62
+              "x": 202,
+              "y": 856,
+              "width": 63,
+              "height": 75
             },
             {
               "char": "自",
-              "x": 267,
-              "y": 862,
-              "width": 62,
-              "height": 62
+              "x": 265,
+              "y": 856,
+              "width": 63,
+              "height": 75
             },
             {
               "char": "己",
-              "x": 329,
-              "y": 862,
-              "width": 62,
-              "height": 62
+              "x": 328,
+              "y": 856,
+              "width": 63,
+              "height": 75
             },
             {
               "char": "喝",
-              "x": 391,
-              "y": 862,
-              "width": 62,
-              "height": 62
+              "x": 392,
+              "y": 856,
+              "width": 63,
+              "height": 75
             },
             {
               "char": "醉",
-              "x": 453,
-              "y": 862,
-              "width": 62,
-              "height": 62
+              "x": 455,
+              "y": 856,
+              "width": 63,
+              "height": 75
             },
             {
               "char": "的",
-              "x": 514,
-              "y": 862,
-              "width": 62,
-              "height": 62
+              "x": 518,
+              "y": 856,
+              "width": 63,
+              "height": 75
             }
           ]
         },
         {
           "text": "喝酒有害健康未成年人禁止饮酒",
-          "confidence": 0.9982,
+          "confidence": 0.9932,
           "bbox": {
-            "x": 288,
+            "x": 290,
             "y": 36,
-            "width": 414,
+            "width": 412,
             "height": 34
           },
           "chars": [
             {
               "char": "喝",
-              "x": 288,
+              "x": 290,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "酒",
-              "x": 318,
+              "x": 319,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "有",
-              "x": 347,
+              "x": 349,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "害",
-              "x": 377,
+              "x": 378,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "健",
-              "x": 406,
+              "x": 408,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "康",
-              "x": 436,
+              "x": 437,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "未",
-              "x": 465,
+              "x": 467,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "成",
-              "x": 495,
+              "x": 496,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "年",
               "x": 525,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "人",
-              "x": 554,
+              "x": 555,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "禁",
               "x": 584,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "止",
-              "x": 613,
+              "x": 614,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "饮",
               "x": 643,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "酒",
-              "x": 672,
+              "x": 673,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             }
           ]
@@ -348,360 +530,292 @@
       ]
     },
     {
-      "start_ms": 2750,
-      "end_ms": 4000,
+      "start_ms": 2700,
+      "end_ms": 3900,
       "detections": [
         {
-          "text": "没有一个是存种",
-          "confidence": 0.9375,
+          "text": "没有一个是孬种",
+          "confidence": 0.9287,
           "bbox": {
-            "x": 140,
-            "y": 860,
-            "width": 440,
-            "height": 68
+            "x": 141,
+            "y": 856,
+            "width": 439,
+            "height": 75
           },
           "chars": [
             {
               "char": "没",
-              "x": 140,
-              "y": 860,
+              "x": 141,
+              "y": 856,
               "width": 63,
-              "height": 68
+              "height": 75
             },
             {
               "char": "有",
-              "x": 203,
-              "y": 860,
+              "x": 204,
+              "y": 856,
               "width": 63,
-              "height": 68
+              "height": 75
             },
             {
               "char": "一",
               "x": 266,
-              "y": 860,
+              "y": 856,
               "width": 63,
-              "height": 68
+              "height": 75
             },
             {
               "char": "个",
               "x": 329,
-              "y": 860,
+              "y": 856,
               "width": 63,
-              "height": 68
+              "height": 75
             },
             {
               "char": "是",
-              "x": 391,
-              "y": 860,
+              "x": 392,
+              "y": 856,
               "width": 63,
-              "height": 68
+              "height": 75
             },
             {
-              "char": "存",
-              "x": 454,
-              "y": 860,
+              "char": "孬",
+              "x": 455,
+              "y": 856,
               "width": 63,
-              "height": 68
+              "height": 75
             },
             {
               "char": "种",
               "x": 517,
-              "y": 860,
+              "y": 856,
               "width": 63,
-              "height": 68
+              "height": 75
             }
           ]
         },
         {
           "text": "喝酒有害健康未成年人禁止饮酒",
-          "confidence": 0.9988,
+          "confidence": 0.9961,
           "bbox": {
-            "x": 286,
-            "y": 34,
-            "width": 414,
-            "height": 34
+            "x": 290,
+            "y": 37,
+            "width": 411,
+            "height": 30
           },
           "chars": [
             {
               "char": "喝",
-              "x": 286,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 290,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
-              "x": 316,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 319,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "有",
-              "x": 345,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 349,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "害",
-              "x": 375,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 378,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "健",
-              "x": 404,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 407,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "康",
-              "x": 434,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 437,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "未",
-              "x": 463,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 466,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "成",
-              "x": 493,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 496,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "年",
-              "x": 523,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 525,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "人",
-              "x": 552,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 554,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "禁",
-              "x": 582,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 584,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "止",
-              "x": 611,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 613,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "饮",
-              "x": 641,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 642,
+              "y": 37,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
-              "x": 670,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 672,
+              "y": 37,
+              "width": 29,
+              "height": 30
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 4750,
-      "end_ms": 6000,
+      "start_ms": 3900,
+      "end_ms": 4600,
       "detections": [
         {
-          "text": "你们能够站出来吗",
-          "confidence": 0.9877,
-          "bbox": {
-            "x": 108,
-            "y": 862,
-            "width": 502,
-            "height": 62
-          },
-          "chars": [
-            {
-              "char": "你",
-              "x": 108,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            },
-            {
-              "char": "们",
-              "x": 171,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            },
-            {
-              "char": "能",
-              "x": 234,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            },
-            {
-              "char": "够",
-              "x": 296,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            },
-            {
-              "char": "站",
-              "x": 359,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            },
-            {
-              "char": "出",
-              "x": 422,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            },
-            {
-              "char": "来",
-              "x": 484,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            },
-            {
-              "char": "吗",
-              "x": 547,
-              "y": 862,
-              "width": 63,
-              "height": 62
-            }
-          ]
-        },
-        {
           "text": "喝酒有害健康未成年人禁止饮酒",
-          "confidence": 0.9986,
+          "confidence": 0.9921,
           "bbox": {
-            "x": 288,
+            "x": 290,
             "y": 36,
-            "width": 414,
+            "width": 412,
             "height": 34
           },
           "chars": [
             {
               "char": "喝",
-              "x": 288,
+              "x": 290,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "酒",
-              "x": 318,
+              "x": 319,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "有",
-              "x": 347,
+              "x": 349,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "害",
-              "x": 377,
+              "x": 378,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "健",
-              "x": 406,
+              "x": 408,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "康",
-              "x": 436,
+              "x": 437,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "未",
-              "x": 465,
+              "x": 467,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "成",
-              "x": 495,
+              "x": 496,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "年",
               "x": 525,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "人",
-              "x": 554,
+              "x": 555,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "禁",
               "x": 584,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "止",
-              "x": 613,
+              "x": 614,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "饮",
               "x": 643,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             },
             {
               "char": "酒",
-              "x": 672,
+              "x": 673,
               "y": 36,
-              "width": 30,
+              "width": 29,
               "height": 34
             }
           ]
@@ -709,286 +823,1107 @@
       ]
     },
     {
-      "start_ms": 6250,
-      "end_ms": 7750,
+      "start_ms": 4600,
+      "end_ms": 6100,
       "detections": [
         {
-          "text": "我敬你们一个",
-          "confidence": 0.9993,
+          "text": "你们能够站出来吗",
+          "confidence": 0.9958,
           "bbox": {
-            "x": 174,
+            "x": 109,
             "y": 860,
-            "width": 376,
+            "width": 497,
             "height": 68
           },
           "chars": [
             {
-              "char": "我",
-              "x": 174,
-              "y": 860,
-              "width": 63,
-              "height": 68
-            },
-            {
-              "char": "敬",
-              "x": 237,
-              "y": 860,
-              "width": 63,
-              "height": 68
-            },
-            {
               "char": "你",
-              "x": 299,
+              "x": 109,
               "y": 860,
-              "width": 63,
+              "width": 62,
               "height": 68
             },
             {
               "char": "们",
-              "x": 362,
+              "x": 171,
               "y": 860,
-              "width": 63,
+              "width": 62,
               "height": 68
             },
             {
-              "char": "一",
-              "x": 425,
+              "char": "能",
+              "x": 233,
               "y": 860,
-              "width": 63,
+              "width": 62,
               "height": 68
             },
             {
-              "char": "个",
-              "x": 487,
+              "char": "够",
+              "x": 295,
               "y": 860,
-              "width": 63,
+              "width": 62,
+              "height": 68
+            },
+            {
+              "char": "站",
+              "x": 358,
+              "y": 860,
+              "width": 62,
+              "height": 68
+            },
+            {
+              "char": "出",
+              "x": 420,
+              "y": 860,
+              "width": 62,
+              "height": 68
+            },
+            {
+              "char": "来",
+              "x": 482,
+              "y": 860,
+              "width": 62,
+              "height": 68
+            },
+            {
+              "char": "吗",
+              "x": 544,
+              "y": 860,
+              "width": 62,
               "height": 68
             }
           ]
         },
         {
           "text": "喝酒有害健康未成年人禁止饮酒",
-          "confidence": 0.9985,
+          "confidence": 0.9951,
           "bbox": {
-            "x": 288,
-            "y": 36,
-            "width": 414,
-            "height": 34
+            "x": 291,
+            "y": 38,
+            "width": 410,
+            "height": 30
           },
           "chars": [
             {
               "char": "喝",
-              "x": 288,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
-              "x": 318,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "有",
-              "x": 347,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "害",
-              "x": 377,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "健",
-              "x": 406,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "康",
-              "x": 436,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 437,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "未",
-              "x": 465,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "成",
-              "x": 495,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "年",
               "x": 525,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "人",
-              "x": 554,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "禁",
               "x": 584,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "止",
               "x": 613,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "饮",
-              "x": 643,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "x": 642,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
               "x": 672,
-              "y": 36,
-              "width": 30,
-              "height": 34
+              "y": 38,
+              "width": 29,
+              "height": 30
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 7750,
-      "end_ms": 11500,
+      "start_ms": 6100,
+      "end_ms": 7600,
       "detections": [
         {
-          "text": "喝酒有害健康未成年人禁止饮酒",
-          "confidence": 0.9985,
+          "text": "我敬你们一个",
+          "confidence": 0.9996,
           "bbox": {
-            "x": 288,
-            "y": 34,
-            "width": 414,
-            "height": 34
+            "x": 172,
+            "y": 856,
+            "width": 374,
+            "height": 75
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 172,
+              "y": 856,
+              "width": 62,
+              "height": 75
+            },
+            {
+              "char": "敬",
+              "x": 234,
+              "y": 856,
+              "width": 62,
+              "height": 75
+            },
+            {
+              "char": "你",
+              "x": 297,
+              "y": 856,
+              "width": 62,
+              "height": 75
+            },
+            {
+              "char": "们",
+              "x": 359,
+              "y": 856,
+              "width": 62,
+              "height": 75
+            },
+            {
+              "char": "一",
+              "x": 421,
+              "y": 856,
+              "width": 62,
+              "height": 75
+            },
+            {
+              "char": "个",
+              "x": 484,
+              "y": 856,
+              "width": 62,
+              "height": 75
+            }
+          ]
+        },
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9928,
+          "bbox": {
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
           },
           "chars": [
             {
               "char": "喝",
-              "x": 288,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
-              "x": 318,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "有",
-              "x": 347,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "害",
-              "x": 377,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "健",
-              "x": 406,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "康",
-              "x": 436,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "未",
-              "x": 465,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "成",
-              "x": 495,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "年",
-              "x": 525,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "人",
-              "x": 554,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "禁",
-              "x": 584,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "止",
-              "x": 613,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "饮",
               "x": 643,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "y": 38,
+              "width": 29,
+              "height": 30
             },
             {
               "char": "酒",
-              "x": 672,
-              "y": 34,
-              "width": 30,
-              "height": 34
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7600,
+      "end_ms": 9700,
+      "detections": [
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9898,
+          "bbox": {
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "有",
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "害",
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "康",
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "年",
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "禁",
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9700,
+      "end_ms": 9800,
+      "detections": [
+        {
+          "text": "OVOO",
+          "confidence": 0.6344,
+          "bbox": {
+            "x": 339,
+            "y": 646,
+            "width": 47,
+            "height": 37
+          },
+          "chars": [
+            {
+              "char": "OVOO",
+              "x": 339,
+              "y": 646,
+              "width": 47,
+              "height": 37
+            }
+          ]
+        },
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9906,
+          "bbox": {
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "有",
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "害",
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "康",
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "年",
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "禁",
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9800,
+      "end_ms": 9900,
+      "detections": [
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9898,
+          "bbox": {
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "有",
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "害",
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "康",
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "年",
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "禁",
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9900,
+      "end_ms": 10000,
+      "detections": [
+        {
+          "text": "ovoo",
+          "confidence": 0.6552,
+          "bbox": {
+            "x": 335,
+            "y": 626,
+            "width": 58,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "ovoo",
+              "x": 335,
+              "y": 626,
+              "width": 58,
+              "height": 48
+            }
+          ]
+        },
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9747,
+          "bbox": {
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "有",
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "害",
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "康",
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "年",
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "禁",
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 10000,
+      "end_ms": 10100,
+      "detections": [
+        {
+          "text": "OvoO",
+          "confidence": 0.5035,
+          "bbox": {
+            "x": 338,
+            "y": 622,
+            "width": 48,
+            "height": 38
+          },
+          "chars": [
+            {
+              "char": "OvoO",
+              "x": 338,
+              "y": 622,
+              "width": 48,
+              "height": 38
+            }
+          ]
+        },
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9896,
+          "bbox": {
+            "x": 291,
+            "y": 38,
+            "width": 411,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 291,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 320,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "有",
+              "x": 350,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "害",
+              "x": 379,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "康",
+              "x": 438,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "年",
+              "x": 526,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "禁",
+              "x": 585,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 38,
+              "width": 29,
+              "height": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 10100,
+      "end_ms": 11600,
+      "detections": [
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.995,
+          "bbox": {
+            "x": 290,
+            "y": 36,
+            "width": 412,
+            "height": 32
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 290,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "酒",
+              "x": 319,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "有",
+              "x": 349,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "害",
+              "x": 378,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "康",
+              "x": 437,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "年",
+              "x": 525,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "禁",
+              "x": 584,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 36,
+              "width": 29,
+              "height": 32
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 36,
+              "width": 29,
+              "height": 32
             }
           ]
         }

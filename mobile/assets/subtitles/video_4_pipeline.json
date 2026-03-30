@@ -1,1788 +1,435 @@
 {
-  "video": "740dfa6e-c2fb-420e-9421-4717e1c1a3b9",
+  "video": "595d9cf2-ae5a-4992-8073-39e09b2083a5",
   "resolution": {
     "width": 720,
     "height": 1280
   },
-  "duration_ms": 18733,
-  "frame_interval_ms": 250,
+  "duration_ms": 18000,
+  "subtitle_source": "stt",
   "segments": [
     {
-      "start_ms": 250,
-      "end_ms": 3750,
+      "start_ms": 0,
+      "end_ms": 10700,
       "detections": [
         {
-          "text": "Advanced men are practicing loneliness",
-          "confidence": 0.9502,
+          "text": "高级的男人都在修行孤独,学会控制欲望,除了赚钱之外,就是享受孤独。",
+          "confidence": 1.0,
           "bbox": {
-            "x": 160,
-            "y": 912,
-            "width": 396,
-            "height": 30
-          },
-          "chars": [
-            {
-              "char": "A",
-              "x": 160,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "d",
-              "x": 170,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "v",
-              "x": 181,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "a",
-              "x": 191,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "n",
-              "x": 202,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "c",
-              "x": 212,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "e",
-              "x": 223,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "d",
-              "x": 233,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": " ",
-              "x": 243,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "m",
-              "x": 254,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "e",
-              "x": 264,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "n",
-              "x": 275,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": " ",
-              "x": 285,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "a",
-              "x": 295,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "r",
-              "x": 306,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "e",
-              "x": 316,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": " ",
-              "x": 327,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "p",
-              "x": 337,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "r",
-              "x": 348,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "a",
-              "x": 358,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "c",
-              "x": 368,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "t",
-              "x": 379,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "i",
-              "x": 389,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "c",
-              "x": 400,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "i",
-              "x": 410,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "n",
-              "x": 421,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "g",
-              "x": 431,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": " ",
-              "x": 441,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "l",
-              "x": 452,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "o",
-              "x": 462,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "n",
-              "x": 473,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "e",
-              "x": 483,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "l",
-              "x": 493,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "i",
-              "x": 504,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "n",
-              "x": 514,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "e",
-              "x": 525,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "s",
-              "x": 535,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            },
-            {
-              "char": "s",
-              "x": 546,
-              "y": 912,
-              "width": 10,
-              "height": 30
-            }
-          ]
-        },
-        {
-          "text": "高级的男人都在修行孤独",
-          "confidence": 0.999,
-          "bbox": {
-            "x": 172,
-            "y": 848,
-            "width": 372,
-            "height": 40
+            "x": 63,
+            "y": 1049,
+            "width": 594,
+            "height": 64
           },
           "chars": [
             {
               "char": "高",
-              "x": 172,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 63,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "级",
-              "x": 206,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 81,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 240,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 99,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "男",
-              "x": 273,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 117,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "人",
-              "x": 307,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 135,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "都",
-              "x": 341,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 153,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "在",
-              "x": 375,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 171,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "修",
-              "x": 409,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 189,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "行",
-              "x": 443,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 207,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "孤",
-              "x": 476,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 225,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "独",
-              "x": 510,
-              "y": 848,
-              "width": 34,
-              "height": 40
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 4750,
-      "end_ms": 6500,
-      "detections": [
-        {
-          "text": "Learn to control desires",
-          "confidence": 0.9764,
-          "bbox": {
-            "x": 242,
-            "y": 920,
-            "width": 232,
-            "height": 20
-          },
-          "chars": [
-            {
-              "char": "L",
-              "x": 242,
-              "y": 920,
-              "width": 10,
-              "height": 20
+              "x": 243,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
-              "char": "e",
-              "x": 252,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "a",
+              "char": ",",
               "x": 261,
-              "y": 920,
-              "width": 10,
-              "height": 20
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
-            {
-              "char": "r",
-              "x": 271,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "n",
-              "x": 281,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": " ",
-              "x": 290,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "t",
-              "x": 300,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "o",
-              "x": 310,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": " ",
-              "x": 319,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "c",
-              "x": 329,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "o",
-              "x": 339,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "n",
-              "x": 348,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "t",
-              "x": 358,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "r",
-              "x": 368,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "o",
-              "x": 377,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "l",
-              "x": 387,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": " ",
-              "x": 397,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "d",
-              "x": 406,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "e",
-              "x": 416,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "s",
-              "x": 426,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "i",
-              "x": 435,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "r",
-              "x": 445,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "e",
-              "x": 455,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            },
-            {
-              "char": "s",
-              "x": 464,
-              "y": 920,
-              "width": 10,
-              "height": 20
-            }
-          ]
-        },
-        {
-          "text": "学会控制欲望",
-          "confidence": 0.9995,
-          "bbox": {
-            "x": 256,
-            "y": 846,
-            "width": 206,
-            "height": 42
-          },
-          "chars": [
             {
               "char": "学",
-              "x": 256,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 279,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "会",
-              "x": 290,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 297,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "控",
-              "x": 325,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 315,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "制",
-              "x": 359,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 333,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "欲",
-              "x": 393,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 351,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "望",
-              "x": 428,
-              "y": 846,
-              "width": 34,
-              "height": 42
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 7250,
-      "end_ms": 9000,
-      "detections": [
-        {
-          "text": "In addition to making money",
-          "confidence": 0.9429,
-          "bbox": {
-            "x": 210,
-            "y": 912,
-            "width": 292,
-            "height": 32
-          },
-          "chars": [
-            {
-              "char": "I",
-              "x": 210,
-              "y": 912,
-              "width": 11,
-              "height": 32
+              "x": 369,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
-              "char": "n",
-              "x": 221,
-              "y": 912,
-              "width": 11,
-              "height": 32
+              "char": ",",
+              "x": 387,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
-            {
-              "char": " ",
-              "x": 232,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "a",
-              "x": 242,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "d",
-              "x": 253,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "d",
-              "x": 264,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "i",
-              "x": 275,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "t",
-              "x": 286,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "i",
-              "x": 297,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "o",
-              "x": 307,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "n",
-              "x": 318,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": " ",
-              "x": 329,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "t",
-              "x": 340,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "o",
-              "x": 351,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": " ",
-              "x": 361,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "m",
-              "x": 372,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "a",
-              "x": 383,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "k",
-              "x": 394,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "i",
-              "x": 405,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "n",
-              "x": 415,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "g",
-              "x": 426,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": " ",
-              "x": 437,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "m",
-              "x": 448,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "o",
-              "x": 459,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "n",
-              "x": 470,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "e",
-              "x": 480,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            },
-            {
-              "char": "y",
-              "x": 491,
-              "y": 912,
-              "width": 11,
-              "height": 32
-            }
-          ]
-        },
-        {
-          "text": "除了赚钱之外",
-          "confidence": 0.9991,
-          "bbox": {
-            "x": 256,
-            "y": 846,
-            "width": 206,
-            "height": 42
-          },
-          "chars": [
             {
               "char": "除",
-              "x": 256,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 405,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 290,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 423,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "赚",
-              "x": 325,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 441,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "钱",
-              "x": 359,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 459,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "之",
-              "x": 393,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 477,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "外",
-              "x": 428,
-              "y": 846,
-              "width": 34,
-              "height": 42
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 9500,
-      "end_ms": 11000,
-      "detections": [
-        {
-          "text": "Just enjoy being alone",
-          "confidence": 0.949,
-          "bbox": {
-            "x": 248,
-            "y": 916,
-            "width": 222,
-            "height": 28
-          },
-          "chars": [
-            {
-              "char": "J",
-              "x": 248,
-              "y": 916,
-              "width": 10,
-              "height": 28
+              "x": 495,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
-              "char": "u",
-              "x": 258,
-              "y": 916,
-              "width": 10,
-              "height": 28
+              "char": ",",
+              "x": 513,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
-            {
-              "char": "s",
-              "x": 268,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "t",
-              "x": 278,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 288,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "e",
-              "x": 298,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 309,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "j",
-              "x": 319,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "o",
-              "x": 329,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "y",
-              "x": 339,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 349,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "b",
-              "x": 359,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "e",
-              "x": 369,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "i",
-              "x": 379,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 389,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "g",
-              "x": 399,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 409,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "a",
-              "x": 420,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "l",
-              "x": 430,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "o",
-              "x": 440,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 450,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "e",
-              "x": 460,
-              "y": 916,
-              "width": 10,
-              "height": 28
-            }
-          ]
-        },
-        {
-          "text": "就是享受孤独",
-          "confidence": 0.9993,
-          "bbox": {
-            "x": 256,
-            "y": 846,
-            "width": 206,
-            "height": 42
-          },
-          "chars": [
             {
               "char": "就",
-              "x": 256,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 531,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 290,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 549,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "享",
-              "x": 325,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 567,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "受",
-              "x": 359,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 585,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "孤",
-              "x": 393,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 603,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             },
             {
               "char": "独",
-              "x": 428,
-              "y": 846,
-              "width": 34,
-              "height": 42
+              "x": 621,
+              "y": 1049,
+              "width": 18,
+              "height": 64
+            },
+            {
+              "char": "。",
+              "x": 639,
+              "y": 1049,
+              "width": 18,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 12250,
-      "end_ms": 14000,
+      "start_ms": 12160,
+      "end_ms": 17380,
       "detections": [
         {
-          "text": "Don't take the time",
-          "confidence": 0.9544,
+          "text": "千万不要把时间浪费在那些你驾驭不了的人和事上。",
+          "confidence": 1.0,
           "bbox": {
-            "x": 260,
-            "y": 916,
-            "width": 196,
-            "height": 26
-          },
-          "chars": [
-            {
-              "char": "D",
-              "x": 260,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "o",
-              "x": 270,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "n",
-              "x": 281,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "'",
-              "x": 291,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "t",
-              "x": 301,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": " ",
-              "x": 312,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "t",
-              "x": 322,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "a",
-              "x": 332,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "k",
-              "x": 343,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "e",
-              "x": 353,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": " ",
-              "x": 363,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "t",
-              "x": 373,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "h",
-              "x": 384,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "e",
-              "x": 394,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": " ",
-              "x": 404,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "t",
-              "x": 415,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "i",
-              "x": 425,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "m",
-              "x": 435,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            },
-            {
-              "char": "e",
-              "x": 446,
-              "y": 916,
-              "width": 10,
-              "height": 26
-            }
-          ]
-        },
-        {
-          "text": "千万不要把时间",
-          "confidence": 0.9995,
-          "bbox": {
-            "x": 240,
-            "y": 848,
-            "width": 238,
-            "height": 40
+            "x": 61,
+            "y": 1049,
+            "width": 598,
+            "height": 64
           },
           "chars": [
             {
               "char": "千",
-              "x": 240,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 61,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "万",
-              "x": 274,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 87,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "不",
-              "x": 308,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 113,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "要",
-              "x": 342,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 139,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "把",
-              "x": 376,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 165,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "时",
-              "x": 410,
-              "y": 848,
-              "width": 34,
-              "height": 40
+              "x": 191,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "间",
-              "x": 444,
-              "y": 848,
-              "width": 34,
-              "height": 40
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 14750,
-      "end_ms": 18000,
-      "detections": [
-        {
-          "text": "control",
-          "confidence": 0.9979,
-          "bbox": {
-            "x": 320,
-            "y": 926,
-            "width": 78,
-            "height": 28
-          },
-          "chars": [
-            {
-              "char": "c",
-              "x": 320,
-              "y": 926,
-              "width": 11,
-              "height": 28
+              "x": 217,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
-            {
-              "char": "o",
-              "x": 331,
-              "y": 926,
-              "width": 11,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 342,
-              "y": 926,
-              "width": 11,
-              "height": 28
-            },
-            {
-              "char": "t",
-              "x": 353,
-              "y": 926,
-              "width": 11,
-              "height": 28
-            },
-            {
-              "char": "r",
-              "x": 365,
-              "y": 926,
-              "width": 11,
-              "height": 28
-            },
-            {
-              "char": "o",
-              "x": 376,
-              "y": 926,
-              "width": 11,
-              "height": 28
-            },
-            {
-              "char": "l",
-              "x": 387,
-              "y": 926,
-              "width": 11,
-              "height": 28
-            }
-          ]
-        },
-        {
-          "text": "Waste it on people and things you can't",
-          "confidence": 0.9533,
-          "bbox": {
-            "x": 162,
-            "y": 906,
-            "width": 390,
-            "height": 28
-          },
-          "chars": [
-            {
-              "char": "W",
-              "x": 162,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "a",
-              "x": 172,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "s",
-              "x": 182,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "t",
-              "x": 192,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "e",
-              "x": 202,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 212,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "i",
-              "x": 222,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "t",
-              "x": 232,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 242,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "o",
-              "x": 252,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 262,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 272,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "p",
-              "x": 282,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "e",
-              "x": 292,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "o",
-              "x": 302,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "p",
-              "x": 312,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "l",
-              "x": 322,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "e",
-              "x": 332,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 342,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "a",
-              "x": 352,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 362,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "d",
-              "x": 372,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 382,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "t",
-              "x": 392,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "h",
-              "x": 402,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "i",
-              "x": 412,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 422,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "g",
-              "x": 432,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "s",
-              "x": 442,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 452,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "y",
-              "x": 462,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "o",
-              "x": 472,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "u",
-              "x": 482,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": " ",
-              "x": 492,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "c",
-              "x": 502,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "a",
-              "x": 512,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "n",
-              "x": 522,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "'",
-              "x": 532,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            },
-            {
-              "char": "t",
-              "x": 542,
-              "y": 906,
-              "width": 10,
-              "height": 28
-            }
-          ]
-        },
-        {
-          "text": "浪费在那些你驾驭不了的人和事上",
-          "confidence": 0.999,
-          "bbox": {
-            "x": 108,
-            "y": 850,
-            "width": 502,
-            "height": 34
-          },
-          "chars": [
             {
               "char": "浪",
-              "x": 108,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 243,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "费",
-              "x": 141,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 269,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "在",
-              "x": 175,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 295,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "那",
-              "x": 208,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 321,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "些",
-              "x": 242,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 347,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 275,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 373,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "驾",
-              "x": 309,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 399,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "驭",
-              "x": 342,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 425,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "不",
-              "x": 376,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 451,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 409,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 477,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 443,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 503,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "人",
-              "x": 476,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 529,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "和",
-              "x": 510,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 555,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "事",
-              "x": 543,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 581,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             },
             {
               "char": "上",
-              "x": 577,
-              "y": 850,
-              "width": 33,
-              "height": 34
+              "x": 607,
+              "y": 1049,
+              "width": 26,
+              "height": 64
+            },
+            {
+              "char": "。",
+              "x": 633,
+              "y": 1049,
+              "width": 26,
+              "height": 64
             }
           ]
         }

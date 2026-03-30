@@ -1,3598 +1,1433 @@
 {
-  "video": "8f3e16f8-14d1-4b65-8be6-6e4551978468",
+  "video": "5ae69e4a-453b-41ac-83b8-10ae093bb915",
   "resolution": {
     "width": 720,
     "height": 1280
   },
-  "duration_ms": 53300,
-  "frame_interval_ms": 250,
+  "duration_ms": 53000,
+  "subtitle_source": "stt",
   "segments": [
     {
-      "start_ms": 5750,
-      "end_ms": 6500,
+      "start_ms": 0,
+      "end_ms": 3640,
       "detections": [
         {
-          "text": "八百年来我断情绝爱",
-          "confidence": 0.9995,
+          "text": "We don't say I love you, we say",
+          "confidence": 1.0,
           "bbox": {
-            "x": 70,
-            "y": 994,
-            "width": 436,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "八",
-              "x": 70,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "百",
-              "x": 118,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "年",
-              "x": 167,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "来",
-              "x": 215,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "我",
-              "x": 264,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "断",
-              "x": 312,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "情",
-              "x": 361,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "绝",
-              "x": 409,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "爱",
-              "x": 458,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            }
-          ]
-        },
-        {
-          "text": "i've rejected affection",
-          "confidence": 0.9515,
-          "bbox": {
-            "x": 70,
-            "y": 908,
-            "width": 498,
-            "height": 48
-          },
-          "chars": [
-            {
-              "char": "i",
-              "x": 70,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "'",
-              "x": 92,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "v",
-              "x": 113,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "e",
-              "x": 135,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": " ",
-              "x": 157,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "r",
-              "x": 178,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "e",
-              "x": 200,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "j",
-              "x": 222,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "e",
-              "x": 243,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "c",
-              "x": 265,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "t",
-              "x": 287,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "e",
-              "x": 308,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "d",
-              "x": 330,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": " ",
-              "x": 351,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "a",
-              "x": 373,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "f",
-              "x": 395,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "f",
-              "x": 416,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "e",
-              "x": 438,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "c",
-              "x": 460,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "t",
-              "x": 481,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "i",
-              "x": 503,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "o",
-              "x": 525,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "n",
-              "x": 546,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 7750,
-      "end_ms": 10750,
-      "detections": [
-        {
-          "text": "八百年来我断情绝爱",
-          "confidence": 0.9988,
-          "bbox": {
-            "x": 70,
-            "y": 994,
-            "width": 434,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "八",
-              "x": 70,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "百",
-              "x": 118,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "年",
-              "x": 166,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "来",
-              "x": 215,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "我",
-              "x": 263,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "断",
-              "x": 311,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "情",
-              "x": 359,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "绝",
-              "x": 408,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "爱",
-              "x": 456,
-              "y": 994,
-              "width": 48,
-              "height": 54
-            }
-          ]
-        },
-        {
-          "text": "for years and years",
-          "confidence": 0.9375,
-          "bbox": {
-            "x": 64,
-            "y": 904,
-            "width": 490,
-            "height": 58
-          },
-          "chars": [
-            {
-              "char": "f",
-              "x": 64,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "o",
-              "x": 90,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "r",
-              "x": 116,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": " ",
-              "x": 141,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "y",
-              "x": 167,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "e",
-              "x": 193,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "a",
-              "x": 219,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "r",
-              "x": 245,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "s",
-              "x": 270,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": " ",
-              "x": 296,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "a",
-              "x": 322,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "n",
-              "x": 348,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "d",
-              "x": 373,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": " ",
-              "x": 399,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "y",
-              "x": 425,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "e",
-              "x": 451,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "a",
-              "x": 477,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "r",
-              "x": 502,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "s",
-              "x": 528,
-              "y": 904,
-              "width": 26,
-              "height": 58
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 12250,
-      "end_ms": 13000,
-      "detections": [
-        {
-          "text": "And damn it?",
-          "confidence": 0.935,
-          "bbox": {
-            "x": 68,
-            "y": 908,
-            "width": 322,
-            "height": 48
-          },
-          "chars": [
-            {
-              "char": "A",
-              "x": 68,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "n",
-              "x": 95,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "d",
-              "x": 122,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": " ",
-              "x": 148,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "d",
-              "x": 175,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "a",
-              "x": 202,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "m",
-              "x": 229,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "n",
-              "x": 256,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": " ",
-              "x": 283,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "i",
-              "x": 310,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "t",
-              "x": 336,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            },
-            {
-              "char": "?",
-              "x": 363,
-              "y": 908,
-              "width": 27,
-              "height": 48
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 14000,
-      "end_ms": 16750,
-      "detections": [
-        {
-          "text": "一下给我整不会了",
-          "confidence": 0.9982,
-          "bbox": {
-            "x": 70,
-            "y": 982,
-            "width": 384,
-            "height": 56
-          },
-          "chars": [
-            {
-              "char": "一",
-              "x": 70,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            },
-            {
-              "char": "下",
-              "x": 118,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            },
-            {
-              "char": "给",
-              "x": 166,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            },
-            {
-              "char": "我",
-              "x": 214,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            },
-            {
-              "char": "整",
-              "x": 262,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            },
-            {
-              "char": "不",
-              "x": 310,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            },
-            {
-              "char": "会",
-              "x": 358,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            },
-            {
-              "char": "了",
-              "x": 406,
-              "y": 982,
-              "width": 48,
-              "height": 56
-            }
-          ]
-        },
-        {
-          "text": "It's kind of weird",
-          "confidence": 0.9651,
-          "bbox": {
-            "x": 64,
-            "y": 904,
-            "width": 388,
-            "height": 60
-          },
-          "chars": [
-            {
-              "char": "I",
-              "x": 64,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "t",
-              "x": 86,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "'",
-              "x": 107,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "s",
-              "x": 129,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 150,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "k",
-              "x": 172,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "i",
-              "x": 193,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "n",
-              "x": 215,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "d",
-              "x": 236,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 258,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "o",
-              "x": 280,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "f",
-              "x": 301,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 323,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "w",
-              "x": 344,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "e",
-              "x": 366,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "i",
-              "x": 387,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "r",
-              "x": 409,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "d",
-              "x": 430,
-              "y": 904,
-              "width": 22,
-              "height": 60
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 17750,
-      "end_ms": 19250,
-      "detections": [
-        {
-          "text": "他说我赛貂蝉",
-          "confidence": 0.9982,
-          "bbox": {
-            "x": 70,
-            "y": 1006,
-            "width": 294,
-            "height": 56
-          },
-          "chars": [
-            {
-              "char": "他",
-              "x": 70,
-              "y": 1006,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "说",
-              "x": 119,
-              "y": 1006,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "我",
-              "x": 168,
-              "y": 1006,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "赛",
-              "x": 217,
-              "y": 1006,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "貂",
-              "x": 266,
-              "y": 1006,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "蝉",
-              "x": 315,
-              "y": 1006,
-              "width": 49,
-              "height": 56
-            }
-          ]
-        },
-        {
-          "text": "that i'm pretty",
-          "confidence": 0.9733,
-          "bbox": {
-            "x": 66,
-            "y": 936,
-            "width": 332,
-            "height": 60
-          },
-          "chars": [
-            {
-              "char": "t",
-              "x": 66,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "h",
-              "x": 88,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "a",
-              "x": 110,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "t",
-              "x": 132,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 155,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "i",
-              "x": 177,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "'",
-              "x": 199,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "m",
-              "x": 221,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 243,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "p",
-              "x": 265,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "r",
-              "x": 287,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "e",
-              "x": 309,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "t",
-              "x": 332,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "t",
-              "x": 354,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            },
-            {
-              "char": "y",
-              "x": 376,
-              "y": 936,
-              "width": 22,
-              "height": 60
-            }
-          ]
-        },
-        {
-          "text": "He tells me",
-          "confidence": 0.9303,
-          "bbox": {
-            "x": 62,
-            "y": 866,
-            "width": 270,
-            "height": 60
-          },
-          "chars": [
-            {
-              "char": "H",
-              "x": 62,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "e",
-              "x": 87,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 111,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "t",
-              "x": 136,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "e",
-              "x": 160,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "l",
-              "x": 185,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "l",
-              "x": 209,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "s",
-              "x": 234,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 258,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "m",
-              "x": 283,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            },
-            {
-              "char": "e",
-              "x": 307,
-              "y": 866,
-              "width": 25,
-              "height": 60
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 20750,
-      "end_ms": 21500,
-      "detections": [
-        {
-          "text": "我该说点啥好呢..",
-          "confidence": 0.9813,
-          "bbox": {
-            "x": 70,
-            "y": 1018,
-            "width": 370,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "我",
-              "x": 70,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "该",
-              "x": 111,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "说",
-              "x": 152,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "点",
-              "x": 193,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "啥",
-              "x": 234,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "好",
-              "x": 276,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "呢",
-              "x": 317,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": ".",
-              "x": 358,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": ".",
-              "x": 399,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            }
-          ]
-        },
-        {
-          "text": "respond...",
-          "confidence": 0.9794,
-          "bbox": {
-            "x": 66,
-            "y": 940,
-            "width": 248,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "r",
-              "x": 66,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": "e",
-              "x": 91,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": "s",
-              "x": 116,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": "p",
-              "x": 140,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": "o",
-              "x": 165,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": "n",
-              "x": 190,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": "d",
-              "x": 215,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": ".",
-              "x": 240,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": ".",
-              "x": 264,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            },
-            {
-              "char": ".",
-              "x": 289,
-              "y": 940,
-              "width": 25,
-              "height": 54
-            }
-          ]
-        },
-        {
-          "text": "Don't know how to",
-          "confidence": 0.9517,
-          "bbox": {
-            "x": 70,
-            "y": 874,
-            "width": 424,
-            "height": 48
-          },
-          "chars": [
-            {
-              "char": "D",
-              "x": 70,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "o",
-              "x": 95,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "n",
-              "x": 120,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "'",
-              "x": 145,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "t",
-              "x": 170,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": " ",
-              "x": 195,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "k",
-              "x": 220,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "n",
-              "x": 245,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "o",
-              "x": 270,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "w",
-              "x": 294,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": " ",
-              "x": 319,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "h",
-              "x": 344,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "o",
-              "x": 369,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "w",
-              "x": 394,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": " ",
-              "x": 419,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "t",
-              "x": 444,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            },
-            {
-              "char": "o",
-              "x": 469,
-              "y": 874,
-              "width": 25,
-              "height": 48
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 22000,
-      "end_ms": 22750,
-      "detections": [
-        {
-          "text": "我该说点啥好呢..",
-          "confidence": 0.9534,
-          "bbox": {
-            "x": 70,
-            "y": 1018,
-            "width": 366,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "我",
-              "x": 70,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "该",
-              "x": 111,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "说",
-              "x": 151,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "点",
-              "x": 192,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "啥",
-              "x": 233,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "好",
-              "x": 273,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": "呢",
-              "x": 314,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": ".",
-              "x": 355,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            },
-            {
-              "char": ".",
-              "x": 395,
-              "y": 1018,
-              "width": 41,
-              "height": 54
-            }
-          ]
-        },
-        {
-          "text": "respond...",
-          "confidence": 0.972,
-          "bbox": {
-            "x": 68,
-            "y": 942,
-            "width": 242,
-            "height": 50
-          },
-          "chars": [
-            {
-              "char": "r",
-              "x": 68,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": "e",
-              "x": 92,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": "s",
-              "x": 116,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": "p",
-              "x": 141,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": "o",
-              "x": 165,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": "n",
-              "x": 189,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": "d",
-              "x": 213,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": ".",
-              "x": 237,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": ".",
-              "x": 262,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            },
-            {
-              "char": ".",
-              "x": 286,
-              "y": 942,
-              "width": 24,
-              "height": 50
-            }
-          ]
-        },
-        {
-          "text": "Don'tknow how to",
-          "confidence": 0.9605,
-          "bbox": {
-            "x": 66,
-            "y": 868,
-            "width": 434,
-            "height": 58
-          },
-          "chars": [
-            {
-              "char": "D",
-              "x": 66,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "o",
-              "x": 93,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "n",
-              "x": 120,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "'",
-              "x": 147,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "t",
-              "x": 174,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "k",
-              "x": 202,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "n",
-              "x": 229,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "o",
-              "x": 256,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "w",
-              "x": 283,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": " ",
-              "x": 310,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "h",
-              "x": 337,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "o",
-              "x": 364,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "w",
-              "x": 392,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": " ",
-              "x": 419,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "t",
-              "x": 446,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            },
-            {
-              "char": "o",
-              "x": 473,
-              "y": 868,
-              "width": 27,
-              "height": 58
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 25250,
-      "end_ms": 26500,
-      "detections": [
-        {
-          "text": "好像不太对..",
-          "confidence": 0.877,
-          "bbox": {
-            "x": 68,
-            "y": 962,
-            "width": 282,
-            "height": 56
-          },
-          "chars": [
-            {
-              "char": "好",
-              "x": 68,
-              "y": 962,
-              "width": 40,
-              "height": 56
-            },
-            {
-              "char": "像",
-              "x": 108,
-              "y": 962,
-              "width": 40,
-              "height": 56
-            },
-            {
-              "char": "不",
-              "x": 149,
-              "y": 962,
-              "width": 40,
-              "height": 56
-            },
-            {
-              "char": "太",
-              "x": 189,
-              "y": 962,
-              "width": 40,
-              "height": 56
-            },
-            {
-              "char": "对",
-              "x": 229,
-              "y": 962,
-              "width": 40,
-              "height": 56
-            },
-            {
-              "char": ".",
-              "x": 269,
-              "y": 962,
-              "width": 40,
-              "height": 56
-            },
-            {
-              "char": ".",
-              "x": 310,
-              "y": 962,
-              "width": 40,
-              "height": 56
-            }
-          ]
-        },
-        {
-          "text": "Cani say that?",
-          "confidence": 0.9694,
-          "bbox": {
-            "x": 68,
-            "y": 904,
-            "width": 386,
-            "height": 56
-          },
-          "chars": [
-            {
-              "char": "C",
-              "x": 68,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "a",
-              "x": 96,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "n",
-              "x": 123,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "i",
-              "x": 151,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": " ",
-              "x": 178,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "s",
-              "x": 206,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "a",
-              "x": 233,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "y",
-              "x": 261,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": " ",
-              "x": 289,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "t",
-              "x": 316,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "h",
-              "x": 344,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "a",
-              "x": 371,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "t",
-              "x": 399,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            },
-            {
-              "char": "?",
-              "x": 426,
-              "y": 904,
-              "width": 28,
-              "height": 56
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 28750,
-      "end_ms": 30500,
-      "detections": [
-        {
-          "text": "好家伙，最近天天的",
-          "confidence": 0.9949,
-          "bbox": {
-            "x": 68,
-            "y": 1020,
-            "width": 438,
-            "height": 56
-          },
-          "chars": [
-            {
-              "char": "好",
-              "x": 68,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "家",
-              "x": 117,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "伙",
-              "x": 165,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "，",
-              "x": 214,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "最",
-              "x": 263,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "近",
-              "x": 311,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "天",
-              "x": 360,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "天",
-              "x": 409,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "的",
-              "x": 457,
-              "y": 1020,
-              "width": 49,
-              "height": 56
-            }
-          ]
-        },
-        {
-          "text": "moment",
-          "confidence": 0.9982,
-          "bbox": {
-            "x": 68,
-            "y": 944,
-            "width": 190,
-            "height": 42
-          },
-          "chars": [
-            {
-              "char": "m",
-              "x": 68,
-              "y": 944,
-              "width": 32,
-              "height": 42
-            },
-            {
-              "char": "o",
-              "x": 100,
-              "y": 944,
-              "width": 32,
-              "height": 42
-            },
-            {
-              "char": "m",
-              "x": 131,
-              "y": 944,
-              "width": 32,
-              "height": 42
-            },
-            {
-              "char": "e",
-              "x": 163,
-              "y": 944,
-              "width": 32,
-              "height": 42
-            },
-            {
-              "char": "n",
-              "x": 195,
-              "y": 944,
-              "width": 32,
-              "height": 42
-            },
-            {
-              "char": "t",
-              "x": 226,
-              "y": 944,
-              "width": 32,
-              "height": 42
-            }
-          ]
-        },
-        {
-          "text": "With every passing",
-          "confidence": 0.963,
-          "bbox": {
-            "x": 64,
-            "y": 868,
-            "width": 432,
-            "height": 60
-          },
-          "chars": [
-            {
-              "char": "W",
-              "x": 64,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "i",
-              "x": 88,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "t",
-              "x": 112,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "h",
-              "x": 136,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 160,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "e",
-              "x": 184,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "v",
-              "x": 208,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "e",
-              "x": 232,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "r",
-              "x": 256,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "y",
-              "x": 280,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": " ",
-              "x": 304,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "p",
-              "x": 328,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "a",
-              "x": 352,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "s",
-              "x": 376,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "s",
-              "x": 400,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "i",
-              "x": 424,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "n",
-              "x": 448,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            },
-            {
-              "char": "g",
-              "x": 472,
-              "y": 868,
-              "width": 24,
-              "height": 60
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 31500,
-      "end_ms": 34250,
-      "detections": [
-        {
-          "text": "每天都被自己整笑",
-          "confidence": 0.9978,
-          "bbox": {
-            "x": 70,
-            "y": 980,
-            "width": 388,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "每",
-              "x": 70,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "天",
-              "x": 118,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "都",
-              "x": 167,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "被",
-              "x": 216,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "自",
-              "x": 264,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "己",
-              "x": 312,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "整",
-              "x": 361,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            },
-            {
-              "char": "笑",
-              "x": 410,
-              "y": 980,
-              "width": 48,
-              "height": 54
-            }
-          ]
-        },
-        {
-          "text": "I surprise myself",
-          "confidence": 0.9832,
-          "bbox": {
-            "x": 68,
-            "y": 906,
-            "width": 380,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "I",
-              "x": 68,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": " ",
-              "x": 90,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "s",
-              "x": 113,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "u",
-              "x": 135,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "r",
-              "x": 157,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "p",
-              "x": 180,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "r",
-              "x": 202,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "i",
-              "x": 224,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "s",
-              "x": 247,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "e",
-              "x": 269,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": " ",
-              "x": 292,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "m",
-              "x": 314,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "y",
-              "x": 336,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "s",
-              "x": 359,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "e",
-              "x": 381,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "l",
-              "x": 403,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "f",
-              "x": 426,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 34750,
-      "end_ms": 35500,
-      "detections": [
-        {
-          "text": "之前的我",
-          "confidence": 0.9997,
-          "bbox": {
-            "x": 66,
-            "y": 978,
-            "width": 206,
+            "x": 65,
+            "y": 1049,
+            "width": 589,
             "height": 64
           },
           "chars": [
             {
-              "char": "之",
-              "x": 66,
-              "y": 978,
-              "width": 52,
+              "char": "W",
+              "x": 65,
+              "y": 1049,
+              "width": 19,
               "height": 64
-            },
-            {
-              "char": "前",
-              "x": 118,
-              "y": 978,
-              "width": 52,
-              "height": 64
-            },
-            {
-              "char": "的",
-              "x": 169,
-              "y": 978,
-              "width": 52,
-              "height": 64
-            },
-            {
-              "char": "我",
-              "x": 220,
-              "y": 978,
-              "width": 52,
-              "height": 64
-            }
-          ]
-        },
-        {
-          "text": "I'm scared of flies",
-          "confidence": 0.9405,
-          "bbox": {
-            "x": 66,
-            "y": 906,
-            "width": 418,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "I",
-              "x": 66,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "'",
-              "x": 88,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "m",
-              "x": 110,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": " ",
-              "x": 132,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "s",
-              "x": 154,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "c",
-              "x": 176,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "a",
-              "x": 198,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "r",
-              "x": 220,
-              "y": 906,
-              "width": 22,
-              "height": 54
             },
             {
               "char": "e",
-              "x": 242,
-              "y": 906,
-              "width": 22,
-              "height": 54
+              "x": 84,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 103,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": "d",
-              "x": 264,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": " ",
-              "x": 286,
-              "y": 906,
-              "width": 22,
-              "height": 54
+              "x": 122,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": "o",
-              "x": 308,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "f",
-              "x": 330,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": " ",
-              "x": 352,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "f",
-              "x": 374,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "l",
-              "x": 396,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "i",
-              "x": 418,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "e",
-              "x": 440,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            },
-            {
-              "char": "s",
-              "x": 462,
-              "y": 906,
-              "width": 22,
-              "height": 54
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 35750,
-      "end_ms": 36500,
-      "detections": [
-        {
-          "text": "避男人如蛇蝎",
-          "confidence": 0.989,
-          "bbox": {
-            "x": 68,
-            "y": 972,
-            "width": 296,
-            "height": 56
-          },
-          "chars": [
-            {
-              "char": "避",
-              "x": 68,
-              "y": 972,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "男",
-              "x": 117,
-              "y": 972,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "人",
-              "x": 167,
-              "y": 972,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "如",
-              "x": 216,
-              "y": 972,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "蛇",
-              "x": 265,
-              "y": 972,
-              "width": 49,
-              "height": 56
-            },
-            {
-              "char": "蝎",
-              "x": 315,
-              "y": 972,
-              "width": 49,
-              "height": 56
-            }
-          ]
-        },
-        {
-          "text": "I'm scared of guy",
-          "confidence": 0.9631,
-          "bbox": {
-            "x": 64,
-            "y": 900,
-            "width": 402,
-            "height": 62
-          },
-          "chars": [
-            {
-              "char": "I",
-              "x": 64,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "'",
-              "x": 88,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "m",
-              "x": 111,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": " ",
-              "x": 135,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "s",
-              "x": 159,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "c",
-              "x": 182,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "a",
-              "x": 206,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "r",
-              "x": 230,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "e",
-              "x": 253,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "d",
-              "x": 277,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": " ",
-              "x": 300,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "o",
-              "x": 324,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "f",
-              "x": 348,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": " ",
-              "x": 371,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "g",
-              "x": 395,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "u",
-              "x": 419,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            },
-            {
-              "char": "y",
-              "x": 442,
-              "y": 900,
-              "width": 24,
-              "height": 62
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 37250,
-      "end_ms": 40000,
-      "detections": [
-        {
-          "text": "救救我救救我救救我",
-          "confidence": 0.9981,
-          "bbox": {
-            "x": 68,
-            "y": 1000,
-            "width": 472,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "救",
-              "x": 68,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "救",
-              "x": 120,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "我",
-              "x": 173,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "救",
-              "x": 225,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "救",
-              "x": 278,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "我",
-              "x": 330,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "救",
-              "x": 383,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "救",
-              "x": 435,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            },
-            {
-              "char": "我",
-              "x": 488,
-              "y": 1000,
-              "width": 52,
-              "height": 54
-            }
-          ]
-        },
-        {
-          "text": "SOS",
-          "confidence": 0.9229,
-          "bbox": {
-            "x": 568,
-            "y": 916,
-            "width": 44,
-            "height": 28
-          },
-          "chars": [
-            {
-              "char": "S",
-              "x": 568,
-              "y": 916,
-              "width": 15,
-              "height": 28
-            },
-            {
-              "char": "O",
-              "x": 583,
-              "y": 916,
-              "width": 15,
-              "height": 28
-            },
-            {
-              "char": "S",
-              "x": 597,
-              "y": 916,
-              "width": 15,
-              "height": 28
-            }
-          ]
-        },
-        {
-          "text": "Someone please help",
-          "confidence": 0.9595,
-          "bbox": {
-            "x": 66,
-            "y": 902,
-            "width": 488,
-            "height": 58
-          },
-          "chars": [
-            {
-              "char": "S",
-              "x": 66,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "o",
-              "x": 92,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "m",
-              "x": 117,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "e",
-              "x": 143,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "o",
-              "x": 169,
-              "y": 902,
-              "width": 26,
-              "height": 58
+              "x": 141,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": "n",
-              "x": 194,
-              "y": 902,
-              "width": 26,
-              "height": 58
+              "x": 160,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
-              "char": "e",
-              "x": 220,
-              "y": 902,
-              "width": 26,
-              "height": 58
+              "char": "'",
+              "x": 179,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "t",
+              "x": 198,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": " ",
-              "x": 246,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "p",
-              "x": 271,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "l",
-              "x": 297,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "e",
-              "x": 323,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "a",
-              "x": 349,
-              "y": 902,
-              "width": 26,
-              "height": 58
+              "x": 217,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": "s",
-              "x": 374,
-              "y": 902,
-              "width": 26,
-              "height": 58
+              "x": 236,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 255,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "y",
+              "x": 274,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 293,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "I",
+              "x": 312,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 331,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 350,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 369,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "v",
+              "x": 388,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": "e",
-              "x": 400,
-              "y": 902,
-              "width": 26,
-              "height": 58
+              "x": 407,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": " ",
               "x": 426,
-              "y": 902,
-              "width": 26,
-              "height": 58
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
-              "char": "h",
-              "x": 451,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "e",
-              "x": 477,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "l",
-              "x": 503,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            },
-            {
-              "char": "p",
-              "x": 528,
-              "y": 902,
-              "width": 26,
-              "height": 58
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 40250,
-      "end_ms": 41250,
-      "detections": [
-        {
-          "text": "这次",
-          "confidence": 0.9989,
-          "bbox": {
-            "x": 62,
-            "y": 980,
-            "width": 118,
-            "height": 68
-          },
-          "chars": [
-            {
-              "char": "这",
-              "x": 62,
-              "y": 980,
-              "width": 59,
-              "height": 68
-            },
-            {
-              "char": "次",
-              "x": 121,
-              "y": 980,
-              "width": 59,
-              "height": 68
-            }
-          ]
-        },
-        {
-          "text": "Causei think i'm falling",
-          "confidence": 0.9111,
-          "bbox": {
-            "x": 62,
-            "y": 894,
-            "width": 590,
-            "height": 70
-          },
-          "chars": [
-            {
-              "char": "C",
-              "x": 62,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "a",
-              "x": 87,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "u",
-              "x": 111,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "s",
-              "x": 136,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "e",
-              "x": 160,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "i",
-              "x": 185,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": " ",
-              "x": 210,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "t",
-              "x": 234,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "h",
-              "x": 259,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "i",
-              "x": 283,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "n",
-              "x": 308,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "k",
-              "x": 332,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": " ",
-              "x": 357,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "i",
-              "x": 382,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "'",
-              "x": 406,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "m",
-              "x": 431,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": " ",
-              "x": 455,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "f",
-              "x": 480,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "a",
-              "x": 504,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "l",
-              "x": 529,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "l",
-              "x": 554,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "i",
-              "x": 578,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "n",
-              "x": 603,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            },
-            {
-              "char": "g",
-              "x": 627,
-              "y": 894,
-              "width": 25,
-              "height": 70
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 43250,
-      "end_ms": 45000,
-      "detections": [
-        {
-          "text": "算是我栽了",
-          "confidence": 0.9957,
-          "bbox": {
-            "x": 66,
-            "y": 992,
-            "width": 246,
-            "height": 62
-          },
-          "chars": [
-            {
-              "char": "算",
-              "x": 66,
-              "y": 992,
-              "width": 49,
-              "height": 62
-            },
-            {
-              "char": "是",
-              "x": 115,
-              "y": 992,
-              "width": 49,
-              "height": 62
-            },
-            {
-              "char": "我",
-              "x": 164,
-              "y": 992,
-              "width": 49,
-              "height": 62
-            },
-            {
-              "char": "栽",
-              "x": 214,
-              "y": 992,
-              "width": 49,
-              "height": 62
-            },
-            {
-              "char": "了",
-              "x": 263,
-              "y": 992,
-              "width": 49,
-              "height": 62
-            }
-          ]
-        },
-        {
-          "text": "in love this time",
-          "confidence": 0.9617,
-          "bbox": {
-            "x": 68,
-            "y": 906,
-            "width": 410,
-            "height": 54
-          },
-          "chars": [
-            {
-              "char": "i",
-              "x": 68,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": "n",
-              "x": 92,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": " ",
-              "x": 116,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": "l",
-              "x": 140,
-              "y": 906,
-              "width": 24,
-              "height": 54
+              "char": "y",
+              "x": 445,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": "o",
-              "x": 164,
-              "y": 906,
-              "width": 24,
-              "height": 54
+              "x": 464,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
-              "char": "v",
-              "x": 189,
-              "y": 906,
-              "width": 24,
-              "height": 54
+              "char": "u",
+              "x": 483,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": ",",
+              "x": 502,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 521,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "w",
+              "x": 540,
+              "y": 1049,
+              "width": 19,
+              "height": 64
             },
             {
               "char": "e",
-              "x": 213,
-              "y": 906,
-              "width": 24,
-              "height": 54
+              "x": 559,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 578,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 597,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 616,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            },
+            {
+              "char": "y",
+              "x": 635,
+              "y": 1049,
+              "width": 19,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 30000,
+      "end_ms": 39560,
+      "detections": [
+        {
+          "text": "moment I surprise myself I'm scared of flies I'm scared of guys someone please help",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 69,
+            "y": 1049,
+            "width": 581,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "m",
+              "x": 69,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 76,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "m",
+              "x": 83,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 90,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 97,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "t",
+              "x": 104,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 111,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "I",
+              "x": 118,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 125,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 132,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "u",
+              "x": 139,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 146,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "p",
+              "x": 153,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 160,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 167,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 174,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 181,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 188,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "m",
+              "x": 195,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "y",
+              "x": 202,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 209,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 216,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 223,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "f",
+              "x": 230,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": " ",
               "x": 237,
-              "y": 906,
-              "width": 24,
-              "height": 54
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "t",
-              "x": 261,
-              "y": 906,
-              "width": 24,
-              "height": 54
+              "char": "I",
+              "x": 244,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "h",
-              "x": 285,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": "i",
-              "x": 309,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": "s",
-              "x": 333,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": " ",
-              "x": 357,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": "t",
-              "x": 382,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": "i",
-              "x": 406,
-              "y": 906,
-              "width": 24,
-              "height": 54
+              "char": "'",
+              "x": 251,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": "m",
-              "x": 430,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            },
-            {
-              "char": "e",
-              "x": 454,
-              "y": 906,
-              "width": 24,
-              "height": 54
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 48500,
-      "end_ms": 51250,
-      "detections": [
-        {
-          "text": "我有对象了！！！",
-          "confidence": 0.9851,
-          "bbox": {
-            "x": 68,
-            "y": 998,
-            "width": 364,
-            "height": 56
-          },
-          "chars": [
-            {
-              "char": "我",
-              "x": 68,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            },
-            {
-              "char": "有",
-              "x": 114,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            },
-            {
-              "char": "对",
-              "x": 159,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            },
-            {
-              "char": "象",
-              "x": 204,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            },
-            {
-              "char": "了",
-              "x": 250,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            },
-            {
-              "char": "！",
-              "x": 296,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            },
-            {
-              "char": "！",
-              "x": 341,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            },
-            {
-              "char": "！",
-              "x": 386,
-              "y": 998,
-              "width": 46,
-              "height": 56
-            }
-          ]
-        },
-        {
-          "text": "I had a valentine",
-          "confidence": 0.9612,
-          "bbox": {
-            "x": 68,
-            "y": 908,
-            "width": 376,
-            "height": 48
-          },
-          "chars": [
-            {
-              "char": "I",
-              "x": 68,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 258,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": " ",
-              "x": 90,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 265,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "h",
-              "x": 112,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "char": "s",
+              "x": 272,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "c",
+              "x": 279,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": "a",
-              "x": 134,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 286,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 293,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 300,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": "d",
-              "x": 156,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 307,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": " ",
-              "x": 179,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 314,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "a",
-              "x": 201,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "char": "o",
+              "x": 321,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "f",
+              "x": 328,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": " ",
-              "x": 223,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 335,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "v",
-              "x": 245,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "a",
-              "x": 267,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "char": "f",
+              "x": 342,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": "l",
-              "x": 289,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "e",
-              "x": 311,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "n",
-              "x": 333,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "t",
-              "x": 356,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 349,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": "i",
-              "x": 378,
-              "y": 908,
-              "width": 22,
-              "height": 48
-            },
-            {
-              "char": "n",
-              "x": 400,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 356,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
               "char": "e",
-              "x": 422,
-              "y": 908,
-              "width": 22,
-              "height": 48
+              "x": 363,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 370,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 377,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "I",
+              "x": 384,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "'",
+              "x": 391,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "m",
+              "x": 398,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 405,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 412,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "c",
+              "x": 419,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 426,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "r",
+              "x": 433,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 440,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "d",
+              "x": 447,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 454,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 461,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "f",
+              "x": 468,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 475,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "g",
+              "x": 482,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "u",
+              "x": 489,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "y",
+              "x": 496,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 503,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 510,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 517,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 524,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "m",
+              "x": 531,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 538,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 545,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 552,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 559,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 566,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "p",
+              "x": 573,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 580,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 587,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 594,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 601,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 608,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 615,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "h",
+              "x": 622,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 629,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 636,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "p",
+              "x": 643,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 52500,
-      "end_ms": 53250,
+      "start_ms": 39560,
+      "end_ms": 53220,
       "detections": [
         {
-          "text": "情人节快乐",
-          "confidence": 0.9981,
+          "text": "cause I think I'm falling in love this time I blink and suddenly I had a valentine",
+          "confidence": 1.0,
           "bbox": {
-            "x": 88,
-            "y": 666,
-            "width": 460,
-            "height": 158
+            "x": 73,
+            "y": 1049,
+            "width": 574,
+            "height": 64
           },
           "chars": [
             {
-              "char": "情",
-              "x": 88,
-              "y": 666,
-              "width": 92,
-              "height": 158
+              "char": "c",
+              "x": 73,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "人",
-              "x": 180,
-              "y": 666,
-              "width": 92,
-              "height": 158
+              "char": "a",
+              "x": 80,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "节",
-              "x": 272,
-              "y": 666,
-              "width": 92,
-              "height": 158
+              "char": "u",
+              "x": 87,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "快",
-              "x": 364,
-              "y": 666,
-              "width": 92,
-              "height": 158
+              "char": "s",
+              "x": 94,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             },
             {
-              "char": "乐",
-              "x": 456,
-              "y": 666,
-              "width": 92,
-              "height": 158
+              "char": "e",
+              "x": 101,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 108,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "I",
+              "x": 115,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 122,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "t",
+              "x": 129,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "h",
+              "x": 136,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 143,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 150,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "k",
+              "x": 157,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 164,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "I",
+              "x": 171,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "'",
+              "x": 178,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "m",
+              "x": 185,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 192,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "f",
+              "x": 199,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 206,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 213,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 220,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 227,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 234,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "g",
+              "x": 241,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 248,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 255,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 262,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 269,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 276,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "o",
+              "x": 283,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "v",
+              "x": 290,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 297,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 304,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "t",
+              "x": 311,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "h",
+              "x": 318,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 325,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 332,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 339,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "t",
+              "x": 346,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 353,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "m",
+              "x": 360,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 367,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 374,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "I",
+              "x": 381,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 388,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "b",
+              "x": 395,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 402,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 409,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 416,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "k",
+              "x": 423,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 430,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 437,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 444,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "d",
+              "x": 451,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 458,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "s",
+              "x": 465,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "u",
+              "x": 472,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "d",
+              "x": 479,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "d",
+              "x": 486,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 493,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 500,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 507,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "y",
+              "x": 514,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 521,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "I",
+              "x": 528,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 535,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "h",
+              "x": 542,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 549,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "d",
+              "x": 556,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 563,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 570,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": " ",
+              "x": 577,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "v",
+              "x": 584,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "a",
+              "x": 591,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "l",
+              "x": 598,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 605,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 612,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "t",
+              "x": 619,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "i",
+              "x": 626,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "n",
+              "x": 633,
+              "y": 1049,
+              "width": 7,
+              "height": 64
+            },
+            {
+              "char": "e",
+              "x": 640,
+              "y": 1049,
+              "width": 7,
+              "height": 64
             }
           ]
         }

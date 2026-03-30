@@ -1,328 +1,402 @@
 {
-  "video": "e7498e17-3ed1-4755-9e6d-880e0899a3b3",
+  "video": "83eacaaf-43fb-42c6-b9ed-072f7973ce91",
   "resolution": {
     "width": 720,
     "height": 1280
   },
-  "duration_ms": 11400,
-  "frame_interval_ms": 250,
+  "duration_ms": 11000,
+  "subtitle_source": "stt",
   "segments": [
     {
       "start_ms": 0,
-      "end_ms": 2000,
+      "end_ms": 1800,
       "detections": [
         {
-          "text": "模仿一下我的台湾朋友说话",
-          "confidence": 0.9974,
+          "text": "魔法叫我的台灣朋友說話",
+          "confidence": 1.0,
           "bbox": {
-            "x": 114,
-            "y": 1036,
-            "width": 496,
-            "height": 42
+            "x": 123,
+            "y": 1049,
+            "width": 473,
+            "height": 64
           },
           "chars": [
             {
-              "char": "模",
-              "x": 114,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "char": "魔",
+              "x": 123,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "仿",
-              "x": 155,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "char": "法",
+              "x": 166,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "一",
-              "x": 197,
-              "y": 1036,
-              "width": 41,
-              "height": 42
-            },
-            {
-              "char": "下",
-              "x": 238,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "char": "叫",
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "我",
-              "x": 279,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 321,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "台",
-              "x": 362,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "湾",
-              "x": 403,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "char": "灣",
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "朋",
-              "x": 445,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "友",
-              "x": 486,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "说",
-              "x": 527,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "char": "說",
+              "x": 510,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "话",
-              "x": 569,
-              "y": 1036,
-              "width": 41,
-              "height": 42
+              "char": "話",
+              "x": 553,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 2250,
-      "end_ms": 4250,
+      "start_ms": 1800,
+      "end_ms": 3840,
       "detections": [
         {
-          "text": "干三小啦",
-          "confidence": 0.9948,
+          "text": "幹!三小啦!",
+          "confidence": 1.0,
           "bbox": {
-            "x": 272,
-            "y": 1032,
-            "width": 182,
-            "height": 50
+            "x": 231,
+            "y": 1049,
+            "width": 258,
+            "height": 64
           },
           "chars": [
             {
-              "char": "干",
-              "x": 272,
-              "y": 1032,
-              "width": 46,
-              "height": 50
+              "char": "幹",
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "!",
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "三",
-              "x": 318,
-              "y": 1032,
-              "width": 46,
-              "height": 50
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "小",
-              "x": 363,
-              "y": 1032,
-              "width": 46,
-              "height": 50
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "啦",
-              "x": 408,
-              "y": 1032,
-              "width": 46,
-              "height": 50
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "!",
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 4500,
-      "end_ms": 7500,
+      "start_ms": 3840,
+      "end_ms": 6400,
       "detections": [
         {
-          "text": "蛤好夸张哦",
-          "confidence": 0.9814,
+          "text": "蛤?好誇張喔!",
+          "confidence": 1.0,
           "bbox": {
-            "x": 250,
-            "y": 1032,
-            "width": 224,
-            "height": 50
+            "x": 209,
+            "y": 1049,
+            "width": 301,
+            "height": 64
           },
           "chars": [
             {
               "char": "蛤",
-              "x": 250,
-              "y": 1032,
-              "width": 45,
-              "height": 50
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "?",
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "好",
               "x": 295,
-              "y": 1032,
-              "width": 45,
-              "height": 50
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "夸",
-              "x": 340,
-              "y": 1032,
-              "width": 45,
-              "height": 50
+              "char": "誇",
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "张",
-              "x": 384,
-              "y": 1032,
-              "width": 45,
-              "height": 50
+              "char": "張",
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "哦",
-              "x": 429,
-              "y": 1032,
-              "width": 45,
-              "height": 50
+              "char": "喔",
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "!",
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 7500,
-      "end_ms": 8500,
+      "start_ms": 6400,
+      "end_ms": 9140,
       "detections": [
         {
-          "text": "靠北啦要怎样",
-          "confidence": 0.9989,
+          "text": "靠北拉!要怎樣?",
+          "confidence": 1.0,
           "bbox": {
-            "x": 230,
-            "y": 1032,
-            "width": 266,
-            "height": 48
+            "x": 188,
+            "y": 1049,
+            "width": 344,
+            "height": 64
           },
           "chars": [
             {
               "char": "靠",
-              "x": 230,
-              "y": 1032,
-              "width": 44,
-              "height": 48
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "北",
-              "x": 274,
-              "y": 1032,
-              "width": 44,
-              "height": 48
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "啦",
-              "x": 319,
-              "y": 1032,
-              "width": 44,
-              "height": 48
+              "char": "拉",
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "!",
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "要",
-              "x": 363,
-              "y": 1032,
-              "width": 44,
-              "height": 48
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "怎",
-              "x": 407,
-              "y": 1032,
-              "width": 44,
-              "height": 48
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "样",
-              "x": 452,
-              "y": 1032,
-              "width": 44,
-              "height": 48
+              "char": "樣",
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "?",
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 9250,
-      "end_ms": 11500,
+      "start_ms": 9140,
+      "end_ms": 10460,
       "detections": [
         {
-          "text": "你是要怎样啊",
-          "confidence": 0.9992,
+          "text": "你是要怎樣啊?",
+          "confidence": 1.0,
           "bbox": {
-            "x": 236,
-            "y": 1030,
-            "width": 252,
-            "height": 48
+            "x": 209,
+            "y": 1049,
+            "width": 301,
+            "height": 64
           },
           "chars": [
             {
               "char": "你",
-              "x": 236,
-              "y": 1030,
-              "width": 42,
-              "height": 48
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 278,
-              "y": 1030,
-              "width": 42,
-              "height": 48
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "要",
-              "x": 320,
-              "y": 1030,
-              "width": 42,
-              "height": 48
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "怎",
-              "x": 362,
-              "y": 1030,
-              "width": 42,
-              "height": 48
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
-              "char": "样",
-              "x": 404,
-              "y": 1030,
-              "width": 42,
-              "height": 48
+              "char": "樣",
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "啊",
-              "x": 446,
-              "y": 1030,
-              "width": 42,
-              "height": 48
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "?",
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 10460,
+      "end_ms": 11360,
+      "detections": [
+        {
+          "text": "蛤?",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 317,
+            "y": 1049,
+            "width": 86,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "蛤",
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "?",
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }

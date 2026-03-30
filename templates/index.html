@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scrollingo - Douyin Downloader</title>
+<title>Scrollingo - Douyin & TikTok Downloader</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -260,14 +260,14 @@
 <body>
 <div class="container">
   <h1>Scrollingo</h1>
-  <p class="subtitle">Douyin Video Downloader</p>
+  <p class="subtitle">Douyin & TikTok Video Downloader</p>
 
   <div class="input-group">
     <input type="text" id="urlInput"
-           placeholder="Paste Douyin share text (e.g. 0.79 dAT:/ ... https://v.douyin.com/xxx/ ...)">
+           placeholder="Paste a Douyin or TikTok link (e.g. https://v.douyin.com/xxx/ or https://vm.tiktok.com/xxx/)">
     <button class="btn btn-primary" id="parseBtn" onclick="parseUrl()">Parse</button>
   </div>
-  <p class="input-hint">Paste the full share text from Douyin — the link will be extracted automatically</p>
+  <p class="input-hint">Paste the full share text from Douyin or TikTok — the link will be extracted automatically</p>
 
   <div id="statusMsg" class="status"></div>
 
@@ -398,7 +398,8 @@ async function downloadVideo(index) {
         video_url: v.video_url,
         title: v.title,
         author: v.author,
-        aweme_id: v.aweme_id
+        aweme_id: v.aweme_id,
+        platform: v.platform || ''
       })
     });
     const data = await resp.json();

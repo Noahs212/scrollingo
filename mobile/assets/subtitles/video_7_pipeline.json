@@ -1,2146 +1,2142 @@
 {
-  "video": "cda7ac24-6d77-4c13-8073-275e542d1188",
+  "video": "d2b568aa-fdad-42d3-84eb-a89e3d6c0877",
   "resolution": {
     "width": 720,
     "height": 1280
   },
-  "duration_ms": 63667,
-  "frame_interval_ms": 250,
+  "duration_ms": 63000,
+  "subtitle_source": "stt",
   "segments": [
     {
-      "start_ms": 750,
-      "end_ms": 4250,
+      "start_ms": 0,
+      "end_ms": 3600,
       "detections": [
         {
           "text": "你知道你最让人佩服的地方是什么吗",
-          "confidence": 0.9977,
+          "confidence": 1.0,
           "bbox": {
-            "x": 88,
-            "y": 974,
-            "width": 542,
-            "height": 46
+            "x": 56,
+            "y": 1049,
+            "width": 608,
+            "height": 64
           },
           "chars": [
             {
               "char": "你",
-              "x": 88,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 56,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "知",
-              "x": 122,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 94,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "道",
-              "x": 156,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 132,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 190,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 170,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "最",
-              "x": 224,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 208,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "让",
-              "x": 257,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 246,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "人",
-              "x": 291,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 284,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "佩",
-              "x": 325,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 322,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "服",
-              "x": 359,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 360,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 393,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 398,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "地",
-              "x": 427,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 436,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "方",
-              "x": 461,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 474,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 494,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 512,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "什",
-              "x": 528,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 550,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "么",
-              "x": 562,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 588,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "吗",
-              "x": 596,
-              "y": 974,
-              "width": 34,
-              "height": 46
+              "x": 626,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 4250,
-      "end_ms": 7250,
+      "start_ms": 3600,
+      "end_ms": 6720,
       "detections": [
         {
           "text": "就是你明明经历了那么多不好的事情",
-          "confidence": 0.9989,
+          "confidence": 1.0,
           "bbox": {
-            "x": 88,
-            "y": 974,
-            "width": 540,
-            "height": 44
+            "x": 56,
+            "y": 1049,
+            "width": 608,
+            "height": 64
           },
           "chars": [
             {
               "char": "就",
-              "x": 88,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 56,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 122,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 94,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 156,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 132,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "明",
-              "x": 189,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 170,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "明",
-              "x": 223,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 208,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "经",
-              "x": 257,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 246,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "历",
-              "x": 290,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 284,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 324,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 322,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "那",
-              "x": 358,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 360,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "么",
-              "x": 392,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 398,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "多",
-              "x": 426,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 436,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "不",
-              "x": 459,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 474,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "好",
-              "x": 493,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 512,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 527,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 550,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "事",
-              "x": 560,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 588,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             },
             {
               "char": "情",
-              "x": 594,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 626,
+              "y": 1049,
+              "width": 38,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 7500,
-      "end_ms": 9000,
+      "start_ms": 6720,
+      "end_ms": 8840,
       "detections": [
         {
           "text": "可是你却依然没有变坏",
-          "confidence": 0.9972,
+          "confidence": 1.0,
           "bbox": {
-            "x": 190,
-            "y": 978,
-            "width": 340,
-            "height": 40
+            "x": 145,
+            "y": 1049,
+            "width": 430,
+            "height": 64
           },
           "chars": [
             {
               "char": "可",
-              "x": 190,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 145,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 224,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 258,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "却",
-              "x": 292,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "依",
-              "x": 326,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "然",
               "x": 360,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "没",
-              "x": 394,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "有",
-              "x": 428,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "变",
-              "x": 462,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "坏",
-              "x": 496,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 532,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 9000,
-      "end_ms": 11000,
+      "start_ms": 8840,
+      "end_ms": 10780,
       "detections": [
         {
           "text": "你见识了那么多人性的阴暗",
-          "confidence": 0.9969,
+          "confidence": 1.0,
           "bbox": {
-            "x": 156,
-            "y": 976,
-            "width": 406,
-            "height": 42
+            "x": 102,
+            "y": 1049,
+            "width": 516,
+            "height": 64
           },
           "chars": [
             {
               "char": "你",
-              "x": 156,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 102,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "见",
-              "x": 190,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 145,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "识",
-              "x": 224,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 258,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "那",
-              "x": 291,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "么",
-              "x": 325,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "多",
-              "x": 359,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "人",
-              "x": 393,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "性",
-              "x": 427,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 460,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "阴",
-              "x": 494,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 532,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "暗",
-              "x": 528,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 575,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 11000,
-      "end_ms": 13250,
+      "start_ms": 10780,
+      "end_ms": 12600,
       "detections": [
         {
           "text": "也尝尽了世间的无情",
-          "confidence": 0.9962,
+          "confidence": 1.0,
           "bbox": {
-            "x": 208,
-            "y": 978,
-            "width": 306,
-            "height": 40
+            "x": 166,
+            "y": 1049,
+            "width": 387,
+            "height": 64
           },
           "chars": [
             {
               "char": "也",
-              "x": 208,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 166,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "尝",
-              "x": 242,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "尽",
-              "x": 276,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 310,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "世",
-              "x": 344,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "间",
-              "x": 378,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 412,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "无",
-              "x": 446,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "情",
-              "x": 480,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 510,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 13500,
-      "end_ms": 15250,
+      "start_ms": 12600,
+      "end_ms": 14940,
       "detections": [
         {
           "text": "可是你却没有走向极端",
-          "confidence": 0.994,
+          "confidence": 1.0,
           "bbox": {
-            "x": 190,
-            "y": 976,
-            "width": 340,
-            "height": 42
+            "x": 145,
+            "y": 1049,
+            "width": 430,
+            "height": 64
           },
           "chars": [
             {
               "char": "可",
-              "x": 190,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 145,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 224,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 258,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "却",
-              "x": 292,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "没",
-              "x": 326,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "有",
               "x": 360,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "走",
-              "x": 394,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "向",
-              "x": 428,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "极",
-              "x": 462,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "端",
-              "x": 496,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 532,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 15250,
-      "end_ms": 16750,
+      "start_ms": 14940,
+      "end_ms": 16660,
       "detections": [
         {
           "text": "反而变得更加成熟",
-          "confidence": 0.9984,
+          "confidence": 1.0,
           "bbox": {
-            "x": 222,
-            "y": 976,
-            "width": 274,
-            "height": 42
+            "x": 188,
+            "y": 1049,
+            "width": 344,
+            "height": 64
           },
           "chars": [
             {
               "char": "反",
-              "x": 222,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "而",
-              "x": 256,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "变",
-              "x": 290,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "得",
-              "x": 325,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "更",
-              "x": 359,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "加",
-              "x": 393,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "成",
-              "x": 428,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "熟",
-              "x": 462,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 16750,
-      "end_ms": 18250,
+      "start_ms": 16660,
+      "end_ms": 17680,
       "detections": [
         {
           "text": "更加温和",
-          "confidence": 0.9986,
+          "confidence": 1.0,
           "bbox": {
-            "x": 288,
-            "y": 976,
-            "width": 142,
-            "height": 42
+            "x": 274,
+            "y": 1049,
+            "width": 172,
+            "height": 64
           },
           "chars": [
             {
               "char": "更",
-              "x": 288,
-              "y": 976,
-              "width": 36,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "加",
-              "x": 324,
-              "y": 976,
-              "width": 36,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "温",
-              "x": 359,
-              "y": 976,
-              "width": 36,
-              "height": 42
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "和",
-              "x": 394,
-              "y": 976,
-              "width": 36,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 18750,
-      "end_ms": 20500,
+      "start_ms": 17680,
+      "end_ms": 19680,
       "detections": [
         {
           "text": "这不是没招了",
-          "confidence": 0.9982,
+          "confidence": 1.0,
           "bbox": {
-            "x": 256,
-            "y": 976,
-            "width": 204,
-            "height": 42
+            "x": 231,
+            "y": 1049,
+            "width": 258,
+            "height": 64
           },
           "chars": [
             {
               "char": "这",
-              "x": 256,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "不",
-              "x": 290,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 324,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "没",
-              "x": 358,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "招",
-              "x": 392,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 426,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 20500,
-      "end_ms": 21500,
+      "start_ms": 19680,
+      "end_ms": 21360,
       "detections": [
         {
           "text": "而是你发现了",
-          "confidence": 0.9989,
+          "confidence": 1.0,
           "bbox": {
-            "x": 252,
-            "y": 970,
-            "width": 208,
-            "height": 52
+            "x": 231,
+            "y": 1049,
+            "width": 258,
+            "height": 64
           },
           "chars": [
             {
               "char": "而",
-              "x": 252,
-              "y": 970,
-              "width": 35,
-              "height": 52
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 287,
-              "y": 970,
-              "width": 35,
-              "height": 52
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 321,
-              "y": 970,
-              "width": 35,
-              "height": 52
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "发",
-              "x": 356,
-              "y": 970,
-              "width": 35,
-              "height": 52
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "现",
-              "x": 391,
-              "y": 970,
-              "width": 35,
-              "height": 52
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 425,
-              "y": 970,
-              "width": 35,
-              "height": 52
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 21500,
-      "end_ms": 22250,
+      "start_ms": 21360,
+      "end_ms": 24520,
       "detections": [
         {
-          "text": "真正的成长",
-          "confidence": 0.9985,
+          "text": "真正的成长从来都不是为了要逃离痛苦",
+          "confidence": 1.0,
           "bbox": {
-            "x": 270,
-            "y": 972,
-            "width": 176,
-            "height": 48
+            "x": 54,
+            "y": 1049,
+            "width": 612,
+            "height": 64
           },
           "chars": [
             {
               "char": "真",
-              "x": 270,
-              "y": 972,
-              "width": 35,
-              "height": 48
+              "x": 54,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "正",
-              "x": 305,
-              "y": 972,
-              "width": 35,
-              "height": 48
+              "x": 90,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 340,
-              "y": 972,
-              "width": 35,
-              "height": 48
+              "x": 126,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "成",
-              "x": 376,
-              "y": 972,
-              "width": 35,
-              "height": 48
+              "x": 162,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "长",
-              "x": 411,
-              "y": 972,
-              "width": 35,
-              "height": 48
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "start_ms": 22250,
-      "end_ms": 25000,
-      "detections": [
-        {
-          "text": "从来都不是为了要逃离痛苦",
-          "confidence": 0.9955,
-          "bbox": {
-            "x": 160,
-            "y": 976,
-            "width": 400,
-            "height": 42
-          },
-          "chars": [
+              "x": 198,
+              "y": 1049,
+              "width": 36,
+              "height": 64
+            },
             {
               "char": "从",
-              "x": 160,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 234,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "来",
-              "x": 193,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 270,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "都",
-              "x": 227,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 306,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "不",
-              "x": 260,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 342,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 293,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 378,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "为",
-              "x": 327,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 414,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "了",
-              "x": 360,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 450,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "要",
-              "x": 393,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 486,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "逃",
-              "x": 427,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 522,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "离",
-              "x": 460,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 558,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "痛",
-              "x": 493,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 594,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             },
             {
               "char": "苦",
-              "x": 527,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 630,
+              "y": 1049,
+              "width": 36,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 25000,
-      "end_ms": 28250,
+      "start_ms": 24520,
+      "end_ms": 27820,
       "detections": [
         {
           "text": "而是能在痛苦中保持清醒",
-          "confidence": 0.9992,
+          "confidence": 1.0,
           "bbox": {
-            "x": 174,
-            "y": 978,
-            "width": 372,
-            "height": 40
+            "x": 123,
+            "y": 1049,
+            "width": 473,
+            "height": 64
           },
           "chars": [
             {
               "char": "而",
-              "x": 174,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 123,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 208,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 166,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "能",
-              "x": 242,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "在",
-              "x": 275,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "痛",
-              "x": 309,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "苦",
-              "x": 343,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "中",
-              "x": 377,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "保",
-              "x": 411,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "持",
-              "x": 445,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "清",
-              "x": 478,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 510,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "醒",
-              "x": 512,
-              "y": 978,
-              "width": 34,
-              "height": 40
+              "x": 553,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 28500,
-      "end_ms": 30250,
+      "start_ms": 27820,
+      "end_ms": 29960,
       "detections": [
         {
           "text": "这个世界会让你失望",
-          "confidence": 0.9971,
+          "confidence": 1.0,
           "bbox": {
-            "x": 206,
-            "y": 976,
-            "width": 308,
-            "height": 42
+            "x": 166,
+            "y": 1049,
+            "width": 387,
+            "height": 64
           },
           "chars": [
             {
               "char": "这",
-              "x": 206,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 166,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "个",
-              "x": 240,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "世",
-              "x": 274,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "界",
-              "x": 309,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "会",
-              "x": 343,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "让",
-              "x": 377,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 411,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "失",
-              "x": 446,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "望",
-              "x": 480,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 510,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 30250,
-      "end_ms": 31750,
+      "start_ms": 29960,
+      "end_ms": 31440,
       "detections": [
         {
           "text": "会让你感受到恶意",
-          "confidence": 0.9982,
+          "confidence": 1.0,
           "bbox": {
-            "x": 222,
-            "y": 976,
-            "width": 274,
-            "height": 42
+            "x": 188,
+            "y": 1049,
+            "width": 344,
+            "height": 64
           },
           "chars": [
             {
               "char": "会",
-              "x": 222,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "让",
-              "x": 256,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 290,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "感",
-              "x": 325,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "受",
-              "x": 359,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "到",
-              "x": 393,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "恶",
-              "x": 428,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "意",
-              "x": 462,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 31750,
-      "end_ms": 32750,
+      "start_ms": 31440,
+      "end_ms": 32659,
       "detections": [
         {
           "text": "但是他们的出现",
-          "confidence": 0.9994,
+          "confidence": 1.0,
           "bbox": {
-            "x": 242,
-            "y": 976,
-            "width": 236,
-            "height": 42
+            "x": 209,
+            "y": 1049,
+            "width": 301,
+            "height": 64
           },
           "chars": [
             {
               "char": "但",
-              "x": 242,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 276,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "他",
-              "x": 309,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "们",
-              "x": 343,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 377,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "出",
-              "x": 411,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "现",
-              "x": 444,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 32750,
-      "end_ms": 34500,
+      "start_ms": 32659,
+      "end_ms": 34140,
       "detections": [
         {
           "text": "仅仅是为了提醒你",
-          "confidence": 0.9967,
+          "confidence": 1.0,
           "bbox": {
-            "x": 222,
-            "y": 976,
-            "width": 276,
-            "height": 42
+            "x": 188,
+            "y": 1049,
+            "width": 344,
+            "height": 64
           },
           "chars": [
             {
               "char": "仅",
-              "x": 222,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "仅",
-              "x": 256,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 291,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "为",
-              "x": 326,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "了",
               "x": 360,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "提",
-              "x": 394,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "醒",
-              "x": 429,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 464,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 34750,
-      "end_ms": 37750,
+      "start_ms": 34140,
+      "end_ms": 37140,
       "detections": [
         {
           "text": "不要成为他们那样的人",
-          "confidence": 0.9979,
+          "confidence": 1.0,
           "bbox": {
-            "x": 190,
-            "y": 976,
-            "width": 340,
-            "height": 42
+            "x": 145,
+            "y": 1049,
+            "width": 430,
+            "height": 64
           },
           "chars": [
             {
               "char": "不",
-              "x": 190,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 145,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "要",
-              "x": 224,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "成",
-              "x": 258,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "为",
-              "x": 292,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "他",
-              "x": 326,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "们",
               "x": 360,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "那",
-              "x": 394,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "样",
-              "x": 428,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 462,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "人",
-              "x": 496,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 532,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 38250,
-      "end_ms": 40500,
+      "start_ms": 37140,
+      "end_ms": 40040,
       "detections": [
         {
           "text": "所以经历的意义",
-          "confidence": 0.999,
+          "confidence": 1.0,
           "bbox": {
-            "x": 238,
-            "y": 976,
-            "width": 242,
-            "height": 42
+            "x": 209,
+            "y": 1049,
+            "width": 301,
+            "height": 64
           },
           "chars": [
             {
               "char": "所",
-              "x": 238,
-              "y": 976,
-              "width": 35,
-              "height": 42
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "以",
-              "x": 273,
-              "y": 976,
-              "width": 35,
-              "height": 42
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "经",
-              "x": 307,
-              "y": 976,
-              "width": 35,
-              "height": 42
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "历",
-              "x": 342,
-              "y": 976,
-              "width": 35,
-              "height": 42
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "的",
-              "x": 376,
-              "y": 976,
-              "width": 35,
-              "height": 42
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "意",
-              "x": 411,
-              "y": 976,
-              "width": 35,
-              "height": 42
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "义",
-              "x": 445,
-              "y": 976,
-              "width": 35,
-              "height": 42
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 41000,
-      "end_ms": 43500,
+      "start_ms": 40040,
+      "end_ms": 43000,
       "detections": [
         {
           "text": "就是能够让你在痛苦中",
-          "confidence": 0.9933,
+          "confidence": 1.0,
           "bbox": {
-            "x": 190,
-            "y": 976,
-            "width": 340,
-            "height": 42
+            "x": 145,
+            "y": 1049,
+            "width": 430,
+            "height": 64
           },
           "chars": [
             {
               "char": "就",
-              "x": 190,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 145,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "是",
-              "x": 224,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "能",
-              "x": 258,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "够",
-              "x": 292,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "让",
-              "x": 326,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
               "x": 360,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "在",
-              "x": 394,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "痛",
-              "x": 428,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "苦",
-              "x": 462,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "中",
-              "x": 496,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 532,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 43750,
-      "end_ms": 45500,
+      "start_ms": 43000,
+      "end_ms": 45060,
       "detections": [
         {
           "text": "重新成为你自己",
-          "confidence": 0.997,
+          "confidence": 1.0,
           "bbox": {
-            "x": 240,
-            "y": 976,
-            "width": 238,
-            "height": 42
+            "x": 209,
+            "y": 1049,
+            "width": 301,
+            "height": 64
           },
           "chars": [
             {
               "char": "重",
-              "x": 240,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 209,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "新",
-              "x": 274,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 252,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "成",
-              "x": 308,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "为",
-              "x": 342,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "你",
-              "x": 376,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "自",
-              "x": 410,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 424,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "己",
-              "x": 444,
-              "y": 976,
-              "width": 34,
-              "height": 42
+              "x": 467,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 46250,
-      "end_ms": 51250,
+      "start_ms": 45060,
+      "end_ms": 46520,
       "detections": [
         {
-          "text": "你记住社会会奖励那些会演戏的人",
-          "confidence": 0.9962,
+          "text": "你记住",
+          "confidence": 1.0,
           "bbox": {
-            "x": 106,
-            "y": 974,
-            "width": 504,
-            "height": 44
+            "x": 295,
+            "y": 1049,
+            "width": 129,
+            "height": 64
           },
           "chars": [
             {
               "char": "你",
-              "x": 106,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "记",
-              "x": 140,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "住",
-              "x": 173,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "社",
-              "x": 207,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "会",
-              "x": 240,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "会",
-              "x": 274,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "奖",
-              "x": 308,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "励",
-              "x": 341,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "那",
-              "x": 375,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "些",
-              "x": 408,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "会",
-              "x": 442,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "演",
-              "x": 476,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "戏",
-              "x": 509,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "的",
-              "x": 543,
-              "y": 974,
-              "width": 34,
-              "height": 44
-            },
-            {
-              "char": "人",
-              "x": 576,
-              "y": 974,
-              "width": 34,
-              "height": 44
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 51500,
-      "end_ms": 56000,
+      "start_ms": 46520,
+      "end_ms": 50420,
       "detections": [
         {
-          "text": "但因果从来不会亏待内心真诚的人",
-          "confidence": 0.9935,
+          "text": "社会会奖励那些会演戏的人",
+          "confidence": 1.0,
           "bbox": {
-            "x": 108,
-            "y": 976,
-            "width": 502,
-            "height": 42
+            "x": 102,
+            "y": 1049,
+            "width": 516,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "社",
+              "x": 102,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "会",
+              "x": 145,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "会",
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "奖",
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "励",
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "那",
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "些",
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "会",
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "演",
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "戏",
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "的",
+              "x": 532,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "人",
+              "x": 575,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 50420,
+      "end_ms": 52200,
+      "detections": [
+        {
+          "text": "但因果",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 295,
+            "y": 1049,
+            "width": 129,
+            "height": 64
           },
           "chars": [
             {
               "char": "但",
-              "x": 108,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 295,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "因",
-              "x": 141,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 338,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "果",
-              "x": 175,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "从",
-              "x": 208,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "来",
-              "x": 242,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "不",
-              "x": 275,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "会",
-              "x": 309,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "亏",
-              "x": 342,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "待",
-              "x": 376,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "内",
-              "x": 409,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "心",
-              "x": 443,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "真",
-              "x": 476,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "诚",
-              "x": 510,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "的",
-              "x": 543,
-              "y": 976,
-              "width": 33,
-              "height": 42
-            },
-            {
-              "char": "人",
-              "x": 577,
-              "y": 976,
-              "width": 33,
-              "height": 42
+              "x": 381,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 57000,
-      "end_ms": 58500,
+      "start_ms": 52200,
+      "end_ms": 55420,
       "detections": [
         {
-          "text": "好吗记住",
-          "confidence": 0.9985,
+          "text": "从来不会亏待内心真诚的人",
+          "confidence": 1.0,
           "bbox": {
-            "x": 286,
-            "y": 976,
-            "width": 144,
-            "height": 44
+            "x": 102,
+            "y": 1049,
+            "width": 516,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "从",
+              "x": 102,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "来",
+              "x": 145,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "不",
+              "x": 188,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "会",
+              "x": 231,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "亏",
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "待",
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "内",
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "心",
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "真",
+              "x": 446,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "诚",
+              "x": 489,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "的",
+              "x": 532,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "人",
+              "x": 575,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 55420,
+      "end_ms": 57060,
+      "detections": [
+        {
+          "text": "好吗",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 317,
+            "y": 1049,
+            "width": 86,
+            "height": 64
           },
           "chars": [
             {
               "char": "好",
-              "x": 286,
-              "y": 976,
-              "width": 36,
-              "height": 44
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "吗",
-              "x": 322,
-              "y": 976,
-              "width": 36,
-              "height": 44
-            },
-            {
-              "char": "记",
-              "x": 358,
-              "y": 976,
-              "width": 36,
-              "height": 44
-            },
-            {
-              "char": "住",
-              "x": 394,
-              "y": 976,
-              "width": 36,
-              "height": 44
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 59750,
-      "end_ms": 61000,
+      "start_ms": 57060,
+      "end_ms": 57940,
+      "detections": [
+        {
+          "text": "记住",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 317,
+            "y": 1049,
+            "width": 86,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "记",
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            },
+            {
+              "char": "住",
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 57940,
+      "end_ms": 59480,
       "detections": [
         {
           "text": "没有天赋",
-          "confidence": 0.9876,
+          "confidence": 1.0,
           "bbox": {
-            "x": 38,
-            "y": 484,
-            "width": 492,
-            "height": 128
+            "x": 274,
+            "y": 1049,
+            "width": 172,
+            "height": 64
           },
           "chars": [
             {
               "char": "没",
-              "x": 38,
-              "y": 484,
-              "width": 123,
-              "height": 128
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "有",
-              "x": 161,
-              "y": 484,
-              "width": 123,
-              "height": 128
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "天",
-              "x": 284,
-              "y": 484,
-              "width": 123,
-              "height": 128
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "赋",
-              "x": 407,
-              "y": 484,
-              "width": 123,
-              "height": 128
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
       ]
     },
     {
-      "start_ms": 61000,
-      "end_ms": 62000,
+      "start_ms": 59480,
+      "end_ms": 61420,
       "detections": [
         {
           "text": "那就重复",
-          "confidence": 0.9934,
+          "confidence": 1.0,
           "bbox": {
-            "x": 114,
-            "y": 638,
-            "width": 554,
-            "height": 162
+            "x": 274,
+            "y": 1049,
+            "width": 172,
+            "height": 64
           },
           "chars": [
             {
               "char": "那",
-              "x": 114,
-              "y": 638,
-              "width": 138,
-              "height": 162
+              "x": 274,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "就",
-              "x": 252,
-              "y": 638,
-              "width": 138,
-              "height": 162
+              "x": 317,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "重",
-              "x": 391,
-              "y": 638,
-              "width": 138,
-              "height": 162
+              "x": 360,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             },
             {
               "char": "复",
-              "x": 530,
-              "y": 638,
-              "width": 138,
-              "height": 162
-            }
-          ]
-        },
-        {
-          "text": "没有天赋",
-          "confidence": 0.9967,
-          "bbox": {
-            "x": 38,
-            "y": 484,
-            "width": 492,
-            "height": 128
-          },
-          "chars": [
-            {
-              "char": "没",
-              "x": 38,
-              "y": 484,
-              "width": 123,
-              "height": 128
-            },
-            {
-              "char": "有",
-              "x": 161,
-              "y": 484,
-              "width": 123,
-              "height": 128
-            },
-            {
-              "char": "天",
-              "x": 284,
-              "y": 484,
-              "width": 123,
-              "height": 128
-            },
-            {
-              "char": "赋",
-              "x": 407,
-              "y": 484,
-              "width": 123,
-              "height": 128
+              "x": 403,
+              "y": 1049,
+              "width": 43,
+              "height": 64
             }
           ]
         }
