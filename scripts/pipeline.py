@@ -1,23 +1,30 @@
 """
-Scrollingo Video Processing Pipeline (M3)
+Scrollingo Video Processing Pipeline (M3 + M3.5)
 
-Processes a video with burned-in Chinese subtitles:
+Processes a video through one of two subtitle paths:
+  OCR path:  For videos with burned-in subtitles (Douyin, TikTok reposts)
+  STT path:  For videos without burned-in subtitles (original content, interviews)
+
+Steps:
 1. Normalize to 720p with FFmpeg
-2. Upload video + thumbnail to R2
-3. Insert video row in Supabase (status='processing')
-4. Run VideOCR (SSIM dedup) to extract subtitle bounding boxes
-5. Chinese word segmentation (jieba) on OCR text
+2. Auto-detect subtitle source (OCR or STT) — sample frames for text
+3. OCR: Run VideOCR (SSIM dedup) to extract bounding boxes
+   STT: Extract audio → Groq Whisper → word-level timestamps
+4. Upload video + thumbnail + bboxes.json to R2
+5. Word segmentation (jieba for Chinese)
 6. Generate translations + definitions via Claude Haiku 3.5 (OpenRouter)
 7. Insert vocab_words, word_definitions, video_words into Supabase
-8. Upload bboxes.json to R2
-9. Mark video status='ready'
+8. Mark video status='ready'
 
 Usage:
-    python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4 --language zh --native-lang en
+    python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4
+    python3 scripts/pipeline.py --video ~/downloads/english_video.mp4 --force-stt
+    python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4 --force-ocr
 
 Requires:
-    pip install supabase jieba openai  # openai SDK works with OpenRouter
+    pip install supabase jieba openai  # openai SDK works with OpenRouter + Groq
     Environment variables in .env: OpenrouterAPIKey, SupabaseUrl, SupbaseAnonKey
+    Optional: GroqAPIKey (required only for STT path)
 """
 
 import argparse
@@ -75,6 +82,8 @@ from pypinyin import pinyin, Style
 # Initialize clients
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 llm = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=OPENROUTER_KEY)
+GROQ_KEY = os.environ.get("GroqAPIKey")
+groq = OpenAI(base_url="https://api.groq.com/openai/v1", api_key=GROQ_KEY) if GROQ_KEY else None
 
 def get_pinyin(word: str, language: str) -> str | None:
     """Generate pinyin with tone marks for a Chinese word. Returns None for non-Chinese."""
@@ -131,6 +140,304 @@ def extract_thumbnail(video_path: str, output_dir: str, duration_sec: int) -> st
         "-vframes", "1", "-q:v", "2", thumb_path,
     ], capture_output=True)
     return thumb_path
+
+
+# ─── Step 1b: Extract Audio ───
+
+def extract_audio(video_path: str, output_dir: str) -> str | None:
+    """Extract audio track from video. Returns path to mp3, or None if no audio."""
+    # Check for audio stream
+    probe = json.loads(subprocess.run(
+        ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", video_path],
+        capture_output=True, text=True,
+    ).stdout)
+    audio_streams = [s for s in probe.get("streams", []) if s["codec_type"] == "audio"]
+    if not audio_streams:
+        print("  No audio stream found in video")
+        return None
+
+    audio_path = os.path.join(output_dir, "audio.mp3")
+    subprocess.run([
+        "ffmpeg", "-y", "-i", video_path,
+        "-vn", "-acodec", "libmp3lame", "-q:a", "4", audio_path,
+    ], capture_output=True)
+    return audio_path
+
+
+# ─── Auto-detect Subtitle Source ───
+
+def detect_subtitle_source(video_path: str, duration_sec: int) -> str:
+    """Sample 3 frames and run OCR to detect if video has burned-in subtitles.
+
+    Returns 'ocr' if ≥2 frames have text, 'stt' otherwise.
+    """
+    import cv2
+    from paddleocr import PaddleOCR
+
+    ocr = PaddleOCR(lang="ch", use_doc_orientation_classify=False,
+                    use_doc_unwarping=False, use_textline_orientation=False)
+
+    cap = cv2.VideoCapture(video_path)
+    text_frames = 0
+
+    for pct in (0.25, 0.50, 0.75):
+        seek_ms = int(duration_sec * 1000 * pct)
+        cap.set(cv2.CAP_PROP_POS_MSEC, seek_ms)
+        ok, frame = cap.read()
+        if not ok:
+            continue
+
+        result = ocr.ocr(frame, cls=False)
+        if result and result[0]:
+            detections = [r for r in result[0] if r[1][1] >= 0.60 and len(r[1][0].strip()) >= 2]
+            if detections:
+                text_frames += 1
+
+    cap.release()
+    source = "ocr" if text_frames >= 2 else "stt"
+    print(f"  Auto-detected subtitle source: {source} ({text_frames}/3 frames with text)")
+    return source
+
+
+# ─── STT: Groq Whisper ───
+
+def run_stt(audio_path: str, language: str | None = None) -> dict:
+    """Send audio to Groq Whisper Turbo and get word-level timestamps."""
+    if not groq:
+        print("ERROR: GroqAPIKey not found in .env — required for STT path")
+        sys.exit(1)
+
+    kwargs = {
+        "model": "whisper-large-v3-turbo",
+        "file": open(audio_path, "rb"),
+        "response_format": "verbose_json",
+        "timestamp_granularities": ["word", "segment"],
+    }
+    if language:
+        # Whisper uses ISO 639-1 codes
+        kwargs["language"] = language
+
+    print("  Calling Groq Whisper Turbo...")
+    transcript = groq.audio.transcriptions.create(**kwargs)
+    raw_words = getattr(transcript, "words", []) or []
+    raw_segments = getattr(transcript, "segments", []) or []
+    # Convert Pydantic objects to dicts
+    words = [{"word": w.word, "start": w.start, "end": w.end} for w in raw_words]
+    segments = [{"text": s.text, "start": s.start, "end": s.end} for s in raw_segments]
+    print(f"  Got {len(words)} words, {len(segments)} segments")
+    return {"words": words, "segments": segments, "text": transcript.text}
+
+
+def whisper_to_bboxes(whisper_result: dict, video_id: str, duration_ms: int,
+                      resolution: dict = None) -> dict:
+    """Convert Whisper output to the same bboxes.json format as OCR.
+
+    Generates synthetic character positions centered at the bottom of the frame.
+    """
+    if resolution is None:
+        resolution = {"width": 720, "height": 1280}
+
+    vw, vh = resolution["width"], resolution["height"]
+    # Subtitle position: centered, at ~82% of frame height
+    sub_y = int(vh * 0.82)
+    sub_h = int(vh * 0.05)
+    max_text_width = int(vw * 0.85)
+
+    segments = []
+    for seg in whisper_result.get("segments", []):
+        text = seg.get("text", "").strip()
+        if not text:
+            continue
+
+        start_ms = int(seg["start"] * 1000)
+        end_ms = int(seg["end"] * 1000)
+
+        # Build character-level bboxes (evenly spaced)
+        char_width = min(max_text_width // max(len(text), 1), int(vw * 0.06))
+        total_width = char_width * len(text)
+        start_x = (vw - total_width) // 2
+
+        chars = []
+        for i, ch in enumerate(text):
+            chars.append({
+                "char": ch,
+                "x": start_x + i * char_width,
+                "y": sub_y,
+                "width": char_width,
+                "height": sub_h,
+            })
+
+        det_bbox = {
+            "x": start_x,
+            "y": sub_y,
+            "width": total_width,
+            "height": sub_h,
+        }
+
+        segments.append({
+            "start_ms": start_ms,
+            "end_ms": end_ms,
+            "detections": [{
+                "text": text,
+                "confidence": 1.0,
+                "bbox": det_bbox,
+                "chars": chars,
+            }],
+        })
+
+    return {
+        "video": video_id,
+        "resolution": resolution,
+        "duration_ms": duration_ms,
+        "subtitle_source": "stt",
+        "segments": segments,
+    }
+
+
+def _text_similarity(a: str, b: str) -> float:
+    """Character-level Jaccard similarity between two strings."""
+    if not a or not b:
+        return 0.0
+    set_a = set(a.strip())
+    set_b = set(b.strip())
+    intersection = len(set_a & set_b)
+    union = len(set_a | set_b)
+    return intersection / union if union > 0 else 0.0
+
+
+def merge_ocr_stt(ocr_data: dict, stt_data: dict,
+                  time_tolerance_ms: int = 500) -> dict:
+    """Merge OCR content with STT timing into a unified transcript.
+
+    Rules:
+    - OCR content wins (more accurate text recognition)
+    - STT timing wins (word-level alignment to speech)
+    - ≥50% char overlap = same subtitle → use OCR text + STT timing
+    - <50% overlap = title/watermark → exclude from transcript
+    - STT segments with no OCR match → gap fill (use STT text)
+
+    Returns transcript data with only spoken subtitles.
+    """
+    ocr_segments = ocr_data.get("segments", [])
+    stt_segments = stt_data.get("segments", [])
+    resolution = ocr_data.get("resolution", {"width": 720, "height": 1280})
+    res_h = resolution.get("height", 1280)
+
+    # Find persistent OCR text (appears in >70% of segments) — likely watermarks
+    text_counts: dict[str, int] = {}
+    for seg in ocr_segments:
+        seen = set()
+        for det in seg.get("detections", []):
+            t = det["text"].strip()
+            if t and t not in seen:
+                text_counts[t] = text_counts.get(t, 0) + 1
+                seen.add(t)
+    total_segs = max(len(ocr_segments), 1)
+    persistent_texts = {t for t, c in text_counts.items() if c / total_segs >= 0.7}
+
+    transcript_segments = []
+
+    for stt_seg in stt_segments:
+        stt_text = ""
+        for det in stt_seg.get("detections", []):
+            stt_text += det.get("text", "")
+        stt_text = stt_text.strip()
+        if not stt_text:
+            continue
+
+        stt_start = stt_seg["start_ms"]
+        stt_end = stt_seg["end_ms"]
+
+        # Find overlapping OCR detections (within time tolerance)
+        best_ocr_text = None
+        best_sim = 0.0
+
+        for ocr_seg in ocr_segments:
+            # Check time overlap
+            if (ocr_seg["end_ms"] + time_tolerance_ms < stt_start or
+                    ocr_seg["start_ms"] - time_tolerance_ms > stt_end):
+                continue
+
+            # Check each detection in this OCR segment
+            for det in ocr_seg.get("detections", []):
+                det_text = det["text"].strip()
+
+                # Skip persistent text (watermarks/disclaimers)
+                if det_text in persistent_texts:
+                    continue
+
+                # Skip text in top 40% of frame (likely titles, not spoken subtitles)
+                if det["bbox"]["y"] / res_h < 0.40:
+                    continue
+
+                sim = _text_similarity(det_text, stt_text)
+                if sim > best_sim:
+                    best_sim = sim
+                    best_ocr_text = det_text
+
+        if best_sim >= 0.5 and best_ocr_text:
+            # Matched: OCR content + STT timing
+            text = best_ocr_text
+            source = "ocr+stt"
+        else:
+            # No OCR match: STT gap fill
+            text = stt_text
+            source = "stt_only"
+
+        # Build detection in the same format as OCR bboxes.json
+        # Centered at bottom of frame for display
+        vw, vh = resolution.get("width", 720), resolution.get("height", 1280)
+        char_w = min(int(vw * 0.85) // max(len(text), 1), int(vw * 0.06))
+        total_w = char_w * len(text)
+        start_x = (vw - total_w) // 2
+        sub_y = int(vh * 0.82)
+        sub_h = int(vh * 0.05)
+
+        # Build chars — word-level for Latin, char-level for CJK
+        chars = []
+        i = 0
+        while i < len(text):
+            c = text[i]
+            c_code = ord(c)
+            is_cjk = (0x4e00 <= c_code <= 0x9fff or 0x3400 <= c_code <= 0x4dbf
+                       or 0x3040 <= c_code <= 0x30ff or 0xac00 <= c_code <= 0xd7af)
+            if is_cjk:
+                chars.append({"char": c, "x": start_x + i * char_w, "y": sub_y,
+                              "width": char_w, "height": sub_h})
+                i += 1
+            elif c.strip() == "":
+                i += 1
+            else:
+                word_start = i
+                while i < len(text) and text[i].strip() and not (0x4e00 <= ord(text[i]) <= 0x9fff):
+                    i += 1
+                word = text[word_start:i]
+                chars.append({"char": word, "x": start_x + word_start * char_w, "y": sub_y,
+                              "width": len(word) * char_w, "height": sub_h})
+
+        transcript_segments.append({
+            "start_ms": stt_start,
+            "end_ms": stt_end,
+            "source": source,
+            "spoken": True,
+            "detections": [{
+                "text": text,
+                "confidence": 1.0,
+                "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
+                "chars": chars,
+            }],
+        })
+
+    # Sort by start time
+    transcript_segments.sort(key=lambda s: s["start_ms"])
+
+    return {
+        "video": ocr_data.get("video", ""),
+        "resolution": resolution,
+        "duration_ms": ocr_data.get("duration_ms", 0),
+        "subtitle_source": "both",
+        "segments": transcript_segments,
+    }
 
 
 def get_auto_title(bbox_data: dict) -> str:
@@ -192,7 +499,7 @@ def upload_to_r2(local_path: str, r2_key: str) -> str:
 # ─── Step 3: Insert Video Row ───
 
 def insert_video_row(video_id: str, title: str, language: str, duration_sec: int,
-                     cdn_url: str, thumbnail_url: str) -> dict:
+                     cdn_url: str, thumbnail_url: str, subtitle_source: str = "ocr") -> dict:
     """Insert a row into the videos table."""
     row = {
         "id": video_id,
@@ -203,7 +510,7 @@ def insert_video_row(video_id: str, title: str, language: str, duration_sec: int
         "cdn_url": cdn_url,
         "thumbnail_url": thumbnail_url,
         "status": "processing",
-        "subtitle_source": "ocr",
+        "subtitle_source": subtitle_source,
         "seeded_by": "pipeline",
     }
     result = supabase.table("videos").insert(row).execute()
@@ -214,166 +521,85 @@ def insert_video_row(video_id: str, title: str, language: str, duration_sec: int
 # ─── Step 4: Run OCR ───
 
 def run_ocr(video_path: str, video_id: str) -> dict:
-    """Run VideOCR (SSIM dedup) to extract subtitle bounding boxes.
+    """Run dense OCR extraction — our best configuration.
 
-    This is a COPY of the validated extract_subtitles_videocr2.py logic.
-    The pipeline must be standalone (deployable independently), so we can't
-    import from the test script. Instead, we copy the exact same logic and
-    verify equivalence via a regression test in test_pipeline.py.
-
-    If you change OCR logic here, you MUST also update extract_subtitles_videocr2.py
-    and verify the regression test still passes.
+    Uses the optimized dense approach from extract_subtitles_dense.py:
+    - Full resolution (no scaling)
+    - 100ms frame interval with change detection (threshold=2.0)
+    - Force OCR every 5 frames (500ms safety net)
+    - CJK single char support, Latin min 2 chars
+    - Fuzzy dedup with 500ms gap bridging
+    - Post-process merge for flickering subtitles (1.5s window)
+    - Mixed CJK/Latin word-level char boxes
     """
-    import cv2
-    import numpy as np
-    from paddleocr import PaddleOCR
+    # Import the dense extraction module directly
+    sys.path.insert(0, str(Path(__file__).parent))
+    from extract_subtitles_dense import (
+        get_video_info, extract_frames_ffmpeg, subtitle_region_changed,
+        run_ocr_on_frame, build_detection as dense_build_detection,
+        deduplicate_subtitles, _ocr_worker,
+        FRAME_INTERVAL_MS, CONF_THRESHOLD, CHANGE_THRESHOLD,
+        FORCE_OCR_INTERVAL, NUM_WORKERS,
+    )
+    from concurrent.futures import ProcessPoolExecutor, as_completed
 
-    # ── Constants (MUST match extract_subtitles_videocr2.py) ──
-    FRAME_INTERVAL_MS = 250
-    OCR_SCALE = 0.5
-    MIN_DURATION_MS = 750
-    CONF_THRESHOLD = 0.70
-    MIN_CHARS = 2
-    SSIM_THRESHOLD = 0.92
-    SUBTITLE_REGION_TOP = 0.5
-    SUBTITLE_REGION_BOTTOM = 0.85
+    w, h, dur = get_video_info(video_path)
+    print(f"  Dense OCR: {w}x{h}, {dur:.0f}s, {FRAME_INTERVAL_MS}ms interval, threshold={CHANGE_THRESHOLD}...")
 
-    try:
-        from skimage.metrics import structural_similarity as ssim_func
-    except ImportError:
-        ssim_func = None
+    with tempfile.TemporaryDirectory() as ocr_tmpdir:
+        # Extract all frames
+        frames, w, h, dur = extract_frames_ffmpeg(video_path, ocr_tmpdir, FRAME_INTERVAL_MS)
+        total = len(frames)
 
-    def compute_ssim(img1, img2):
-        if ssim_func:
-            return ssim_func(img1, img2)
-        diff = cv2.absdiff(img1, img2)
-        return 1.0 - (np.mean(diff) / 255.0)
+        # Change detection — skip frames where subtitle region unchanged
+        frames_to_ocr = []
+        prev_fp = None
+        for idx, (fp, ts_ms) in enumerate(frames):
+            needs_ocr = (idx == 0 or
+                         idx % FORCE_OCR_INTERVAL == 0 or
+                         (prev_fp and subtitle_region_changed(prev_fp, fp)))
+            prev_fp = fp
+            if needs_ocr:
+                frames_to_ocr.append((idx, fp, ts_ms))
 
-    def build_detection(text, score, poly, scale_back):
-        if score < CONF_THRESHOLD or len(text) < MIN_CHARS:
-            return None
-        coords = poly.tolist() if hasattr(poly, 'tolist') else poly
-        x0 = min(p[0] for p in coords) * scale_back
-        y0 = min(p[1] for p in coords) * scale_back
-        x1 = max(p[0] for p in coords) * scale_back
-        y1 = max(p[1] for p in coords) * scale_back
-        box_h = y1 - y0
-        cw = (x1 - x0) / max(len(text), 1)
-        return {
-            "text": text, "confidence": round(score, 4),
-            "bbox": {"x": round(x0), "y": round(y0), "width": round(x1 - x0), "height": round(box_h)},
-            "chars": [{"char": c, "x": round(x0 + i * cw), "y": round(y0),
-                       "width": round(cw), "height": round(box_h)} for i, c in enumerate(text)],
-        }
+        skipped = total - len(frames_to_ocr)
+        print(f"  {total} frames, OCR {len(frames_to_ocr)} (skipped {skipped}, {skipped*100//max(total,1)}% savings)")
 
-    # ── Get video info ──
-    probe = json.loads(subprocess.run(
-        ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", video_path],
-        capture_output=True, text=True).stdout)
-    vs = [s for s in probe["streams"] if s["codec_type"] == "video"][0]
-    w, h = int(vs["width"]), int(vs["height"])
-    dur = float(vs.get("duration", 0))
-    sW, sH = int(w * OCR_SCALE), int(h * OCR_SCALE)
-    scale_back = 1.0 / OCR_SCALE
+        # OCR changed frames in parallel
+        ocr_results = {}
+        with ProcessPoolExecutor(max_workers=NUM_WORKERS) as executor:
+            future_to_idx = {}
+            for idx, fp, ts_ms in frames_to_ocr:
+                future = executor.submit(_ocr_worker, (fp, ts_ms))
+                future_to_idx[future] = idx
+            done = 0
+            for future in as_completed(future_to_idx):
+                idx = future_to_idx[future]
+                ocr_results[idx] = future.result()
+                done += 1
+                if done % 50 == 0:
+                    print(f"    {done}/{len(frames_to_ocr)}...", end=" ", flush=True)
 
-    print(f"  OCR: {w}x{h}, {dur:.0f}s, sampling at {FRAME_INTERVAL_MS}ms...")
+        # Fill skipped frames by carrying forward
+        frame_results = []
+        last_result = None
+        for idx, (fp, ts_ms) in enumerate(frames):
+            if idx in ocr_results:
+                last_result = ocr_results[idx]
+                frame_results.append(last_result)
+            elif last_result:
+                frame_results.append({"timestamp_ms": ts_ms, "detections": last_result["detections"]})
+            else:
+                frame_results.append({"timestamp_ms": ts_ms, "detections": []})
 
-    # ── Extract frames with SSIM dedup (same as videocr2) ──
-    cap = cv2.VideoCapture(video_path)
-    frames = []
-    prev_sub_gray = None
-    ts_ms = 0
-    total_frames = 0
-    unique_frames = 0
-
-    while ts_ms < dur * 1000:
-        cap.set(cv2.CAP_PROP_POS_MSEC, ts_ms)
-        ret, frame = cap.read()
-        if not ret:
-            ts_ms += FRAME_INTERVAL_MS
-            continue
-
-        total_frames += 1
-        frame = cv2.resize(frame, (sW, sH))
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        sub_region = gray[int(sH * SUBTITLE_REGION_TOP):int(sH * SUBTITLE_REGION_BOTTOM), :]
-
-        is_unique = True
-        if prev_sub_gray is not None and sub_region.shape == prev_sub_gray.shape:
-            ssim_val = compute_ssim(sub_region, prev_sub_gray)
-            is_unique = ssim_val < SSIM_THRESHOLD
-
-        if is_unique:
-            unique_frames += 1
-        frames.append((frame, ts_ms, is_unique))
-        prev_sub_gray = sub_region
-        ts_ms += FRAME_INTERVAL_MS
-
-    cap.release()
-    print(f"  Frames: {total_frames} total, {unique_frames} unique, {total_frames - unique_frames} skipped")
-
-    # ── OCR engine ──
-    ocr = PaddleOCR(lang='ch', use_doc_orientation_classify=False,
-                    use_doc_unwarping=False, use_textline_orientation=False)
-
-    # ── OCR each frame (skip non-unique, carry forward last detections) ──
-    frame_results = []
-    last_dets = []
-    for frame_img, ts_ms, is_unique in frames:
-        if is_unique:
-            r = ocr.ocr(frame_img)
-            dets = []
-            if r and r[0]:
-                data = r[0]
-                if isinstance(data, dict):
-                    for text, score, poly in zip(data.get("rec_texts", []),
-                                                  data.get("rec_scores", []),
-                                                  data.get("rec_polys", [])):
-                        det = build_detection(text, score, poly, scale_back)
-                        if det:
-                            dets.append(det)
-                elif isinstance(data, list):
-                    for item in data:
-                        if len(item) >= 2:
-                            det = build_detection(item[1][0], item[1][1], item[0], scale_back)
-                            if det:
-                                dets.append(det)
-            last_dets = dets
-        else:
-            dets = last_dets
-
-        frame_results.append({"timestamp_ms": ts_ms, "detections": dets})
-
-    # ── Deduplicate into segments ──
-    segments = []
-    cur_text, cur_seg = None, None
-    for fr in frame_results:
-        if not fr["detections"]:
-            if cur_seg:
-                segments.append(cur_seg)
-                cur_seg = None
-                cur_text = None
-            continue
-        sorted_dets = sorted(fr["detections"], key=lambda d: d["bbox"]["y"], reverse=True)
-        ft = "|".join(d["text"] for d in sorted_dets)
-        if ft == cur_text and cur_seg:
-            cur_seg["end_ms"] = fr["timestamp_ms"] + FRAME_INTERVAL_MS
-        else:
-            if cur_seg:
-                segments.append(cur_seg)
-            cur_text = ft
-            cur_seg = {"start_ms": fr["timestamp_ms"],
-                       "end_ms": fr["timestamp_ms"] + FRAME_INTERVAL_MS,
-                       "detections": sorted_dets}
-    if cur_seg:
-        segments.append(cur_seg)
-
-    segments = [s for s in segments if (s["end_ms"] - s["start_ms"]) >= MIN_DURATION_MS]
+        # Deduplicate with fuzzy matching + gap bridging + flicker merge
+        segments = deduplicate_subtitles(frame_results)
 
     bbox_data = {
         "video": video_id,
         "resolution": {"width": w, "height": h},
         "duration_ms": round(dur * 1000),
+        "subtitle_source": "ocr",
         "frame_interval_ms": FRAME_INTERVAL_MS,
         "segments": segments,
     }
@@ -736,6 +962,52 @@ def mark_video_ready(video_id: str, started_at: str):
 
 # ─── Main ───
 
+def reuse_existing_definitions(words: list[str], language: str) -> dict[str, dict[str, dict]]:
+    """Look up existing word_definitions from Supabase instead of calling the LLM.
+
+    For each word, finds its vocab_word_id, then copies all existing definitions
+    from any prior video that used the same word.
+    """
+    all_definitions = {}
+    target_langs = [t["code"] for t in TARGET_LANGUAGES if t["code"] != language]
+
+    for word in words:
+        # Find the vocab_word
+        result = supabase.table("vocab_words").select("id").eq("word", word).eq("language", language).limit(1).execute()
+        if not result.data:
+            continue
+        vocab_id = result.data[0]["id"]
+
+        # Get existing definitions (from any video)
+        defs_result = (
+            supabase.table("word_definitions")
+            .select("target_language, translation, contextual_definition, part_of_speech")
+            .eq("vocab_word_id", vocab_id)
+            .execute()
+        )
+        if not defs_result.data:
+            continue
+
+        # Dedupe by target_language (take first found)
+        lang_defs = {}
+        for d in defs_result.data:
+            tl = d["target_language"]
+            if tl not in lang_defs:
+                lang_defs[tl] = {
+                    "translation": d["translation"],
+                    "contextual_definition": d["contextual_definition"],
+                    "part_of_speech": d.get("part_of_speech", ""),
+                }
+
+        if lang_defs:
+            all_definitions[word] = lang_defs
+
+    found = len(all_definitions)
+    total_defs = sum(len(v) for v in all_definitions.values())
+    print(f"  Reused definitions for {found}/{len(words)} words ({total_defs} definition rows)")
+    return all_definitions
+
+
 def main():
     parser = argparse.ArgumentParser(description="Process a video through the Scrollingo pipeline")
     parser.add_argument("--video", required=True, help="Path to input video file")
@@ -743,6 +1015,9 @@ def main():
     parser.add_argument("--native-lang", default=None, help="[DEPRECATED] Ignored — all 11 target languages are generated automatically")
     parser.add_argument("--title", default=None, help="Video title (default: filename)")
     parser.add_argument("--dry-run", action="store_true", help="Run OCR and LLM but skip Supabase/R2")
+    parser.add_argument("--reuse-definitions", action="store_true", help="Skip LLM calls — copy existing definitions from Supabase for matching words")
+    parser.add_argument("--skip-ocr", action="store_true", help="Skip OCR (use only STT)")
+    parser.add_argument("--skip-stt", action="store_true", help="Skip STT (use only OCR)")
     args = parser.parse_args()
 
     video_path = os.path.abspath(args.video)
@@ -768,13 +1043,37 @@ def main():
         print("[1/8] Normalizing video...")
         norm_path, duration_sec = normalize_video(video_path, tmpdir)
 
-        # Step 4 (run OCR early so we can auto-detect title + language before DB insert)
-        print("[4/8] Running OCR (VideOCR SSIM dedup)...")
-        bbox_data = run_ocr(norm_path, video_id)
+        # Step 2: Run OCR (always — detect burned-in text positions)
+        print("[2/8] Running OCR...")
+        bbox_data_ocr = run_ocr(norm_path, video_id)
 
-        # Auto-detect language from OCR text if not provided
+        # Step 3: Run STT (always — extract audio transcript with word timing)
+        bbox_data_stt = None
+        print("[3/8] Running STT (Groq Whisper)...")
+        audio_path = extract_audio(norm_path, tmpdir)
+        if audio_path and groq:
+            try:
+                whisper_result = run_stt(audio_path, language)
+                duration_ms = duration_sec * 1000
+                bbox_data_stt = whisper_to_bboxes(whisper_result, video_id, duration_ms)
+                upload_to_r2(audio_path, f"videos/{video_id}/audio.mp3")
+            except Exception as e:
+                print(f"  STT failed: {e} — continuing with OCR only")
+        elif not groq:
+            print("  No GroqAPIKey — skipping STT")
+        else:
+            print("  No audio stream — skipping STT")
+
+        # Use OCR data as primary (has bbox positions for tap targets)
+        # Use STT data for the visible subtitle drawer
+        bbox_data = bbox_data_ocr
+        sub_source = "both" if bbox_data_stt else "ocr"
+
+        # Auto-detect language from subtitle text if not provided
+        # Prefer STT text (more accurate) over OCR text
         if not language:
-            language = detect_content_language(bbox_data)
+            source = bbox_data_stt or bbox_data_ocr
+            language = detect_content_language(source)
             if language:
                 print(f"  Auto-detected language: {language}")
             else:
@@ -783,40 +1082,67 @@ def main():
 
         # Auto-detect title from first subtitle if not provided
         if not title:
-            title = get_auto_title(bbox_data)
+            source = bbox_data_stt or bbox_data_ocr
+            title = get_auto_title(source)
             print(f"  Auto-title: \"{title}\"")
 
         # Extract thumbnail at ~30% into the video
         thumb_path = extract_thumbnail(norm_path, tmpdir, duration_sec)
 
-        # Step 2: Upload to R2
-        print("[2/8] Uploading to R2...")
+        # Step 4: Upload to R2
+        print("[4/8] Uploading to R2...")
         cdn_url = upload_to_r2(norm_path, f"videos/{video_id}/video.mp4")
         thumb_url = upload_to_r2(thumb_path, f"videos/{video_id}/thumbnail.jpg")
 
         if not args.dry_run:
-            # Step 3: Insert video row
-            print("[3/8] Inserting video row...")
-            insert_video_row(video_id, title, language, duration_sec, cdn_url, thumb_url)
+            # Insert video row
+            print("  Inserting video row...")
+            insert_video_row(video_id, title, language, duration_sec, cdn_url, thumb_url, sub_source)
 
-        # Save bboxes.json locally
+        # Save + upload OCR bboxes.json (for tap targets over burned-in text)
         bbox_path = os.path.join(tmpdir, "bboxes.json")
         with open(bbox_path, "w", encoding="utf-8") as f:
-            json.dump(bbox_data, f, ensure_ascii=False, indent=2)
-
-        # Also save to output dir for local testing
-        local_bbox_path = OUTPUT_DIR / f"{Path(video_path).stem}_pipeline.json"
-        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        with open(local_bbox_path, "w", encoding="utf-8") as f:
-            json.dump(bbox_data, f, ensure_ascii=False, indent=2)
-        print(f"  Saved locally: {local_bbox_path}")
-
-        # Upload bboxes to R2
+            json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
         upload_to_r2(bbox_path, f"videos/{video_id}/bboxes.json")
 
-        # Step 5: Word segmentation
+        # Save + upload STT stt.json (debugging)
+        if bbox_data_stt:
+            stt_path = os.path.join(tmpdir, "stt.json")
+            with open(stt_path, "w", encoding="utf-8") as f:
+                json.dump(bbox_data_stt, f, ensure_ascii=False, indent=2)
+            upload_to_r2(stt_path, f"videos/{video_id}/stt.json")
+
+        # Merge OCR + STT into unified transcript
+        if bbox_data_stt:
+            print("  Merging OCR + STT transcript...")
+            transcript_data = merge_ocr_stt(bbox_data_ocr, bbox_data_stt)
+            transcript_path = os.path.join(tmpdir, "transcript.json")
+            with open(transcript_path, "w", encoding="utf-8") as f:
+                json.dump(transcript_data, f, ensure_ascii=False, indent=2)
+            upload_to_r2(transcript_path, f"videos/{video_id}/transcript.json")
+            merged_count = len(transcript_data["segments"])
+            ocr_matched = sum(1 for s in transcript_data["segments"] if s["source"] == "ocr+stt")
+            stt_only = sum(1 for s in transcript_data["segments"] if s["source"] == "stt_only")
+            print(f"  Transcript: {merged_count} segments ({ocr_matched} OCR+STT, {stt_only} STT-only)")
+
+        # Save locally for testing
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        local_bbox_path = OUTPUT_DIR / f"{Path(video_path).stem}_pipeline.json"
+        with open(local_bbox_path, "w", encoding="utf-8") as f:
+            json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
+        if bbox_data_stt:
+            local_stt_path = OUTPUT_DIR / f"{Path(video_path).stem}_stt.json"
+            with open(local_stt_path, "w", encoding="utf-8") as f:
+                json.dump(bbox_data_stt, f, ensure_ascii=False, indent=2)
+            local_transcript_path = OUTPUT_DIR / f"{Path(video_path).stem}_transcript.json"
+            with open(local_transcript_path, "w", encoding="utf-8") as f:
+                json.dump(transcript_data, f, ensure_ascii=False, indent=2)
+        print(f"  Saved locally: {local_bbox_path}")
+
+        # Step 5: Word segmentation — prefer STT (better word boundaries) over OCR
         print("[5/8] Segmenting words...")
-        unique_words, word_occurrences = segment_words(bbox_data, language)
+        seg_source = bbox_data_stt if bbox_data_stt else bbox_data_ocr
+        unique_words, word_occurrences = segment_words(seg_source, language)
 
         # Build word → sentence map for LLM context
         word_sentences = {}
@@ -825,8 +1151,15 @@ def main():
                 word_sentences[occ["word"]] = occ["sentence"]
 
         # Step 6: LLM definitions — all words × all target languages
-        print("[6/8] Generating definitions via Claude Haiku 3.5...")
-        all_definitions = generate_all_definitions(unique_words, word_sentences, language)
+        if args.reuse_definitions:
+            print("[6/8] Reusing existing definitions from Supabase...")
+            all_definitions = reuse_existing_definitions(unique_words, language)
+            missing = [w for w in unique_words if w not in all_definitions or not all_definitions[w]]
+            if missing:
+                print(f"  {len(missing)} words have no existing definitions: {missing[:5]}{'...' if len(missing) > 5 else ''}")
+        else:
+            print("[6/8] Generating definitions via Claude Haiku 3.5...")
+            all_definitions = generate_all_definitions(unique_words, word_sentences, language)
 
         if not args.dry_run:
             started_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
