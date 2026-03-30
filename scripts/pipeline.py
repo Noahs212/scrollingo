@@ -294,6 +294,219 @@ def whisper_to_bboxes(whisper_result: dict, video_id: str, duration_ms: int,
     }
 
 
+# ─── STT Segment Chunking ───
+
+CJK_CHAR_LIMIT = 20     # max CJK chars per chunk (2 lines × ~10 chars in 211px at 20px)
+LATIN_CHAR_LIMIT = 35    # max Latin chars per chunk (2 lines × ~17 chars)
+PAUSE_THRESHOLD_S = 0.3  # 300ms gap = natural speech pause
+
+_PUNCT_SPLIT = re.compile(r'(?<=[。！？，、.!?,;])\s*')
+
+
+def _is_cjk_dominant(text: str) -> bool:
+    cjk = sum(1 for c in text if '\u4e00' <= c <= '\u9fff' or '\u3400' <= c <= '\u4dbf')
+    return cjk > len(text) * 0.3
+
+
+def _char_limit(text: str) -> int:
+    return CJK_CHAR_LIMIT if _is_cjk_dominant(text) else LATIN_CHAR_LIMIT
+
+
+def _get_words_for_segment(seg_start_s: float, seg_end_s: float, whisper_words: list) -> list:
+    """Find Whisper word timestamps that fall within a segment's time range."""
+    return [w for w in whisper_words
+            if w["start"] >= seg_start_s - 0.05 and w["end"] <= seg_end_s + 0.05]
+
+
+def _split_at_punctuation(text: str) -> list[str]:
+    """Split text at sentence-ending punctuation."""
+    parts = _PUNCT_SPLIT.split(text)
+    return [p for p in parts if p.strip()]
+
+
+def _find_pause_split(text: str, seg_words: list) -> int | None:
+    """Find the character index where the longest speech pause (>300ms) occurs.
+
+    Maps Whisper word boundaries back to character positions in the text.
+    Returns the character index to split at, or None if no pause found.
+    """
+    if len(seg_words) < 2:
+        return None
+
+    best_gap = 0
+    best_char_idx = None
+    char_pos = 0
+
+    for i in range(len(seg_words) - 1):
+        # Advance char_pos past this word
+        word_text = seg_words[i]["word"]
+        word_idx = text.find(word_text, char_pos)
+        if word_idx >= 0:
+            char_pos = word_idx + len(word_text)
+
+        gap = seg_words[i + 1]["start"] - seg_words[i]["end"]
+        if gap > PAUSE_THRESHOLD_S and gap > best_gap:
+            best_gap = gap
+            best_char_idx = char_pos
+
+    return best_char_idx
+
+
+def _hard_split(text: str, limit: int) -> tuple[str, str]:
+    """Force split at a word boundary within the character limit."""
+    if _is_cjk_dominant(text):
+        # CJK: use jieba for word boundaries
+        import jieba
+        words = list(jieba.cut(text))
+        first_part = ""
+        for w in words:
+            if len(first_part) + len(w) > limit:
+                break
+            first_part += w
+        if not first_part:
+            first_part = text[:limit]  # Absolute fallback
+        return first_part, text[len(first_part):]
+    else:
+        # Latin: split at last space before limit
+        cut = text[:limit]
+        last_space = cut.rfind(" ")
+        if last_space > 0:
+            return text[:last_space], text[last_space + 1:]
+        return text[:limit], text[limit:]
+
+
+def _interpolate_timestamps(text: str, chunk_text: str, chunk_start_char: int,
+                            seg_start_ms: int, seg_end_ms: int) -> tuple[int, int]:
+    """Linearly interpolate timestamps for a chunk based on character position."""
+    total_len = max(len(text), 1)
+    chunk_end_char = chunk_start_char + len(chunk_text)
+    start_ms = seg_start_ms + int((chunk_start_char / total_len) * (seg_end_ms - seg_start_ms))
+    end_ms = seg_start_ms + int((chunk_end_char / total_len) * (seg_end_ms - seg_start_ms))
+    return start_ms, end_ms
+
+
+def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) -> dict:
+    """Build a segment dict with synthetic bbox/chars (same format as whisper_to_bboxes)."""
+    vw, vh = resolution.get("width", 720), resolution.get("height", 1280)
+    char_w = min(int(vw * 0.85) // max(len(text), 1), int(vw * 0.06))
+    total_w = char_w * len(text)
+    start_x = (vw - total_w) // 2
+    sub_y = int(vh * 0.82)
+    sub_h = int(vh * 0.05)
+
+    # Build chars — word-level for Latin, char-level for CJK
+    chars = []
+    i = 0
+    while i < len(text):
+        c = text[i]
+        c_code = ord(c)
+        is_cjk = (0x4e00 <= c_code <= 0x9fff or 0x3400 <= c_code <= 0x4dbf
+                   or 0x3040 <= c_code <= 0x30ff or 0xac00 <= c_code <= 0xd7af)
+        if is_cjk:
+            chars.append({"char": c, "x": start_x + i * char_w, "y": sub_y,
+                          "width": char_w, "height": sub_h})
+            i += 1
+        elif c.strip() == "":
+            i += 1
+        else:
+            word_start = i
+            while i < len(text) and text[i].strip() and not (0x4e00 <= ord(text[i]) <= 0x9fff):
+                i += 1
+            word = text[word_start:i]
+            chars.append({"char": word, "x": start_x + word_start * char_w, "y": sub_y,
+                          "width": len(word) * char_w, "height": sub_h})
+
+    return {
+        "start_ms": start_ms,
+        "end_ms": end_ms,
+        "detections": [{
+            "text": text,
+            "confidence": 1.0,
+            "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
+            "chars": chars,
+        }],
+    }
+
+
+def _recursive_chunk(text: str, limit: int, seg_words: list,
+                     seg_start_ms: int, seg_end_ms: int, resolution: dict) -> list[dict]:
+    """Recursively split text into chunks that fit the character limit."""
+    text = text.strip()
+    if not text:
+        return []
+
+    if len(text) <= limit:
+        return [_build_stt_segment(text, seg_start_ms, seg_end_ms, resolution)]
+
+    # Tier A: Try punctuation split
+    parts = _split_at_punctuation(text)
+    if len(parts) > 1:
+        chunks = []
+        char_offset = 0
+        for part in parts:
+            start_ms, end_ms = _interpolate_timestamps(text, part, char_offset, seg_start_ms, seg_end_ms)
+            # Find words for this sub-part
+            sub_words = _get_words_for_segment(start_ms / 1000, end_ms / 1000, seg_words)
+            chunks.extend(_recursive_chunk(part, limit, sub_words, start_ms, end_ms, resolution))
+            char_offset += len(part)
+        return chunks
+
+    # Tier B: Try speech pause split
+    pause_idx = _find_pause_split(text, seg_words)
+    if pause_idx and 0 < pause_idx < len(text):
+        first = text[:pause_idx].strip()
+        second = text[pause_idx:].strip()
+        if first and second:
+            first_start, first_end = _interpolate_timestamps(text, first, 0, seg_start_ms, seg_end_ms)
+            second_start, second_end = _interpolate_timestamps(text, second, pause_idx, seg_start_ms, seg_end_ms)
+            sub_words_1 = _get_words_for_segment(first_start / 1000, first_end / 1000, seg_words)
+            sub_words_2 = _get_words_for_segment(second_start / 1000, second_end / 1000, seg_words)
+            return (_recursive_chunk(first, limit, sub_words_1, first_start, first_end, resolution) +
+                    _recursive_chunk(second, limit, sub_words_2, second_start, second_end, resolution))
+
+    # Tier C: Hard split at word boundary
+    first, second = _hard_split(text, limit)
+    first_start, first_end = _interpolate_timestamps(text, first, 0, seg_start_ms, seg_end_ms)
+    second_start, second_end = _interpolate_timestamps(text, second, len(first), seg_start_ms, seg_end_ms)
+    return ([_build_stt_segment(first, first_start, first_end, resolution)] +
+            _recursive_chunk(second, limit, seg_words, second_start, second_end, resolution))
+
+
+def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
+    """Split oversized STT segments into display-friendly chunks.
+
+    Uses a 3-tier strategy: punctuation → speech pauses → hard word boundary split.
+    Preserves Whisper word-level timestamps for accurate timing.
+    """
+    whisper_words = whisper_result.get("words", [])
+    resolution = bbox_data.get("resolution", {"width": 720, "height": 1280})
+    new_segments = []
+
+    for seg in bbox_data.get("segments", []):
+        dets = seg.get("detections", [])
+        if not dets:
+            new_segments.append(seg)
+            continue
+
+        text = dets[0]["text"].strip()
+        limit = _char_limit(text)
+
+        if len(text) <= limit:
+            new_segments.append(seg)
+            continue
+
+        seg_start_ms = seg["start_ms"]
+        seg_end_ms = seg["end_ms"]
+        seg_words = _get_words_for_segment(seg_start_ms / 1000, seg_end_ms / 1000, whisper_words)
+
+        chunks = _recursive_chunk(text, limit, seg_words, seg_start_ms, seg_end_ms, resolution)
+        new_segments.extend(chunks)
+
+    result = dict(bbox_data)
+    result["segments"] = new_segments
+    return result
+
+
 def _text_similarity(a: str, b: str) -> float:
     """Character-level Jaccard similarity between two strings."""
     if not a or not b:
@@ -1056,6 +1269,7 @@ def main():
                 whisper_result = run_stt(audio_path, language)
                 duration_ms = duration_sec * 1000
                 bbox_data_stt = whisper_to_bboxes(whisper_result, video_id, duration_ms)
+                bbox_data_stt = chunk_stt_segments(bbox_data_stt, whisper_result)
                 upload_to_r2(audio_path, f"videos/{video_id}/audio.mp3")
             except Exception as e:
                 print(f"  STT failed: {e} — continuing with OCR only")

@@ -107,6 +107,32 @@ function buildPinyin(segmentText: string, wordDefs?: WordDefinition[]): string {
   return pinyinParts.join(" ");
 }
 
+/** Build a map of charIndex → pinyin syllable for ruby-text rendering. */
+function buildPinyinMap(segmentText: string, wordDefs?: WordDefinition[]): Map<number, string> {
+  const map = new Map<number, string>();
+  if (!wordDefs || wordDefs.length === 0) return map;
+
+  let i = 0;
+  while (i < segmentText.length) {
+    let matched = false;
+    for (let len = Math.min(4, segmentText.length - i); len >= 1; len--) {
+      const substr = segmentText.substring(i, i + len);
+      const wd = wordDefs.find((w) => w.display_text === substr && w.pinyin);
+      if (wd?.pinyin) {
+        const syllables = wd.pinyin.split(" ");
+        for (let j = 0; j < len && j < syllables.length; j++) {
+          map.set(i + j, syllables[j]);
+        }
+        i += len;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) i++;
+  }
+  return map;
+}
+
 /** Format timestamp as "0:05". */
 function formatTime(ms: number): string {
   const totalSec = Math.floor(ms / 1000);
@@ -176,8 +202,12 @@ export default function SubtitleDrawer({
   }, [segments, currentTimeMs]);
 
   const activeSegment = activeSegmentIndex >= 0 ? segments[activeSegmentIndex] : null;
-  const activeText = activeSegment?.detections.map((d) => d.text).join("") ?? "";
+  const activeText = activeSegment?.detections?.map((d) => d.text).join("") ?? "";
   const activePinyin = showPinyin ? buildPinyin(activeText, wordDefs) : "";
+  const activePinyinMap = useMemo(
+    () => showPinyin ? buildPinyinMap(activeText, wordDefs) : new Map<number, string>(),
+    [showPinyin, activeText, wordDefs],
+  );
 
   // Auto-scroll in expanded mode
   useEffect(() => {
@@ -215,15 +245,9 @@ export default function SubtitleDrawer({
   const collapsedContent = (
     <Pressable style={[styles.collapsed, { height: COLLAPSED_HEIGHT + insets.bottom, paddingBottom: insets.bottom }]} onPress={toggleExpanded}>
       <View style={styles.collapsedRow}>
-        {/* Left: Transcript (blue) */}
+        {/* Left: Transcript with ruby pinyin */}
         <View style={styles.collapsedLeft}>
-          {/* Pinyin above Chinese text */}
-          {showPinyin && activePinyin ? (
-            <Text style={styles.pinyinLine} numberOfLines={1}>{activePinyin}</Text>
-          ) : null}
-
-          {/* Hanzi / text — tappable characters */}
-          <View style={styles.hanziRow}>
+          <View style={styles.rubyRow}>
             {activeText ? (
               activeSegment?.detections?.map((det, di) =>
                 splitIntoWords(det.text).map((w, wi) => {
@@ -233,6 +257,8 @@ export default function SubtitleDrawer({
                     w.startIdx >= highlightRange.startCharIndex &&
                     w.startIdx < highlightRange.endCharIndex;
 
+                  const py = activePinyinMap.get(w.startIdx) ?? "";
+
                   return (
                     <Pressable
                       key={`c-${di}-${wi}`}
@@ -240,8 +266,11 @@ export default function SubtitleDrawer({
                         e.stopPropagation?.();
                         onWordTap(w.word, det.text, e.nativeEvent.pageX, e.nativeEvent.pageY, di, w.startIdx);
                       }}
-                      style={[styles.charPressable, isHighlighted && styles.charHighlighted]}
+                      style={[styles.rubyUnit, isHighlighted && styles.charHighlighted]}
                     >
+                      {showPinyin && py ? (
+                        <Text style={styles.rubyPinyin}>{py}</Text>
+                      ) : null}
                       <Text style={[styles.hanziText, isHighlighted && styles.hanziTextHighlighted]}>
                         {w.word}
                       </Text>
@@ -418,6 +447,23 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "500",
     marginBottom: 2,
+  },
+  rubyRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-end",
+  },
+  rubyUnit: {
+    alignItems: "center",
+    paddingHorizontal: 1,
+    paddingVertical: 1,
+    borderRadius: 3,
+  },
+  rubyPinyin: {
+    color: "#00E5FF",
+    fontSize: 9,
+    fontWeight: "500",
+    textAlign: "center",
   },
   hanziRow: {
     flexDirection: "row",
