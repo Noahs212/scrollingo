@@ -327,7 +327,6 @@ export default function SubtitleDrawer({
           const isActive = si === activeSegmentIndex;
           if (!seg.detections) return null;
           const text = seg.detections.map((d) => d.text).join("");
-          const pinyin = showPinyin ? buildPinyin(text, wordDefs) : "";
 
           return (
             <Pressable
@@ -337,22 +336,20 @@ export default function SubtitleDrawer({
             >
               <Text style={styles.timestamp}>{formatTime(seg.start_ms)}</Text>
 
-              {/* Left: transcript text */}
+              {/* Left: transcript text with ruby pinyin */}
               <View style={styles.transcriptLeft}>
-                {showPinyin && pinyin ? (
-                  <Text style={[styles.transcriptPinyin, isActive && styles.transcriptPinyinActive]} numberOfLines={1}>
-                    {pinyin}
-                  </Text>
-                ) : null}
-                <View style={styles.hanziRow}>
-                  {seg.detections.map((det, di) =>
-                    splitIntoWords(det.text).map((w, wi) => {
+                <View style={styles.rubyRow}>
+                  {seg.detections.map((det, di) => {
+                    const segPinyinMap = showPinyin ? buildPinyinMap(det.text, wordDefs) : new Map();
+                    return splitIntoWords(det.text).map((w, wi) => {
                       const isHighlighted =
                         isActive &&
                         highlightRange &&
                         highlightRange.detectionIndex === di &&
                         w.startIdx >= highlightRange.startCharIndex &&
                         w.startIdx < highlightRange.endCharIndex;
+
+                      const py = segPinyinMap.get(w.startIdx) ?? "";
 
                       return (
                         <Pressable
@@ -361,8 +358,11 @@ export default function SubtitleDrawer({
                             e.stopPropagation?.();
                             onWordTap(w.word, det.text, e.nativeEvent.pageX, e.nativeEvent.pageY, di, w.startIdx);
                           }}
-                          style={[styles.charPressable, isHighlighted && styles.charHighlighted]}
+                          style={[styles.rubyUnit, isHighlighted && styles.charHighlighted]}
                         >
+                          {showPinyin && py ? (
+                            <Text style={[styles.rubyPinyinSmall, isActive && styles.transcriptPinyinActive]}>{py}</Text>
+                          ) : null}
                           <Text
                             style={[
                               styles.transcriptHanzi,
@@ -374,8 +374,8 @@ export default function SubtitleDrawer({
                           </Text>
                         </Pressable>
                       );
-                    }),
-                  )}
+                    });
+                  })}
                 </View>
               </View>
 
@@ -462,6 +462,12 @@ const styles = StyleSheet.create({
   rubyPinyin: {
     color: "#00E5FF",
     fontSize: 9,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  rubyPinyinSmall: {
+    color: "rgba(0, 229, 255, 0.5)",
+    fontSize: 8,
     fontWeight: "500",
     textAlign: "center",
   },

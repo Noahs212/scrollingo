@@ -296,8 +296,8 @@ def whisper_to_bboxes(whisper_result: dict, video_id: str, duration_ms: int,
 
 # ─── STT Segment Chunking ───
 
-CJK_CHAR_LIMIT = 20     # max CJK chars per chunk (2 lines × ~10 chars in 211px at 20px)
-LATIN_CHAR_LIMIT = 35    # max Latin chars per chunk (2 lines × ~17 chars)
+CJK_CHAR_LIMIT = 18     # max CJK chars per chunk (2 lines × ~9 chars in 212px at 20px bold)
+LATIN_CHAR_LIMIT = 30    # max Latin chars per chunk (2 lines × ~15 chars, conservative for word wrapping)
 PAUSE_THRESHOLD_S = 0.3  # 300ms gap = natural speech pause
 
 _PUNCT_SPLIT = re.compile(r'(?<=[。！？，、.!?,;])\s*')
