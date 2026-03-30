@@ -21,7 +21,7 @@ export async function fetchFeedPage(
   let query = supabase
     .from("videos")
     .select(
-      "id, title, description, language, cdn_url, thumbnail_url, duration_sec, like_count, comment_count, view_count, created_at, creator_id",
+      "id, title, description, language, cdn_url, thumbnail_url, duration_sec, like_count, comment_count, view_count, created_at, creator_id, subtitle_source",
     )
     .eq("status", "ready")
     .eq("language", language)
@@ -60,7 +60,7 @@ export async function fetchVideosByCreator(
 ): Promise<Video[]> {
   const { data, error } = await supabase
     .from("videos")
-    .select("id, title, description, language, cdn_url, thumbnail_url, duration_sec, like_count, comment_count, view_count, created_at, creator_id")
+    .select("id, title, description, language, cdn_url, thumbnail_url, duration_sec, like_count, comment_count, view_count, created_at, creator_id, subtitle_source")
     .eq("status", "ready")
     .eq("creator_id", creatorId)
     .order("created_at", { ascending: false });

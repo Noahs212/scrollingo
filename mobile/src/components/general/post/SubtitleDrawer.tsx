@@ -146,6 +146,7 @@ export default function SubtitleDrawer({
     const isCJKLang = language === "zh" || language === "ja" || language === "ko";
 
     return all.filter((seg) => {
+      if (!seg.detections) return false;
       const text = seg.detections.map((d) => d.text).join("");
       if (!text.trim()) return false;
       const cjkCount = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g) || []).length;
@@ -156,14 +157,22 @@ export default function SubtitleDrawer({
     });
   }, [subtitleData, language]);
 
-  // Find active segment index
+  // Find active segment index — holds last subtitle during gaps
   const activeSegmentIndex = useMemo(() => {
+    // First: check for a segment that's currently active
     for (let i = 0; i < segments.length; i++) {
       if (currentTimeMs >= segments[i].start_ms && currentTimeMs < segments[i].end_ms) {
         return i;
       }
     }
-    return -1;
+    // Gap: no segment active — hold the most recent one that already ended
+    let lastEnded = -1;
+    for (let i = 0; i < segments.length; i++) {
+      if (segments[i].end_ms <= currentTimeMs) {
+        lastEnded = i;
+      }
+    }
+    return lastEnded;
   }, [segments, currentTimeMs]);
 
   const activeSegment = activeSegmentIndex >= 0 ? segments[activeSegmentIndex] : null;
@@ -193,54 +202,73 @@ export default function SubtitleDrawer({
 
   if (!subtitleData || segments.length === 0) return null;
 
-  // --- Collapsed: 3-line bar below video ---
+  // Build sentence translation from word definitions
+  const activeTranslation = useMemo(() => {
+    if (!activeText || !wordDefs || wordDefs.length === 0) return "";
+    const wordsInOrder = wordDefs
+      .filter((wd) => currentTimeMs >= wd.start_ms - 2000 && currentTimeMs < wd.end_ms + 2000)
+      .sort((a, b) => a.word_index - b.word_index);
+    return wordsInOrder.map((wd) => wd.translation).join(" ");
+  }, [activeText, wordDefs, currentTimeMs]);
+
+  // --- Collapsed: transcript | translation side by side ---
   const collapsedContent = (
     <Pressable style={[styles.collapsed, { height: COLLAPSED_HEIGHT + insets.bottom, paddingBottom: insets.bottom }]} onPress={toggleExpanded}>
-      {/* Line 1: Pinyin */}
-      {showPinyin && activePinyin ? (
-        <Text style={styles.pinyinLine} numberOfLines={1}>{activePinyin}</Text>
-      ) : null}
+      <View style={styles.collapsedRow}>
+        {/* Left: Transcript (blue) */}
+        <View style={styles.collapsedLeft}>
+          {/* Pinyin above Chinese text */}
+          {showPinyin && activePinyin ? (
+            <Text style={styles.pinyinLine} numberOfLines={1}>{activePinyin}</Text>
+          ) : null}
 
-      {/* Line 2: Hanzi / text — tappable characters */}
-      <View style={styles.hanziRow}>
-        {activeText ? (
-          activeSegment?.detections.map((det, di) =>
-            splitIntoWords(det.text).map((w, wi) => {
-              const isHighlighted =
-                highlightRange &&
-                highlightRange.detectionIndex === di &&
-                w.startIdx >= highlightRange.startCharIndex &&
-                w.startIdx < highlightRange.endCharIndex;
+          {/* Hanzi / text — tappable characters */}
+          <View style={styles.hanziRow}>
+            {activeText ? (
+              activeSegment?.detections?.map((det, di) =>
+                splitIntoWords(det.text).map((w, wi) => {
+                  const isHighlighted =
+                    highlightRange &&
+                    highlightRange.detectionIndex === di &&
+                    w.startIdx >= highlightRange.startCharIndex &&
+                    w.startIdx < highlightRange.endCharIndex;
 
-              return (
-                <Pressable
-                  key={`c-${di}-${wi}`}
-                  onPress={(e) => {
-                    e.stopPropagation?.();
-                    onWordTap(w.word, det.text, e.nativeEvent.pageX, e.nativeEvent.pageY, di, w.startIdx);
-                  }}
-                  style={[styles.charPressable, isHighlighted && styles.charHighlighted]}
-                >
-                  <Text style={[styles.hanziText, isHighlighted && styles.hanziTextHighlighted]}>
-                    {w.word}
-                  </Text>
-                </Pressable>
-              );
-            }),
-          )
-        ) : (
-          <Text style={styles.hanziText}>...</Text>
-        )}
+                  return (
+                    <Pressable
+                      key={`c-${di}-${wi}`}
+                      onPress={(e) => {
+                        e.stopPropagation?.();
+                        onWordTap(w.word, det.text, e.nativeEvent.pageX, e.nativeEvent.pageY, di, w.startIdx);
+                      }}
+                      style={[styles.charPressable, isHighlighted && styles.charHighlighted]}
+                    >
+                      <Text style={[styles.hanziText, isHighlighted && styles.hanziTextHighlighted]}>
+                        {w.word}
+                      </Text>
+                    </Pressable>
+                  );
+                }),
+              )
+            ) : (
+              <Text style={styles.hanziText}>...</Text>
+            )}
+          </View>
+        </View>
+
+        {/* Divider */}
+        <View style={styles.collapsedDivider} />
+
+        {/* Right: Translation (light grey) */}
+        <View style={styles.collapsedRight}>
+          <Text style={styles.translationText} numberOfLines={3}>
+            {activeTranslation || "Tap words for translation"}
+          </Text>
+        </View>
       </View>
-
-      {/* Line 3: Translation placeholder */}
-      <Text style={styles.translationLine} numberOfLines={1}>
-        Tap words for translation
-      </Text>
 
       {/* Expand arrow */}
       <View style={styles.expandArrow}>
-        <Ionicons name="chevron-up" size={16} color="#555" />
+        <Ionicons name="chevron-up" size={16} color="rgba(255,255,255,0.4)" />
       </View>
     </Pressable>
   );
@@ -268,6 +296,7 @@ export default function SubtitleDrawer({
       >
         {segments.map((seg, si) => {
           const isActive = si === activeSegmentIndex;
+          if (!seg.detections) return null;
           const text = seg.detections.map((d) => d.text).join("");
           const pinyin = showPinyin ? buildPinyin(text, wordDefs) : "";
 
@@ -278,15 +307,14 @@ export default function SubtitleDrawer({
               onPress={() => handleLineTap(si)}
             >
               <Text style={styles.timestamp}>{formatTime(seg.start_ms)}</Text>
-              <View style={styles.transcriptStack}>
-                {/* Pinyin */}
+
+              {/* Left: transcript text */}
+              <View style={styles.transcriptLeft}>
                 {showPinyin && pinyin ? (
                   <Text style={[styles.transcriptPinyin, isActive && styles.transcriptPinyinActive]} numberOfLines={1}>
                     {pinyin}
                   </Text>
                 ) : null}
-
-                {/* Hanzi — tappable words */}
                 <View style={styles.hanziRow}>
                   {seg.detections.map((det, di) =>
                     splitIntoWords(det.text).map((w, wi) => {
@@ -320,10 +348,21 @@ export default function SubtitleDrawer({
                     }),
                   )}
                 </View>
+              </View>
 
-                {/* Translation placeholder */}
-                <Text style={styles.transcriptTranslation} numberOfLines={1}>
-                  Tap words for translation
+              {/* Divider */}
+              <View style={styles.transcriptDivider} />
+
+              {/* Right: translation */}
+              <View style={styles.transcriptRight}>
+                <Text style={[styles.transcriptTranslation, isActive && styles.transcriptTranslationActive]} numberOfLines={2}>
+                  {(() => {
+                    if (!wordDefs) return "";
+                    const segWords = wordDefs
+                      .filter((wd) => seg.start_ms <= wd.start_ms + 2000 && wd.end_ms - 2000 <= seg.end_ms)
+                      .sort((a, b) => a.word_index - b.word_index);
+                    return segWords.map((wd) => wd.translation).join(" ") || "";
+                  })()}
                 </Text>
               </View>
             </Pressable>
@@ -345,22 +384,40 @@ export default function SubtitleDrawer({
 }
 
 const styles = StyleSheet.create({
-  // ─── Collapsed ───
+  // ─── Collapsed Bar ───
   collapsed: {
-    backgroundColor: "rgba(0, 0, 0, 0.95)",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(255, 255, 255, 0.08)",
-    paddingHorizontal: 16,
-    paddingTop: 10,
+    backgroundColor: "#1A1A2E",
+    borderTopWidth: 1,
+    borderTopColor: "#00E5FF",
+    paddingHorizontal: 12,
+    paddingTop: 8,
     height: COLLAPSED_HEIGHT,
     justifyContent: "center",
     overflow: "hidden",
   },
+  collapsedRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  collapsedLeft: {
+    flex: 3,
+    paddingRight: 8,
+  },
+  collapsedDivider: {
+    width: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    alignSelf: "stretch",
+    marginVertical: 4,
+  },
+  collapsedRight: {
+    flex: 2,
+    paddingLeft: 10,
+  },
   pinyinLine: {
     color: "#00E5FF",
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "500",
-    marginBottom: 4,
+    marginBottom: 2,
   },
   hanziRow: {
     flexDirection: "row",
@@ -376,21 +433,21 @@ const styles = StyleSheet.create({
   },
   hanziText: {
     color: "#FFFFFF",
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "700",
   },
   hanziTextHighlighted: {
     color: "#00E5FF",
   },
-  translationLine: {
-    color: "#ADAAAA",
-    fontSize: 14,
-    marginTop: 4,
+  translationText: {
+    color: "#B0B0B0",
+    fontSize: 13,
+    lineHeight: 18,
   },
   expandArrow: {
     position: "absolute",
-    right: 12,
-    top: 10,
+    right: 10,
+    top: 8,
   },
 
   // ─── Expanded Overlay ───
@@ -399,7 +456,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(10, 10, 10, 0.95)",
+    backgroundColor: "#1A1A2E",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     zIndex: 50,
@@ -424,7 +481,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   headerTitle: {
-    color: "#888",
+    color: "#00E5FF",
     fontSize: 13,
     fontWeight: "600",
     textTransform: "uppercase",
@@ -442,50 +499,64 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   transcriptContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingBottom: 40,
   },
   transcriptItem: {
     flexDirection: "row",
     alignItems: "flex-start",
     paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     borderRadius: 10,
     marginBottom: 4,
   },
   transcriptItemActive: {
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    backgroundColor: "rgba(0, 229, 255, 0.08)",
   },
   timestamp: {
     color: "#555",
-    fontSize: 11,
-    width: 36,
+    fontSize: 10,
+    width: 32,
     marginTop: 4,
-    marginRight: 8,
+    marginRight: 6,
   },
-  transcriptStack: {
-    flex: 1,
+  transcriptLeft: {
+    flex: 3,
+    paddingRight: 6,
+  },
+  transcriptDivider: {
+    width: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    alignSelf: "stretch",
+    marginHorizontal: 4,
+  },
+  transcriptRight: {
+    flex: 2,
+    justifyContent: "center",
+    paddingLeft: 6,
   },
   transcriptPinyin: {
     color: "rgba(0, 229, 255, 0.5)",
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "500",
-    marginBottom: 2,
+    marginBottom: 1,
   },
   transcriptPinyinActive: {
     color: "#00E5FF",
   },
   transcriptHanzi: {
-    color: "#777",
-    fontSize: 18,
+    color: "#666",
+    fontSize: 16,
     fontWeight: "600",
   },
   transcriptHanziActive: {
     color: "#FFFFFF",
   },
   transcriptTranslation: {
-    color: "#555",
+    color: "#666",
     fontSize: 12,
-    marginTop: 2,
+  },
+  transcriptTranslationActive: {
+    color: "#B0B0B0",
   },
 });

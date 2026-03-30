@@ -31,7 +31,7 @@ import PostSingleOverlay from "./overlay";
 import SubtitleTapOverlay, { HighlightRange } from "./subtitleOverlay";
 import SubtitleDrawer, { COLLAPSED_HEIGHT } from "./SubtitleDrawer";
 import WordPopup, { WordPopupData } from "./wordPopup";
-import { useSubtitles, useSttSubtitles } from "../../../hooks/useSubtitles";
+import { useSubtitles, useTranscript } from "../../../hooks/useSubtitles";
 import { useWordDefinitions } from "../../../hooks/useWordDefinitions";
 import { findWordMatch } from "./wordMatcher";
 import * as Haptics from "expo-haptics";
@@ -68,14 +68,15 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     const playerRef = useRef<ReturnType<typeof useVideoPlayer> | null>(null);
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
-    // Fetch both OCR (bboxes.json) and STT (stt.json) data
+    // Fetch OCR bboxes (tap targets) and merged transcript (drawer)
     const { data: ocrData } = useSubtitles(item.id, item.cdn_url);
-    const { data: sttData } = useSttSubtitles(item.id, item.cdn_url);
+    const { data: transcriptData } = useTranscript(item.id, item.cdn_url);
 
-    // OCR data for tap targets, STT data for subtitle drawer
-    // Fall back to OCR data for drawer if STT unavailable
-    const subtitleData = ocrData;  // Used by SubtitleTapOverlay
-    const drawerData = sttData ?? ocrData;  // Used by SubtitleDrawer
+    // OCR data for invisible tap targets over burned-in text
+    const subtitleData = ocrData;
+    // Transcript for the subtitle drawer (merged OCR text + STT timing, spoken only)
+    // Falls back through: transcript.json → stt.json → bboxes.json (handled in fetchTranscriptData)
+    const drawerData = transcriptData ?? ocrData;
 
     const player = useVideoPlayer(item.cdn_url, (p) => {
       p.loop = true;

@@ -47,6 +47,7 @@ export interface SubtitleData {
   video: string;
   resolution: { width: number; height: number };
   duration_ms: number;
+  subtitle_source?: "stt" | "ocr";
   frame_interval_ms?: number;
   segments: SubtitleSegment[];
 }
@@ -110,13 +111,18 @@ function getVideoTransform(
 function buildLookupTable(
   segments: SubtitleSegment[],
   durationMs: number,
-  bucketSizeMs: number = 50,
+  bucketSizeMs: number = 33,
 ): (SubtitleSegment | null)[] {
   const bucketCount = Math.ceil(durationMs / bucketSizeMs) + 1;
   const buckets = new Array<SubtitleSegment | null>(bucketCount).fill(null);
 
+  // Shift segments 50ms earlier to compensate for OCR detection latency.
+  // The OCR detects text on the frame AFTER it appears, so the recorded
+  // start_ms is ~50-100ms late. This makes tap targets appear sooner.
+  const EARLY_MS = 50;
+
   for (const segment of segments) {
-    const startBucket = Math.floor(segment.start_ms / bucketSizeMs);
+    const startBucket = Math.floor(Math.max(0, segment.start_ms - EARLY_MS) / bucketSizeMs);
     const endBucket = Math.ceil(segment.end_ms / bucketSizeMs);
     for (let i = startBucket; i < endBucket && i < bucketCount; i++) {
       buckets[i] = segment;
@@ -142,7 +148,7 @@ export default function SubtitleTapOverlay({
   // O(1) lookup — just index into the pre-computed array
   const activeSegment = useMemo(() => {
     if (!lookupTable) return null;
-    const bucketIndex = Math.floor(currentTimeMs / 50);
+    const bucketIndex = Math.floor(currentTimeMs / 33);
     if (bucketIndex < 0 || bucketIndex >= lookupTable.length) return null;
     return lookupTable[bucketIndex];
   }, [lookupTable, currentTimeMs]);
@@ -169,13 +175,14 @@ export default function SubtitleTapOverlay({
     <View style={styles.container} pointerEvents="box-none">
       {activeSegment.detections.map((det, di) =>
         det.chars.map((ch, ci) => {
-          // Transform OCR pixel coords to screen coords
+          // Skip spaces
+          if (ch.char.trim() === "") return null;
+
           const screenX = ch.x * scale + offsetX;
           const screenY = ch.y * scale + offsetY;
           const screenW = ch.width * scale;
           const screenH = ch.height * scale;
 
-          // Check if this specific character is in the highlighted range
           const isHighlighted = highlightRange &&
             highlightRange.detectionIndex === di &&
             ci >= highlightRange.startCharIndex &&
@@ -197,10 +204,7 @@ export default function SubtitleTapOverlay({
                 },
                 isHighlighted && styles.charHighlighted,
               ]}
-            >
-              {/* DEBUG: uncomment to see tap target boundaries */}
-              {/* <Text style={styles.debugText}>{ch.char}</Text> */}
-            </Pressable>
+            />
           );
         }),
       )}
@@ -215,7 +219,6 @@ const styles = StyleSheet.create({
   },
   charTarget: {
     position: "absolute",
-    // DEBUG: visible tap targets for OCR validation — remove before production
     backgroundColor: "rgba(255,0,0,0.15)",
     borderWidth: 1,
     borderColor: "rgba(255,0,0,0.4)",

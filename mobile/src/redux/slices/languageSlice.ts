@@ -9,6 +9,7 @@ interface LanguageState {
   loaded: boolean;
   loading: boolean;
   error: string | null;
+  devMuted: boolean;
 }
 
 const initialState: LanguageState = {
@@ -19,6 +20,7 @@ const initialState: LanguageState = {
   loaded: false,
   loading: false,
   error: null,
+  devMuted: false,
 };
 
 export const loadLanguages = createAsyncThunk(
@@ -59,6 +61,9 @@ const languageSlice = createSlice({
   reducers: {
     setActiveLearningLanguage: (state, action: PayloadAction<string>) => {
       state.activeLearningLanguage = action.payload;
+    },
+    toggleDevMuted: (state) => {
+      state.devMuted = !state.devMuted;
     },
   },
   extraReducers: (builder) => {
@@ -109,5 +114,5 @@ const languageSlice = createSlice({
   },
 });
 
-export const { setActiveLearningLanguage } = languageSlice.actions;
+export const { setActiveLearningLanguage, toggleDevMuted } = languageSlice.actions;
 export default languageSlice.reducer;

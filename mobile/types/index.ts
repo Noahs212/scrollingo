@@ -11,7 +11,7 @@ export interface Video {
   view_count: number;
   created_at: string;
   creator_id: string | null;
-  subtitle_source: "stt" | "ocr" | null;
+  subtitle_source: "stt" | "ocr" | "both" | null;
 }
 
 export interface FeedPage {
