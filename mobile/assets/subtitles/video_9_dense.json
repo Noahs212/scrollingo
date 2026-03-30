@@ -1,0 +1,5498 @@
+{
+  "video": "video_9",
+  "resolution": {
+    "width": 496,
+    "height": 864
+  },
+  "duration_ms": 10042,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 3100,
+      "detections": [
+        {
+          "text": "你知道我是谁吗",
+          "confidence": 0.9965,
+          "bbox": {
+            "x": 123,
+            "y": 647,
+            "width": 247,
+            "height": 41
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 123,
+              "y": 647,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "知",
+              "x": 158,
+              "y": 647,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "道",
+              "x": 194,
+              "y": 647,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "我",
+              "x": 229,
+              "y": 647,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "是",
+              "x": 264,
+              "y": 647,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "谁",
+              "x": 299,
+              "y": 647,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "吗",
+              "x": 335,
+              "y": 647,
+              "width": 35,
+              "height": 41
+            }
+          ]
+        },
+        {
+          "text": "给脸不要脸怎么了",
+          "confidence": 0.9987,
+          "bbox": {
+            "x": 106,
+            "y": 607,
+            "width": 282,
+            "height": 41
+          },
+          "chars": [
+            {
+              "char": "给",
+              "x": 106,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "脸",
+              "x": 141,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "不",
+              "x": 176,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "要",
+              "x": 212,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "脸",
+              "x": 247,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "怎",
+              "x": 282,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "么",
+              "x": 318,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            },
+            {
+              "char": "了",
+              "x": 353,
+              "y": 607,
+              "width": 35,
+              "height": 41
+            }
+          ]
+        },
+        {
+          "text": "57元",
+          "confidence": 0.993,
+          "bbox": {
+            "x": 363,
+            "y": 116,
+            "width": 43,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 363,
+              "y": 116,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "7",
+              "x": 377,
+              "y": 116,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 392,
+              "y": 116,
+              "width": 14,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "05元",
+          "confidence": 0.7652,
+          "bbox": {
+            "x": 158,
+            "y": 115,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "0",
+              "x": 158,
+              "y": 115,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 169,
+              "y": 115,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 181,
+              "y": 115,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "380",
+          "confidence": 0.9443,
+          "bbox": {
+            "x": 368,
+            "y": 90,
+            "width": 38,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 368,
+              "y": 90,
+              "width": 13,
+              "height": 24
+            },
+            {
+              "char": "8",
+              "x": 381,
+              "y": 90,
+              "width": 13,
+              "height": 24
+            },
+            {
+              "char": "0",
+              "x": 393,
+              "y": 90,
+              "width": 13,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "三香肉",
+          "confidence": 0.8738,
+          "bbox": {
+            "x": 210,
+            "y": 64,
+            "width": 62,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 210,
+              "y": 64,
+              "width": 21,
+              "height": 22
+            },
+            {
+              "char": "香",
+              "x": 231,
+              "y": 64,
+              "width": 21,
+              "height": 22
+            },
+            {
+              "char": "肉",
+              "x": 251,
+              "y": 64,
+              "width": 21,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.8783,
+          "bbox": {
+            "x": 154,
+            "y": 63,
+            "width": 35,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 154,
+              "y": 63,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 166,
+              "y": 63,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 177,
+              "y": 63,
+              "width": 12,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "8元/元",
+          "confidence": 0.8464,
+          "bbox": {
+            "x": 349,
+            "y": 63,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "8",
+              "x": 349,
+              "y": 63,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 364,
+              "y": 63,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 378,
+              "y": 63,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 392,
+              "y": 63,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9761,
+          "bbox": {
+            "x": 158,
+            "y": 41,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 158,
+              "y": 41,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 169,
+              "y": 41,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 180,
+              "y": 41,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.855,
+          "bbox": {
+            "x": 351,
+            "y": 37,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 351,
+              "y": 37,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 366,
+              "y": 37,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 380,
+              "y": 37,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 394,
+              "y": 37,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.7747,
+          "bbox": {
+            "x": 157,
+            "y": 17,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 157,
+              "y": 17,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 168,
+              "y": 17,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 179,
+              "y": 17,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "香补",
+          "confidence": 0.5919,
+          "bbox": {
+            "x": 210,
+            "y": 15,
+            "width": 68,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 210,
+              "y": 15,
+              "width": 34,
+              "height": 25
+            },
+            {
+              "char": "补",
+              "x": 244,
+              "y": 15,
+              "width": 34,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "1元/元",
+          "confidence": 0.8496,
+          "bbox": {
+            "x": 353,
+            "y": 12,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 353,
+              "y": 12,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 367,
+              "y": 12,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 382,
+              "y": 12,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 396,
+              "y": 12,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 3100,
+      "end_ms": 4900,
+      "detections": [
+        {
+          "text": "57元",
+          "confidence": 0.9946,
+          "bbox": {
+            "x": 326,
+            "y": 132,
+            "width": 43,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 326,
+              "y": 132,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "7",
+              "x": 340,
+              "y": 132,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 355,
+              "y": 132,
+              "width": 14,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.7983,
+          "bbox": {
+            "x": 122,
+            "y": 130,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 122,
+              "y": 130,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 133,
+              "y": 130,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 144,
+              "y": 130,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.7177,
+          "bbox": {
+            "x": 174,
+            "y": 128,
+            "width": 58,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 174,
+              "y": 128,
+              "width": 29,
+              "height": 26
+            },
+            {
+              "char": "饭",
+              "x": 203,
+              "y": 128,
+              "width": 29,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "380",
+          "confidence": 0.8896,
+          "bbox": {
+            "x": 331,
+            "y": 107,
+            "width": 37,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 331,
+              "y": 107,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "8",
+              "x": 343,
+              "y": 107,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "0",
+              "x": 356,
+              "y": 107,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "干量",
+          "confidence": 0.6742,
+          "bbox": {
+            "x": 173,
+            "y": 104,
+            "width": 73,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "干",
+              "x": 173,
+              "y": 104,
+              "width": 36,
+              "height": 25
+            },
+            {
+              "char": "量",
+              "x": 210,
+              "y": 104,
+              "width": 36,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "三香城肉",
+          "confidence": 0.7613,
+          "bbox": {
+            "x": 174,
+            "y": 81,
+            "width": 63,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 174,
+              "y": 81,
+              "width": 16,
+              "height": 22
+            },
+            {
+              "char": "香",
+              "x": 190,
+              "y": 81,
+              "width": 16,
+              "height": 22
+            },
+            {
+              "char": "城",
+              "x": 206,
+              "y": 81,
+              "width": 16,
+              "height": 22
+            },
+            {
+              "char": "肉",
+              "x": 221,
+              "y": 81,
+              "width": 16,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "铺牛",
+          "confidence": 0.6006,
+          "bbox": {
+            "x": 24,
+            "y": 80,
+            "width": 67,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "铺",
+              "x": 24,
+              "y": 80,
+              "width": 34,
+              "height": 21
+            },
+            {
+              "char": "牛",
+              "x": 58,
+              "y": 80,
+              "width": 34,
+              "height": 21
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.8489,
+          "bbox": {
+            "x": 119,
+            "y": 80,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 119,
+              "y": 80,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 130,
+              "y": 80,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 142,
+              "y": 80,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "6元／元",
+          "confidence": 0.871,
+          "bbox": {
+            "x": 310,
+            "y": 79,
+            "width": 59,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "6",
+              "x": 310,
+              "y": 79,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 325,
+              "y": 79,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "／",
+              "x": 340,
+              "y": 79,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 354,
+              "y": 79,
+              "width": 15,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "菜暖饭",
+          "confidence": 0.6429,
+          "bbox": {
+            "x": 390,
+            "y": 75,
+            "width": 67,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "菜",
+              "x": 390,
+              "y": 75,
+              "width": 22,
+              "height": 24
+            },
+            {
+              "char": "暖",
+              "x": 412,
+              "y": 75,
+              "width": 22,
+              "height": 24
+            },
+            {
+              "char": "饭",
+              "x": 435,
+              "y": 75,
+              "width": 22,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9892,
+          "bbox": {
+            "x": 119,
+            "y": 56,
+            "width": 35,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 119,
+              "y": 56,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "7",
+              "x": 131,
+              "y": 56,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 142,
+              "y": 56,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "3元／元",
+          "confidence": 0.8641,
+          "bbox": {
+            "x": 313,
+            "y": 55,
+            "width": 56,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 313,
+              "y": 55,
+              "width": 14,
+              "height": 22
+            },
+            {
+              "char": "元",
+              "x": 327,
+              "y": 55,
+              "width": 14,
+              "height": 22
+            },
+            {
+              "char": "／",
+              "x": 341,
+              "y": 55,
+              "width": 14,
+              "height": 22
+            },
+            {
+              "char": "元",
+              "x": 355,
+              "y": 55,
+              "width": 14,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "1元",
+          "confidence": 0.955,
+          "bbox": {
+            "x": 391,
+            "y": 55,
+            "width": 69,
+            "height": 17
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 391,
+              "y": 55,
+              "width": 34,
+              "height": 17
+            },
+            {
+              "char": "元",
+              "x": 426,
+              "y": 55,
+              "width": 34,
+              "height": 17
+            }
+          ]
+        },
+        {
+          "text": "内奶",
+          "confidence": 0.5708,
+          "bbox": {
+            "x": 19,
+            "y": 35,
+            "width": 64,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "内",
+              "x": 19,
+              "y": 35,
+              "width": 32,
+              "height": 24
+            },
+            {
+              "char": "奶",
+              "x": 51,
+              "y": 35,
+              "width": 32,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.8895,
+          "bbox": {
+            "x": 119,
+            "y": 33,
+            "width": 34,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 119,
+              "y": 33,
+              "width": 11,
+              "height": 23
+            },
+            {
+              "char": "5",
+              "x": 130,
+              "y": 33,
+              "width": 11,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 142,
+              "y": 33,
+              "width": 11,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "香质质",
+          "confidence": 0.5467,
+          "bbox": {
+            "x": 173,
+            "y": 32,
+            "width": 66,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 173,
+              "y": 32,
+              "width": 22,
+              "height": 25
+            },
+            {
+              "char": "质",
+              "x": 195,
+              "y": 32,
+              "width": 22,
+              "height": 25
+            },
+            {
+              "char": "质",
+              "x": 217,
+              "y": 32,
+              "width": 22,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "1元/元",
+          "confidence": 0.8839,
+          "bbox": {
+            "x": 314,
+            "y": 29,
+            "width": 56,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 314,
+              "y": 29,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 328,
+              "y": 29,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 342,
+              "y": 29,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 356,
+              "y": 29,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.949,
+          "bbox": {
+            "x": 118,
+            "y": 10,
+            "width": 35,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 118,
+              "y": 10,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "5",
+              "x": 130,
+              "y": 10,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 141,
+              "y": 10,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "连价",
+          "confidence": 0.5858,
+          "bbox": {
+            "x": 172,
+            "y": 7,
+            "width": 69,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "连",
+              "x": 172,
+              "y": 7,
+              "width": 34,
+              "height": 27
+            },
+            {
+              "char": "价",
+              "x": 206,
+              "y": 7,
+              "width": 34,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8832,
+          "bbox": {
+            "x": 312,
+            "y": 2,
+            "width": 59,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 312,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 327,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "/",
+              "x": 342,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 356,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4900,
+      "end_ms": 6000,
+      "detections": [
+        {
+          "text": "57元",
+          "confidence": 0.9976,
+          "bbox": {
+            "x": 360,
+            "y": 158,
+            "width": 43,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 360,
+              "y": 158,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "7",
+              "x": 374,
+              "y": 158,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 389,
+              "y": 158,
+              "width": 14,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.7718,
+          "bbox": {
+            "x": 156,
+            "y": 157,
+            "width": 35,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 156,
+              "y": 157,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 168,
+              "y": 157,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 179,
+              "y": 157,
+              "width": 12,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.7698,
+          "bbox": {
+            "x": 211,
+            "y": 155,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 211,
+              "y": 155,
+              "width": 29,
+              "height": 25
+            },
+            {
+              "char": "饭",
+              "x": 240,
+              "y": 155,
+              "width": 29,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "560",
+          "confidence": 0.7544,
+          "bbox": {
+            "x": 366,
+            "y": 133,
+            "width": 36,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 366,
+              "y": 133,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "6",
+              "x": 378,
+              "y": 133,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "0",
+              "x": 390,
+              "y": 133,
+              "width": 12,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9755,
+          "bbox": {
+            "x": 155,
+            "y": 107,
+            "width": 35,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 155,
+              "y": 107,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 167,
+              "y": 107,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 178,
+              "y": 107,
+              "width": 12,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "三番粮肉",
+          "confidence": 0.6532,
+          "bbox": {
+            "x": 208,
+            "y": 107,
+            "width": 64,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 208,
+              "y": 107,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "番",
+              "x": 224,
+              "y": 107,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "粮",
+              "x": 240,
+              "y": 107,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "肉",
+              "x": 256,
+              "y": 107,
+              "width": 16,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "5元/元",
+          "confidence": 0.8438,
+          "bbox": {
+            "x": 345,
+            "y": 106,
+            "width": 59,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 345,
+              "y": 106,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 360,
+              "y": 106,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 374,
+              "y": 106,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 389,
+              "y": 106,
+              "width": 15,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9738,
+          "bbox": {
+            "x": 157,
+            "y": 85,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 157,
+              "y": 85,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 168,
+              "y": 85,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 179,
+              "y": 85,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8919,
+          "bbox": {
+            "x": 348,
+            "y": 81,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 348,
+              "y": 81,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 362,
+              "y": 81,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 376,
+              "y": 81,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 391,
+              "y": 81,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.8069,
+          "bbox": {
+            "x": 156,
+            "y": 62,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 156,
+              "y": 62,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 167,
+              "y": 62,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 179,
+              "y": 62,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "1元/元",
+          "confidence": 0.8798,
+          "bbox": {
+            "x": 348,
+            "y": 55,
+            "width": 57,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 348,
+              "y": 55,
+              "width": 14,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 362,
+              "y": 55,
+              "width": 14,
+              "height": 28
+            },
+            {
+              "char": "/",
+              "x": 376,
+              "y": 55,
+              "width": 14,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 391,
+              "y": 55,
+              "width": 14,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9507,
+          "bbox": {
+            "x": 155,
+            "y": 39,
+            "width": 35,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 155,
+              "y": 39,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 167,
+              "y": 39,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 178,
+              "y": 39,
+              "width": 12,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8974,
+          "bbox": {
+            "x": 350,
+            "y": 31,
+            "width": 56,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 350,
+              "y": 31,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "元",
+              "x": 364,
+              "y": 31,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "/",
+              "x": 378,
+              "y": 31,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "元",
+              "x": 392,
+              "y": 31,
+              "width": 14,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8094,
+          "bbox": {
+            "x": 348,
+            "y": 4,
+            "width": 59,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 348,
+              "y": 4,
+              "width": 15,
+              "height": 30
+            },
+            {
+              "char": "元",
+              "x": 363,
+              "y": 4,
+              "width": 15,
+              "height": 30
+            },
+            {
+              "char": "/",
+              "x": 378,
+              "y": 4,
+              "width": 15,
+              "height": 30
+            },
+            {
+              "char": "元",
+              "x": 392,
+              "y": 4,
+              "width": 15,
+              "height": 30
+            }
+          ]
+        },
+        {
+          "text": "佳海饭",
+          "confidence": 0.8722,
+          "bbox": {
+            "x": 60,
+            "y": 0,
+            "width": 97,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "佳",
+              "x": 60,
+              "y": 0,
+              "width": 32,
+              "height": 21
+            },
+            {
+              "char": "海",
+              "x": 92,
+              "y": 0,
+              "width": 32,
+              "height": 21
+            },
+            {
+              "char": "饭",
+              "x": 125,
+              "y": 0,
+              "width": 32,
+              "height": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6000,
+      "end_ms": 6100,
+      "detections": [
+        {
+          "text": "57元",
+          "confidence": 0.9973,
+          "bbox": {
+            "x": 369,
+            "y": 154,
+            "width": 42,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 369,
+              "y": 154,
+              "width": 14,
+              "height": 24
+            },
+            {
+              "char": "7",
+              "x": 383,
+              "y": 154,
+              "width": 14,
+              "height": 24
+            },
+            {
+              "char": "元",
+              "x": 397,
+              "y": 154,
+              "width": 14,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "55元",
+          "confidence": 0.7227,
+          "bbox": {
+            "x": 165,
+            "y": 152,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 165,
+              "y": 152,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 176,
+              "y": 152,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 188,
+              "y": 152,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.8858,
+          "bbox": {
+            "x": 218,
+            "y": 151,
+            "width": 55,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 218,
+              "y": 151,
+              "width": 28,
+              "height": 25
+            },
+            {
+              "char": "饭",
+              "x": 246,
+              "y": 151,
+              "width": 28,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "380",
+          "confidence": 0.9024,
+          "bbox": {
+            "x": 375,
+            "y": 130,
+            "width": 36,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 375,
+              "y": 130,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "8",
+              "x": 387,
+              "y": 130,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "0",
+              "x": 399,
+              "y": 130,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "干饭",
+          "confidence": 0.5284,
+          "bbox": {
+            "x": 218,
+            "y": 128,
+            "width": 70,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "干",
+              "x": 218,
+              "y": 128,
+              "width": 35,
+              "height": 22
+            },
+            {
+              "char": "饭",
+              "x": 253,
+              "y": 128,
+              "width": 35,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "49元",
+          "confidence": 0.8815,
+          "bbox": {
+            "x": 164,
+            "y": 104,
+            "width": 34,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 164,
+              "y": 104,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 175,
+              "y": 104,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 187,
+              "y": 104,
+              "width": 11,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "三香肉",
+          "confidence": 0.9397,
+          "bbox": {
+            "x": 217,
+            "y": 103,
+            "width": 63,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 217,
+              "y": 103,
+              "width": 21,
+              "height": 25
+            },
+            {
+              "char": "香",
+              "x": 238,
+              "y": 103,
+              "width": 21,
+              "height": 25
+            },
+            {
+              "char": "肉",
+              "x": 259,
+              "y": 103,
+              "width": 21,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "8元／元",
+          "confidence": 0.827,
+          "bbox": {
+            "x": 354,
+            "y": 102,
+            "width": 59,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "8",
+              "x": 354,
+              "y": 102,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 369,
+              "y": 102,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "／",
+              "x": 384,
+              "y": 102,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 398,
+              "y": 102,
+              "width": 15,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "12元",
+          "confidence": 0.9462,
+          "bbox": {
+            "x": 166,
+            "y": 81,
+            "width": 33,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 166,
+              "y": 81,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "2",
+              "x": 177,
+              "y": 81,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 188,
+              "y": 81,
+              "width": 11,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "金线道线",
+          "confidence": 0.5117,
+          "bbox": {
+            "x": 217,
+            "y": 77,
+            "width": 83,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "金",
+              "x": 217,
+              "y": 77,
+              "width": 21,
+              "height": 27
+            },
+            {
+              "char": "线",
+              "x": 238,
+              "y": 77,
+              "width": 21,
+              "height": 27
+            },
+            {
+              "char": "道",
+              "x": 258,
+              "y": 77,
+              "width": 21,
+              "height": 27
+            },
+            {
+              "char": "线",
+              "x": 279,
+              "y": 77,
+              "width": 21,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8744,
+          "bbox": {
+            "x": 356,
+            "y": 77,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 356,
+              "y": 77,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 370,
+              "y": 77,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 384,
+              "y": 77,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 399,
+              "y": 77,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "内的",
+          "confidence": 0.5677,
+          "bbox": {
+            "x": 66,
+            "y": 58,
+            "width": 62,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "内",
+              "x": 66,
+              "y": 58,
+              "width": 31,
+              "height": 24
+            },
+            {
+              "char": "的",
+              "x": 97,
+              "y": 58,
+              "width": 31,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.6844,
+          "bbox": {
+            "x": 165,
+            "y": 58,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 165,
+              "y": 58,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 176,
+              "y": 58,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 188,
+              "y": 58,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "香通行",
+          "confidence": 0.5396,
+          "bbox": {
+            "x": 218,
+            "y": 55,
+            "width": 66,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 218,
+              "y": 55,
+              "width": 22,
+              "height": 27
+            },
+            {
+              "char": "通",
+              "x": 240,
+              "y": 55,
+              "width": 22,
+              "height": 27
+            },
+            {
+              "char": "行",
+              "x": 262,
+              "y": 55,
+              "width": 22,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "1元/元",
+          "confidence": 0.9175,
+          "bbox": {
+            "x": 358,
+            "y": 52,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 358,
+              "y": 52,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 372,
+              "y": 52,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 386,
+              "y": 52,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 401,
+              "y": 52,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9858,
+          "bbox": {
+            "x": 165,
+            "y": 36,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 165,
+              "y": 36,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 176,
+              "y": 36,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 187,
+              "y": 36,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "注粉",
+          "confidence": 0.681,
+          "bbox": {
+            "x": 220,
+            "y": 34,
+            "width": 65,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "注",
+              "x": 220,
+              "y": 34,
+              "width": 32,
+              "height": 22
+            },
+            {
+              "char": "粉",
+              "x": 252,
+              "y": 34,
+              "width": 32,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "3元／元",
+          "confidence": 0.8583,
+          "bbox": {
+            "x": 356,
+            "y": 26,
+            "width": 60,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 356,
+              "y": 26,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 371,
+              "y": 26,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "／",
+              "x": 386,
+              "y": 26,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 401,
+              "y": 26,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.8965,
+          "bbox": {
+            "x": 166,
+            "y": 14,
+            "width": 32,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 166,
+              "y": 14,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "7",
+              "x": 177,
+              "y": 14,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 187,
+              "y": 14,
+              "width": 11,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.9025,
+          "bbox": {
+            "x": 356,
+            "y": 1,
+            "width": 61,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 356,
+              "y": 1,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 371,
+              "y": 1,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "/",
+              "x": 386,
+              "y": 1,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 402,
+              "y": 1,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "江海",
+          "confidence": 0.6348,
+          "bbox": {
+            "x": 72,
+            "y": 0,
+            "width": 59,
+            "height": 17
+          },
+          "chars": [
+            {
+              "char": "江",
+              "x": 72,
+              "y": 0,
+              "width": 30,
+              "height": 17
+            },
+            {
+              "char": "海",
+              "x": 102,
+              "y": 0,
+              "width": 30,
+              "height": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6100,
+      "end_ms": 7400,
+      "detections": [
+        {
+          "text": "57元",
+          "confidence": 0.998,
+          "bbox": {
+            "x": 367,
+            "y": 155,
+            "width": 42,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 367,
+              "y": 155,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "7",
+              "x": 381,
+              "y": 155,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 395,
+              "y": 155,
+              "width": 14,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.792,
+          "bbox": {
+            "x": 161,
+            "y": 152,
+            "width": 37,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 161,
+              "y": 152,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "5",
+              "x": 173,
+              "y": 152,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 186,
+              "y": 152,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.7822,
+          "bbox": {
+            "x": 216,
+            "y": 151,
+            "width": 56,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 216,
+              "y": 151,
+              "width": 28,
+              "height": 25
+            },
+            {
+              "char": "饭",
+              "x": 244,
+              "y": 151,
+              "width": 28,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "580",
+          "confidence": 0.8815,
+          "bbox": {
+            "x": 372,
+            "y": 130,
+            "width": 37,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 372,
+              "y": 130,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "8",
+              "x": 384,
+              "y": 130,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "0",
+              "x": 397,
+              "y": 130,
+              "width": 12,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "三香肉",
+          "confidence": 0.9703,
+          "bbox": {
+            "x": 216,
+            "y": 105,
+            "width": 61,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 216,
+              "y": 105,
+              "width": 20,
+              "height": 22
+            },
+            {
+              "char": "香",
+              "x": 236,
+              "y": 105,
+              "width": 20,
+              "height": 22
+            },
+            {
+              "char": "肉",
+              "x": 257,
+              "y": 105,
+              "width": 20,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.8084,
+          "bbox": {
+            "x": 162,
+            "y": 104,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 162,
+              "y": 104,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 173,
+              "y": 104,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 184,
+              "y": 104,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "6元/元",
+          "confidence": 0.7604,
+          "bbox": {
+            "x": 352,
+            "y": 103,
+            "width": 59,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "6",
+              "x": 352,
+              "y": 103,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 367,
+              "y": 103,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 382,
+              "y": 103,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 396,
+              "y": 103,
+              "width": 15,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "条运",
+          "confidence": 0.5036,
+          "bbox": {
+            "x": 68,
+            "y": 83,
+            "width": 44,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "条",
+              "x": 68,
+              "y": 83,
+              "width": 22,
+              "height": 19
+            },
+            {
+              "char": "运",
+              "x": 90,
+              "y": 83,
+              "width": 22,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9704,
+          "bbox": {
+            "x": 164,
+            "y": 81,
+            "width": 31,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 164,
+              "y": 81,
+              "width": 10,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 174,
+              "y": 81,
+              "width": 10,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 185,
+              "y": 81,
+              "width": 10,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8622,
+          "bbox": {
+            "x": 354,
+            "y": 78,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 354,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 368,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 383,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 398,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.8708,
+          "bbox": {
+            "x": 163,
+            "y": 59,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 163,
+              "y": 59,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 174,
+              "y": 59,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 185,
+              "y": 59,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "1元/元",
+          "confidence": 0.8925,
+          "bbox": {
+            "x": 356,
+            "y": 53,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 356,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 370,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 384,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 399,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9794,
+          "bbox": {
+            "x": 162,
+            "y": 35,
+            "width": 35,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 162,
+              "y": 35,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "5",
+              "x": 174,
+              "y": 35,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 185,
+              "y": 35,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8835,
+          "bbox": {
+            "x": 356,
+            "y": 28,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 356,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 370,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 385,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 400,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.8353,
+          "bbox": {
+            "x": 164,
+            "y": 15,
+            "width": 31,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 164,
+              "y": 15,
+              "width": 10,
+              "height": 19
+            },
+            {
+              "char": "7",
+              "x": 174,
+              "y": 15,
+              "width": 10,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 185,
+              "y": 15,
+              "width": 10,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8699,
+          "bbox": {
+            "x": 356,
+            "y": 3,
+            "width": 59,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 356,
+              "y": 3,
+              "width": 15,
+              "height": 26
+            },
+            {
+              "char": "元",
+              "x": 371,
+              "y": 3,
+              "width": 15,
+              "height": 26
+            },
+            {
+              "char": "/",
+              "x": 386,
+              "y": 3,
+              "width": 15,
+              "height": 26
+            },
+            {
+              "char": "元",
+              "x": 400,
+              "y": 3,
+              "width": 15,
+              "height": 26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7400,
+      "end_ms": 8300,
+      "detections": [
+        {
+          "text": "5元",
+          "confidence": 0.976,
+          "bbox": {
+            "x": 156,
+            "y": 157,
+            "width": 35,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 156,
+              "y": 157,
+              "width": 18,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 174,
+              "y": 157,
+              "width": 18,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "57元",
+          "confidence": 0.9962,
+          "bbox": {
+            "x": 359,
+            "y": 157,
+            "width": 43,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 359,
+              "y": 157,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "7",
+              "x": 373,
+              "y": 157,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "元",
+              "x": 388,
+              "y": 157,
+              "width": 14,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.9805,
+          "bbox": {
+            "x": 210,
+            "y": 155,
+            "width": 56,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 210,
+              "y": 155,
+              "width": 28,
+              "height": 25
+            },
+            {
+              "char": "饭",
+              "x": 238,
+              "y": 155,
+              "width": 28,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "560",
+          "confidence": 0.7377,
+          "bbox": {
+            "x": 365,
+            "y": 134,
+            "width": 37,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 365,
+              "y": 134,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "6",
+              "x": 377,
+              "y": 134,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "0",
+              "x": 390,
+              "y": 134,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "干绿",
+          "confidence": 0.7965,
+          "bbox": {
+            "x": 208,
+            "y": 131,
+            "width": 73,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "干",
+              "x": 208,
+              "y": 131,
+              "width": 36,
+              "height": 25
+            },
+            {
+              "char": "绿",
+              "x": 244,
+              "y": 131,
+              "width": 36,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "三香鼠肉",
+          "confidence": 0.782,
+          "bbox": {
+            "x": 209,
+            "y": 108,
+            "width": 61,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 209,
+              "y": 108,
+              "width": 15,
+              "height": 22
+            },
+            {
+              "char": "香",
+              "x": 224,
+              "y": 108,
+              "width": 15,
+              "height": 22
+            },
+            {
+              "char": "鼠",
+              "x": 240,
+              "y": 108,
+              "width": 15,
+              "height": 22
+            },
+            {
+              "char": "肉",
+              "x": 255,
+              "y": 108,
+              "width": 15,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9333,
+          "bbox": {
+            "x": 154,
+            "y": 107,
+            "width": 36,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 154,
+              "y": 107,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 166,
+              "y": 107,
+              "width": 12,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 178,
+              "y": 107,
+              "width": 12,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "5元／元",
+          "confidence": 0.8224,
+          "bbox": {
+            "x": 345,
+            "y": 107,
+            "width": 59,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 345,
+              "y": 107,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 360,
+              "y": 107,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "／",
+              "x": 374,
+              "y": 107,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 389,
+              "y": 107,
+              "width": 15,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.5786,
+          "bbox": {
+            "x": 425,
+            "y": 106,
+            "width": 67,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 425,
+              "y": 106,
+              "width": 34,
+              "height": 21
+            },
+            {
+              "char": "饭",
+              "x": 458,
+              "y": 106,
+              "width": 34,
+              "height": 21
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9792,
+          "bbox": {
+            "x": 157,
+            "y": 85,
+            "width": 32,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 157,
+              "y": 85,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 168,
+              "y": 85,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 178,
+              "y": 85,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "金线道线",
+          "confidence": 0.5562,
+          "bbox": {
+            "x": 209,
+            "y": 84,
+            "width": 82,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "金",
+              "x": 209,
+              "y": 84,
+              "width": 20,
+              "height": 24
+            },
+            {
+              "char": "线",
+              "x": 230,
+              "y": 84,
+              "width": 20,
+              "height": 24
+            },
+            {
+              "char": "道",
+              "x": 250,
+              "y": 84,
+              "width": 20,
+              "height": 24
+            },
+            {
+              "char": "线",
+              "x": 270,
+              "y": 84,
+              "width": 20,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8808,
+          "bbox": {
+            "x": 347,
+            "y": 82,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 347,
+              "y": 82,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 362,
+              "y": 82,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 376,
+              "y": 82,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 390,
+              "y": 82,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.9248,
+          "bbox": {
+            "x": 156,
+            "y": 62,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 156,
+              "y": 62,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 167,
+              "y": 62,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 179,
+              "y": 62,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "香港潘行",
+          "confidence": 0.528,
+          "bbox": {
+            "x": 212,
+            "y": 60,
+            "width": 63,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 212,
+              "y": 60,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "港",
+              "x": 228,
+              "y": 60,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "潘",
+              "x": 244,
+              "y": 60,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "行",
+              "x": 259,
+              "y": 60,
+              "width": 16,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "1元／元",
+          "confidence": 0.907,
+          "bbox": {
+            "x": 349,
+            "y": 57,
+            "width": 56,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 349,
+              "y": 57,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "元",
+              "x": 363,
+              "y": 57,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "／",
+              "x": 377,
+              "y": 57,
+              "width": 14,
+              "height": 26
+            },
+            {
+              "char": "元",
+              "x": 391,
+              "y": 57,
+              "width": 14,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9675,
+          "bbox": {
+            "x": 156,
+            "y": 40,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 156,
+              "y": 40,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 167,
+              "y": 40,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 179,
+              "y": 40,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "注份",
+          "confidence": 0.7126,
+          "bbox": {
+            "x": 212,
+            "y": 38,
+            "width": 65,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "注",
+              "x": 212,
+              "y": 38,
+              "width": 32,
+              "height": 22
+            },
+            {
+              "char": "份",
+              "x": 244,
+              "y": 38,
+              "width": 32,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8875,
+          "bbox": {
+            "x": 349,
+            "y": 32,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 349,
+              "y": 32,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 363,
+              "y": 32,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 378,
+              "y": 32,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 392,
+              "y": 32,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "1元",
+          "confidence": 0.9659,
+          "bbox": {
+            "x": 156,
+            "y": 17,
+            "width": 35,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 156,
+              "y": 17,
+              "width": 18,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 174,
+              "y": 17,
+              "width": 18,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8827,
+          "bbox": {
+            "x": 348,
+            "y": 6,
+            "width": 59,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 348,
+              "y": 6,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 363,
+              "y": 6,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "/",
+              "x": 378,
+              "y": 6,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 392,
+              "y": 6,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "佳海教箱",
+          "confidence": 0.7266,
+          "bbox": {
+            "x": 61,
+            "y": 0,
+            "width": 128,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "佳",
+              "x": 61,
+              "y": 0,
+              "width": 32,
+              "height": 21
+            },
+            {
+              "char": "海",
+              "x": 93,
+              "y": 0,
+              "width": 32,
+              "height": 21
+            },
+            {
+              "char": "教",
+              "x": 125,
+              "y": 0,
+              "width": 32,
+              "height": 21
+            },
+            {
+              "char": "箱",
+              "x": 157,
+              "y": 0,
+              "width": 32,
+              "height": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8300,
+      "end_ms": 9100,
+      "detections": [
+        {
+          "text": "57元",
+          "confidence": 0.9967,
+          "bbox": {
+            "x": 363,
+            "y": 155,
+            "width": 41,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 363,
+              "y": 155,
+              "width": 14,
+              "height": 24
+            },
+            {
+              "char": "7",
+              "x": 377,
+              "y": 155,
+              "width": 14,
+              "height": 24
+            },
+            {
+              "char": "元",
+              "x": 390,
+              "y": 155,
+              "width": 14,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "05元",
+          "confidence": 0.7379,
+          "bbox": {
+            "x": 159,
+            "y": 154,
+            "width": 34,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "0",
+              "x": 159,
+              "y": 154,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "5",
+              "x": 170,
+              "y": 154,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 182,
+              "y": 154,
+              "width": 11,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.9428,
+          "bbox": {
+            "x": 211,
+            "y": 150,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 211,
+              "y": 150,
+              "width": 28,
+              "height": 25
+            },
+            {
+              "char": "饭",
+              "x": 240,
+              "y": 150,
+              "width": 28,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "580",
+          "confidence": 0.9212,
+          "bbox": {
+            "x": 367,
+            "y": 130,
+            "width": 38,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 367,
+              "y": 130,
+              "width": 13,
+              "height": 24
+            },
+            {
+              "char": "8",
+              "x": 380,
+              "y": 130,
+              "width": 13,
+              "height": 24
+            },
+            {
+              "char": "0",
+              "x": 392,
+              "y": 130,
+              "width": 13,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "4元",
+          "confidence": 0.7329,
+          "bbox": {
+            "x": 157,
+            "y": 104,
+            "width": 35,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 157,
+              "y": 104,
+              "width": 18,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 174,
+              "y": 104,
+              "width": 18,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "铺牛",
+          "confidence": 0.5478,
+          "bbox": {
+            "x": 63,
+            "y": 103,
+            "width": 61,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "铺",
+              "x": 63,
+              "y": 103,
+              "width": 30,
+              "height": 21
+            },
+            {
+              "char": "牛",
+              "x": 94,
+              "y": 103,
+              "width": 30,
+              "height": 21
+            }
+          ]
+        },
+        {
+          "text": "三香鼠肉",
+          "confidence": 0.8354,
+          "bbox": {
+            "x": 210,
+            "y": 103,
+            "width": 63,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 210,
+              "y": 103,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "香",
+              "x": 226,
+              "y": 103,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "鼠",
+              "x": 242,
+              "y": 103,
+              "width": 16,
+              "height": 25
+            },
+            {
+              "char": "肉",
+              "x": 257,
+              "y": 103,
+              "width": 16,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "5元/元",
+          "confidence": 0.8074,
+          "bbox": {
+            "x": 348,
+            "y": 103,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 348,
+              "y": 103,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 362,
+              "y": 103,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 376,
+              "y": 103,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 391,
+              "y": 103,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9821,
+          "bbox": {
+            "x": 159,
+            "y": 82,
+            "width": 32,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 159,
+              "y": 82,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "7",
+              "x": 170,
+              "y": 82,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 180,
+              "y": 82,
+              "width": 11,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "3元／元",
+          "confidence": 0.8873,
+          "bbox": {
+            "x": 349,
+            "y": 78,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 349,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 363,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "／",
+              "x": 378,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 392,
+              "y": 78,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.9879,
+          "bbox": {
+            "x": 158,
+            "y": 59,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 158,
+              "y": 59,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 169,
+              "y": 59,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 180,
+              "y": 59,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "1元/元",
+          "confidence": 0.8883,
+          "bbox": {
+            "x": 351,
+            "y": 53,
+            "width": 56,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 351,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 365,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 379,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 393,
+              "y": 53,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9094,
+          "bbox": {
+            "x": 158,
+            "y": 36,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 158,
+              "y": 36,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 169,
+              "y": 36,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 180,
+              "y": 36,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.9096,
+          "bbox": {
+            "x": 351,
+            "y": 28,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 351,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 365,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 380,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 394,
+              "y": 28,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "11元",
+          "confidence": 0.8676,
+          "bbox": {
+            "x": 159,
+            "y": 15,
+            "width": 32,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 159,
+              "y": 15,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "1",
+              "x": 170,
+              "y": 15,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 180,
+              "y": 15,
+              "width": 11,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8803,
+          "bbox": {
+            "x": 349,
+            "y": 2,
+            "width": 60,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 349,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 364,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "/",
+              "x": 379,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 394,
+              "y": 2,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9100,
+      "end_ms": 9300,
+      "detections": [
+        {
+          "text": "不知道算了",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 156,
+            "y": 628,
+            "width": 177,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "不",
+              "x": 156,
+              "y": 628,
+              "width": 35,
+              "height": 44
+            },
+            {
+              "char": "知",
+              "x": 191,
+              "y": 628,
+              "width": 35,
+              "height": 44
+            },
+            {
+              "char": "道",
+              "x": 227,
+              "y": 628,
+              "width": 35,
+              "height": 44
+            },
+            {
+              "char": "算",
+              "x": 262,
+              "y": 628,
+              "width": 35,
+              "height": 44
+            },
+            {
+              "char": "了",
+              "x": 298,
+              "y": 628,
+              "width": 35,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "text": "57元",
+          "confidence": 0.9962,
+          "bbox": {
+            "x": 376,
+            "y": 134,
+            "width": 41,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 376,
+              "y": 134,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "7",
+              "x": 390,
+              "y": 134,
+              "width": 14,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 403,
+              "y": 134,
+              "width": 14,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.906,
+          "bbox": {
+            "x": 172,
+            "y": 133,
+            "width": 32,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 172,
+              "y": 133,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "5",
+              "x": 183,
+              "y": 133,
+              "width": 11,
+              "height": 19
+            },
+            {
+              "char": "元",
+              "x": 193,
+              "y": 133,
+              "width": 11,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.8918,
+          "bbox": {
+            "x": 224,
+            "y": 130,
+            "width": 57,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 224,
+              "y": 130,
+              "width": 28,
+              "height": 26
+            },
+            {
+              "char": "饭",
+              "x": 252,
+              "y": 130,
+              "width": 28,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "380",
+          "confidence": 0.7885,
+          "bbox": {
+            "x": 381,
+            "y": 109,
+            "width": 37,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 381,
+              "y": 109,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "8",
+              "x": 393,
+              "y": 109,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "0",
+              "x": 406,
+              "y": 109,
+              "width": 12,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "缝干绿",
+          "confidence": 0.5992,
+          "bbox": {
+            "x": 223,
+            "y": 106,
+            "width": 71,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "缝",
+              "x": 223,
+              "y": 106,
+              "width": 24,
+              "height": 25
+            },
+            {
+              "char": "干",
+              "x": 247,
+              "y": 106,
+              "width": 24,
+              "height": 25
+            },
+            {
+              "char": "绿",
+              "x": 270,
+              "y": 106,
+              "width": 24,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "端牛",
+          "confidence": 0.5872,
+          "bbox": {
+            "x": 74,
+            "y": 83,
+            "width": 54,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "端",
+              "x": 74,
+              "y": 83,
+              "width": 27,
+              "height": 21
+            },
+            {
+              "char": "牛",
+              "x": 101,
+              "y": 83,
+              "width": 27,
+              "height": 21
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9832,
+          "bbox": {
+            "x": 169,
+            "y": 82,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 169,
+              "y": 82,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 180,
+              "y": 82,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 191,
+              "y": 82,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "三香肉",
+          "confidence": 0.9299,
+          "bbox": {
+            "x": 222,
+            "y": 82,
+            "width": 64,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 222,
+              "y": 82,
+              "width": 21,
+              "height": 25
+            },
+            {
+              "char": "香",
+              "x": 243,
+              "y": 82,
+              "width": 21,
+              "height": 25
+            },
+            {
+              "char": "肉",
+              "x": 265,
+              "y": 82,
+              "width": 21,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "5元／元",
+          "confidence": 0.8176,
+          "bbox": {
+            "x": 358,
+            "y": 80,
+            "width": 61,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 358,
+              "y": 80,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 373,
+              "y": 80,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "／",
+              "x": 388,
+              "y": 80,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "元",
+              "x": 404,
+              "y": 80,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9836,
+          "bbox": {
+            "x": 170,
+            "y": 60,
+            "width": 32,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 170,
+              "y": 60,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 181,
+              "y": 60,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 191,
+              "y": 60,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "全米线道锁",
+          "confidence": 0.571,
+          "bbox": {
+            "x": 221,
+            "y": 56,
+            "width": 84,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "全",
+              "x": 221,
+              "y": 56,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "米",
+              "x": 238,
+              "y": 56,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "线",
+              "x": 255,
+              "y": 56,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "道",
+              "x": 271,
+              "y": 56,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "锁",
+              "x": 288,
+              "y": 56,
+              "width": 17,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8995,
+          "bbox": {
+            "x": 362,
+            "y": 56,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 362,
+              "y": 56,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 376,
+              "y": 56,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 390,
+              "y": 56,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 405,
+              "y": 56,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "35元",
+          "confidence": 0.9066,
+          "bbox": {
+            "x": 170,
+            "y": 37,
+            "width": 32,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 170,
+              "y": 37,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 181,
+              "y": 37,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 191,
+              "y": 37,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "香通服行",
+          "confidence": 0.5473,
+          "bbox": {
+            "x": 223,
+            "y": 33,
+            "width": 68,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 223,
+              "y": 33,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "通",
+              "x": 240,
+              "y": 33,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "服",
+              "x": 257,
+              "y": 33,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "行",
+              "x": 274,
+              "y": 33,
+              "width": 17,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "1元／元",
+          "confidence": 0.8662,
+          "bbox": {
+            "x": 363,
+            "y": 30,
+            "width": 58,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 363,
+              "y": 30,
+              "width": 14,
+              "height": 27
+            },
+            {
+              "char": "元",
+              "x": 378,
+              "y": 30,
+              "width": 14,
+              "height": 27
+            },
+            {
+              "char": "／",
+              "x": 392,
+              "y": 30,
+              "width": 14,
+              "height": 27
+            },
+            {
+              "char": "元",
+              "x": 406,
+              "y": 30,
+              "width": 14,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9655,
+          "bbox": {
+            "x": 170,
+            "y": 14,
+            "width": 32,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 170,
+              "y": 14,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 181,
+              "y": 14,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 191,
+              "y": 14,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "3元／元",
+          "confidence": 0.8046,
+          "bbox": {
+            "x": 362,
+            "y": 4,
+            "width": 60,
+            "height": 29
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 362,
+              "y": 4,
+              "width": 15,
+              "height": 29
+            },
+            {
+              "char": "元",
+              "x": 377,
+              "y": 4,
+              "width": 15,
+              "height": 29
+            },
+            {
+              "char": "／",
+              "x": 392,
+              "y": 4,
+              "width": 15,
+              "height": 29
+            },
+            {
+              "char": "元",
+              "x": 407,
+              "y": 4,
+              "width": 15,
+              "height": 29
+            }
+          ]
+        },
+        {
+          "text": "1元",
+          "confidence": 0.6206,
+          "bbox": {
+            "x": 174,
+            "y": 0,
+            "width": 27,
+            "height": 11
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 174,
+              "y": 0,
+              "width": 14,
+              "height": 11
+            },
+            {
+              "char": "元",
+              "x": 188,
+              "y": 0,
+              "width": 14,
+              "height": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9300,
+      "end_ms": 10000,
+      "detections": [
+        {
+          "text": "不知道算了",
+          "confidence": 0.9995,
+          "bbox": {
+            "x": 155,
+            "y": 626,
+            "width": 179,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "不",
+              "x": 155,
+              "y": 626,
+              "width": 36,
+              "height": 47
+            },
+            {
+              "char": "知",
+              "x": 191,
+              "y": 626,
+              "width": 36,
+              "height": 47
+            },
+            {
+              "char": "道",
+              "x": 227,
+              "y": 626,
+              "width": 36,
+              "height": 47
+            },
+            {
+              "char": "算",
+              "x": 262,
+              "y": 626,
+              "width": 36,
+              "height": 47
+            },
+            {
+              "char": "了",
+              "x": 298,
+              "y": 626,
+              "width": 36,
+              "height": 47
+            }
+          ]
+        },
+        {
+          "text": "5元",
+          "confidence": 0.9635,
+          "bbox": {
+            "x": 172,
+            "y": 127,
+            "width": 35,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 172,
+              "y": 127,
+              "width": 18,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 190,
+              "y": 127,
+              "width": 18,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "57元",
+          "confidence": 0.9955,
+          "bbox": {
+            "x": 379,
+            "y": 127,
+            "width": 40,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 379,
+              "y": 127,
+              "width": 13,
+              "height": 24
+            },
+            {
+              "char": "7",
+              "x": 392,
+              "y": 127,
+              "width": 13,
+              "height": 24
+            },
+            {
+              "char": "元",
+              "x": 406,
+              "y": 127,
+              "width": 13,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "香饭",
+          "confidence": 0.7523,
+          "bbox": {
+            "x": 228,
+            "y": 124,
+            "width": 55,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 228,
+              "y": 124,
+              "width": 28,
+              "height": 25
+            },
+            {
+              "char": "饭",
+              "x": 256,
+              "y": 124,
+              "width": 28,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "360",
+          "confidence": 0.7977,
+          "bbox": {
+            "x": 383,
+            "y": 102,
+            "width": 36,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 383,
+              "y": 102,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "6",
+              "x": 395,
+              "y": 102,
+              "width": 12,
+              "height": 24
+            },
+            {
+              "char": "0",
+              "x": 407,
+              "y": 102,
+              "width": 12,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "三香肉",
+          "confidence": 0.9292,
+          "bbox": {
+            "x": 225,
+            "y": 77,
+            "width": 64,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "三",
+              "x": 225,
+              "y": 77,
+              "width": 21,
+              "height": 22
+            },
+            {
+              "char": "香",
+              "x": 246,
+              "y": 77,
+              "width": 21,
+              "height": 22
+            },
+            {
+              "char": "肉",
+              "x": 268,
+              "y": 77,
+              "width": 21,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.972,
+          "bbox": {
+            "x": 171,
+            "y": 76,
+            "width": 34,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 171,
+              "y": 76,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "5",
+              "x": 182,
+              "y": 76,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 194,
+              "y": 76,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "5元／元",
+          "confidence": 0.7816,
+          "bbox": {
+            "x": 362,
+            "y": 75,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 362,
+              "y": 75,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 376,
+              "y": 75,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "／",
+              "x": 391,
+              "y": 75,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 406,
+              "y": 75,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "17元",
+          "confidence": 0.9581,
+          "bbox": {
+            "x": 172,
+            "y": 53,
+            "width": 33,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 172,
+              "y": 53,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "7",
+              "x": 183,
+              "y": 53,
+              "width": 11,
+              "height": 20
+            },
+            {
+              "char": "元",
+              "x": 194,
+              "y": 53,
+              "width": 11,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.8867,
+          "bbox": {
+            "x": 365,
+            "y": 50,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 365,
+              "y": 50,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 380,
+              "y": 50,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 394,
+              "y": 50,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 408,
+              "y": 50,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "角的城",
+          "confidence": 0.5189,
+          "bbox": {
+            "x": 73,
+            "y": 31,
+            "width": 61,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "角",
+              "x": 73,
+              "y": 31,
+              "width": 20,
+              "height": 23
+            },
+            {
+              "char": "的",
+              "x": 93,
+              "y": 31,
+              "width": 20,
+              "height": 23
+            },
+            {
+              "char": "城",
+              "x": 114,
+              "y": 31,
+              "width": 20,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "15元",
+          "confidence": 0.6554,
+          "bbox": {
+            "x": 171,
+            "y": 29,
+            "width": 35,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 171,
+              "y": 29,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "5",
+              "x": 183,
+              "y": 29,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 194,
+              "y": 29,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "香通服行",
+          "confidence": 0.5682,
+          "bbox": {
+            "x": 225,
+            "y": 26,
+            "width": 69,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "香",
+              "x": 225,
+              "y": 26,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "通",
+              "x": 242,
+              "y": 26,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "服",
+              "x": 260,
+              "y": 26,
+              "width": 17,
+              "height": 27
+            },
+            {
+              "char": "行",
+              "x": 277,
+              "y": 26,
+              "width": 17,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "1元／元",
+          "confidence": 0.8827,
+          "bbox": {
+            "x": 366,
+            "y": 25,
+            "width": 57,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 366,
+              "y": 25,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 380,
+              "y": 25,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "／",
+              "x": 394,
+              "y": 25,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 409,
+              "y": 25,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "45元",
+          "confidence": 0.9338,
+          "bbox": {
+            "x": 170,
+            "y": 6,
+            "width": 36,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 170,
+              "y": 6,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "5",
+              "x": 182,
+              "y": 6,
+              "width": 12,
+              "height": 23
+            },
+            {
+              "char": "元",
+              "x": 194,
+              "y": 6,
+              "width": 12,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "3元/元",
+          "confidence": 0.9114,
+          "bbox": {
+            "x": 366,
+            "y": 0,
+            "width": 58,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 366,
+              "y": 0,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 380,
+              "y": 0,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "/",
+              "x": 395,
+              "y": 0,
+              "width": 14,
+              "height": 25
+            },
+            {
+              "char": "元",
+              "x": 410,
+              "y": 0,
+              "width": 14,
+              "height": 25
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

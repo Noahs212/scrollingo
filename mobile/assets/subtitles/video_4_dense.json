@@ -1,0 +1,460 @@
+{
+  "video": "video_4",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 18733,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 200,
+      "end_ms": 3800,
+      "detections": [
+        {
+          "text": "Advanced men are practicing loneliness",
+          "confidence": 0.987,
+          "bbox": {
+            "x": 162,
+            "y": 916,
+            "width": 391,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "Advanced",
+              "x": 162,
+              "y": 916,
+              "width": 82,
+              "height": 25
+            },
+            {
+              "char": "men",
+              "x": 255,
+              "y": 916,
+              "width": 31,
+              "height": 25
+            },
+            {
+              "char": "are",
+              "x": 296,
+              "y": 916,
+              "width": 31,
+              "height": 25
+            },
+            {
+              "char": "practicing",
+              "x": 337,
+              "y": 916,
+              "width": 103,
+              "height": 25
+            },
+            {
+              "char": "loneliness",
+              "x": 450,
+              "y": 916,
+              "width": 103,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "高级的男人都在修行孤独",
+          "confidence": 0.9972,
+          "bbox": {
+            "x": 175,
+            "y": 849,
+            "width": 369,
+            "height": 37
+          },
+          "chars": [
+            {
+              "char": "高",
+              "x": 175,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "级",
+              "x": 209,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "的",
+              "x": 242,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "男",
+              "x": 276,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "人",
+              "x": 309,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "都",
+              "x": 343,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "在",
+              "x": 376,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "修",
+              "x": 410,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "行",
+              "x": 443,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "孤",
+              "x": 477,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "独",
+              "x": 510,
+              "y": 849,
+              "width": 34,
+              "height": 37
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4600,
+      "end_ms": 6500,
+      "detections": [
+        {
+          "text": "Learn to control desires",
+          "confidence": 0.992,
+          "bbox": {
+            "x": 241,
+            "y": 918,
+            "width": 236,
+            "height": 24
+          },
+          "chars": [
+            {
+              "char": "Learn",
+              "x": 241,
+              "y": 918,
+              "width": 49,
+              "height": 24
+            },
+            {
+              "char": "to",
+              "x": 300,
+              "y": 918,
+              "width": 20,
+              "height": 24
+            },
+            {
+              "char": "control",
+              "x": 330,
+              "y": 918,
+              "width": 69,
+              "height": 24
+            },
+            {
+              "char": "desires",
+              "x": 408,
+              "y": 918,
+              "width": 69,
+              "height": 24
+            }
+          ]
+        },
+        {
+          "text": "学会控制欲望",
+          "confidence": 0.9998,
+          "bbox": {
+            "x": 257,
+            "y": 846,
+            "width": 206,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "学",
+              "x": 257,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "会",
+              "x": 291,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "控",
+              "x": 326,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "制",
+              "x": 360,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "欲",
+              "x": 394,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "望",
+              "x": 429,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7100,
+      "end_ms": 8800,
+      "detections": [
+        {
+          "text": "In addition to making money",
+          "confidence": 0.991,
+          "bbox": {
+            "x": 214,
+            "y": 915,
+            "width": 287,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "In",
+              "x": 214,
+              "y": 915,
+              "width": 21,
+              "height": 30
+            },
+            {
+              "char": "addition",
+              "x": 246,
+              "y": 915,
+              "width": 85,
+              "height": 30
+            },
+            {
+              "char": "to",
+              "x": 342,
+              "y": 915,
+              "width": 21,
+              "height": 30
+            },
+            {
+              "char": "making",
+              "x": 373,
+              "y": 915,
+              "width": 64,
+              "height": 30
+            },
+            {
+              "char": "money",
+              "x": 448,
+              "y": 915,
+              "width": 53,
+              "height": 30
+            }
+          ]
+        },
+        {
+          "text": "除了赚钱之外",
+          "confidence": 0.9991,
+          "bbox": {
+            "x": 255,
+            "y": 844,
+            "width": 208,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "除",
+              "x": 255,
+              "y": 844,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "了",
+              "x": 290,
+              "y": 844,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "赚",
+              "x": 324,
+              "y": 844,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "钱",
+              "x": 359,
+              "y": 844,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "之",
+              "x": 394,
+              "y": 844,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "外",
+              "x": 428,
+              "y": 844,
+              "width": 35,
+              "height": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9500,
+      "end_ms": 10000,
+      "detections": [
+        {
+          "text": "Just enjoy being alone",
+          "confidence": 0.9308,
+          "bbox": {
+            "x": 244,
+            "y": 915,
+            "width": 228,
+            "height": 29
+          },
+          "chars": [
+            {
+              "char": "Just",
+              "x": 244,
+              "y": 915,
+              "width": 41,
+              "height": 29
+            },
+            {
+              "char": "enjoy",
+              "x": 296,
+              "y": 915,
+              "width": 52,
+              "height": 29
+            },
+            {
+              "char": "being",
+              "x": 358,
+              "y": 915,
+              "width": 52,
+              "height": 29
+            },
+            {
+              "char": "alone",
+              "x": 420,
+              "y": 915,
+              "width": 52,
+              "height": 29
+            }
+          ]
+        },
+        {
+          "text": "就是享受孤独",
+          "confidence": 0.9996,
+          "bbox": {
+            "x": 256,
+            "y": 846,
+            "width": 207,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "就",
+              "x": 256,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "是",
+              "x": 290,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "享",
+              "x": 325,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "受",
+              "x": 360,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "孤",
+              "x": 394,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "独",
+              "x": 428,
+              "y": 846,
+              "width": 34,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

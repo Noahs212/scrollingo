@@ -1,0 +1,5264 @@
+{
+  "video": "video_1",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 215900,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 100,
+      "detections": [
+        {
+          "text": "感动上千万人",
+          "confidence": 0.9935,
+          "bbox": {
+            "x": 103,
+            "y": 791,
+            "width": 512,
+            "height": 104
+          },
+          "chars": [
+            {
+              "char": "感",
+              "x": 103,
+              "y": 791,
+              "width": 85,
+              "height": 104
+            },
+            {
+              "char": "动",
+              "x": 188,
+              "y": 791,
+              "width": 85,
+              "height": 104
+            },
+            {
+              "char": "上",
+              "x": 274,
+              "y": 791,
+              "width": 85,
+              "height": 104
+            },
+            {
+              "char": "千",
+              "x": 359,
+              "y": 791,
+              "width": 85,
+              "height": 104
+            },
+            {
+              "char": "万",
+              "x": 444,
+              "y": 791,
+              "width": 85,
+              "height": 104
+            },
+            {
+              "char": "人",
+              "x": 530,
+              "y": 791,
+              "width": 85,
+              "height": 104
+            }
+          ]
+        },
+        {
+          "text": "《我的母亲》",
+          "confidence": 0.9971,
+          "bbox": {
+            "x": 121,
+            "y": 682,
+            "width": 481,
+            "height": 118
+          },
+          "chars": [
+            {
+              "char": "《",
+              "x": 121,
+              "y": 682,
+              "width": 80,
+              "height": 118
+            },
+            {
+              "char": "我",
+              "x": 201,
+              "y": 682,
+              "width": 80,
+              "height": 118
+            },
+            {
+              "char": "的",
+              "x": 281,
+              "y": 682,
+              "width": 80,
+              "height": 118
+            },
+            {
+              "char": "母",
+              "x": 362,
+              "y": 682,
+              "width": 80,
+              "height": 118
+            },
+            {
+              "char": "亲",
+              "x": 442,
+              "y": 682,
+              "width": 80,
+              "height": 118
+            },
+            {
+              "char": "》",
+              "x": 522,
+              "y": 682,
+              "width": 80,
+              "height": 118
+            }
+          ]
+        },
+        {
+          "text": "农民工",
+          "confidence": 0.9962,
+          "bbox": {
+            "x": 226,
+            "y": 587,
+            "width": 264,
+            "height": 111
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 226,
+              "y": 587,
+              "width": 88,
+              "height": 111
+            },
+            {
+              "char": "民",
+              "x": 314,
+              "y": 587,
+              "width": 88,
+              "height": 111
+            },
+            {
+              "char": "工",
+              "x": 402,
+              "y": 587,
+              "width": 88,
+              "height": 111
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.7726,
+          "bbox": {
+            "x": 204,
+            "y": 0,
+            "width": 115,
+            "height": 73
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 204,
+              "y": 0,
+              "width": 29,
+              "height": 73
+            },
+            {
+              "char": "元",
+              "x": 233,
+              "y": 0,
+              "width": 29,
+              "height": 73
+            },
+            {
+              "char": "/",
+              "x": 262,
+              "y": 0,
+              "width": 29,
+              "height": 73
+            },
+            {
+              "char": "碗",
+              "x": 290,
+              "y": 0,
+              "width": 29,
+              "height": 73
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 100,
+      "end_ms": 400,
+      "detections": [
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9735,
+          "bbox": {
+            "x": 78,
+            "y": 159,
+            "width": 558,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 78,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "民",
+              "x": 134,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "工",
+              "x": 190,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "大",
+              "x": 245,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "哥",
+              "x": 301,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "写",
+              "x": 357,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "器",
+              "x": 524,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "了",
+              "x": 580,
+              "y": 159,
+              "width": 56,
+              "height": 64
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.9996,
+          "bbox": {
+            "x": 392,
+            "y": 38,
+            "width": 90,
+            "height": 71
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 392,
+              "y": 38,
+              "width": 45,
+              "height": 71
+            },
+            {
+              "char": "浆",
+              "x": 437,
+              "y": 38,
+              "width": 45,
+              "height": 71
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 400,
+      "end_ms": 1400,
+      "detections": [
+        {
+          "text": "你先念一下",
+          "confidence": 0.9975,
+          "bbox": {
+            "x": 213,
+            "y": 753,
+            "width": 290,
+            "height": 73
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 213,
+              "y": 753,
+              "width": 58,
+              "height": 73
+            },
+            {
+              "char": "先",
+              "x": 271,
+              "y": 753,
+              "width": 58,
+              "height": 73
+            },
+            {
+              "char": "念",
+              "x": 329,
+              "y": 753,
+              "width": 58,
+              "height": 73
+            },
+            {
+              "char": "一",
+              "x": 387,
+              "y": 753,
+              "width": 58,
+              "height": 73
+            },
+            {
+              "char": "下",
+              "x": 445,
+              "y": 753,
+              "width": 58,
+              "height": 73
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8887,
+          "bbox": {
+            "x": 134,
+            "y": 400,
+            "width": 92,
+            "height": 67
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 134,
+              "y": 400,
+              "width": 23,
+              "height": 67
+            },
+            {
+              "char": "元",
+              "x": 157,
+              "y": 400,
+              "width": 23,
+              "height": 67
+            },
+            {
+              "char": "／",
+              "x": 180,
+              "y": 400,
+              "width": 23,
+              "height": 67
+            },
+            {
+              "char": "碗",
+              "x": 203,
+              "y": 400,
+              "width": 23,
+              "height": 67
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9823,
+          "bbox": {
+            "x": 79,
+            "y": 159,
+            "width": 558,
+            "height": 65
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 79,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "民",
+              "x": 135,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "工",
+              "x": 191,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "大",
+              "x": 246,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "哥",
+              "x": 302,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "写",
+              "x": 358,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "作",
+              "x": 414,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "文",
+              "x": 470,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "器",
+              "x": 525,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "了",
+              "x": 581,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1400,
+      "end_ms": 4000,
+      "detections": [
+        {
+          "text": "还好吗",
+          "confidence": 0.9941,
+          "bbox": {
+            "x": 372,
+            "y": 756,
+            "width": 198,
+            "height": 73
+          },
+          "chars": [
+            {
+              "char": "还",
+              "x": 372,
+              "y": 756,
+              "width": 66,
+              "height": 73
+            },
+            {
+              "char": "好",
+              "x": 438,
+              "y": 756,
+              "width": 66,
+              "height": 73
+            },
+            {
+              "char": "吗",
+              "x": 504,
+              "y": 756,
+              "width": 66,
+              "height": 73
+            }
+          ]
+        },
+        {
+          "text": "你在天堂",
+          "confidence": 0.9975,
+          "bbox": {
+            "x": 148,
+            "y": 752,
+            "width": 260,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "你",
+              "x": 148,
+              "y": 752,
+              "width": 65,
+              "height": 78
+            },
+            {
+              "char": "在",
+              "x": 213,
+              "y": 752,
+              "width": 65,
+              "height": 78
+            },
+            {
+              "char": "天",
+              "x": 278,
+              "y": 752,
+              "width": 65,
+              "height": 78
+            },
+            {
+              "char": "堂",
+              "x": 343,
+              "y": 752,
+              "width": 65,
+              "height": 78
+            }
+          ]
+        },
+        {
+          "text": "3元/吨",
+          "confidence": 0.8087,
+          "bbox": {
+            "x": 304,
+            "y": 461,
+            "width": 61,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 304,
+              "y": 461,
+              "width": 15,
+              "height": 47
+            },
+            {
+              "char": "元",
+              "x": 319,
+              "y": 461,
+              "width": 15,
+              "height": 47
+            },
+            {
+              "char": "/",
+              "x": 334,
+              "y": 461,
+              "width": 15,
+              "height": 47
+            },
+            {
+              "char": "吨",
+              "x": 350,
+              "y": 461,
+              "width": 15,
+              "height": 47
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8843,
+          "bbox": {
+            "x": 131,
+            "y": 394,
+            "width": 97,
+            "height": 73
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 131,
+              "y": 394,
+              "width": 24,
+              "height": 73
+            },
+            {
+              "char": "元",
+              "x": 155,
+              "y": 394,
+              "width": 24,
+              "height": 73
+            },
+            {
+              "char": "／",
+              "x": 180,
+              "y": 394,
+              "width": 24,
+              "height": 73
+            },
+            {
+              "char": "碗",
+              "x": 204,
+              "y": 394,
+              "width": 24,
+              "height": 73
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9672,
+          "bbox": {
+            "x": 79,
+            "y": 158,
+            "width": 557,
+            "height": 64
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 79,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "民",
+              "x": 135,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "工",
+              "x": 190,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "大",
+              "x": 246,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "哥",
+              "x": 302,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "写",
+              "x": 358,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "器",
+              "x": 525,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            },
+            {
+              "char": "了",
+              "x": 580,
+              "y": 158,
+              "width": 56,
+              "height": 64
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4000,
+      "end_ms": 4800,
+      "detections": [
+        {
+          "text": "1.5元／个",
+          "confidence": 0.9456,
+          "bbox": {
+            "x": 599,
+            "y": 408,
+            "width": 70,
+            "height": 38
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 599,
+              "y": 408,
+              "width": 12,
+              "height": 38
+            },
+            {
+              "char": ".",
+              "x": 611,
+              "y": 408,
+              "width": 12,
+              "height": 38
+            },
+            {
+              "char": "5",
+              "x": 622,
+              "y": 408,
+              "width": 12,
+              "height": 38
+            },
+            {
+              "char": "元",
+              "x": 634,
+              "y": 408,
+              "width": 12,
+              "height": 38
+            },
+            {
+              "char": "／",
+              "x": 646,
+              "y": 408,
+              "width": 12,
+              "height": 38
+            },
+            {
+              "char": "个",
+              "x": 657,
+              "y": 408,
+              "width": 12,
+              "height": 38
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.7729,
+          "bbox": {
+            "x": 478,
+            "y": 400,
+            "width": 69,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 478,
+              "y": 400,
+              "width": 17,
+              "height": 48
+            },
+            {
+              "char": "元",
+              "x": 495,
+              "y": 400,
+              "width": 17,
+              "height": 48
+            },
+            {
+              "char": "／",
+              "x": 512,
+              "y": 400,
+              "width": 17,
+              "height": 48
+            },
+            {
+              "char": "碗",
+              "x": 530,
+              "y": 400,
+              "width": 17,
+              "height": 48
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8819,
+          "bbox": {
+            "x": 301,
+            "y": 387,
+            "width": 87,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 301,
+              "y": 387,
+              "width": 22,
+              "height": 54
+            },
+            {
+              "char": "元",
+              "x": 323,
+              "y": 387,
+              "width": 22,
+              "height": 54
+            },
+            {
+              "char": "／",
+              "x": 344,
+              "y": 387,
+              "width": 22,
+              "height": 54
+            },
+            {
+              "char": "碗",
+              "x": 366,
+              "y": 387,
+              "width": 22,
+              "height": 54
+            }
+          ]
+        },
+        {
+          "text": "5元/碗",
+          "confidence": 0.9242,
+          "bbox": {
+            "x": 50,
+            "y": 360,
+            "width": 124,
+            "height": 69
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 50,
+              "y": 360,
+              "width": 31,
+              "height": 69
+            },
+            {
+              "char": "元",
+              "x": 81,
+              "y": 360,
+              "width": 31,
+              "height": 69
+            },
+            {
+              "char": "/",
+              "x": 112,
+              "y": 360,
+              "width": 31,
+              "height": 69
+            },
+            {
+              "char": "碗",
+              "x": 143,
+              "y": 360,
+              "width": 31,
+              "height": 69
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 422,
+            "y": 249,
+            "width": 67,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 422,
+              "y": 249,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "浆",
+              "x": 456,
+              "y": 249,
+              "width": 34,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9802,
+          "bbox": {
+            "x": 78,
+            "y": 159,
+            "width": 559,
+            "height": 65
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 78,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "民",
+              "x": 134,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "工",
+              "x": 190,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "大",
+              "x": 246,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "哥",
+              "x": 302,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "写",
+              "x": 358,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "器",
+              "x": 525,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "了",
+              "x": 581,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            }
+          ]
+        },
+        {
+          "text": "7元/个",
+          "confidence": 0.9253,
+          "bbox": {
+            "x": 33,
+            "y": 0,
+            "width": 121,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "7",
+              "x": 33,
+              "y": 0,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "元",
+              "x": 63,
+              "y": 0,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "/",
+              "x": 94,
+              "y": 0,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "个",
+              "x": 124,
+              "y": 0,
+              "width": 30,
+              "height": 47
+            }
+          ]
+        },
+        {
+          "text": "豪花酒饼",
+          "confidence": 0.8197,
+          "bbox": {
+            "x": 573,
+            "y": 0,
+            "width": 97,
+            "height": 73
+          },
+          "chars": [
+            {
+              "char": "豪",
+              "x": 573,
+              "y": 0,
+              "width": 24,
+              "height": 73
+            },
+            {
+              "char": "花",
+              "x": 597,
+              "y": 0,
+              "width": 24,
+              "height": 73
+            },
+            {
+              "char": "酒",
+              "x": 622,
+              "y": 0,
+              "width": 24,
+              "height": 73
+            },
+            {
+              "char": "饼",
+              "x": 646,
+              "y": 0,
+              "width": 24,
+              "height": 73
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4800,
+      "end_ms": 5100,
+      "detections": [
+        {
+          "text": "1.5元／个",
+          "confidence": 0.8923,
+          "bbox": {
+            "x": 610,
+            "y": 409,
+            "width": 73,
+            "height": 43
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 610,
+              "y": 409,
+              "width": 12,
+              "height": 43
+            },
+            {
+              "char": ".",
+              "x": 622,
+              "y": 409,
+              "width": 12,
+              "height": 43
+            },
+            {
+              "char": "5",
+              "x": 634,
+              "y": 409,
+              "width": 12,
+              "height": 43
+            },
+            {
+              "char": "元",
+              "x": 646,
+              "y": 409,
+              "width": 12,
+              "height": 43
+            },
+            {
+              "char": "／",
+              "x": 659,
+              "y": 409,
+              "width": 12,
+              "height": 43
+            },
+            {
+              "char": "个",
+              "x": 671,
+              "y": 409,
+              "width": 12,
+              "height": 43
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.8862,
+          "bbox": {
+            "x": 486,
+            "y": 402,
+            "width": 71,
+            "height": 49
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 486,
+              "y": 402,
+              "width": 18,
+              "height": 49
+            },
+            {
+              "char": "元",
+              "x": 504,
+              "y": 402,
+              "width": 18,
+              "height": 49
+            },
+            {
+              "char": "/",
+              "x": 522,
+              "y": 402,
+              "width": 18,
+              "height": 49
+            },
+            {
+              "char": "碗",
+              "x": 539,
+              "y": 402,
+              "width": 18,
+              "height": 49
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8957,
+          "bbox": {
+            "x": 300,
+            "y": 388,
+            "width": 91,
+            "height": 57
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 300,
+              "y": 388,
+              "width": 23,
+              "height": 57
+            },
+            {
+              "char": "元",
+              "x": 323,
+              "y": 388,
+              "width": 23,
+              "height": 57
+            },
+            {
+              "char": "／",
+              "x": 346,
+              "y": 388,
+              "width": 23,
+              "height": 57
+            },
+            {
+              "char": "碗",
+              "x": 368,
+              "y": 388,
+              "width": 23,
+              "height": 57
+            }
+          ]
+        },
+        {
+          "text": "5元/碗",
+          "confidence": 0.95,
+          "bbox": {
+            "x": 33,
+            "y": 362,
+            "width": 130,
+            "height": 71
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 33,
+              "y": 362,
+              "width": 32,
+              "height": 71
+            },
+            {
+              "char": "元",
+              "x": 66,
+              "y": 362,
+              "width": 32,
+              "height": 71
+            },
+            {
+              "char": "/",
+              "x": 98,
+              "y": 362,
+              "width": 32,
+              "height": 71
+            },
+            {
+              "char": "碗",
+              "x": 130,
+              "y": 362,
+              "width": 32,
+              "height": 71
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.8762,
+          "bbox": {
+            "x": 429,
+            "y": 254,
+            "width": 65,
+            "height": 35
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 429,
+              "y": 254,
+              "width": 32,
+              "height": 35
+            },
+            {
+              "char": "浆",
+              "x": 462,
+              "y": 254,
+              "width": 32,
+              "height": 35
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9801,
+          "bbox": {
+            "x": 78,
+            "y": 159,
+            "width": 559,
+            "height": 65
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 78,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "民",
+              "x": 134,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "工",
+              "x": 190,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "大",
+              "x": 246,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "哥",
+              "x": 302,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "写",
+              "x": 358,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "器",
+              "x": 525,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "了",
+              "x": 581,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            }
+          ]
+        },
+        {
+          "text": "脑",
+          "confidence": 0.9948,
+          "bbox": {
+            "x": 0,
+            "y": 146,
+            "width": 51,
+            "height": 60
+          },
+          "chars": [
+            {
+              "char": "脑",
+              "x": 0,
+              "y": 146,
+              "width": 51,
+              "height": 60
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5100,
+      "end_ms": 5200,
+      "detections": [
+        {
+          "text": "9ORT",
+          "confidence": 0.7391,
+          "bbox": {
+            "x": 437,
+            "y": 829,
+            "width": 21,
+            "height": 18
+          },
+          "chars": [
+            {
+              "char": "9",
+              "x": 437,
+              "y": 829,
+              "width": 5,
+              "height": 18
+            },
+            {
+              "char": "O",
+              "x": 442,
+              "y": 829,
+              "width": 5,
+              "height": 18
+            },
+            {
+              "char": "R",
+              "x": 448,
+              "y": 829,
+              "width": 5,
+              "height": 18
+            },
+            {
+              "char": "T",
+              "x": 453,
+              "y": 829,
+              "width": 5,
+              "height": 18
+            }
+          ]
+        },
+        {
+          "text": "1.5元／个",
+          "confidence": 0.9282,
+          "bbox": {
+            "x": 617,
+            "y": 413,
+            "width": 71,
+            "height": 39
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 617,
+              "y": 413,
+              "width": 12,
+              "height": 39
+            },
+            {
+              "char": ".",
+              "x": 629,
+              "y": 413,
+              "width": 12,
+              "height": 39
+            },
+            {
+              "char": "5",
+              "x": 641,
+              "y": 413,
+              "width": 12,
+              "height": 39
+            },
+            {
+              "char": "元",
+              "x": 652,
+              "y": 413,
+              "width": 12,
+              "height": 39
+            },
+            {
+              "char": "／",
+              "x": 664,
+              "y": 413,
+              "width": 12,
+              "height": 39
+            },
+            {
+              "char": "个",
+              "x": 676,
+              "y": 413,
+              "width": 12,
+              "height": 39
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.8651,
+          "bbox": {
+            "x": 492,
+            "y": 406,
+            "width": 68,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 492,
+              "y": 406,
+              "width": 17,
+              "height": 45
+            },
+            {
+              "char": "元",
+              "x": 509,
+              "y": 406,
+              "width": 17,
+              "height": 45
+            },
+            {
+              "char": "/",
+              "x": 526,
+              "y": 406,
+              "width": 17,
+              "height": 45
+            },
+            {
+              "char": "碗",
+              "x": 543,
+              "y": 406,
+              "width": 17,
+              "height": 45
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8794,
+          "bbox": {
+            "x": 304,
+            "y": 390,
+            "width": 91,
+            "height": 56
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 304,
+              "y": 390,
+              "width": 23,
+              "height": 56
+            },
+            {
+              "char": "元",
+              "x": 327,
+              "y": 390,
+              "width": 23,
+              "height": 56
+            },
+            {
+              "char": "／",
+              "x": 350,
+              "y": 390,
+              "width": 23,
+              "height": 56
+            },
+            {
+              "char": "碗",
+              "x": 372,
+              "y": 390,
+              "width": 23,
+              "height": 56
+            }
+          ]
+        },
+        {
+          "text": "5元/碗",
+          "confidence": 0.9355,
+          "bbox": {
+            "x": 32,
+            "y": 361,
+            "width": 134,
+            "height": 74
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 32,
+              "y": 361,
+              "width": 34,
+              "height": 74
+            },
+            {
+              "char": "元",
+              "x": 66,
+              "y": 361,
+              "width": 34,
+              "height": 74
+            },
+            {
+              "char": "/",
+              "x": 99,
+              "y": 361,
+              "width": 34,
+              "height": 74
+            },
+            {
+              "char": "碗",
+              "x": 132,
+              "y": 361,
+              "width": 34,
+              "height": 74
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.9208,
+          "bbox": {
+            "x": 429,
+            "y": 248,
+            "width": 71,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 429,
+              "y": 248,
+              "width": 36,
+              "height": 44
+            },
+            {
+              "char": "浆",
+              "x": 464,
+              "y": 248,
+              "width": 36,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9691,
+          "bbox": {
+            "x": 76,
+            "y": 157,
+            "width": 562,
+            "height": 70
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 76,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "民",
+              "x": 132,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "工",
+              "x": 188,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "大",
+              "x": 245,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "哥",
+              "x": 301,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "写",
+              "x": 357,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "器",
+              "x": 526,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "了",
+              "x": 582,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            }
+          ]
+        },
+        {
+          "text": "脑",
+          "confidence": 0.9677,
+          "bbox": {
+            "x": 0,
+            "y": 144,
+            "width": 51,
+            "height": 61
+          },
+          "chars": [
+            {
+              "char": "脑",
+              "x": 0,
+              "y": 144,
+              "width": 51,
+              "height": 61
+            }
+          ]
+        },
+        {
+          "text": "绿花盆饼",
+          "confidence": 0.5222,
+          "bbox": {
+            "x": 595,
+            "y": 0,
+            "width": 99,
+            "height": 67
+          },
+          "chars": [
+            {
+              "char": "绿",
+              "x": 595,
+              "y": 0,
+              "width": 25,
+              "height": 67
+            },
+            {
+              "char": "花",
+              "x": 620,
+              "y": 0,
+              "width": 25,
+              "height": 67
+            },
+            {
+              "char": "盆",
+              "x": 644,
+              "y": 0,
+              "width": 25,
+              "height": 67
+            },
+            {
+              "char": "饼",
+              "x": 669,
+              "y": 0,
+              "width": 25,
+              "height": 67
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5200,
+      "end_ms": 5300,
+      "detections": [
+        {
+          "text": "1.5元／个",
+          "confidence": 0.8974,
+          "bbox": {
+            "x": 620,
+            "y": 413,
+            "width": 74,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 620,
+              "y": 413,
+              "width": 12,
+              "height": 44
+            },
+            {
+              "char": ".",
+              "x": 632,
+              "y": 413,
+              "width": 12,
+              "height": 44
+            },
+            {
+              "char": "5",
+              "x": 645,
+              "y": 413,
+              "width": 12,
+              "height": 44
+            },
+            {
+              "char": "元",
+              "x": 657,
+              "y": 413,
+              "width": 12,
+              "height": 44
+            },
+            {
+              "char": "／",
+              "x": 669,
+              "y": 413,
+              "width": 12,
+              "height": 44
+            },
+            {
+              "char": "个",
+              "x": 682,
+              "y": 413,
+              "width": 12,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.8929,
+          "bbox": {
+            "x": 497,
+            "y": 409,
+            "width": 69,
+            "height": 46
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 497,
+              "y": 409,
+              "width": 17,
+              "height": 46
+            },
+            {
+              "char": "元",
+              "x": 514,
+              "y": 409,
+              "width": 17,
+              "height": 46
+            },
+            {
+              "char": "／",
+              "x": 532,
+              "y": 409,
+              "width": 17,
+              "height": 46
+            },
+            {
+              "char": "碗",
+              "x": 549,
+              "y": 409,
+              "width": 17,
+              "height": 46
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.9038,
+          "bbox": {
+            "x": 306,
+            "y": 391,
+            "width": 94,
+            "height": 61
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 306,
+              "y": 391,
+              "width": 24,
+              "height": 61
+            },
+            {
+              "char": "元",
+              "x": 330,
+              "y": 391,
+              "width": 24,
+              "height": 61
+            },
+            {
+              "char": "／",
+              "x": 353,
+              "y": 391,
+              "width": 24,
+              "height": 61
+            },
+            {
+              "char": "碗",
+              "x": 376,
+              "y": 391,
+              "width": 24,
+              "height": 61
+            }
+          ]
+        },
+        {
+          "text": "5元/碗",
+          "confidence": 0.9651,
+          "bbox": {
+            "x": 35,
+            "y": 362,
+            "width": 135,
+            "height": 77
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 35,
+              "y": 362,
+              "width": 34,
+              "height": 77
+            },
+            {
+              "char": "元",
+              "x": 69,
+              "y": 362,
+              "width": 34,
+              "height": 77
+            },
+            {
+              "char": "/",
+              "x": 102,
+              "y": 362,
+              "width": 34,
+              "height": 77
+            },
+            {
+              "char": "碗",
+              "x": 136,
+              "y": 362,
+              "width": 34,
+              "height": 77
+            }
+          ]
+        },
+        {
+          "text": "豆浆",
+          "confidence": 0.991,
+          "bbox": {
+            "x": 436,
+            "y": 251,
+            "width": 71,
+            "height": 43
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 436,
+              "y": 251,
+              "width": 36,
+              "height": 43
+            },
+            {
+              "char": "浆",
+              "x": 472,
+              "y": 251,
+              "width": 36,
+              "height": 43
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9691,
+          "bbox": {
+            "x": 76,
+            "y": 157,
+            "width": 562,
+            "height": 70
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 76,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "民",
+              "x": 132,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "工",
+              "x": 188,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "大",
+              "x": 245,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "哥",
+              "x": 301,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "写",
+              "x": 357,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "器",
+              "x": 526,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            },
+            {
+              "char": "了",
+              "x": 582,
+              "y": 157,
+              "width": 56,
+              "height": 70
+            }
+          ]
+        },
+        {
+          "text": "活脑",
+          "confidence": 0.5684,
+          "bbox": {
+            "x": 0,
+            "y": 145,
+            "width": 52,
+            "height": 61
+          },
+          "chars": [
+            {
+              "char": "活",
+              "x": 0,
+              "y": 145,
+              "width": 26,
+              "height": 61
+            },
+            {
+              "char": "脑",
+              "x": 26,
+              "y": 145,
+              "width": 26,
+              "height": 61
+            }
+          ]
+        },
+        {
+          "text": "绿花黑饼",
+          "confidence": 0.5243,
+          "bbox": {
+            "x": 601,
+            "y": 0,
+            "width": 99,
+            "height": 71
+          },
+          "chars": [
+            {
+              "char": "绿",
+              "x": 601,
+              "y": 0,
+              "width": 25,
+              "height": 71
+            },
+            {
+              "char": "花",
+              "x": 626,
+              "y": 0,
+              "width": 25,
+              "height": 71
+            },
+            {
+              "char": "黑",
+              "x": 650,
+              "y": 0,
+              "width": 25,
+              "height": 71
+            },
+            {
+              "char": "饼",
+              "x": 675,
+              "y": 0,
+              "width": 25,
+              "height": 71
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5300,
+      "end_ms": 5400,
+      "detections": [
+        {
+          "text": "PORT",
+          "confidence": 0.773,
+          "bbox": {
+            "x": 449,
+            "y": 838,
+            "width": 23,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "P",
+              "x": 449,
+              "y": 838,
+              "width": 6,
+              "height": 21
+            },
+            {
+              "char": "O",
+              "x": 455,
+              "y": 838,
+              "width": 6,
+              "height": 21
+            },
+            {
+              "char": "R",
+              "x": 460,
+              "y": 838,
+              "width": 6,
+              "height": 21
+            },
+            {
+              "char": "T",
+              "x": 466,
+              "y": 838,
+              "width": 6,
+              "height": 21
+            }
+          ]
+        },
+        {
+          "text": "1.5元／个",
+          "confidence": 0.935,
+          "bbox": {
+            "x": 626,
+            "y": 416,
+            "width": 75,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "1",
+              "x": 626,
+              "y": 416,
+              "width": 12,
+              "height": 45
+            },
+            {
+              "char": ".",
+              "x": 638,
+              "y": 416,
+              "width": 12,
+              "height": 45
+            },
+            {
+              "char": "5",
+              "x": 651,
+              "y": 416,
+              "width": 12,
+              "height": 45
+            },
+            {
+              "char": "元",
+              "x": 664,
+              "y": 416,
+              "width": 12,
+              "height": 45
+            },
+            {
+              "char": "／",
+              "x": 676,
+              "y": 416,
+              "width": 12,
+              "height": 45
+            },
+            {
+              "char": "个",
+              "x": 688,
+              "y": 416,
+              "width": 12,
+              "height": 45
+            }
+          ]
+        },
+        {
+          "text": "3元/碗",
+          "confidence": 0.8948,
+          "bbox": {
+            "x": 502,
+            "y": 412,
+            "width": 70,
+            "height": 46
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 502,
+              "y": 412,
+              "width": 18,
+              "height": 46
+            },
+            {
+              "char": "元",
+              "x": 520,
+              "y": 412,
+              "width": 18,
+              "height": 46
+            },
+            {
+              "char": "/",
+              "x": 537,
+              "y": 412,
+              "width": 18,
+              "height": 46
+            },
+            {
+              "char": "碗",
+              "x": 554,
+              "y": 412,
+              "width": 18,
+              "height": 46
+            }
+          ]
+        },
+        {
+          "text": "3元／碗",
+          "confidence": 0.9194,
+          "bbox": {
+            "x": 313,
+            "y": 395,
+            "width": 94,
+            "height": 61
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 313,
+              "y": 395,
+              "width": 24,
+              "height": 61
+            },
+            {
+              "char": "元",
+              "x": 336,
+              "y": 395,
+              "width": 24,
+              "height": 61
+            },
+            {
+              "char": "／",
+              "x": 360,
+              "y": 395,
+              "width": 24,
+              "height": 61
+            },
+            {
+              "char": "碗",
+              "x": 384,
+              "y": 395,
+              "width": 24,
+              "height": 61
+            }
+          ]
+        },
+        {
+          "text": "5元/碗",
+          "confidence": 0.9009,
+          "bbox": {
+            "x": 41,
+            "y": 367,
+            "width": 137,
+            "height": 80
+          },
+          "chars": [
+            {
+              "char": "5",
+              "x": 41,
+              "y": 367,
+              "width": 34,
+              "height": 80
+            },
+            {
+              "char": "元",
+              "x": 75,
+              "y": 367,
+              "width": 34,
+              "height": 80
+            },
+            {
+              "char": "/",
+              "x": 110,
+              "y": 367,
+              "width": 34,
+              "height": 80
+            },
+            {
+              "char": "碗",
+              "x": 144,
+              "y": 367,
+              "width": 34,
+              "height": 80
+            }
+          ]
+        },
+        {
+          "text": "豆永",
+          "confidence": 0.8275,
+          "bbox": {
+            "x": 447,
+            "y": 259,
+            "width": 62,
+            "height": 36
+          },
+          "chars": [
+            {
+              "char": "豆",
+              "x": 447,
+              "y": 259,
+              "width": 31,
+              "height": 36
+            },
+            {
+              "char": "永",
+              "x": 478,
+              "y": 259,
+              "width": 31,
+              "height": 36
+            }
+          ]
+        },
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9816,
+          "bbox": {
+            "x": 78,
+            "y": 159,
+            "width": 559,
+            "height": 65
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 78,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "民",
+              "x": 134,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "工",
+              "x": 190,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "大",
+              "x": 246,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "哥",
+              "x": 302,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "写",
+              "x": 358,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "器",
+              "x": 525,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "了",
+              "x": 581,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            }
+          ]
+        },
+        {
+          "text": "绿花酒饼",
+          "confidence": 0.5024,
+          "bbox": {
+            "x": 612,
+            "y": 0,
+            "width": 89,
+            "height": 65
+          },
+          "chars": [
+            {
+              "char": "绿",
+              "x": 612,
+              "y": 0,
+              "width": 22,
+              "height": 65
+            },
+            {
+              "char": "花",
+              "x": 634,
+              "y": 0,
+              "width": 22,
+              "height": 65
+            },
+            {
+              "char": "酒",
+              "x": 656,
+              "y": 0,
+              "width": 22,
+              "height": 65
+            },
+            {
+              "char": "饼",
+              "x": 679,
+              "y": 0,
+              "width": 22,
+              "height": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5400,
+      "end_ms": 5600,
+      "detections": [
+        {
+          "text": "农民工大哥写作文器了",
+          "confidence": 0.9791,
+          "bbox": {
+            "x": 78,
+            "y": 158,
+            "width": 559,
+            "height": 65
+          },
+          "chars": [
+            {
+              "char": "农",
+              "x": 78,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "民",
+              "x": 134,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "工",
+              "x": 190,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "大",
+              "x": 246,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "哥",
+              "x": 302,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "写",
+              "x": 358,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "作",
+              "x": 413,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "文",
+              "x": 469,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "器",
+              "x": 525,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "了",
+              "x": 581,
+              "y": 158,
+              "width": 56,
+              "height": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5600,
+      "end_ms": 5800,
+      "detections": [
+        {
+          "text": "路文明行",
+          "confidence": 0.994,
+          "bbox": {
+            "x": 451,
+            "y": 467,
+            "width": 63,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "路",
+              "x": 451,
+              "y": 467,
+              "width": 16,
+              "height": 22
+            },
+            {
+              "char": "文",
+              "x": 467,
+              "y": 467,
+              "width": 16,
+              "height": 22
+            },
+            {
+              "char": "明",
+              "x": 482,
+              "y": 467,
+              "width": 16,
+              "height": 22
+            },
+            {
+              "char": "行",
+              "x": 498,
+              "y": 467,
+              "width": 16,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "胡乘车",
+          "confidence": 0.7869,
+          "bbox": {
+            "x": 448,
+            "y": 390,
+            "width": 54,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "胡",
+              "x": 448,
+              "y": 390,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "乘",
+              "x": 466,
+              "y": 390,
+              "width": 18,
+              "height": 28
+            },
+            {
+              "char": "车",
+              "x": 484,
+              "y": 390,
+              "width": 18,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "走服",
+          "confidence": 0.714,
+          "bbox": {
+            "x": 496,
+            "y": 365,
+            "width": 34,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "走",
+              "x": 496,
+              "y": 365,
+              "width": 17,
+              "height": 22
+            },
+            {
+              "char": "服",
+              "x": 513,
+              "y": 365,
+              "width": 17,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9961,
+          "bbox": {
+            "x": 76,
+            "y": 159,
+            "width": 566,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 133,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 246,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 359,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 416,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 472,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 529,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 585,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5800,
+      "end_ms": 6000,
+      "detections": [
+        {
+          "text": "哎",
+          "confidence": 0.9999,
+          "bbox": {
+            "x": 324,
+            "y": 749,
+            "width": 74,
+            "height": 78
+          },
+          "chars": [
+            {
+              "char": "哎",
+              "x": 324,
+              "y": 749,
+              "width": 74,
+              "height": 78
+            }
+          ]
+        },
+        {
+          "text": "路",
+          "confidence": 0.9987,
+          "bbox": {
+            "x": 458,
+            "y": 467,
+            "width": 21,
+            "height": 17
+          },
+          "chars": [
+            {
+              "char": "路",
+              "x": 458,
+              "y": 467,
+              "width": 21,
+              "height": 17
+            }
+          ]
+        },
+        {
+          "text": "文明行车",
+          "confidence": 0.9975,
+          "bbox": {
+            "x": 470,
+            "y": 464,
+            "width": 59,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 470,
+              "y": 464,
+              "width": 15,
+              "height": 22
+            },
+            {
+              "char": "明",
+              "x": 485,
+              "y": 464,
+              "width": 15,
+              "height": 22
+            },
+            {
+              "char": "行",
+              "x": 500,
+              "y": 464,
+              "width": 15,
+              "height": 22
+            },
+            {
+              "char": "车",
+              "x": 514,
+              "y": 464,
+              "width": 15,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "明乘车",
+          "confidence": 0.9672,
+          "bbox": {
+            "x": 457,
+            "y": 389,
+            "width": 50,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "明",
+              "x": 457,
+              "y": 389,
+              "width": 17,
+              "height": 23
+            },
+            {
+              "char": "乘",
+              "x": 474,
+              "y": 389,
+              "width": 17,
+              "height": 23
+            },
+            {
+              "char": "车",
+              "x": 490,
+              "y": 389,
+              "width": 17,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "明走路",
+          "confidence": 0.8497,
+          "bbox": {
+            "x": 499,
+            "y": 361,
+            "width": 40,
+            "height": 23
+          },
+          "chars": [
+            {
+              "char": "明",
+              "x": 499,
+              "y": 361,
+              "width": 13,
+              "height": 23
+            },
+            {
+              "char": "走",
+              "x": 512,
+              "y": 361,
+              "width": 13,
+              "height": 23
+            },
+            {
+              "char": "路",
+              "x": 526,
+              "y": 361,
+              "width": 13,
+              "height": 23
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.996,
+          "bbox": {
+            "x": 76,
+            "y": 159,
+            "width": 566,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 133,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 246,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 359,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 416,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 472,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 529,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 585,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6000,
+      "end_ms": 7000,
+      "detections": [
+        {
+          "text": "大哥你好",
+          "confidence": 0.9984,
+          "bbox": {
+            "x": 228,
+            "y": 741,
+            "width": 266,
+            "height": 97
+          },
+          "chars": [
+            {
+              "char": "大",
+              "x": 228,
+              "y": 741,
+              "width": 66,
+              "height": 97
+            },
+            {
+              "char": "哥",
+              "x": 294,
+              "y": 741,
+              "width": 66,
+              "height": 97
+            },
+            {
+              "char": "你",
+              "x": 361,
+              "y": 741,
+              "width": 66,
+              "height": 97
+            },
+            {
+              "char": "好",
+              "x": 428,
+              "y": 741,
+              "width": 66,
+              "height": 97
+            }
+          ]
+        },
+        {
+          "text": "33公共汽车",
+          "confidence": 0.9933,
+          "bbox": {
+            "x": 376,
+            "y": 575,
+            "width": 63,
+            "height": 11
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 376,
+              "y": 575,
+              "width": 10,
+              "height": 11
+            },
+            {
+              "char": "3",
+              "x": 386,
+              "y": 575,
+              "width": 10,
+              "height": 11
+            },
+            {
+              "char": "公",
+              "x": 397,
+              "y": 575,
+              "width": 10,
+              "height": 11
+            },
+            {
+              "char": "共",
+              "x": 408,
+              "y": 575,
+              "width": 10,
+              "height": 11
+            },
+            {
+              "char": "汽",
+              "x": 418,
+              "y": 575,
+              "width": 10,
+              "height": 11
+            },
+            {
+              "char": "车",
+              "x": 428,
+              "y": 575,
+              "width": 10,
+              "height": 11
+            }
+          ]
+        },
+        {
+          "text": "公共",
+          "confidence": 0.9877,
+          "bbox": {
+            "x": 385,
+            "y": 516,
+            "width": 35,
+            "height": 11
+          },
+          "chars": [
+            {
+              "char": "公",
+              "x": 385,
+              "y": 516,
+              "width": 18,
+              "height": 11
+            },
+            {
+              "char": "共",
+              "x": 402,
+              "y": 516,
+              "width": 18,
+              "height": 11
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.9844,
+          "bbox": {
+            "x": 368,
+            "y": 462,
+            "width": 60,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 368,
+              "y": 462,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 383,
+              "y": 462,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "走",
+              "x": 398,
+              "y": 462,
+              "width": 15,
+              "height": 28
+            },
+            {
+              "char": "路",
+              "x": 413,
+              "y": 462,
+              "width": 15,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "文明乘车",
+          "confidence": 0.9345,
+          "bbox": {
+            "x": 394,
+            "y": 377,
+            "width": 68,
+            "height": 32
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 394,
+              "y": 377,
+              "width": 17,
+              "height": 32
+            },
+            {
+              "char": "明",
+              "x": 411,
+              "y": 377,
+              "width": 17,
+              "height": 32
+            },
+            {
+              "char": "乘",
+              "x": 428,
+              "y": 377,
+              "width": 17,
+              "height": 32
+            },
+            {
+              "char": "车",
+              "x": 445,
+              "y": 377,
+              "width": 17,
+              "height": 32
+            }
+          ]
+        },
+        {
+          "text": "#明行车",
+          "confidence": 0.7705,
+          "bbox": {
+            "x": 365,
+            "y": 350,
+            "width": 64,
+            "height": 32
+          },
+          "chars": [
+            {
+              "char": "#",
+              "x": 365,
+              "y": 350,
+              "width": 16,
+              "height": 32
+            },
+            {
+              "char": "明",
+              "x": 381,
+              "y": 350,
+              "width": 16,
+              "height": 32
+            },
+            {
+              "char": "行",
+              "x": 397,
+              "y": 350,
+              "width": 16,
+              "height": 32
+            },
+            {
+              "char": "车",
+              "x": 413,
+              "y": 350,
+              "width": 16,
+              "height": 32
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.9966,
+          "bbox": {
+            "x": 429,
+            "y": 348,
+            "width": 66,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 429,
+              "y": 348,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 446,
+              "y": 348,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "走",
+              "x": 462,
+              "y": 348,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "路",
+              "x": 478,
+              "y": 348,
+              "width": 16,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9957,
+          "bbox": {
+            "x": 76,
+            "y": 159,
+            "width": 566,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 133,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 246,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 359,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 416,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 472,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 529,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 585,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7000,
+      "end_ms": 7300,
+      "detections": [
+        {
+          "text": "就是",
+          "confidence": 0.9983,
+          "bbox": {
+            "x": 294,
+            "y": 747,
+            "width": 134,
+            "height": 82
+          },
+          "chars": [
+            {
+              "char": "就",
+              "x": 294,
+              "y": 747,
+              "width": 67,
+              "height": 82
+            },
+            {
+              "char": "是",
+              "x": 361,
+              "y": 747,
+              "width": 67,
+              "height": 82
+            }
+          ]
+        },
+        {
+          "text": "233公共汽车",
+          "confidence": 0.9717,
+          "bbox": {
+            "x": 372,
+            "y": 575,
+            "width": 64,
+            "height": 14
+          },
+          "chars": [
+            {
+              "char": "2",
+              "x": 372,
+              "y": 575,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "3",
+              "x": 381,
+              "y": 575,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "3",
+              "x": 390,
+              "y": 575,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "公",
+              "x": 399,
+              "y": 575,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "共",
+              "x": 409,
+              "y": 575,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "汽",
+              "x": 418,
+              "y": 575,
+              "width": 9,
+              "height": 14
+            },
+            {
+              "char": "车",
+              "x": 427,
+              "y": 575,
+              "width": 9,
+              "height": 14
+            }
+          ]
+        },
+        {
+          "text": "42公共",
+          "confidence": 0.909,
+          "bbox": {
+            "x": 370,
+            "y": 516,
+            "width": 53,
+            "height": 14
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 370,
+              "y": 516,
+              "width": 13,
+              "height": 14
+            },
+            {
+              "char": "2",
+              "x": 383,
+              "y": 516,
+              "width": 13,
+              "height": 14
+            },
+            {
+              "char": "公",
+              "x": 396,
+              "y": 516,
+              "width": 13,
+              "height": 14
+            },
+            {
+              "char": "共",
+              "x": 410,
+              "y": 516,
+              "width": 13,
+              "height": 14
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.9937,
+          "bbox": {
+            "x": 363,
+            "y": 459,
+            "width": 64,
+            "height": 34
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 363,
+              "y": 459,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "明",
+              "x": 379,
+              "y": 459,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "走",
+              "x": 395,
+              "y": 459,
+              "width": 16,
+              "height": 34
+            },
+            {
+              "char": "路",
+              "x": 411,
+              "y": 459,
+              "width": 16,
+              "height": 34
+            }
+          ]
+        },
+        {
+          "text": "文明乘",
+          "confidence": 0.9519,
+          "bbox": {
+            "x": 392,
+            "y": 378,
+            "width": 53,
+            "height": 29
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 392,
+              "y": 378,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "明",
+              "x": 410,
+              "y": 378,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "乘",
+              "x": 427,
+              "y": 378,
+              "width": 18,
+              "height": 29
+            }
+          ]
+        },
+        {
+          "text": "文明行车",
+          "confidence": 0.9315,
+          "bbox": {
+            "x": 362,
+            "y": 348,
+            "width": 64,
+            "height": 31
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 362,
+              "y": 348,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "明",
+              "x": 378,
+              "y": 348,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "行",
+              "x": 394,
+              "y": 348,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "车",
+              "x": 410,
+              "y": 348,
+              "width": 16,
+              "height": 31
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.991,
+          "bbox": {
+            "x": 427,
+            "y": 345,
+            "width": 69,
+            "height": 29
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 427,
+              "y": 345,
+              "width": 17,
+              "height": 29
+            },
+            {
+              "char": "明",
+              "x": 444,
+              "y": 345,
+              "width": 17,
+              "height": 29
+            },
+            {
+              "char": "走",
+              "x": 462,
+              "y": 345,
+              "width": 17,
+              "height": 29
+            },
+            {
+              "char": "路",
+              "x": 479,
+              "y": 345,
+              "width": 17,
+              "height": 29
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9958,
+          "bbox": {
+            "x": 76,
+            "y": 159,
+            "width": 566,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 133,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 246,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 359,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 416,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 472,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 529,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 585,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7300,
+      "end_ms": 8200,
+      "detections": [
+        {
+          "text": "可以挑战一下",
+          "confidence": 0.9963,
+          "bbox": {
+            "x": 178,
+            "y": 749,
+            "width": 363,
+            "height": 83
+          },
+          "chars": [
+            {
+              "char": "可",
+              "x": 178,
+              "y": 749,
+              "width": 60,
+              "height": 83
+            },
+            {
+              "char": "以",
+              "x": 238,
+              "y": 749,
+              "width": 60,
+              "height": 83
+            },
+            {
+              "char": "挑",
+              "x": 299,
+              "y": 749,
+              "width": 60,
+              "height": 83
+            },
+            {
+              "char": "战",
+              "x": 360,
+              "y": 749,
+              "width": 60,
+              "height": 83
+            },
+            {
+              "char": "一",
+              "x": 420,
+              "y": 749,
+              "width": 60,
+              "height": 83
+            },
+            {
+              "char": "下",
+              "x": 480,
+              "y": 749,
+              "width": 60,
+              "height": 83
+            }
+          ]
+        },
+        {
+          "text": "公共汽车楼子",
+          "confidence": 0.8142,
+          "bbox": {
+            "x": 408,
+            "y": 575,
+            "width": 92,
+            "height": 13
+          },
+          "chars": [
+            {
+              "char": "公",
+              "x": 408,
+              "y": 575,
+              "width": 15,
+              "height": 13
+            },
+            {
+              "char": "共",
+              "x": 423,
+              "y": 575,
+              "width": 15,
+              "height": 13
+            },
+            {
+              "char": "汽",
+              "x": 439,
+              "y": 575,
+              "width": 15,
+              "height": 13
+            },
+            {
+              "char": "车",
+              "x": 454,
+              "y": 575,
+              "width": 15,
+              "height": 13
+            },
+            {
+              "char": "楼",
+              "x": 469,
+              "y": 575,
+              "width": 15,
+              "height": 13
+            },
+            {
+              "char": "子",
+              "x": 485,
+              "y": 575,
+              "width": 15,
+              "height": 13
+            }
+          ]
+        },
+        {
+          "text": "共汽",
+          "confidence": 0.9954,
+          "bbox": {
+            "x": 415,
+            "y": 514,
+            "width": 34,
+            "height": 10
+          },
+          "chars": [
+            {
+              "char": "共",
+              "x": 415,
+              "y": 514,
+              "width": 17,
+              "height": 10
+            },
+            {
+              "char": "汽",
+              "x": 432,
+              "y": 514,
+              "width": 17,
+              "height": 10
+            }
+          ]
+        },
+        {
+          "text": "走路 文明行车",
+          "confidence": 0.9346,
+          "bbox": {
+            "x": 401,
+            "y": 454,
+            "width": 114,
+            "height": 31
+          },
+          "chars": [
+            {
+              "char": "走",
+              "x": 401,
+              "y": 454,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "路",
+              "x": 417,
+              "y": 454,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": " ",
+              "x": 434,
+              "y": 454,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "文",
+              "x": 450,
+              "y": 454,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "明",
+              "x": 466,
+              "y": 454,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "行",
+              "x": 482,
+              "y": 454,
+              "width": 16,
+              "height": 31
+            },
+            {
+              "char": "车",
+              "x": 499,
+              "y": 454,
+              "width": 16,
+              "height": 31
+            }
+          ]
+        },
+        {
+          "text": "88451540",
+          "confidence": 0.9759,
+          "bbox": {
+            "x": 464,
+            "y": 414,
+            "width": 47,
+            "height": 11
+          },
+          "chars": [
+            {
+              "char": "8",
+              "x": 464,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            },
+            {
+              "char": "8",
+              "x": 470,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            },
+            {
+              "char": "4",
+              "x": 476,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            },
+            {
+              "char": "5",
+              "x": 482,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            },
+            {
+              "char": "1",
+              "x": 488,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            },
+            {
+              "char": "5",
+              "x": 493,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            },
+            {
+              "char": "4",
+              "x": 499,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            },
+            {
+              "char": "0",
+              "x": 505,
+              "y": 414,
+              "width": 6,
+              "height": 11
+            }
+          ]
+        },
+        {
+          "text": "965315",
+          "confidence": 0.9823,
+          "bbox": {
+            "x": 463,
+            "y": 400,
+            "width": 41,
+            "height": 13
+          },
+          "chars": [
+            {
+              "char": "9",
+              "x": 463,
+              "y": 400,
+              "width": 7,
+              "height": 13
+            },
+            {
+              "char": "6",
+              "x": 470,
+              "y": 400,
+              "width": 7,
+              "height": 13
+            },
+            {
+              "char": "5",
+              "x": 477,
+              "y": 400,
+              "width": 7,
+              "height": 13
+            },
+            {
+              "char": "3",
+              "x": 484,
+              "y": 400,
+              "width": 7,
+              "height": 13
+            },
+            {
+              "char": "1",
+              "x": 490,
+              "y": 400,
+              "width": 7,
+              "height": 13
+            },
+            {
+              "char": "5",
+              "x": 497,
+              "y": 400,
+              "width": 7,
+              "height": 13
+            }
+          ]
+        },
+        {
+          "text": "文明乘车",
+          "confidence": 0.9903,
+          "bbox": {
+            "x": 413,
+            "y": 368,
+            "width": 72,
+            "height": 29
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 413,
+              "y": 368,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "明",
+              "x": 431,
+              "y": 368,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "乘",
+              "x": 449,
+              "y": 368,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "车",
+              "x": 467,
+              "y": 368,
+              "width": 18,
+              "height": 29
+            }
+          ]
+        },
+        {
+          "text": "月行车",
+          "confidence": 0.8227,
+          "bbox": {
+            "x": 400,
+            "y": 339,
+            "width": 49,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "月",
+              "x": 400,
+              "y": 339,
+              "width": 16,
+              "height": 26
+            },
+            {
+              "char": "行",
+              "x": 416,
+              "y": 339,
+              "width": 16,
+              "height": 26
+            },
+            {
+              "char": "车",
+              "x": 433,
+              "y": 339,
+              "width": 16,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.9956,
+          "bbox": {
+            "x": 445,
+            "y": 336,
+            "width": 75,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 445,
+              "y": 336,
+              "width": 19,
+              "height": 26
+            },
+            {
+              "char": "明",
+              "x": 464,
+              "y": 336,
+              "width": 19,
+              "height": 26
+            },
+            {
+              "char": "走",
+              "x": 482,
+              "y": 336,
+              "width": 19,
+              "height": 26
+            },
+            {
+              "char": "路",
+              "x": 501,
+              "y": 336,
+              "width": 19,
+              "height": 26
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9959,
+          "bbox": {
+            "x": 76,
+            "y": 159,
+            "width": 566,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 133,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 246,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 359,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 416,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 472,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 529,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 585,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8200,
+      "end_ms": 9000,
+      "detections": [
+        {
+          "text": "写一篇作文吗",
+          "confidence": 0.9766,
+          "bbox": {
+            "x": 176,
+            "y": 786,
+            "width": 371,
+            "height": 84
+          },
+          "chars": [
+            {
+              "char": "写",
+              "x": 176,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "一",
+              "x": 238,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "篇",
+              "x": 300,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "作",
+              "x": 362,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "文",
+              "x": 423,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "吗",
+              "x": 485,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            }
+          ]
+        },
+        {
+          "text": "一个红包",
+          "confidence": 0.9988,
+          "bbox": {
+            "x": 102,
+            "y": 711,
+            "width": 260,
+            "height": 85
+          },
+          "chars": [
+            {
+              "char": "一",
+              "x": 102,
+              "y": 711,
+              "width": 65,
+              "height": 85
+            },
+            {
+              "char": "个",
+              "x": 167,
+              "y": 711,
+              "width": 65,
+              "height": 85
+            },
+            {
+              "char": "红",
+              "x": 232,
+              "y": 711,
+              "width": 65,
+              "height": 85
+            },
+            {
+              "char": "包",
+              "x": 297,
+              "y": 711,
+              "width": 65,
+              "height": 85
+            }
+          ]
+        },
+        {
+          "text": "（稿费）",
+          "confidence": 0.9562,
+          "bbox": {
+            "x": 370,
+            "y": 708,
+            "width": 215,
+            "height": 88
+          },
+          "chars": [
+            {
+              "char": "（",
+              "x": 370,
+              "y": 708,
+              "width": 54,
+              "height": 88
+            },
+            {
+              "char": "稿",
+              "x": 424,
+              "y": 708,
+              "width": 54,
+              "height": 88
+            },
+            {
+              "char": "费",
+              "x": 478,
+              "y": 708,
+              "width": 54,
+              "height": 88
+            },
+            {
+              "char": "）",
+              "x": 531,
+              "y": 708,
+              "width": 54,
+              "height": 88
+            }
+          ]
+        },
+        {
+          "text": "3公共汽车",
+          "confidence": 0.9464,
+          "bbox": {
+            "x": 386,
+            "y": 580,
+            "width": 78,
+            "height": 12
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 386,
+              "y": 580,
+              "width": 16,
+              "height": 12
+            },
+            {
+              "char": "公",
+              "x": 402,
+              "y": 580,
+              "width": 16,
+              "height": 12
+            },
+            {
+              "char": "共",
+              "x": 417,
+              "y": 580,
+              "width": 16,
+              "height": 12
+            },
+            {
+              "char": "汽",
+              "x": 433,
+              "y": 580,
+              "width": 16,
+              "height": 12
+            },
+            {
+              "char": "车",
+              "x": 448,
+              "y": 580,
+              "width": 16,
+              "height": 12
+            }
+          ]
+        },
+        {
+          "text": "公共汽车租",
+          "confidence": 0.835,
+          "bbox": {
+            "x": 383,
+            "y": 515,
+            "width": 81,
+            "height": 17
+          },
+          "chars": [
+            {
+              "char": "公",
+              "x": 383,
+              "y": 515,
+              "width": 16,
+              "height": 17
+            },
+            {
+              "char": "共",
+              "x": 399,
+              "y": 515,
+              "width": 16,
+              "height": 17
+            },
+            {
+              "char": "汽",
+              "x": 415,
+              "y": 515,
+              "width": 16,
+              "height": 17
+            },
+            {
+              "char": "车",
+              "x": 432,
+              "y": 515,
+              "width": 16,
+              "height": 17
+            },
+            {
+              "char": "租",
+              "x": 448,
+              "y": 515,
+              "width": 16,
+              "height": 17
+            }
+          ]
+        },
+        {
+          "text": "明走路 文明行车",
+          "confidence": 0.9336,
+          "bbox": {
+            "x": 378,
+            "y": 460,
+            "width": 114,
+            "height": 31
+          },
+          "chars": [
+            {
+              "char": "明",
+              "x": 378,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            },
+            {
+              "char": "走",
+              "x": 392,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            },
+            {
+              "char": "路",
+              "x": 406,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            },
+            {
+              "char": " ",
+              "x": 421,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            },
+            {
+              "char": "文",
+              "x": 435,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            },
+            {
+              "char": "明",
+              "x": 449,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            },
+            {
+              "char": "行",
+              "x": 464,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            },
+            {
+              "char": "车",
+              "x": 478,
+              "y": 460,
+              "width": 14,
+              "height": 31
+            }
+          ]
+        },
+        {
+          "text": "文明乘车",
+          "confidence": 0.9806,
+          "bbox": {
+            "x": 395,
+            "y": 374,
+            "width": 71,
+            "height": 31
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 395,
+              "y": 374,
+              "width": 18,
+              "height": 31
+            },
+            {
+              "char": "明",
+              "x": 413,
+              "y": 374,
+              "width": 18,
+              "height": 31
+            },
+            {
+              "char": "乘",
+              "x": 430,
+              "y": 374,
+              "width": 18,
+              "height": 31
+            },
+            {
+              "char": "车",
+              "x": 448,
+              "y": 374,
+              "width": 18,
+              "height": 31
+            }
+          ]
+        },
+        {
+          "text": "明行车文明走路",
+          "confidence": 0.9948,
+          "bbox": {
+            "x": 375,
+            "y": 341,
+            "width": 127,
+            "height": 33
+          },
+          "chars": [
+            {
+              "char": "明",
+              "x": 375,
+              "y": 341,
+              "width": 18,
+              "height": 33
+            },
+            {
+              "char": "行",
+              "x": 393,
+              "y": 341,
+              "width": 18,
+              "height": 33
+            },
+            {
+              "char": "车",
+              "x": 411,
+              "y": 341,
+              "width": 18,
+              "height": 33
+            },
+            {
+              "char": "文",
+              "x": 429,
+              "y": 341,
+              "width": 18,
+              "height": 33
+            },
+            {
+              "char": "明",
+              "x": 448,
+              "y": 341,
+              "width": 18,
+              "height": 33
+            },
+            {
+              "char": "走",
+              "x": 466,
+              "y": 341,
+              "width": 18,
+              "height": 33
+            },
+            {
+              "char": "路",
+              "x": 484,
+              "y": 341,
+              "width": 18,
+              "height": 33
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.996,
+          "bbox": {
+            "x": 76,
+            "y": 159,
+            "width": 566,
+            "height": 68
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 76,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "晨",
+              "x": 133,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "劳",
+              "x": 189,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "务",
+              "x": 246,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "场",
+              "x": 359,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "偶",
+              "x": 416,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "遇",
+              "x": 472,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "大",
+              "x": 529,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            },
+            {
+              "char": "哥",
+              "x": 585,
+              "y": 159,
+              "width": 57,
+              "height": 68
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9000,
+      "end_ms": 10000,
+      "detections": [
+        {
+          "text": "写一篇作文吗",
+          "confidence": 0.9979,
+          "bbox": {
+            "x": 177,
+            "y": 786,
+            "width": 369,
+            "height": 84
+          },
+          "chars": [
+            {
+              "char": "写",
+              "x": 177,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "一",
+              "x": 238,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "篇",
+              "x": 300,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "作",
+              "x": 362,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "文",
+              "x": 423,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            },
+            {
+              "char": "吗",
+              "x": 484,
+              "y": 786,
+              "width": 62,
+              "height": 84
+            }
+          ]
+        },
+        {
+          "text": "一个红包（稿费）",
+          "confidence": 0.9619,
+          "bbox": {
+            "x": 98,
+            "y": 705,
+            "width": 493,
+            "height": 95
+          },
+          "chars": [
+            {
+              "char": "一",
+              "x": 98,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            },
+            {
+              "char": "个",
+              "x": 160,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            },
+            {
+              "char": "红",
+              "x": 221,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            },
+            {
+              "char": "包",
+              "x": 283,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            },
+            {
+              "char": "（",
+              "x": 344,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            },
+            {
+              "char": "稿",
+              "x": 406,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            },
+            {
+              "char": "费",
+              "x": 468,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            },
+            {
+              "char": "）",
+              "x": 529,
+              "y": 705,
+              "width": 62,
+              "height": 95
+            }
+          ]
+        },
+        {
+          "text": "33公共汽车",
+          "confidence": 0.9873,
+          "bbox": {
+            "x": 365,
+            "y": 573,
+            "width": 103,
+            "height": 13
+          },
+          "chars": [
+            {
+              "char": "3",
+              "x": 365,
+              "y": 573,
+              "width": 17,
+              "height": 13
+            },
+            {
+              "char": "3",
+              "x": 382,
+              "y": 573,
+              "width": 17,
+              "height": 13
+            },
+            {
+              "char": "公",
+              "x": 399,
+              "y": 573,
+              "width": 17,
+              "height": 13
+            },
+            {
+              "char": "共",
+              "x": 416,
+              "y": 573,
+              "width": 17,
+              "height": 13
+            },
+            {
+              "char": "汽",
+              "x": 434,
+              "y": 573,
+              "width": 17,
+              "height": 13
+            },
+            {
+              "char": "车",
+              "x": 451,
+              "y": 573,
+              "width": 17,
+              "height": 13
+            }
+          ]
+        },
+        {
+          "text": "42公共汽车转",
+          "confidence": 0.8795,
+          "bbox": {
+            "x": 362,
+            "y": 510,
+            "width": 94,
+            "height": 18
+          },
+          "chars": [
+            {
+              "char": "4",
+              "x": 362,
+              "y": 510,
+              "width": 13,
+              "height": 18
+            },
+            {
+              "char": "2",
+              "x": 375,
+              "y": 510,
+              "width": 13,
+              "height": 18
+            },
+            {
+              "char": "公",
+              "x": 389,
+              "y": 510,
+              "width": 13,
+              "height": 18
+            },
+            {
+              "char": "共",
+              "x": 402,
+              "y": 510,
+              "width": 13,
+              "height": 18
+            },
+            {
+              "char": "汽",
+              "x": 416,
+              "y": 510,
+              "width": 13,
+              "height": 18
+            },
+            {
+              "char": "车",
+              "x": 429,
+              "y": 510,
+              "width": 13,
+              "height": 18
+            },
+            {
+              "char": "转",
+              "x": 443,
+              "y": 510,
+              "width": 13,
+              "height": 18
+            }
+          ]
+        },
+        {
+          "text": "文明走路 文明",
+          "confidence": 0.9238,
+          "bbox": {
+            "x": 360,
+            "y": 461,
+            "width": 105,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 360,
+              "y": 461,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "明",
+              "x": 375,
+              "y": 461,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "走",
+              "x": 390,
+              "y": 461,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "路",
+              "x": 405,
+              "y": 461,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": " ",
+              "x": 420,
+              "y": 461,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "文",
+              "x": 435,
+              "y": 461,
+              "width": 15,
+              "height": 25
+            },
+            {
+              "char": "明",
+              "x": 450,
+              "y": 461,
+              "width": 15,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "文明乘车",
+          "confidence": 0.9898,
+          "bbox": {
+            "x": 385,
+            "y": 375,
+            "width": 68,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 385,
+              "y": 375,
+              "width": 17,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 402,
+              "y": 375,
+              "width": 17,
+              "height": 28
+            },
+            {
+              "char": "乘",
+              "x": 419,
+              "y": 375,
+              "width": 17,
+              "height": 28
+            },
+            {
+              "char": "车",
+              "x": 436,
+              "y": 375,
+              "width": 17,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "文明行车",
+          "confidence": 0.9404,
+          "bbox": {
+            "x": 355,
+            "y": 346,
+            "width": 65,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 355,
+              "y": 346,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "明",
+              "x": 371,
+              "y": 346,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "行",
+              "x": 388,
+              "y": 346,
+              "width": 16,
+              "height": 28
+            },
+            {
+              "char": "车",
+              "x": 404,
+              "y": 346,
+              "width": 16,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "文明走路",
+          "confidence": 0.9945,
+          "bbox": {
+            "x": 416,
+            "y": 342,
+            "width": 73,
+            "height": 29
+          },
+          "chars": [
+            {
+              "char": "文",
+              "x": 416,
+              "y": 342,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "明",
+              "x": 434,
+              "y": 342,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "走",
+              "x": 452,
+              "y": 342,
+              "width": 18,
+              "height": 29
+            },
+            {
+              "char": "路",
+              "x": 471,
+              "y": 342,
+              "width": 18,
+              "height": 29
+            }
+          ]
+        },
+        {
+          "text": "清晨劳务市场偶遇大哥",
+          "confidence": 0.9947,
+          "bbox": {
+            "x": 77,
+            "y": 159,
+            "width": 563,
+            "height": 65
+          },
+          "chars": [
+            {
+              "char": "清",
+              "x": 77,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "晨",
+              "x": 133,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "劳",
+              "x": 190,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "务",
+              "x": 246,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "市",
+              "x": 302,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "场",
+              "x": 358,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "偶",
+              "x": 415,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "遇",
+              "x": 471,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "大",
+              "x": 527,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            },
+            {
+              "char": "哥",
+              "x": 584,
+              "y": 159,
+              "width": 56,
+              "height": 65
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

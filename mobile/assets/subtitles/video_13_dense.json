@@ -1,0 +1,1386 @@
+{
+  "video": "video_13",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 43126,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 1000,
+      "detections": [
+        {
+          "text": "I think this shot",
+          "confidence": 0.9736,
+          "bbox": {
+            "x": 235,
+            "y": 764,
+            "width": 251,
+            "height": 37
+          },
+          "chars": [
+            {
+              "char": "I",
+              "x": 235,
+              "y": 764,
+              "width": 15,
+              "height": 37
+            },
+            {
+              "char": "think",
+              "x": 265,
+              "y": 764,
+              "width": 74,
+              "height": 37
+            },
+            {
+              "char": "this",
+              "x": 353,
+              "y": 764,
+              "width": 59,
+              "height": 37
+            },
+            {
+              "char": "shot",
+              "x": 427,
+              "y": 764,
+              "width": 59,
+              "height": 37
+            }
+          ]
+        },
+        {
+          "text": "这个镜头就是",
+          "confidence": 0.9995,
+          "bbox": {
+            "x": 241,
+            "y": 706,
+            "width": 237,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "这",
+              "x": 241,
+              "y": 706,
+              "width": 40,
+              "height": 45
+            },
+            {
+              "char": "个",
+              "x": 280,
+              "y": 706,
+              "width": 40,
+              "height": 45
+            },
+            {
+              "char": "镜",
+              "x": 320,
+              "y": 706,
+              "width": 40,
+              "height": 45
+            },
+            {
+              "char": "头",
+              "x": 360,
+              "y": 706,
+              "width": 40,
+              "height": 45
+            },
+            {
+              "char": "就",
+              "x": 399,
+              "y": 706,
+              "width": 40,
+              "height": 45
+            },
+            {
+              "char": "是",
+              "x": 438,
+              "y": 706,
+              "width": 40,
+              "height": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1000,
+      "end_ms": 2200,
+      "detections": [
+        {
+          "text": "September27.20197:16p.m.",
+          "confidence": 0.8638,
+          "bbox": {
+            "x": 169,
+            "y": 875,
+            "width": 227,
+            "height": 25
+          },
+          "chars": [
+            {
+              "char": "September27.20197:16p.m.",
+              "x": 169,
+              "y": 875,
+              "width": 227,
+              "height": 25
+            }
+          ]
+        },
+        {
+          "text": "is a good example.",
+          "confidence": 0.995,
+          "bbox": {
+            "x": 206,
+            "y": 767,
+            "width": 303,
+            "height": 37
+          },
+          "chars": [
+            {
+              "char": "is",
+              "x": 206,
+              "y": 767,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "a",
+              "x": 256,
+              "y": 767,
+              "width": 17,
+              "height": 37
+            },
+            {
+              "char": "good",
+              "x": 290,
+              "y": 767,
+              "width": 67,
+              "height": 37
+            },
+            {
+              "char": "example.",
+              "x": 374,
+              "y": 767,
+              "width": 135,
+              "height": 37
+            }
+          ]
+        },
+        {
+          "text": "一个好的例子",
+          "confidence": 0.9994,
+          "bbox": {
+            "x": 241,
+            "y": 705,
+            "width": 235,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "一",
+              "x": 241,
+              "y": 705,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "个",
+              "x": 280,
+              "y": 705,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "好",
+              "x": 319,
+              "y": 705,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "的",
+              "x": 358,
+              "y": 705,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "例",
+              "x": 398,
+              "y": 705,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "子",
+              "x": 437,
+              "y": 705,
+              "width": 39,
+              "height": 47
+            }
+          ]
+        },
+        {
+          "text": "32号",
+          "confidence": 0.7392,
+          "bbox": {
+            "x": 471,
+            "y": 201,
+            "width": 59,
+            "height": 31
+          },
+          "chars": [
+            {
+              "char": "32",
+              "x": 471,
+              "y": 201,
+              "width": 39,
+              "height": 31
+            },
+            {
+              "char": "号",
+              "x": 510,
+              "y": 201,
+              "width": 20,
+              "height": 31
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2200,
+      "end_ms": 3600,
+      "detections": [
+        {
+          "text": "D0",
+          "confidence": 0.5627,
+          "bbox": {
+            "x": 176,
+            "y": 874,
+            "width": 141,
+            "height": 132
+          },
+          "chars": [
+            {
+              "char": "D0",
+              "x": 176,
+              "y": 874,
+              "width": 141,
+              "height": 132
+            }
+          ]
+        },
+        {
+          "text": "Street photography is",
+          "confidence": 0.9892,
+          "bbox": {
+            "x": 183,
+            "y": 765,
+            "width": 351,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "Street",
+              "x": 183,
+              "y": 765,
+              "width": 100,
+              "height": 40
+            },
+            {
+              "char": "photography",
+              "x": 300,
+              "y": 765,
+              "width": 184,
+              "height": 40
+            },
+            {
+              "char": "is",
+              "x": 501,
+              "y": 765,
+              "width": 33,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "街头拍摄就是",
+          "confidence": 0.9982,
+          "bbox": {
+            "x": 243,
+            "y": 708,
+            "width": 232,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "街",
+              "x": 243,
+              "y": 708,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "头",
+              "x": 282,
+              "y": 708,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "拍",
+              "x": 320,
+              "y": 708,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "摄",
+              "x": 359,
+              "y": 708,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "就",
+              "x": 398,
+              "y": 708,
+              "width": 39,
+              "height": 42
+            },
+            {
+              "char": "是",
+              "x": 436,
+              "y": 708,
+              "width": 39,
+              "height": 42
+            }
+          ]
+        },
+        {
+          "text": "好戏在启头",
+          "confidence": 0.8974,
+          "bbox": {
+            "x": 136,
+            "y": 578,
+            "width": 570,
+            "height": 111
+          },
+          "chars": [
+            {
+              "char": "好",
+              "x": 136,
+              "y": 578,
+              "width": 114,
+              "height": 111
+            },
+            {
+              "char": "戏",
+              "x": 250,
+              "y": 578,
+              "width": 114,
+              "height": 111
+            },
+            {
+              "char": "在",
+              "x": 364,
+              "y": 578,
+              "width": 114,
+              "height": 111
+            },
+            {
+              "char": "启",
+              "x": 478,
+              "y": 578,
+              "width": 114,
+              "height": 111
+            },
+            {
+              "char": "头",
+              "x": 592,
+              "y": 578,
+              "width": 114,
+              "height": 111
+            }
+          ]
+        },
+        {
+          "text": "Midori",
+          "confidence": 0.9501,
+          "bbox": {
+            "x": 275,
+            "y": 237,
+            "width": 111,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "Midori",
+              "x": 275,
+              "y": 237,
+              "width": 111,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 3600,
+      "end_ms": 3700,
+      "detections": [
+        {
+          "text": "好戏在后头！",
+          "confidence": 0.6389,
+          "bbox": {
+            "x": 132,
+            "y": 573,
+            "width": 578,
+            "height": 122
+          },
+          "chars": [
+            {
+              "char": "好",
+              "x": 132,
+              "y": 573,
+              "width": 96,
+              "height": 122
+            },
+            {
+              "char": "戏",
+              "x": 228,
+              "y": 573,
+              "width": 96,
+              "height": 122
+            },
+            {
+              "char": "在",
+              "x": 325,
+              "y": 573,
+              "width": 96,
+              "height": 122
+            },
+            {
+              "char": "后",
+              "x": 421,
+              "y": 573,
+              "width": 96,
+              "height": 122
+            },
+            {
+              "char": "头",
+              "x": 517,
+              "y": 573,
+              "width": 96,
+              "height": 122
+            },
+            {
+              "char": "！",
+              "x": 614,
+              "y": 573,
+              "width": 96,
+              "height": 122
+            }
+          ]
+        },
+        {
+          "text": "Midori",
+          "confidence": 0.9242,
+          "bbox": {
+            "x": 268,
+            "y": 231,
+            "width": 116,
+            "height": 52
+          },
+          "chars": [
+            {
+              "char": "Midori",
+              "x": 268,
+              "y": 231,
+              "width": 116,
+              "height": 52
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 3700,
+      "end_ms": 4300,
+      "detections": [
+        {
+          "text": "patience,",
+          "confidence": 0.9989,
+          "bbox": {
+            "x": 283,
+            "y": 770,
+            "width": 150,
+            "height": 34
+          },
+          "chars": [
+            {
+              "char": "patience,",
+              "x": 283,
+              "y": 770,
+              "width": 150,
+              "height": 34
+            }
+          ]
+        },
+        {
+          "text": "耐心",
+          "confidence": 0.9999,
+          "bbox": {
+            "x": 316,
+            "y": 705,
+            "width": 85,
+            "height": 49
+          },
+          "chars": [
+            {
+              "char": "耐",
+              "x": 316,
+              "y": 705,
+              "width": 42,
+              "height": 49
+            },
+            {
+              "char": "心",
+              "x": 358,
+              "y": 705,
+              "width": 42,
+              "height": 49
+            }
+          ]
+        },
+        {
+          "text": "耐",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 30,
+            "y": 435,
+            "width": 215,
+            "height": 210
+          },
+          "chars": [
+            {
+              "char": "耐",
+              "x": 30,
+              "y": 435,
+              "width": 215,
+              "height": 210
+            }
+          ]
+        },
+        {
+          "text": "心",
+          "confidence": 0.9978,
+          "bbox": {
+            "x": 451,
+            "y": 421,
+            "width": 258,
+            "height": 241
+          },
+          "chars": [
+            {
+              "char": "心",
+              "x": 451,
+              "y": 421,
+              "width": 258,
+              "height": 241
+            }
+          ]
+        },
+        {
+          "text": "Midori",
+          "confidence": 0.9317,
+          "bbox": {
+            "x": 273,
+            "y": 245,
+            "width": 116,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "Midori",
+              "x": 273,
+              "y": 245,
+              "width": 116,
+              "height": 47
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4300,
+      "end_ms": 5000,
+      "detections": [
+        {
+          "text": "one word.",
+          "confidence": 0.9794,
+          "bbox": {
+            "x": 277,
+            "y": 768,
+            "width": 162,
+            "height": 35
+          },
+          "chars": [
+            {
+              "char": "one",
+              "x": 277,
+              "y": 768,
+              "width": 54,
+              "height": 35
+            },
+            {
+              "char": "word.",
+              "x": 349,
+              "y": 768,
+              "width": 90,
+              "height": 35
+            }
+          ]
+        },
+        {
+          "text": "一个词",
+          "confidence": 0.9997,
+          "bbox": {
+            "x": 297,
+            "y": 703,
+            "width": 123,
+            "height": 50
+          },
+          "chars": [
+            {
+              "char": "一",
+              "x": 297,
+              "y": 703,
+              "width": 41,
+              "height": 50
+            },
+            {
+              "char": "个",
+              "x": 338,
+              "y": 703,
+              "width": 41,
+              "height": 50
+            },
+            {
+              "char": "词",
+              "x": 379,
+              "y": 703,
+              "width": 41,
+              "height": 50
+            }
+          ]
+        },
+        {
+          "text": "耐",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 31,
+            "y": 437,
+            "width": 215,
+            "height": 207
+          },
+          "chars": [
+            {
+              "char": "耐",
+              "x": 31,
+              "y": 437,
+              "width": 215,
+              "height": 207
+            }
+          ]
+        },
+        {
+          "text": "心",
+          "confidence": 0.9932,
+          "bbox": {
+            "x": 451,
+            "y": 420,
+            "width": 259,
+            "height": 244
+          },
+          "chars": [
+            {
+              "char": "心",
+              "x": 451,
+              "y": 420,
+              "width": 259,
+              "height": 244
+            }
+          ]
+        },
+        {
+          "text": "Midori",
+          "confidence": 0.9001,
+          "bbox": {
+            "x": 289,
+            "y": 345,
+            "width": 119,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "Midori",
+              "x": 289,
+              "y": 345,
+              "width": 119,
+              "height": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5000,
+      "end_ms": 5200,
+      "detections": [
+        {
+          "text": "耐心",
+          "confidence": 0.9956,
+          "bbox": {
+            "x": 2,
+            "y": 410,
+            "width": 709,
+            "height": 260
+          },
+          "chars": [
+            {
+              "char": "耐",
+              "x": 2,
+              "y": 410,
+              "width": 354,
+              "height": 260
+            },
+            {
+              "char": "心",
+              "x": 356,
+              "y": 410,
+              "width": 354,
+              "height": 260
+            }
+          ]
+        },
+        {
+          "text": "Midori",
+          "confidence": 0.9275,
+          "bbox": {
+            "x": 280,
+            "y": 366,
+            "width": 129,
+            "height": 59
+          },
+          "chars": [
+            {
+              "char": "Midori",
+              "x": 280,
+              "y": 366,
+              "width": 129,
+              "height": 59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5200,
+      "end_ms": 5500,
+      "detections": [
+        {
+          "text": "XZ1 COMPACT",
+          "confidence": 0.8903,
+          "bbox": {
+            "x": 173,
+            "y": 906,
+            "width": 372,
+            "height": 83
+          },
+          "chars": [
+            {
+              "char": "XZ1",
+              "x": 173,
+              "y": 906,
+              "width": 101,
+              "height": 83
+            },
+            {
+              "char": "COMPACT",
+              "x": 308,
+              "y": 906,
+              "width": 237,
+              "height": 83
+            }
+          ]
+        },
+        {
+          "text": "KPERIA",
+          "confidence": 0.8796,
+          "bbox": {
+            "x": 335,
+            "y": 834,
+            "width": 210,
+            "height": 85
+          },
+          "chars": [
+            {
+              "char": "KPERIA",
+              "x": 335,
+              "y": 834,
+              "width": 210,
+              "height": 85
+            }
+          ]
+        },
+        {
+          "text": "SONYN",
+          "confidence": 0.8298,
+          "bbox": {
+            "x": 169,
+            "y": 829,
+            "width": 205,
+            "height": 92
+          },
+          "chars": [
+            {
+              "char": "SONYN",
+              "x": 169,
+              "y": 829,
+              "width": 205,
+              "height": 92
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5500,
+      "end_ms": 7100,
+      "detections": [
+        {
+          "text": "I feel when I see this light,",
+          "confidence": 0.9758,
+          "bbox": {
+            "x": 152,
+            "y": 764,
+            "width": 411,
+            "height": 39
+          },
+          "chars": [
+            {
+              "char": "I",
+              "x": 152,
+              "y": 764,
+              "width": 14,
+              "height": 39
+            },
+            {
+              "char": "feel",
+              "x": 180,
+              "y": 764,
+              "width": 57,
+              "height": 39
+            },
+            {
+              "char": "when",
+              "x": 251,
+              "y": 764,
+              "width": 57,
+              "height": 39
+            },
+            {
+              "char": "I",
+              "x": 322,
+              "y": 764,
+              "width": 14,
+              "height": 39
+            },
+            {
+              "char": "see",
+              "x": 350,
+              "y": 764,
+              "width": 43,
+              "height": 39
+            },
+            {
+              "char": "this",
+              "x": 407,
+              "y": 764,
+              "width": 57,
+              "height": 39
+            },
+            {
+              "char": "light,",
+              "x": 478,
+              "y": 764,
+              "width": 85,
+              "height": 39
+            }
+          ]
+        },
+        {
+          "text": "我感觉我看到这个光线",
+          "confidence": 0.9933,
+          "bbox": {
+            "x": 170,
+            "y": 710,
+            "width": 379,
+            "height": 38
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 170,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "感",
+              "x": 208,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "觉",
+              "x": 246,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "我",
+              "x": 284,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "看",
+              "x": 322,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "到",
+              "x": 360,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "这",
+              "x": 397,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "个",
+              "x": 435,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "光",
+              "x": 473,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            },
+            {
+              "char": "线",
+              "x": 511,
+              "y": 710,
+              "width": 38,
+              "height": 38
+            }
+          ]
+        },
+        {
+          "text": "5774-7505",
+          "confidence": 0.948,
+          "bbox": {
+            "x": 449,
+            "y": 336,
+            "width": 60,
+            "height": 19
+          },
+          "chars": [
+            {
+              "char": "5774-7505",
+              "x": 449,
+              "y": 336,
+              "width": 60,
+              "height": 19
+            }
+          ]
+        },
+        {
+          "text": "広告募集",
+          "confidence": 0.8463,
+          "bbox": {
+            "x": 428,
+            "y": 297,
+            "width": 76,
+            "height": 32
+          },
+          "chars": [
+            {
+              "char": "広",
+              "x": 428,
+              "y": 297,
+              "width": 19,
+              "height": 32
+            },
+            {
+              "char": "告",
+              "x": 447,
+              "y": 297,
+              "width": 19,
+              "height": 32
+            },
+            {
+              "char": "募",
+              "x": 466,
+              "y": 297,
+              "width": 19,
+              "height": 32
+            },
+            {
+              "char": "集",
+              "x": 485,
+              "y": 297,
+              "width": 19,
+              "height": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7100,
+      "end_ms": 8700,
+      "detections": [
+        {
+          "text": "I know I really want to shoot it.",
+          "confidence": 0.9636,
+          "bbox": {
+            "x": 113,
+            "y": 763,
+            "width": 490,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "I",
+              "x": 113,
+              "y": 763,
+              "width": 15,
+              "height": 42
+            },
+            {
+              "char": "know",
+              "x": 143,
+              "y": 763,
+              "width": 59,
+              "height": 42
+            },
+            {
+              "char": "I",
+              "x": 217,
+              "y": 763,
+              "width": 15,
+              "height": 42
+            },
+            {
+              "char": "really",
+              "x": 247,
+              "y": 763,
+              "width": 89,
+              "height": 42
+            },
+            {
+              "char": "want",
+              "x": 351,
+              "y": 763,
+              "width": 59,
+              "height": 42
+            },
+            {
+              "char": "to",
+              "x": 425,
+              "y": 763,
+              "width": 30,
+              "height": 42
+            },
+            {
+              "char": "shoot",
+              "x": 469,
+              "y": 763,
+              "width": 74,
+              "height": 42
+            },
+            {
+              "char": "it.",
+              "x": 558,
+              "y": 763,
+              "width": 45,
+              "height": 42
+            }
+          ]
+        },
+        {
+          "text": "我知道我特別想拍",
+          "confidence": 0.9901,
+          "bbox": {
+            "x": 207,
+            "y": 708,
+            "width": 304,
+            "height": 41
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 207,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            },
+            {
+              "char": "知",
+              "x": 245,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            },
+            {
+              "char": "道",
+              "x": 283,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            },
+            {
+              "char": "我",
+              "x": 321,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            },
+            {
+              "char": "特",
+              "x": 359,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            },
+            {
+              "char": "別",
+              "x": 397,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            },
+            {
+              "char": "想",
+              "x": 435,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            },
+            {
+              "char": "拍",
+              "x": 473,
+              "y": 708,
+              "width": 38,
+              "height": 41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8700,
+      "end_ms": 9800,
+      "detections": [
+        {
+          "text": "But lalso",
+          "confidence": 0.9473,
+          "bbox": {
+            "x": 283,
+            "y": 763,
+            "width": 152,
+            "height": 38
+          },
+          "chars": [
+            {
+              "char": "But",
+              "x": 283,
+              "y": 763,
+              "width": 51,
+              "height": 38
+            },
+            {
+              "char": "lalso",
+              "x": 351,
+              "y": 763,
+              "width": 84,
+              "height": 38
+            }
+          ]
+        },
+        {
+          "text": "但可能是要",
+          "confidence": 1.0,
+          "bbox": {
+            "x": 261,
+            "y": 704,
+            "width": 197,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "但",
+              "x": 261,
+              "y": 704,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "可",
+              "x": 300,
+              "y": 704,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "能",
+              "x": 340,
+              "y": 704,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "是",
+              "x": 379,
+              "y": 704,
+              "width": 39,
+              "height": 48
+            },
+            {
+              "char": "要",
+              "x": 419,
+              "y": 704,
+              "width": 39,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9800,
+      "end_ms": 10000,
+      "detections": [
+        {
+          "text": "might have to wait patiently",
+          "confidence": 0.978,
+          "bbox": {
+            "x": 132,
+            "y": 765,
+            "width": 455,
+            "height": 40
+          },
+          "chars": [
+            {
+              "char": "might",
+              "x": 132,
+              "y": 765,
+              "width": 81,
+              "height": 40
+            },
+            {
+              "char": "have",
+              "x": 230,
+              "y": 765,
+              "width": 65,
+              "height": 40
+            },
+            {
+              "char": "to",
+              "x": 311,
+              "y": 765,
+              "width": 32,
+              "height": 40
+            },
+            {
+              "char": "wait",
+              "x": 360,
+              "y": 765,
+              "width": 65,
+              "height": 40
+            },
+            {
+              "char": "patiently",
+              "x": 441,
+              "y": 765,
+              "width": 146,
+              "height": 40
+            }
+          ]
+        },
+        {
+          "text": "耐心等着",
+          "confidence": 0.9993,
+          "bbox": {
+            "x": 281,
+            "y": 707,
+            "width": 157,
+            "height": 43
+          },
+          "chars": [
+            {
+              "char": "耐",
+              "x": 281,
+              "y": 707,
+              "width": 39,
+              "height": 43
+            },
+            {
+              "char": "心",
+              "x": 320,
+              "y": 707,
+              "width": 39,
+              "height": 43
+            },
+            {
+              "char": "等",
+              "x": 360,
+              "y": 707,
+              "width": 39,
+              "height": 43
+            },
+            {
+              "char": "着",
+              "x": 399,
+              "y": 707,
+              "width": 39,
+              "height": 43
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

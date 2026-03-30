@@ -1,0 +1,192 @@
+{
+  "video": "video_2",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 11633,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 100,
+      "detections": [
+        {
+          "text": "灌醉",
+          "confidence": 0.9942,
+          "bbox": {
+            "x": 257,
+            "y": 760,
+            "width": 423,
+            "height": 250
+          },
+          "chars": [
+            {
+              "char": "灌",
+              "x": 257,
+              "y": 760,
+              "width": 212,
+              "height": 250
+            },
+            {
+              "char": "醉",
+              "x": 468,
+              "y": 760,
+              "width": 212,
+              "height": 250
+            }
+          ]
+        },
+        {
+          "text": "把自己",
+          "confidence": 0.9945,
+          "bbox": {
+            "x": 38,
+            "y": 655,
+            "width": 404,
+            "height": 167
+          },
+          "chars": [
+            {
+              "char": "把",
+              "x": 38,
+              "y": 655,
+              "width": 135,
+              "height": 167
+            },
+            {
+              "char": "自",
+              "x": 173,
+              "y": 655,
+              "width": 135,
+              "height": 167
+            },
+            {
+              "char": "己",
+              "x": 307,
+              "y": 655,
+              "width": 135,
+              "height": 167
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 100,
+      "end_ms": 11600,
+      "detections": [
+        {
+          "text": "喝酒有害健康未成年人禁止饮酒",
+          "confidence": 0.9915,
+          "bbox": {
+            "x": 290,
+            "y": 36,
+            "width": 412,
+            "height": 33
+          },
+          "chars": [
+            {
+              "char": "喝",
+              "x": 290,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "酒",
+              "x": 319,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "有",
+              "x": 349,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "害",
+              "x": 378,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "健",
+              "x": 408,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "康",
+              "x": 437,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "未",
+              "x": 467,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "成",
+              "x": 496,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "年",
+              "x": 525,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "人",
+              "x": 555,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "禁",
+              "x": 584,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "止",
+              "x": 614,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "饮",
+              "x": 643,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            },
+            {
+              "char": "酒",
+              "x": 673,
+              "y": 36,
+              "width": 29,
+              "height": 33
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

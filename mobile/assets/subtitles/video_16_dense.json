@@ -1,0 +1,1235 @@
+{
+  "video": "video_16",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 61500,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 900,
+      "end_ms": 1100,
+      "detections": [
+        {
+          "text": "WHO",
+          "confidence": 0.9876,
+          "bbox": {
+            "x": 245,
+            "y": 945,
+            "width": 220,
+            "height": 138
+          },
+          "chars": [
+            {
+              "char": "WHO",
+              "x": 245,
+              "y": 945,
+              "width": 220,
+              "height": 138
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1100,
+      "end_ms": 1300,
+      "detections": [
+        {
+          "text": "ARE",
+          "confidence": 0.9474,
+          "bbox": {
+            "x": 259,
+            "y": 946,
+            "width": 196,
+            "height": 137
+          },
+          "chars": [
+            {
+              "char": "ARE",
+              "x": 259,
+              "y": 946,
+              "width": 196,
+              "height": 137
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1300,
+      "end_ms": 1500,
+      "detections": [
+        {
+          "text": "YOU",
+          "confidence": 0.8908,
+          "bbox": {
+            "x": 259,
+            "y": 945,
+            "width": 208,
+            "height": 143
+          },
+          "chars": [
+            {
+              "char": "YOU",
+              "x": 259,
+              "y": 945,
+              "width": 208,
+              "height": 143
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1700,
+      "end_ms": 1800,
+      "detections": [
+        {
+          "text": "AND",
+          "confidence": 0.9622,
+          "bbox": {
+            "x": 252,
+            "y": 942,
+            "width": 209,
+            "height": 144
+          },
+          "chars": [
+            {
+              "char": "AND",
+              "x": 252,
+              "y": 942,
+              "width": 209,
+              "height": 144
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1800,
+      "end_ms": 1900,
+      "detections": [
+        {
+          "text": "WHAT",
+          "confidence": 0.9849,
+          "bbox": {
+            "x": 204,
+            "y": 937,
+            "width": 302,
+            "height": 154
+          },
+          "chars": [
+            {
+              "char": "WHAT",
+              "x": 204,
+              "y": 937,
+              "width": 302,
+              "height": 154
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1900,
+      "end_ms": 2000,
+      "detections": [
+        {
+          "text": "DO",
+          "confidence": 0.985,
+          "bbox": {
+            "x": 322,
+            "y": 983,
+            "width": 76,
+            "height": 67
+          },
+          "chars": [
+            {
+              "char": "DO",
+              "x": 322,
+              "y": 983,
+              "width": 76,
+              "height": 67
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2000,
+      "end_ms": 2100,
+      "detections": [
+        {
+          "text": "YOU",
+          "confidence": 0.8604,
+          "bbox": {
+            "x": 267,
+            "y": 946,
+            "width": 188,
+            "height": 137
+          },
+          "chars": [
+            {
+              "char": "YOU",
+              "x": 267,
+              "y": 946,
+              "width": 188,
+              "height": 137
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2100,
+      "end_ms": 2700,
+      "detections": [
+        {
+          "text": "WANT",
+          "confidence": 0.9742,
+          "bbox": {
+            "x": 220,
+            "y": 946,
+            "width": 268,
+            "height": 137
+          },
+          "chars": [
+            {
+              "char": "WANT",
+              "x": 220,
+              "y": 946,
+              "width": 268,
+              "height": 137
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 3000,
+      "end_ms": 3600,
+      "detections": [
+        {
+          "text": "KONJAC",
+          "confidence": 0.9827,
+          "bbox": {
+            "x": 187,
+            "y": 950,
+            "width": 341,
+            "height": 129
+          },
+          "chars": [
+            {
+              "char": "KONJAC",
+              "x": 187,
+              "y": 950,
+              "width": 341,
+              "height": 129
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 3600,
+      "end_ms": 3700,
+      "detections": [
+        {
+          "text": "IM",
+          "confidence": 0.5544,
+          "bbox": {
+            "x": 291,
+            "y": 953,
+            "width": 156,
+            "height": 129
+          },
+          "chars": [
+            {
+              "char": "IM",
+              "x": 291,
+              "y": 953,
+              "width": 156,
+              "height": 129
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 3800,
+      "end_ms": 3900,
+      "detections": [
+        {
+          "text": "HERE",
+          "confidence": 0.9253,
+          "bbox": {
+            "x": 237,
+            "y": 946,
+            "width": 240,
+            "height": 142
+          },
+          "chars": [
+            {
+              "char": "HERE",
+              "x": 237,
+              "y": 946,
+              "width": 240,
+              "height": 142
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 3900,
+      "end_ms": 4100,
+      "detections": [
+        {
+          "text": "TO",
+          "confidence": 0.956,
+          "bbox": {
+            "x": 284,
+            "y": 943,
+            "width": 156,
+            "height": 145
+          },
+          "chars": [
+            {
+              "char": "TO",
+              "x": 284,
+              "y": 943,
+              "width": 156,
+              "height": 145
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4100,
+      "end_ms": 4300,
+      "detections": [
+        {
+          "text": "HELP",
+          "confidence": 0.9802,
+          "bbox": {
+            "x": 244,
+            "y": 946,
+            "width": 229,
+            "height": 139
+          },
+          "chars": [
+            {
+              "char": "HELP",
+              "x": 244,
+              "y": 946,
+              "width": 229,
+              "height": 139
+            }
+          ]
+        },
+        {
+          "text": "anag",
+          "confidence": 0.9813,
+          "bbox": {
+            "x": 0,
+            "y": 866,
+            "width": 91,
+            "height": 51
+          },
+          "chars": [
+            {
+              "char": "anag",
+              "x": 0,
+              "y": 866,
+              "width": 91,
+              "height": 51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4300,
+      "end_ms": 4400,
+      "detections": [
+        {
+          "text": "YOU",
+          "confidence": 0.8838,
+          "bbox": {
+            "x": 257,
+            "y": 943,
+            "width": 211,
+            "height": 144
+          },
+          "chars": [
+            {
+              "char": "YOU",
+              "x": 257,
+              "y": 943,
+              "width": 211,
+              "height": 144
+            }
+          ]
+        },
+        {
+          "text": "anag",
+          "confidence": 0.9601,
+          "bbox": {
+            "x": 0,
+            "y": 862,
+            "width": 91,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "anag",
+              "x": 0,
+              "y": 862,
+              "width": 91,
+              "height": 54
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4400,
+      "end_ms": 4700,
+      "detections": [
+        {
+          "text": "LOSE",
+          "confidence": 0.9861,
+          "bbox": {
+            "x": 244,
+            "y": 948,
+            "width": 229,
+            "height": 134
+          },
+          "chars": [
+            {
+              "char": "LOSE",
+              "x": 244,
+              "y": 948,
+              "width": 229,
+              "height": 134
+            }
+          ]
+        },
+        {
+          "text": "nang",
+          "confidence": 0.7621,
+          "bbox": {
+            "x": 0,
+            "y": 853,
+            "width": 88,
+            "height": 55
+          },
+          "chars": [
+            {
+              "char": "nang",
+              "x": 0,
+              "y": 853,
+              "width": 88,
+              "height": 55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4700,
+      "end_ms": 5100,
+      "detections": [
+        {
+          "text": "WEIGHT",
+          "confidence": 0.985,
+          "bbox": {
+            "x": 197,
+            "y": 953,
+            "width": 314,
+            "height": 128
+          },
+          "chars": [
+            {
+              "char": "WEIGHT",
+              "x": 197,
+              "y": 953,
+              "width": 314,
+              "height": 128
+            }
+          ]
+        },
+        {
+          "text": "mana",
+          "confidence": 0.8897,
+          "bbox": {
+            "x": 0,
+            "y": 847,
+            "width": 95,
+            "height": 53
+          },
+          "chars": [
+            {
+              "char": "mana",
+              "x": 0,
+              "y": 847,
+              "width": 95,
+              "height": 53
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5100,
+      "end_ms": 5700,
+      "detections": [
+        {
+          "text": "HUH",
+          "confidence": 0.9821,
+          "bbox": {
+            "x": 260,
+            "y": 948,
+            "width": 198,
+            "height": 134
+          },
+          "chars": [
+            {
+              "char": "HUH",
+              "x": 260,
+              "y": 948,
+              "width": 198,
+              "height": 134
+            }
+          ]
+        },
+        {
+          "text": "amang",
+          "confidence": 0.7519,
+          "bbox": {
+            "x": 0,
+            "y": 835,
+            "width": 106,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "amang",
+              "x": 0,
+              "y": 835,
+              "width": 106,
+              "height": 54
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5700,
+      "end_ms": 5900,
+      "detections": [
+        {
+          "text": "DO",
+          "confidence": 0.9753,
+          "bbox": {
+            "x": 277,
+            "y": 945,
+            "width": 163,
+            "height": 141
+          },
+          "chars": [
+            {
+              "char": "DO",
+              "x": 277,
+              "y": 945,
+              "width": 163,
+              "height": 141
+            }
+          ]
+        },
+        {
+          "text": "hmana",
+          "confidence": 0.9156,
+          "bbox": {
+            "x": 0,
+            "y": 835,
+            "width": 112,
+            "height": 50
+          },
+          "chars": [
+            {
+              "char": "hmana",
+              "x": 0,
+              "y": 835,
+              "width": 112,
+              "height": 50
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5900,
+      "end_ms": 6100,
+      "detections": [
+        {
+          "text": "NEED",
+          "confidence": 0.9898,
+          "bbox": {
+            "x": 247,
+            "y": 955,
+            "width": 222,
+            "height": 128
+          },
+          "chars": [
+            {
+              "char": "NEED",
+              "x": 247,
+              "y": 955,
+              "width": 222,
+              "height": 128
+            }
+          ]
+        },
+        {
+          "text": "imano",
+          "confidence": 0.8506,
+          "bbox": {
+            "x": 8,
+            "y": 831,
+            "width": 112,
+            "height": 53
+          },
+          "chars": [
+            {
+              "char": "imano",
+              "x": 8,
+              "y": 831,
+              "width": 112,
+              "height": 53
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6100,
+      "end_ms": 6200,
+      "detections": [
+        {
+          "text": "TO",
+          "confidence": 0.9529,
+          "bbox": {
+            "x": 288,
+            "y": 946,
+            "width": 151,
+            "height": 139
+          },
+          "chars": [
+            {
+              "char": "TO",
+              "x": 288,
+              "y": 946,
+              "width": 151,
+              "height": 139
+            }
+          ]
+        },
+        {
+          "text": "mang",
+          "confidence": 0.8557,
+          "bbox": {
+            "x": 21,
+            "y": 833,
+            "width": 101,
+            "height": 49
+          },
+          "chars": [
+            {
+              "char": "mang",
+              "x": 21,
+              "y": 833,
+              "width": 101,
+              "height": 49
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6200,
+      "end_ms": 6400,
+      "detections": [
+        {
+          "text": "LOSE",
+          "confidence": 0.9509,
+          "bbox": {
+            "x": 249,
+            "y": 951,
+            "width": 221,
+            "height": 129
+          },
+          "chars": [
+            {
+              "char": "LOSE",
+              "x": 249,
+              "y": 951,
+              "width": 221,
+              "height": 129
+            }
+          ]
+        },
+        {
+          "text": "mang",
+          "confidence": 0.869,
+          "bbox": {
+            "x": 24,
+            "y": 827,
+            "width": 104,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "mang",
+              "x": 24,
+              "y": 827,
+              "width": 104,
+              "height": 54
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6400,
+      "end_ms": 6800,
+      "detections": [
+        {
+          "text": "WEIGHT",
+          "confidence": 0.975,
+          "bbox": {
+            "x": 199,
+            "y": 955,
+            "width": 310,
+            "height": 125
+          },
+          "chars": [
+            {
+              "char": "WEIGHT",
+              "x": 199,
+              "y": 955,
+              "width": 310,
+              "height": 125
+            }
+          ]
+        },
+        {
+          "text": "imanggerilll",
+          "confidence": 0.7235,
+          "bbox": {
+            "x": 29,
+            "y": 819,
+            "width": 220,
+            "height": 83
+          },
+          "chars": [
+            {
+              "char": "imanggerilll",
+              "x": 29,
+              "y": 819,
+              "width": 220,
+              "height": 83
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6800,
+      "end_ms": 7500,
+      "detections": [
+        {
+          "text": "nmanagerill",
+          "confidence": 0.7898,
+          "bbox": {
+            "x": 32,
+            "y": 808,
+            "width": 229,
+            "height": 93
+          },
+          "chars": [
+            {
+              "char": "nmanagerill",
+              "x": 32,
+              "y": 808,
+              "width": 229,
+              "height": 93
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7500,
+      "end_ms": 8200,
+      "detections": [
+        {
+          "text": "WHATEVER",
+          "confidence": 0.9921,
+          "bbox": {
+            "x": 143,
+            "y": 959,
+            "width": 423,
+            "height": 117
+          },
+          "chars": [
+            {
+              "char": "WHATEVER",
+              "x": 143,
+              "y": 959,
+              "width": 423,
+              "height": 117
+            }
+          ]
+        },
+        {
+          "text": "hmanagerilll",
+          "confidence": 0.8917,
+          "bbox": {
+            "x": 48,
+            "y": 793,
+            "width": 237,
+            "height": 93
+          },
+          "chars": [
+            {
+              "char": "hmanagerilll",
+              "x": 48,
+              "y": 793,
+              "width": 237,
+              "height": 93
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8200,
+      "end_ms": 8300,
+      "detections": [
+        {
+          "text": "LET'S",
+          "confidence": 0.9663,
+          "bbox": {
+            "x": 206,
+            "y": 937,
+            "width": 311,
+            "height": 161
+          },
+          "chars": [
+            {
+              "char": "LET'S",
+              "x": 206,
+              "y": 937,
+              "width": 311,
+              "height": 161
+            }
+          ]
+        },
+        {
+          "text": "chmanagerii",
+          "confidence": 0.893,
+          "bbox": {
+            "x": 47,
+            "y": 788,
+            "width": 243,
+            "height": 94
+          },
+          "chars": [
+            {
+              "char": "chmanagerii",
+              "x": 47,
+              "y": 788,
+              "width": 243,
+              "height": 94
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8300,
+      "end_ms": 8500,
+      "detections": [
+        {
+          "text": "SEE",
+          "confidence": 0.9871,
+          "bbox": {
+            "x": 254,
+            "y": 939,
+            "width": 207,
+            "height": 157
+          },
+          "chars": [
+            {
+              "char": "SEE",
+              "x": 254,
+              "y": 939,
+              "width": 207,
+              "height": 157
+            }
+          ]
+        },
+        {
+          "text": "chmanagerllll",
+          "confidence": 0.8137,
+          "bbox": {
+            "x": 54,
+            "y": 781,
+            "width": 244,
+            "height": 103
+          },
+          "chars": [
+            {
+              "char": "chmanagerllll",
+              "x": 54,
+              "y": 781,
+              "width": 244,
+              "height": 103
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8500,
+      "end_ms": 8700,
+      "detections": [
+        {
+          "text": "WHAT",
+          "confidence": 0.9887,
+          "bbox": {
+            "x": 229,
+            "y": 954,
+            "width": 253,
+            "height": 125
+          },
+          "chars": [
+            {
+              "char": "WHAT",
+              "x": 229,
+              "y": 954,
+              "width": 253,
+              "height": 125
+            }
+          ]
+        },
+        {
+          "text": "timanagerilll",
+          "confidence": 0.8309,
+          "bbox": {
+            "x": 50,
+            "y": 779,
+            "width": 252,
+            "height": 98
+          },
+          "chars": [
+            {
+              "char": "timanagerilll",
+              "x": 50,
+              "y": 779,
+              "width": 252,
+              "height": 98
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8700,
+      "end_ms": 8800,
+      "detections": [
+        {
+          "text": "YOU'VE",
+          "confidence": 0.9525,
+          "bbox": {
+            "x": 202,
+            "y": 957,
+            "width": 312,
+            "height": 123
+          },
+          "chars": [
+            {
+              "char": "YOU'VE",
+              "x": 202,
+              "y": 957,
+              "width": 312,
+              "height": 123
+            }
+          ]
+        },
+        {
+          "text": "thmanagerilll",
+          "confidence": 0.8272,
+          "bbox": {
+            "x": 49,
+            "y": 777,
+            "width": 255,
+            "height": 98
+          },
+          "chars": [
+            {
+              "char": "thmanagerilll",
+              "x": 49,
+              "y": 777,
+              "width": 255,
+              "height": 98
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8800,
+      "end_ms": 9200,
+      "detections": [
+        {
+          "text": "GOT",
+          "confidence": 0.9796,
+          "bbox": {
+            "x": 257,
+            "y": 941,
+            "width": 206,
+            "height": 147
+          },
+          "chars": [
+            {
+              "char": "GOT",
+              "x": 257,
+              "y": 941,
+              "width": 206,
+              "height": 147
+            }
+          ]
+        },
+        {
+          "text": "Pmanagerm",
+          "confidence": 0.8264,
+          "bbox": {
+            "x": 80,
+            "y": 777,
+            "width": 231,
+            "height": 95
+          },
+          "chars": [
+            {
+              "char": "Pmanagerm",
+              "x": 80,
+              "y": 777,
+              "width": 231,
+              "height": 95
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9200,
+      "end_ms": 9300,
+      "detections": [
+        {
+          "text": "manggerim",
+          "confidence": 0.8321,
+          "bbox": {
+            "x": 99,
+            "y": 779,
+            "width": 211,
+            "height": 87
+          },
+          "chars": [
+            {
+              "char": "manggerim",
+              "x": 99,
+              "y": 779,
+              "width": 211,
+              "height": 87
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9300,
+      "end_ms": 9500,
+      "detections": [
+        {
+          "text": "SHOW",
+          "confidence": 0.9916,
+          "bbox": {
+            "x": 234,
+            "y": 949,
+            "width": 261,
+            "height": 137
+          },
+          "chars": [
+            {
+              "char": "SHOW",
+              "x": 234,
+              "y": 949,
+              "width": 261,
+              "height": 137
+            }
+          ]
+        },
+        {
+          "text": "mana",
+          "confidence": 0.8311,
+          "bbox": {
+            "x": 111,
+            "y": 782,
+            "width": 97,
+            "height": 48
+          },
+          "chars": [
+            {
+              "char": "mana",
+              "x": 111,
+              "y": 782,
+              "width": 97,
+              "height": 48
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9500,
+      "end_ms": 9600,
+      "detections": [
+        {
+          "text": "YOUR",
+          "confidence": 0.9923,
+          "bbox": {
+            "x": 305,
+            "y": 988,
+            "width": 110,
+            "height": 58
+          },
+          "chars": [
+            {
+              "char": "YOUR",
+              "x": 305,
+              "y": 988,
+              "width": 110,
+              "height": 58
+            }
+          ]
+        },
+        {
+          "text": "manag",
+          "confidence": 0.9618,
+          "bbox": {
+            "x": 109,
+            "y": 777,
+            "width": 118,
+            "height": 55
+          },
+          "chars": [
+            {
+              "char": "manag",
+              "x": 109,
+              "y": 777,
+              "width": 118,
+              "height": 55
+            }
+          ]
+        },
+        {
+          "text": "healt",
+          "confidence": 0.9802,
+          "bbox": {
+            "x": 0,
+            "y": 745,
+            "width": 116,
+            "height": 61
+          },
+          "chars": [
+            {
+              "char": "healt",
+              "x": 0,
+              "y": 745,
+              "width": 116,
+              "height": 61
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 9600,
+      "end_ms": 10000,
+      "detections": [
+        {
+          "text": "PLAN",
+          "confidence": 0.9782,
+          "bbox": {
+            "x": 239,
+            "y": 952,
+            "width": 238,
+            "height": 133
+          },
+          "chars": [
+            {
+              "char": "PLAN",
+              "x": 239,
+              "y": 952,
+              "width": 238,
+              "height": 133
+            }
+          ]
+        },
+        {
+          "text": "hmand",
+          "confidence": 0.8782,
+          "bbox": {
+            "x": 104,
+            "y": 770,
+            "width": 108,
+            "height": 54
+          },
+          "chars": [
+            {
+              "char": "hmand",
+              "x": 104,
+              "y": 770,
+              "width": 108,
+              "height": 54
+            }
+          ]
+        },
+        {
+          "text": "healt",
+          "confidence": 0.9925,
+          "bbox": {
+            "x": 0,
+            "y": 739,
+            "width": 116,
+            "height": 61
+          },
+          "chars": [
+            {
+              "char": "healt",
+              "x": 0,
+              "y": 739,
+              "width": 116,
+              "height": 61
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1355 @@
+{
+  "video": "video_6",
+  "resolution": {
+    "width": 720,
+    "height": 1280
+  },
+  "duration_ms": 20233,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 300,
+      "detections": [
+        {
+          "text": "原创：coco-木子文",
+          "confidence": 0.9518,
+          "bbox": {
+            "x": 76,
+            "y": 786,
+            "width": 333,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "原",
+              "x": 76,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "创",
+              "x": 106,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "：",
+              "x": 137,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "c",
+              "x": 167,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "o",
+              "x": 197,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "c",
+              "x": 227,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "o",
+              "x": 258,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "-",
+              "x": 288,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "木",
+              "x": 318,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "子",
+              "x": 348,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            },
+            {
+              "char": "文",
+              "x": 379,
+              "y": 786,
+              "width": 30,
+              "height": 45
+            }
+          ]
+        },
+        {
+          "text": "记得！多跟自己说",
+          "confidence": 0.9898,
+          "bbox": {
+            "x": 59,
+            "y": 615,
+            "width": 314,
+            "height": 51
+          },
+          "chars": [
+            {
+              "char": "记",
+              "x": 59,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "得",
+              "x": 98,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "！",
+              "x": 138,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "多",
+              "x": 177,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "跟",
+              "x": 216,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "自",
+              "x": 255,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "己",
+              "x": 294,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "说",
+              "x": 334,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 300,
+      "end_ms": 500,
+      "detections": [
+        {
+          "text": "我身体好情绪好",
+          "confidence": 0.996,
+          "bbox": {
+            "x": 240,
+            "y": 980,
+            "width": 238,
+            "height": 38
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 240,
+              "y": 980,
+              "width": 34,
+              "height": 38
+            },
+            {
+              "char": "身",
+              "x": 274,
+              "y": 980,
+              "width": 34,
+              "height": 38
+            },
+            {
+              "char": "体",
+              "x": 308,
+              "y": 980,
+              "width": 34,
+              "height": 38
+            },
+            {
+              "char": "好",
+              "x": 342,
+              "y": 980,
+              "width": 34,
+              "height": 38
+            },
+            {
+              "char": "情",
+              "x": 376,
+              "y": 980,
+              "width": 34,
+              "height": 38
+            },
+            {
+              "char": "绪",
+              "x": 410,
+              "y": 980,
+              "width": 34,
+              "height": 38
+            },
+            {
+              "char": "好",
+              "x": 444,
+              "y": 980,
+              "width": 34,
+              "height": 38
+            }
+          ]
+        },
+        {
+          "text": "原创：coco-木子文",
+          "confidence": 0.9774,
+          "bbox": {
+            "x": 76,
+            "y": 787,
+            "width": 333,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "原",
+              "x": 76,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "创",
+              "x": 106,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "：",
+              "x": 137,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "c",
+              "x": 167,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "o",
+              "x": 197,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "c",
+              "x": 227,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "o",
+              "x": 258,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "-",
+              "x": 288,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "木",
+              "x": 318,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "子",
+              "x": 348,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            },
+            {
+              "char": "文",
+              "x": 379,
+              "y": 787,
+              "width": 30,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "text": "记得！",
+          "confidence": 0.9877,
+          "bbox": {
+            "x": 62,
+            "y": 618,
+            "width": 101,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "记",
+              "x": 62,
+              "y": 618,
+              "width": 34,
+              "height": 45
+            },
+            {
+              "char": "得",
+              "x": 96,
+              "y": 618,
+              "width": 34,
+              "height": 45
+            },
+            {
+              "char": "！",
+              "x": 129,
+              "y": 618,
+              "width": 34,
+              "height": 45
+            }
+          ]
+        },
+        {
+          "text": "多跟自己说",
+          "confidence": 0.9975,
+          "bbox": {
+            "x": 175,
+            "y": 616,
+            "width": 197,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "多",
+              "x": 175,
+              "y": 616,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "跟",
+              "x": 214,
+              "y": 616,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "自",
+              "x": 254,
+              "y": 616,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "己",
+              "x": 293,
+              "y": 616,
+              "width": 39,
+              "height": 47
+            },
+            {
+              "char": "说",
+              "x": 333,
+              "y": 616,
+              "width": 39,
+              "height": 47
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 500,
+      "end_ms": 1500,
+      "detections": [
+        {
+          "text": "我身体好情绪好",
+          "confidence": 0.9995,
+          "bbox": {
+            "x": 240,
+            "y": 978,
+            "width": 239,
+            "height": 41
+          },
+          "chars": [
+            {
+              "char": "我",
+              "x": 240,
+              "y": 978,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "身",
+              "x": 274,
+              "y": 978,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "体",
+              "x": 308,
+              "y": 978,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "好",
+              "x": 342,
+              "y": 978,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "情",
+              "x": 377,
+              "y": 978,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "绪",
+              "x": 411,
+              "y": 978,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "好",
+              "x": 445,
+              "y": 978,
+              "width": 34,
+              "height": 41
+            }
+          ]
+        },
+        {
+          "text": "记得！多跟自己说",
+          "confidence": 0.9938,
+          "bbox": {
+            "x": 59,
+            "y": 615,
+            "width": 314,
+            "height": 51
+          },
+          "chars": [
+            {
+              "char": "记",
+              "x": 59,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "得",
+              "x": 98,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "！",
+              "x": 138,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "多",
+              "x": 177,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "跟",
+              "x": 216,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "自",
+              "x": 255,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "己",
+              "x": 294,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            },
+            {
+              "char": "说",
+              "x": 334,
+              "y": 615,
+              "width": 39,
+              "height": 51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 1500,
+      "end_ms": 2800,
+      "detections": [
+        {
+          "text": "运气自然也很好",
+          "confidence": 0.9991,
+          "bbox": {
+            "x": 238,
+            "y": 975,
+            "width": 243,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "运",
+              "x": 238,
+              "y": 975,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "气",
+              "x": 273,
+              "y": 975,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "自",
+              "x": 307,
+              "y": 975,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "然",
+              "x": 342,
+              "y": 975,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "也",
+              "x": 377,
+              "y": 975,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "很",
+              "x": 412,
+              "y": 975,
+              "width": 35,
+              "height": 45
+            },
+            {
+              "char": "好",
+              "x": 446,
+              "y": 975,
+              "width": 35,
+              "height": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 2800,
+      "end_ms": 4000,
+      "detections": [
+        {
+          "text": "出门天气特别好",
+          "confidence": 0.999,
+          "bbox": {
+            "x": 240,
+            "y": 977,
+            "width": 240,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "出",
+              "x": 240,
+              "y": 977,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "门",
+              "x": 274,
+              "y": 977,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "天",
+              "x": 309,
+              "y": 977,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "气",
+              "x": 343,
+              "y": 977,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "特",
+              "x": 377,
+              "y": 977,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "别",
+              "x": 411,
+              "y": 977,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "好",
+              "x": 446,
+              "y": 977,
+              "width": 34,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 4000,
+      "end_ms": 5300,
+      "detections": [
+        {
+          "text": "食欲好且脂肪少",
+          "confidence": 0.9985,
+          "bbox": {
+            "x": 237,
+            "y": 973,
+            "width": 244,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "食",
+              "x": 237,
+              "y": 973,
+              "width": 35,
+              "height": 47
+            },
+            {
+              "char": "欲",
+              "x": 272,
+              "y": 973,
+              "width": 35,
+              "height": 47
+            },
+            {
+              "char": "好",
+              "x": 307,
+              "y": 973,
+              "width": 35,
+              "height": 47
+            },
+            {
+              "char": "且",
+              "x": 342,
+              "y": 973,
+              "width": 35,
+              "height": 47
+            },
+            {
+              "char": "脂",
+              "x": 376,
+              "y": 973,
+              "width": 35,
+              "height": 47
+            },
+            {
+              "char": "肪",
+              "x": 411,
+              "y": 973,
+              "width": 35,
+              "height": 47
+            },
+            {
+              "char": "少",
+              "x": 446,
+              "y": 973,
+              "width": 35,
+              "height": 47
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 5300,
+      "end_ms": 6500,
+      "detections": [
+        {
+          "text": "旅行风景特别好",
+          "confidence": 0.9987,
+          "bbox": {
+            "x": 239,
+            "y": 976,
+            "width": 241,
+            "height": 42
+          },
+          "chars": [
+            {
+              "char": "旅",
+              "x": 239,
+              "y": 976,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "行",
+              "x": 273,
+              "y": 976,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "风",
+              "x": 308,
+              "y": 976,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "景",
+              "x": 342,
+              "y": 976,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "特",
+              "x": 377,
+              "y": 976,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "别",
+              "x": 411,
+              "y": 976,
+              "width": 34,
+              "height": 42
+            },
+            {
+              "char": "好",
+              "x": 446,
+              "y": 976,
+              "width": 34,
+              "height": 42
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 6500,
+      "end_ms": 7700,
+      "detections": [
+        {
+          "text": "晚上睡眠质量好",
+          "confidence": 0.9987,
+          "bbox": {
+            "x": 240,
+            "y": 977,
+            "width": 240,
+            "height": 41
+          },
+          "chars": [
+            {
+              "char": "晚",
+              "x": 240,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "上",
+              "x": 274,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "睡",
+              "x": 309,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "眠",
+              "x": 343,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "质",
+              "x": 377,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "量",
+              "x": 411,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "好",
+              "x": 446,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7700,
+      "end_ms": 8900,
+      "detections": [
+        {
+          "text": "遇到的人都很好",
+          "confidence": 0.9993,
+          "bbox": {
+            "x": 239,
+            "y": 977,
+            "width": 241,
+            "height": 41
+          },
+          "chars": [
+            {
+              "char": "遇",
+              "x": 239,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "到",
+              "x": 273,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "的",
+              "x": 308,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "人",
+              "x": 342,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "都",
+              "x": 377,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "很",
+              "x": 411,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            },
+            {
+              "char": "好",
+              "x": 446,
+              "y": 977,
+              "width": 34,
+              "height": 41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8900,
+      "end_ms": 12600,
+      "detections": [
+        {
+          "text": "财运追着我在跑我就是天选的好命",
+          "confidence": 0.9991,
+          "bbox": {
+            "x": 104,
+            "y": 979,
+            "width": 511,
+            "height": 37
+          },
+          "chars": [
+            {
+              "char": "财",
+              "x": 104,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "运",
+              "x": 138,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "追",
+              "x": 172,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "着",
+              "x": 206,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "我",
+              "x": 240,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "在",
+              "x": 274,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "跑",
+              "x": 308,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "我",
+              "x": 342,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "就",
+              "x": 377,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "是",
+              "x": 411,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "天",
+              "x": 445,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "选",
+              "x": 479,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "的",
+              "x": 513,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "好",
+              "x": 547,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            },
+            {
+              "char": "命",
+              "x": 581,
+              "y": 979,
+              "width": 34,
+              "height": 37
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 12600,
+      "end_ms": 15100,
+      "detections": [
+        {
+          "text": "幸福围绕着我转个不停",
+          "confidence": 0.9996,
+          "bbox": {
+            "x": 189,
+            "y": 975,
+            "width": 342,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "幸",
+              "x": 189,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "福",
+              "x": 223,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "围",
+              "x": 257,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "绕",
+              "x": 292,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "着",
+              "x": 326,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "我",
+              "x": 360,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "转",
+              "x": 394,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "个",
+              "x": 428,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "不",
+              "x": 463,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "停",
+              "x": 497,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 15100,
+      "end_ms": 17600,
+      "detections": [
+        {
+          "text": "享福是我命中註定",
+          "confidence": 0.9915,
+          "bbox": {
+            "x": 221,
+            "y": 975,
+            "width": 276,
+            "height": 44
+          },
+          "chars": [
+            {
+              "char": "享",
+              "x": 221,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "福",
+              "x": 256,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "是",
+              "x": 290,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "我",
+              "x": 324,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "命",
+              "x": 359,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "中",
+              "x": 394,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "註",
+              "x": 428,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            },
+            {
+              "char": "定",
+              "x": 462,
+              "y": 975,
+              "width": 34,
+              "height": 44
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 17600,
+      "end_ms": 20000,
+      "detections": [
+        {
+          "text": "注定命里好多花不完的money",
+          "confidence": 0.9891,
+          "bbox": {
+            "x": 131,
+            "y": 973,
+            "width": 450,
+            "height": 47
+          },
+          "chars": [
+            {
+              "char": "注",
+              "x": 131,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "定",
+              "x": 161,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "命",
+              "x": 191,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "里",
+              "x": 221,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "好",
+              "x": 251,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "多",
+              "x": 281,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "花",
+              "x": 311,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "不",
+              "x": 341,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "完",
+              "x": 371,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "的",
+              "x": 401,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "m",
+              "x": 431,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "o",
+              "x": 461,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "n",
+              "x": 491,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "e",
+              "x": 521,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            },
+            {
+              "char": "y",
+              "x": 551,
+              "y": 973,
+              "width": 30,
+              "height": 47
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

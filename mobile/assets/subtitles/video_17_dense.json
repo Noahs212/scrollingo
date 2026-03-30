@@ -1,0 +1,443 @@
+{
+  "video": "video_17",
+  "resolution": {
+    "width": 576,
+    "height": 1024
+  },
+  "duration_ms": 22433,
+  "frame_interval_ms": 100,
+  "segments": [
+    {
+      "start_ms": 0,
+      "end_ms": 7900,
+      "detections": [
+        {
+          "text": "@ lulu.en.paris",
+          "confidence": 0.974,
+          "bbox": {
+            "x": 454,
+            "y": 845,
+            "width": 118,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "@",
+              "x": 454,
+              "y": 845,
+              "width": 8,
+              "height": 20
+            },
+            {
+              "char": "lulu.en.paris",
+              "x": 470,
+              "y": 845,
+              "width": 102,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "TikTok",
+          "confidence": 0.9955,
+          "bbox": {
+            "x": 498,
+            "y": 822,
+            "width": 70,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "TikTok",
+              "x": 498,
+              "y": 822,
+              "width": 70,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 7900,
+      "end_ms": 8100,
+      "detections": [
+        {
+          "text": "lulu.en.paris",
+          "confidence": 0.9599,
+          "bbox": {
+            "x": 474,
+            "y": 845,
+            "width": 98,
+            "height": 21
+          },
+          "chars": [
+            {
+              "char": "lulu.en.paris",
+              "x": 474,
+              "y": 845,
+              "width": 98,
+              "height": 21
+            }
+          ]
+        },
+        {
+          "text": "TikTok",
+          "confidence": 0.9885,
+          "bbox": {
+            "x": 498,
+            "y": 822,
+            "width": 71,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "TikTok",
+              "x": 498,
+              "y": 822,
+              "width": 71,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "NTER",
+          "confidence": 0.989,
+          "bbox": {
+            "x": 210,
+            "y": 653,
+            "width": 36,
+            "height": 29
+          },
+          "chars": [
+            {
+              "char": "NTER",
+              "x": 210,
+              "y": 653,
+              "width": 36,
+              "height": 29
+            }
+          ]
+        },
+        {
+          "text": "CES",
+          "confidence": 0.9475,
+          "bbox": {
+            "x": 178,
+            "y": 634,
+            "width": 32,
+            "height": 28
+          },
+          "chars": [
+            {
+              "char": "CES",
+              "x": 178,
+              "y": 634,
+              "width": 32,
+              "height": 28
+            }
+          ]
+        },
+        {
+          "text": "DECUE",
+          "confidence": 0.9679,
+          "bbox": {
+            "x": 202,
+            "y": 629,
+            "width": 75,
+            "height": 56
+          },
+          "chars": [
+            {
+              "char": "DECUE",
+              "x": 202,
+              "y": 629,
+              "width": 75,
+              "height": 56
+            }
+          ]
+        },
+        {
+          "text": "IOD",
+          "confidence": 0.8817,
+          "bbox": {
+            "x": 181,
+            "y": 618,
+            "width": 36,
+            "height": 30
+          },
+          "chars": [
+            {
+              "char": "IOD",
+              "x": 181,
+              "y": 618,
+              "width": 36,
+              "height": 30
+            }
+          ]
+        },
+        {
+          "text": "DACER!",
+          "confidence": 0.8727,
+          "bbox": {
+            "x": 184,
+            "y": 603,
+            "width": 65,
+            "height": 45
+          },
+          "chars": [
+            {
+              "char": "DACER!",
+              "x": 184,
+              "y": 603,
+              "width": 65,
+              "height": 45
+            }
+          ]
+        },
+        {
+          "text": "PARIS",
+          "confidence": 0.9843,
+          "bbox": {
+            "x": 194,
+            "y": 523,
+            "width": 55,
+            "height": 41
+          },
+          "chars": [
+            {
+              "char": "PARIS",
+              "x": 194,
+              "y": 523,
+              "width": 55,
+              "height": 41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8100,
+      "end_ms": 8900,
+      "detections": [
+        {
+          "text": "lulu.en.paris",
+          "confidence": 0.9881,
+          "bbox": {
+            "x": 472,
+            "y": 847,
+            "width": 98,
+            "height": 17
+          },
+          "chars": [
+            {
+              "char": "lulu.en.paris",
+              "x": 472,
+              "y": 847,
+              "width": 98,
+              "height": 17
+            }
+          ]
+        },
+        {
+          "text": "TikTok",
+          "confidence": 0.9891,
+          "bbox": {
+            "x": 498,
+            "y": 822,
+            "width": 70,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "TikTok",
+              "x": 498,
+              "y": 822,
+              "width": 70,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "NTERI",
+          "confidence": 0.9249,
+          "bbox": {
+            "x": 259,
+            "y": 618,
+            "width": 42,
+            "height": 31
+          },
+          "chars": [
+            {
+              "char": "NTERI",
+              "x": 259,
+              "y": 618,
+              "width": 42,
+              "height": 31
+            }
+          ]
+        },
+        {
+          "text": "北水水",
+          "confidence": 0.5191,
+          "bbox": {
+            "x": 172,
+            "y": 604,
+            "width": 207,
+            "height": 151
+          },
+          "chars": [
+            {
+              "char": "北",
+              "x": 172,
+              "y": 604,
+              "width": 69,
+              "height": 151
+            },
+            {
+              "char": "水",
+              "x": 241,
+              "y": 604,
+              "width": 69,
+              "height": 151
+            },
+            {
+              "char": "水",
+              "x": 310,
+              "y": 604,
+              "width": 69,
+              "height": 151
+            }
+          ]
+        },
+        {
+          "text": "DECIUE",
+          "confidence": 0.9375,
+          "bbox": {
+            "x": 258,
+            "y": 595,
+            "width": 70,
+            "height": 51
+          },
+          "chars": [
+            {
+              "char": "DECIUE",
+              "x": 258,
+              "y": 595,
+              "width": 70,
+              "height": 51
+            }
+          ]
+        },
+        {
+          "text": "SER!",
+          "confidence": 0.9602,
+          "bbox": {
+            "x": 263,
+            "y": 584,
+            "width": 35,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "SER!",
+              "x": 263,
+              "y": 584,
+              "width": 35,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "iS",
+          "confidence": 0.5391,
+          "bbox": {
+            "x": 271,
+            "y": 498,
+            "width": 26,
+            "height": 27
+          },
+          "chars": [
+            {
+              "char": "iS",
+              "x": 271,
+              "y": 498,
+              "width": 26,
+              "height": 27
+            }
+          ]
+        },
+        {
+          "text": "PA",
+          "confidence": 0.9945,
+          "bbox": {
+            "x": 248,
+            "y": 491,
+            "width": 29,
+            "height": 26
+          },
+          "chars": [
+            {
+              "char": "PA",
+              "x": 248,
+              "y": 491,
+              "width": 29,
+              "height": 26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start_ms": 8900,
+      "end_ms": 10000,
+      "detections": [
+        {
+          "text": "@ lulu.en.paris",
+          "confidence": 0.97,
+          "bbox": {
+            "x": 454,
+            "y": 845,
+            "width": 117,
+            "height": 20
+          },
+          "chars": [
+            {
+              "char": "@",
+              "x": 454,
+              "y": 845,
+              "width": 8,
+              "height": 20
+            },
+            {
+              "char": "lulu.en.paris",
+              "x": 470,
+              "y": 845,
+              "width": 101,
+              "height": 20
+            }
+          ]
+        },
+        {
+          "text": "TikTok",
+          "confidence": 0.9948,
+          "bbox": {
+            "x": 498,
+            "y": 822,
+            "width": 70,
+            "height": 22
+          },
+          "chars": [
+            {
+              "char": "TikTok",
+              "x": 498,
+              "y": 822,
+              "width": 70,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
