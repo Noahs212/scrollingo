@@ -668,12 +668,25 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
     # Sort by start time
     transcript_segments.sort(key=lambda s: s["start_ms"])
 
+    # Deduplicate: remove consecutive segments with same/similar text
+    # (OCR sometimes detects the same subtitle with slight variations across frames)
+    deduped = []
+    for seg in transcript_segments:
+        seg_text = seg.get("detections", [{}])[0].get("text", "") if seg.get("detections") else ""
+        if deduped:
+            prev_text = deduped[-1].get("detections", [{}])[0].get("text", "") if deduped[-1].get("detections") else ""
+            if _text_similarity(seg_text.strip(), prev_text.strip()) >= 0.8:
+                # Same text — extend the previous segment's end time
+                deduped[-1]["end_ms"] = max(deduped[-1]["end_ms"], seg["end_ms"])
+                continue
+        deduped.append(seg)
+
     return {
         "video": ocr_data.get("video", ""),
         "resolution": resolution,
         "duration_ms": ocr_data.get("duration_ms", 0),
         "subtitle_source": "both",
-        "segments": transcript_segments,
+        "segments": deduped,
     }
 
 

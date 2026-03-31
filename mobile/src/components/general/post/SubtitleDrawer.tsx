@@ -57,21 +57,41 @@ interface Props {
 
 /** Split text into tappable units — CJK chars or Latin words. */
 function splitIntoWords(text: string): { word: string; startIdx: number }[] {
+  // Always use character-aware splitting that handles mixed CJK/Latin:
+  // - CJK characters: one word per character
+  // - Latin characters: group consecutive non-CJK, non-space chars into one word
+  // - Spaces: skip
   const words: { word: string; startIdx: number }[] = [];
-  const cjkCount = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) || []).length;
-  if (cjkCount > text.length * 0.3) {
-    for (let i = 0; i < text.length; i++) {
-      if (text[i].trim()) {
-        words.push({ word: text[i], startIdx: i });
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    const code = c.codePointAt(0) ?? 0;
+    const isCJK =
+      (code >= 0x4e00 && code <= 0x9fff) ||
+      (code >= 0x3400 && code <= 0x4dbf) ||
+      (code >= 0x3040 && code <= 0x30ff) ||
+      (code >= 0xac00 && code <= 0xd7af);
+
+    if (isCJK) {
+      words.push({ word: c, startIdx: i });
+      i++;
+    } else if (c.trim() === "") {
+      i++; // skip spaces
+    } else {
+      // Latin/number: group consecutive non-CJK, non-space chars
+      const start = i;
+      while (i < text.length) {
+        const nc = text[i];
+        const nCode = nc.codePointAt(0) ?? 0;
+        const nCJK =
+          (nCode >= 0x4e00 && nCode <= 0x9fff) ||
+          (nCode >= 0x3400 && nCode <= 0x4dbf) ||
+          (nCode >= 0x3040 && nCode <= 0x30ff) ||
+          (nCode >= 0xac00 && nCode <= 0xd7af);
+        if (nc.trim() === "" || nCJK) break;
+        i++;
       }
-    }
-  } else {
-    let idx = 0;
-    for (const part of text.split(/(\s+)/)) {
-      if (part.trim()) {
-        words.push({ word: part, startIdx: idx });
-      }
-      idx += part.length;
+      words.push({ word: text.substring(start, i), startIdx: start });
     }
   }
   return words;
