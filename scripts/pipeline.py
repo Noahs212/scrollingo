@@ -296,20 +296,33 @@ def whisper_to_bboxes(whisper_result: dict, video_id: str, duration_ms: int,
 
 # ─── STT Segment Chunking ───
 
-CJK_CHAR_LIMIT = 18     # max CJK chars per chunk (2 lines × ~9 chars in 212px at 20px bold)
-LATIN_CHAR_LIMIT = 30    # max Latin chars per chunk (2 lines × ~15 chars, conservative for word wrapping)
+MAX_VISUAL_WIDTH = 36    # max visual width units per chunk (2 lines × ~18 units)
+                         # CJK char = 2 units (~22px), Latin char = 1 unit (~11px)
+                         # "你好World" = 4+5 = 9 units. Pure CJK 18 chars = 36 units. Pure Latin 36 chars = 36 units.
 PAUSE_THRESHOLD_S = 0.3  # 300ms gap = natural speech pause
 
 _PUNCT_SPLIT = re.compile(r'(?<=[。！？，、.!?,;])\s*')
 
 
+def _is_cjk_char(c: str) -> bool:
+    code = ord(c)
+    return (0x4e00 <= code <= 0x9fff or 0x3400 <= code <= 0x4dbf
+            or 0x3040 <= code <= 0x30ff or 0xac00 <= code <= 0xd7af)
+
+
 def _is_cjk_dominant(text: str) -> bool:
-    cjk = sum(1 for c in text if '\u4e00' <= c <= '\u9fff' or '\u3400' <= c <= '\u4dbf')
+    cjk = sum(1 for c in text if _is_cjk_char(c))
     return cjk > len(text) * 0.3
 
 
-def _char_limit(text: str) -> int:
-    return CJK_CHAR_LIMIT if _is_cjk_dominant(text) else LATIN_CHAR_LIMIT
+def _visual_width(text: str) -> int:
+    """Visual width in units. CJK = 2 units (full-width ~22px), Latin/number = 1 unit (~11px)."""
+    return sum(2 if _is_cjk_char(c) else 1 for c in text if c.strip())
+
+
+def _exceeds_limit(text: str) -> bool:
+    """Check if text exceeds the visual width limit for the subtitle bar."""
+    return _visual_width(text) > MAX_VISUAL_WIDTH
 
 
 def _get_words_for_segment(seg_start_s: float, seg_end_s: float, whisper_words: list) -> list:
@@ -352,27 +365,39 @@ def _find_pause_split(text: str, seg_words: list) -> int | None:
     return best_char_idx
 
 
-def _hard_split(text: str, limit: int) -> tuple[str, str]:
-    """Force split at a word boundary within the character limit."""
-    if _is_cjk_dominant(text):
-        # CJK: use jieba for word boundaries
-        import jieba
+def _hard_split(text: str, limit: int = MAX_VISUAL_WIDTH) -> tuple[str, str]:
+    """Force split at a word boundary within the visual width limit.
+
+    Uses visual width (CJK=2, Latin=1) to handle mixed text correctly.
+    """
+    import jieba
+
+    # Try jieba segmentation for CJK-containing text, space-split for pure Latin
+    if any(_is_cjk_char(c) for c in text):
         words = list(jieba.cut(text))
-        first_part = ""
-        for w in words:
-            if len(first_part) + len(w) > limit:
-                break
-            first_part += w
-        if not first_part:
-            first_part = text[:limit]  # Absolute fallback
-        return first_part, text[len(first_part):]
     else:
-        # Latin: split at last space before limit
-        cut = text[:limit]
-        last_space = cut.rfind(" ")
-        if last_space > 0:
-            return text[:last_space], text[last_space + 1:]
-        return text[:limit], text[limit:]
+        words = text.split(" ")
+        # Re-add spaces between words for Latin
+        words = [w + " " for w in words[:-1]] + [words[-1]] if words else []
+
+    first_part = ""
+    for w in words:
+        candidate = first_part + w
+        if _visual_width(candidate) > limit:
+            break
+        first_part = candidate
+
+    if not first_part:
+        # Absolute fallback: split character by character
+        for i in range(1, len(text)):
+            if _visual_width(text[:i+1]) > limit:
+                first_part = text[:i]
+                break
+        if not first_part:
+            first_part = text
+
+    remainder = text[len(first_part):].strip()
+    return first_part.strip(), remainder
 
 
 def _interpolate_timestamps(text: str, chunk_text: str, chunk_start_char: int,
@@ -428,14 +453,14 @@ def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) 
     }
 
 
-def _recursive_chunk(text: str, limit: int, seg_words: list,
+def _recursive_chunk(text: str, seg_words: list,
                      seg_start_ms: int, seg_end_ms: int, resolution: dict) -> list[dict]:
-    """Recursively split text into chunks that fit the character limit."""
+    """Recursively split text into chunks that fit the visual width limit."""
     text = text.strip()
     if not text:
         return []
 
-    if len(text) <= limit:
+    if not _exceeds_limit(text):
         return [_build_stt_segment(text, seg_start_ms, seg_end_ms, resolution)]
 
     # Tier A: Try punctuation split
@@ -447,7 +472,7 @@ def _recursive_chunk(text: str, limit: int, seg_words: list,
             start_ms, end_ms = _interpolate_timestamps(text, part, char_offset, seg_start_ms, seg_end_ms)
             # Find words for this sub-part
             sub_words = _get_words_for_segment(start_ms / 1000, end_ms / 1000, seg_words)
-            chunks.extend(_recursive_chunk(part, limit, sub_words, start_ms, end_ms, resolution))
+            chunks.extend(_recursive_chunk(part, sub_words, start_ms, end_ms, resolution))
             char_offset += len(part)
         return chunks
 
@@ -461,15 +486,15 @@ def _recursive_chunk(text: str, limit: int, seg_words: list,
             second_start, second_end = _interpolate_timestamps(text, second, pause_idx, seg_start_ms, seg_end_ms)
             sub_words_1 = _get_words_for_segment(first_start / 1000, first_end / 1000, seg_words)
             sub_words_2 = _get_words_for_segment(second_start / 1000, second_end / 1000, seg_words)
-            return (_recursive_chunk(first, limit, sub_words_1, first_start, first_end, resolution) +
-                    _recursive_chunk(second, limit, sub_words_2, second_start, second_end, resolution))
+            return (_recursive_chunk(first, sub_words_1, first_start, first_end, resolution) +
+                    _recursive_chunk(second, sub_words_2, second_start, second_end, resolution))
 
     # Tier C: Hard split at word boundary
-    first, second = _hard_split(text, limit)
+    first, second = _hard_split(text)
     first_start, first_end = _interpolate_timestamps(text, first, 0, seg_start_ms, seg_end_ms)
     second_start, second_end = _interpolate_timestamps(text, second, len(first), seg_start_ms, seg_end_ms)
     return ([_build_stt_segment(first, first_start, first_end, resolution)] +
-            _recursive_chunk(second, limit, seg_words, second_start, second_end, resolution))
+            _recursive_chunk(second, seg_words, second_start, second_end, resolution))
 
 
 def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
@@ -489,9 +514,8 @@ def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
             continue
 
         text = dets[0]["text"].strip()
-        limit = _char_limit(text)
 
-        if len(text) <= limit:
+        if not _exceeds_limit(text):
             new_segments.append(seg)
             continue
 
@@ -499,7 +523,7 @@ def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
         seg_end_ms = seg["end_ms"]
         seg_words = _get_words_for_segment(seg_start_ms / 1000, seg_end_ms / 1000, whisper_words)
 
-        chunks = _recursive_chunk(text, limit, seg_words, seg_start_ms, seg_end_ms, resolution)
+        chunks = _recursive_chunk(text, seg_words, seg_start_ms, seg_end_ms, resolution)
         new_segments.extend(chunks)
 
     result = dict(bbox_data)
