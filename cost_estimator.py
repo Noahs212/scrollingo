@@ -2174,18 +2174,6 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
     st.markdown("---")
 
     # ── Milestone 9: Progress & Streaks ──
-    st.subheader("Milestone 9: Progress & Streaks")
-    st.caption("Track learning activity, maintain daily streaks. Depends on M4+ (need activity to track).")
-
-    st.checkbox("9.1 — Track activity client-side: videos_watched (M4), words_learned (M6), cards_reviewed (M6)", key="m9_1")
-    st.checkbox("9.2 — UPSERT daily_progress row on each session (increment counters for today)", key="m9_2")
-    st.checkbox("9.3 — Streak logic: if today's date > streak_last_date + 1 day → reset to 1, else increment", key="m9_3")
-    st.checkbox("9.4 — Update longest_streak when current streak beats it", key="m9_4")
-    st.checkbox("9.5 — Progress dashboard screen: streak badge, words learned, videos watched, cards reviewed", key="m9_5")
-    st.checkbox("9.6 — Daily goal ring: minutes_active vs daily_goal_minutes (animated progress ring)", key="m9_6")
-
-    st.markdown("---")
-
     # ── Milestone 10: Go Backend ──
     st.subheader("Milestone 10: Go Backend")
     st.caption("Build the Go monolith on fly.io. Centralizes API logic, runs the AI pipeline.")
@@ -2248,6 +2236,19 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
     st.checkbox("13.9 — Beta launch to first 100 users", key="m13_9")
 
     st.markdown("---")
+
+    # ── Milestone 9: Progress & Streaks (Low Priority) ──
+    st.subheader("Milestone 9: Progress & Streaks (Low Priority)")
+    st.caption("Track learning activity, maintain daily streaks. Not required for launch — nice-to-have polish.")
+
+    st.checkbox("9.1 — Track activity client-side: videos_watched (M4), words_learned (M6), cards_reviewed (M6)", key="m9_1")
+    st.checkbox("9.2 — UPSERT daily_progress row on each session (increment counters for today)", key="m9_2")
+    st.checkbox("9.3 — Streak logic: if today's date > streak_last_date + 1 day → reset to 1, else increment", key="m9_3")
+    st.checkbox("9.4 — Update longest_streak when current streak beats it", key="m9_4")
+    st.checkbox("9.5 — Progress dashboard screen: streak badge, words learned, videos watched, cards reviewed", key="m9_5")
+    st.checkbox("9.6 — Daily goal ring: minutes_active vs daily_goal_minutes (animated progress ring)", key="m9_6")
+
+    st.markdown("---")
     st.subheader("Milestone Summary")
     st.markdown("""
 | Milestone | What | Depends On | Effort |
@@ -2263,18 +2264,18 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 | **M6** | Flashcard save + FSRS review (ts-fsrs) + review hub | M5 | **Done** |
 | **M6.5** | Unified OCR+STT transcript — merge OCR text + STT timing, filter titles | M3.5, M5 | **In Progress** |
 | **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
-| **M9** | Progress tracking + streaks | M4, M6 | 1-2 days |
 | **M10** | Go backend (centralize API + port pipeline) | M1, M2, M3 | 5-7 days |
 | **M11** | Content pipeline (batch 100 videos) | M10 | 3-5 days |
-| **M12** | TTS pre-generation (Google Neural2) — **Phase 2** | M2 | 1 day |
 | **M13** | Polish & launch | All above | 3-5 days |
+| **M9** | Progress tracking + streaks (low priority) | M4, M6 | 1-2 days |
+| **M12** | TTS pre-generation (Google Neural2) — **Phase 2** | M2 | 1 day |
 
 **Critical path**: M0 → M1 → M1.5 → M2 → **M3** → M4 → M5 (first magic moment: tap word → see definition)
 
 **Parallel work**:
 - M3.5 (STT path) can be done after M3 or in parallel with M4 — only needed for videos without burned-in subs
 - M7 (social) can start after M4
-- M9 (progress) can start after M6
+- M9 (progress/streaks) moved to low priority — not required for launch
 - M12 (TTS pre-generation) deferred to Phase 2 — on-device expo-speech is sufficient for launch
     """)
 
