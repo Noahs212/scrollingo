@@ -494,7 +494,7 @@ def get_architecture_diagram(lean_mode=False):
                 fontcolor="#5c3d00";
                 fontsize=13;
 
-                PostgreSQL [label="PostgreSQL (15 tables)\\nusers · videos · vocab_words\\nword_definitions · video_words\\nflashcards · review_logs · user_views\\nuser_likes · user_bookmarks\\ncomments · user_follows\\ndaily_progress · pipeline_jobs", shape=cylinder, fillcolor="#fce8b2"];
+                PostgreSQL [label="PostgreSQL (15 tables)\\nusers · videos · vocab_words\\nword_definitions · video_words\\nsegment_translations · flashcards · review_logs\\nuser_views · user_likes · user_bookmarks\\ncomments · user_follows\\ndaily_progress · pipeline_jobs", shape=cylinder, fillcolor="#fce8b2"];
                 SupaAuth [label="Auth\\n(JWT · OAuth\\nGoogle / Apple)", fillcolor="#fce8b2"];
                 Realtime [label="Realtime\\n(video ready\\nnotifications)", fillcolor="#fce8b2"];
             }
@@ -595,8 +595,8 @@ def get_architecture_diagram(lean_mode=False):
             Pipeline -> STT [label="Audio → transcript\\n(word timestamps)", color="#7c3aed", style=dashed];
             Pipeline -> OCR [label="Frames → text\\n(burned-in subs)", color="#7c3aed", style=dashed];
             Pipeline -> Trans [label="Translate transcript\\n× 12 native langs", color="#7c3aed", style=dashed];
-            Pipeline -> LLM [label="Contextual definitions\\n× every word × 12 langs", color="#7c3aed", style=dashed];
-            Pipeline -> PostgreSQL [label="Store vocab_words\\nword_definitions\\nvideo_words\\npipeline status", color="#ea8600", style=dashed];
+            Pipeline -> LLM [label="Contextual definitions\\n× every word × 12 langs\\n+ sentence translations\\n× segments × 11 langs", color="#7c3aed", style=dashed];
+            Pipeline -> PostgreSQL [label="Store vocab_words\\nword_definitions\\nsegment_translations\\nvideo_words\\npipeline status", color="#ea8600", style=dashed];
             Pipeline -> R2 [label="Store WebVTT\\nsubtitle files", color="#d93025", style=dashed];
 
             // ── Pre-generated TTS ──
@@ -924,7 +924,7 @@ with tab1:
             cols[3].caption(f"Translate: ${detail.get('translate', 0):,.2f}")
             cols[4].caption(f"Definitions: ${detail.get('definitions', 0):,.2f}")
 
-        st.caption(f"*Definitions cost scales with new videos ({financials.get('new_videos_per_month', 0):,.0f}/mo), not MAU — results are cached in Supabase.*")
+        st.caption(f"*Definitions cost scales with new videos ({financials.get('new_videos_per_month', 0):,.0f}/mo), not MAU — results are cached in Supabase. Sentence translations (segment_translations) roughly double per-video LLM cost (~$0.005 → ~$0.01/video) but are not yet modeled separately.*")
 
         st.metric(label="Storage & Delivery", value=f"${financials['costs']['storage_delivery']:,.0f}")
         st.metric(label="Database & Compute", value=f"${financials['costs']['database'] + financials['costs']['compute_recommendation']:,.0f}")
@@ -1299,7 +1299,7 @@ with tab4:
 
 with tab5:
     st.header("Database Design")
-    st.markdown("Supabase PostgreSQL | 14 tables | Phase 1")
+    st.markdown("Supabase PostgreSQL | 15 tables | Phase 1")
     st.markdown("---")
 
     st.subheader("Entity Relationships")
@@ -1310,9 +1310,12 @@ users ─────┬──────────┬───────�
            │          │           │            │
            └────┬─────┘           │            │
                 │                 │            │
-             videos ──────── video_words ──────┘
-                │                 │
-           pipeline_jobs     vocab_words ──── word_definitions
+             videos ──────┬─── video_words ────┘
+                │          │
+           pipeline_jobs   └── segment_translations
+                               (video_id, start_ms, target_language)
+
+                           vocab_words ──── word_definitions
                                   │
                              flashcards ──── review_logs
                                   │
@@ -1336,6 +1339,7 @@ users ─────┬──────────┬───────�
 | `user_follows` | Follower/following relationships | R7 |
 | `comments` | Video comments (max 500 chars) | R6 |
 | `daily_progress` | Daily streak + activity stats | R30-R32 |
+| `segment_translations` | LLM sentence translations keyed on (video_id, start_ms, target_language) | R11 |
 | `pipeline_jobs` | AI pipeline tracking per video | R33, R34, R37 |
     """)
 
@@ -1548,6 +1552,27 @@ CREATE TABLE comments (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
+    with st.expander("15. segment_translations", expanded=False):
+        st.markdown("LLM-generated sentence translations. Mirrors the `word_definitions` pattern but operates at the segment (subtitle line) level. Keyed on `(video_id, start_ms, target_language)` — no FK to `vocab_words` since sentences are not individual word entries.")
+        st.code("""CREATE TABLE segment_translations (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    video_id            UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
+    start_ms            INT NOT NULL CHECK (start_ms >= 0),
+    end_ms              INT NOT NULL,
+    source_text         TEXT NOT NULL,
+    target_language     TEXT NOT NULL,
+    translation         TEXT NOT NULL,
+    llm_provider        TEXT,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE(video_id, start_ms, target_language),
+    CHECK (end_ms > start_ms)
+);
+
+-- Index for fast lookup by video + language (the common query path)
+CREATE INDEX idx_segment_translations_video_lang
+    ON segment_translations(video_id, target_language);""", language="sql")
+        st.markdown("**One LLM call per target language per video** — all segments for a video are batched into a single call. At ~20 segments × 11 target languages, each video generates ~220 rows. Translation is shown in the SubtitleDrawer line 3 (currently 'Tap words for translation' placeholder).")
+
     st.markdown("---")
     st.subheader("Data Flows")
 
@@ -1584,10 +1609,14 @@ CREATE TABLE comments (
    - One LLM call per word × 11 target languages (localized prompts)
    - `INSERT INTO word_definitions (vocab_word_id, video_id, target_language, ...)`
    - `pipeline_jobs.status = 'definitions'`
+7.5. **Generate sentence translations** — Claude Haiku 3.5 via OpenRouter
+   - One LLM call per target language per video (all segments batched into one call)
+   - ~20 segments × 11 target languages = ~220 rows per video
+   - `INSERT INTO segment_translations (video_id, start_ms, end_ms, source_text, target_language, translation)`
 8. **Link words to video** — `INSERT INTO video_words (video_id, vocab_word_id, start_ms, end_ms, display_text, word_index)`
 9. **Mark ready** — `videos.status = 'ready'`, `pipeline_jobs.status = 'ready'`
 
-*Note: No Google Translate step — LLM generates definitions directly in each target language. Sentence-level translation is planned for a future milestone.*
+*Note: No Google Translate step — LLM generates definitions and sentence translations directly in each target language.*
         """)
 
     st.markdown("---")
@@ -1600,12 +1629,13 @@ CREATE TABLE comments (
 | vocab_words | ~5,000 | ~15,000 | Unique words across videos |
 | word_definitions | ~60,000 | ~180,000 | 15K words × 12 langs |
 | video_words | ~5,000 | ~60,000 | ~50 words/video × 1,200 |
+| segment_translations | ~2,200 | ~264,000 | ~220 rows/video (20 segs × 11 langs) × 1,200 |
 | flashcards | ~500 | ~50,000 | ~10 cards/user × 5K users |
 | review_logs | ~2,000 | ~500,000 | ~100 reviews/user × 5K users |
 | user_views | ~2,000 | ~100,000 | Users × videos watched |
 | daily_progress | ~3,000 | ~150,000 | Users × active days |
 
-**Total DB size at 12 months: ~50-100 MB** (Supabase Pro limit: 8 GB)
+**Total DB size at 12 months: ~55-110 MB** (Supabase Pro limit: 8 GB)
     """)
 
     st.subheader("Design Decisions")
@@ -1617,7 +1647,7 @@ CREATE TABLE comments (
 5. **Contextual definitions** — Same word gets different definitions per video context ("bank" = river bank vs financial bank).
 6. **No decks** — Single implicit deck per user in Phase 1.
 7. **On-device TTS** — expo-speech for pronunciation. Pre-generated TTS deferred to Phase 2.
-8. **Sentence translation** — Not yet implemented. Planned as a future feature (LLM word definitions don't compose into good sentence translations).
+8. **Sentence translation** — Implemented via `segment_translations` table. One LLM call per target language per video batches all ~20 segments. Keyed on `(video_id, start_ms, target_language)`. Roughly doubles per-video LLM cost (~$0.005 → ~$0.01 per video). Translation displayed as subtitle line 3 in SubtitleDrawer.
     """)
 
 with tab6:
@@ -1639,9 +1669,9 @@ with tab6:
 
     # ── Milestone 1: Database + User System (DONE) ──
     st.subheader("Milestone 1: Database + User System")
-    st.caption("Set up all 14 tables. Wire up user creation, onboarding, and profile. This is the foundation for everything.")
+    st.caption("Set up all 15 tables. Wire up user creation, onboarding, and profile. This is the foundation for everything.")
 
-    st.checkbox("1.1 — Run initial migration (all 14 tables from database_design.md)", value=True, key="m1_1")
+    st.checkbox("1.1 — Run initial migration (all 15 tables from database_design.md)", value=True, key="m1_1")
     st.checkbox("1.2 — Verify tables in Supabase dashboard", value=True, key="m1_2")
     st.checkbox("1.3 — Verify RLS policies are active (test with anon key — should be blocked)", value=True, key="m1_3")
     st.checkbox("1.4 — Create DB trigger: auto-insert users row on auth.users signup", value=True, key="m1_4")
