@@ -12,9 +12,10 @@ Steps:
    STT: Extract audio → Groq Whisper → word-level timestamps
 4. Upload video + thumbnail + bboxes.json to R2
 5. Word segmentation (jieba for Chinese)
-6. Generate translations + definitions via Claude Haiku 3.5 (OpenRouter)
-7. Insert vocab_words, word_definitions, video_words into Supabase
-8. Mark video status='ready'
+6. Generate word translations + definitions via Claude Haiku 3.5 (OpenRouter)
+7. Generate segment translations via Claude Haiku 3.5 (one call per target language)
+8. Insert vocab_words, word_definitions, video_words, segment_translations into Supabase
+9. Mark video status='ready'
 
 Usage:
     python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4
@@ -746,6 +747,20 @@ def upload_to_r2(local_path: str, r2_key: str) -> str:
     return public_url
 
 
+def download_from_r2(r2_key: str, local_path: str) -> bool:
+    """Download a file from R2 to a local path. Returns True on success."""
+    if not R2_ENDPOINT or not R2_ACCESS_KEY:
+        print(f"  [R2 SKIP] No R2 credentials — cannot download {r2_key}")
+        return False
+    try:
+        r2 = get_r2_client()
+        r2.download_file(R2_BUCKET_NAME, r2_key, local_path)
+        return True
+    except Exception as e:
+        print(f"  WARNING: R2 download failed for {r2_key}: {e}")
+        return False
+
+
 # ─── Step 3: Insert Video Row ───
 
 def insert_video_row(video_id: str, title: str, language: str, duration_sec: int,
@@ -1117,7 +1132,104 @@ def generate_all_definitions(
     return all_defs
 
 
-# ─── Step 7: Insert into Supabase ───
+# ─── Step 7: Segment Translations ───
+
+def generate_segment_translations(
+    segments: list[dict], source_lang: str, target_lang: str,
+) -> dict[int, str]:
+    """Translate all spoken segments for one target language in a single batched LLM call.
+
+    Args:
+        segments: list of {start_ms, end_ms, text}
+        source_lang: language code of the source content (e.g. "zh")
+        target_lang: language code to translate into (e.g. "en")
+    Returns:
+        {start_ms: translated_text}
+    """
+    if not segments:
+        return {}
+
+    source_name = get_source_lang_name(source_lang)
+    target_name = get_source_lang_name(target_lang)
+
+    batch = [{"id": seg["start_ms"], "text": seg["text"]} for seg in segments]
+    batch_json = json.dumps(batch, ensure_ascii=False)
+
+    prompt = (
+        f"Translate the following {source_name} subtitles into {target_name}. "
+        f"Return ONLY a JSON array with the same structure, where each object has "
+        f"\"id\" (unchanged integer) and \"translation\" (the translated text).\n\n"
+        f"{batch_json}"
+    )
+
+    try:
+        response = llm.chat.completions.create(
+            model=LLM_MODEL,
+            messages=[
+                {"role": "system", "content": (
+                    f"You are a professional subtitle translator. "
+                    f"Translate {source_name} subtitles into natural {target_name}. "
+                    f"Preserve meaning and tone. Return only valid JSON, no markdown."
+                )},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.1,
+            max_tokens=max(500, len(segments) * 100),
+        )
+        content = response.choices[0].message.content.strip()
+
+        # Strip markdown code fences if the model included them
+        if content.startswith("```"):
+            lines = content.splitlines()
+            content = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+
+        results = json.loads(content)
+        return {item["id"]: item["translation"] for item in results}
+
+    except Exception as e:
+        print(f"    WARNING: LLM error for segment translations → {target_lang}: {e}")
+        return {}
+
+
+def insert_segment_translations(
+    video_id: str, spoken_segments: list[dict],
+    all_seg_translations: dict[str, dict[int, str]],
+):
+    """Batch-insert segment_translations rows into Supabase.
+
+    Args:
+        video_id: UUID of the video
+        spoken_segments: list of {start_ms, end_ms, text} (source text)
+        all_seg_translations: {target_lang: {start_ms: translated_text}}
+    """
+    # Build a start_ms → segment map for source_text + end_ms lookups
+    seg_by_start = {seg["start_ms"]: seg for seg in spoken_segments}
+
+    rows = []
+    for target_lang, trans_map in all_seg_translations.items():
+        for start_ms, translation in trans_map.items():
+            seg = seg_by_start.get(start_ms)
+            if not seg or not translation:
+                continue
+            rows.append({
+                "video_id": video_id,
+                "start_ms": start_ms,
+                "end_ms": seg["end_ms"],
+                "source_text": seg["text"],
+                "target_language": target_lang,
+                "translation": translation,
+                "llm_provider": LLM_MODEL,
+            })
+
+    if rows:
+        for i in range(0, len(rows), 50):
+            supabase.table("segment_translations").upsert(
+                rows[i:i + 50], on_conflict="video_id,start_ms,target_language"
+            ).execute()
+    print(f"  Inserted {len(rows)} segment_translations ({len(spoken_segments)} segments × {len(all_seg_translations)} languages)")
+
+
+# ─── Step 8: Insert vocab into Supabase ───
 
 def insert_vocab_and_definitions(
     video_id: str, words: list[str], all_definitions: dict[str, dict[str, dict]],
@@ -1290,16 +1402,16 @@ def main():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # Step 1: Normalize
-        print("[1/8] Normalizing video...")
+        print("[1/9] Normalizing video...")
         norm_path, duration_sec = normalize_video(video_path, tmpdir)
 
         # Step 2: Run OCR (always — detect burned-in text positions)
-        print("[2/8] Running OCR...")
+        print("[2/9] Running OCR...")
         bbox_data_ocr = run_ocr(norm_path, video_id)
 
         # Step 3: Run STT (always — extract audio transcript with word timing)
         bbox_data_stt = None
-        print("[3/8] Running STT (Groq Whisper)...")
+        print("[3/9] Running STT (Groq Whisper)...")
         audio_path = extract_audio(norm_path, tmpdir)
         if audio_path and groq:
             try:
@@ -1341,7 +1453,7 @@ def main():
         thumb_path = extract_thumbnail(norm_path, tmpdir, duration_sec)
 
         # Step 4: Upload to R2
-        print("[4/8] Uploading to R2...")
+        print("[4/9] Uploading to R2...")
         cdn_url = upload_to_r2(norm_path, f"videos/{video_id}/video.mp4")
         thumb_url = upload_to_r2(thumb_path, f"videos/{video_id}/thumbnail.jpg")
 
@@ -1391,7 +1503,7 @@ def main():
         print(f"  Saved locally: {local_bbox_path}")
 
         # Step 5: Word segmentation — prefer STT (better word boundaries) over OCR
-        print("[5/8] Segmenting words...")
+        print("[5/9] Segmenting words...")
         seg_source = bbox_data_stt if bbox_data_stt else bbox_data_ocr
         unique_words, word_occurrences = segment_words(seg_source, language)
 
@@ -1403,32 +1515,63 @@ def main():
 
         # Step 6: LLM definitions — all words × all target languages
         if args.reuse_definitions:
-            print("[6/8] Reusing existing definitions from Supabase...")
+            print("[6/9] Reusing existing definitions from Supabase...")
             all_definitions = reuse_existing_definitions(unique_words, language)
             missing = [w for w in unique_words if w not in all_definitions or not all_definitions[w]]
             if missing:
                 print(f"  {len(missing)} words have no existing definitions: {missing[:5]}{'...' if len(missing) > 5 else ''}")
         else:
-            print("[6/8] Generating definitions via Claude Haiku 3.5...")
+            print("[6/9] Generating definitions via Claude Haiku 3.5...")
             all_definitions = generate_all_definitions(unique_words, word_sentences, language)
+
+        # Step 7: Generate segment translations — one LLM call per target language
+        spoken_segments = [
+            {
+                "start_ms": seg["start_ms"],
+                "end_ms": seg["end_ms"],
+                "text": seg["detections"][0]["text"],
+            }
+            for seg in seg_source.get("segments", [])
+            if seg.get("detections") and seg["detections"][0].get("text", "").strip()
+        ]
+        if not args.dry_run and spoken_segments:
+            print("[7/9] Generating segment translations...")
+            target_langs = [t for t in TARGET_LANGUAGES if t["code"] != language]
+            all_seg_translations: dict[str, dict[int, str]] = {}
+            for i, target in enumerate(target_langs):
+                trans_map = generate_segment_translations(spoken_segments, language, target["code"])
+                if trans_map:
+                    all_seg_translations[target["code"]] = trans_map
+                if (i + 1) % 5 == 0:
+                    print(f"    Progress: {i + 1}/{len(target_langs)} languages")
+            print(f"  Translations complete: {len(all_seg_translations)}/{len(target_langs)} languages ({len(spoken_segments)} segments)")
+        elif not args.dry_run:
+            all_seg_translations = {}
+            print("[7/9] No spoken segments — skipping translations")
+        else:
+            all_seg_translations = {}
+            print("[7/9] [DRY RUN] Skipping segment translation generation")
 
         if not args.dry_run:
             started_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
             try:
-                # Step 7: Insert into Supabase
-                print("[7/8] Inserting into Supabase...")
+                # Step 8: Insert into Supabase
+                print("[8/9] Inserting into Supabase...")
                 insert_vocab_and_definitions(
                     video_id, unique_words, all_definitions,
                     word_occurrences, language,
                 )
+                if all_seg_translations:
+                    insert_segment_translations(video_id, spoken_segments, all_seg_translations)
 
-                # Step 8: Mark ready
-                print("[8/8] Marking video ready...")
+                # Step 9: Mark ready
+                print("[9/9] Marking video ready...")
                 mark_video_ready(video_id, started_at)
             except Exception as e:
                 print(f"\n  ERROR during Supabase insert: {e}")
                 print("  Cleaning up — deleting partial video data...")
                 try:
+                    supabase.table("segment_translations").delete().eq("video_id", video_id).execute()
                     supabase.table("video_words").delete().eq("video_id", video_id).execute()
                     supabase.table("word_definitions").delete().eq("video_id", video_id).execute()
                     supabase.table("videos").delete().eq("id", video_id).execute()
@@ -1438,8 +1581,8 @@ def main():
                     print(f"  Manual cleanup needed for video_id: {video_id}")
                 raise
         else:
-            print("[7/8] [DRY RUN] Skipping Supabase inserts")
-            print("[8/8] [DRY RUN] Skipping status update")
+            print("[8/9] [DRY RUN] Skipping Supabase inserts")
+            print("[9/9] [DRY RUN] Skipping status update")
 
     elapsed = time.time() - t_start
     print(f"\n{'=' * 60}")
@@ -1450,6 +1593,7 @@ def main():
     print(f"  Words: {len(unique_words)}")
     print(f"  Definitions: {len(unique_words)} words × {num_langs} languages = {len(unique_words) * num_langs}")
     print(f"  Segments: {len(bbox_data['segments'])}")
+    print(f"  Segment translations: {len(spoken_segments)} segments × {len(all_seg_translations)} languages = {len(spoken_segments) * len(all_seg_translations)}")
     if args.dry_run:
         print(f"  [DRY RUN] No data written to Supabase/R2")
     print(f"{'=' * 60}\n")
@@ -1504,8 +1648,104 @@ def backfill_pinyin():
     print()
 
 
+def backfill_translations():
+    """Backfill segment_translations for all ready videos that have none yet."""
+    print("\n=== Backfilling segment translations for ready videos ===\n")
+
+    # Fetch all ready videos
+    result = (
+        supabase.table("videos")
+        .select("id, language")
+        .eq("status", "ready")
+        .execute()
+    )
+    videos = result.data
+    print(f"  Found {len(videos)} ready videos\n")
+
+    if not videos:
+        print("  Nothing to backfill!")
+        return
+
+    processed = 0
+    skipped = 0
+
+    for video in videos:
+        video_id = video["id"]
+        language = video["language"]
+
+        # Check if segment_translations already exist for this video
+        existing = (
+            supabase.table("segment_translations")
+            .select("id", count="exact")
+            .eq("video_id", video_id)
+            .limit(1)
+            .execute()
+        )
+        if existing.data:
+            skipped += 1
+            continue
+
+        print(f"  Processing video {video_id} (language={language})...")
+
+        # Download transcript.json from R2 (fall back to bboxes.json if not available)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            local_transcript = os.path.join(tmpdir, "transcript.json")
+            if not download_from_r2(f"videos/{video_id}/transcript.json", local_transcript):
+                local_bboxes = os.path.join(tmpdir, "bboxes.json")
+                if not download_from_r2(f"videos/{video_id}/bboxes.json", local_bboxes):
+                    print(f"    Skipping — no transcript or bboxes in R2")
+                    skipped += 1
+                    continue
+                with open(local_bboxes, encoding="utf-8") as f:
+                    transcript_data = json.load(f)
+            else:
+                with open(local_transcript, encoding="utf-8") as f:
+                    transcript_data = json.load(f)
+
+            # Extract spoken segments
+            spoken_segments = [
+                {
+                    "start_ms": seg["start_ms"],
+                    "end_ms": seg["end_ms"],
+                    "text": seg["detections"][0]["text"],
+                }
+                for seg in transcript_data.get("segments", [])
+                if seg.get("detections") and seg["detections"][0].get("text", "").strip()
+            ]
+
+            if not spoken_segments:
+                print(f"    Skipping — no spoken segments found")
+                skipped += 1
+                continue
+
+            print(f"    {len(spoken_segments)} spoken segments, generating translations...")
+
+            # Generate translations for all target languages (excluding source)
+            target_langs = [t for t in TARGET_LANGUAGES if t["code"] != language]
+            all_seg_translations: dict[str, dict[int, str]] = {}
+            for target in target_langs:
+                trans_map = generate_segment_translations(spoken_segments, language, target["code"])
+                if trans_map:
+                    all_seg_translations[target["code"]] = trans_map
+
+            if all_seg_translations:
+                insert_segment_translations(video_id, spoken_segments, all_seg_translations)
+                processed += 1
+            else:
+                print(f"    WARNING: No translations generated for {video_id}")
+                skipped += 1
+
+        if processed % 10 == 0 and processed > 0:
+            print(f"\n  Progress: {processed} processed, {skipped} skipped\n")
+
+    print(f"\n  Backfill complete: {processed} videos updated, {skipped} skipped")
+    print()
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--backfill-pinyin":
         backfill_pinyin()
+    elif len(sys.argv) > 1 and sys.argv[1] == "--backfill-translations":
+        backfill_translations()
     else:
         main()
