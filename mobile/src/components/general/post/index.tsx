@@ -33,6 +33,7 @@ import SubtitleDrawer, { COLLAPSED_HEIGHT } from "./SubtitleDrawer";
 import WordPopup, { WordPopupData } from "./wordPopup";
 import { useSubtitles, useTranscript } from "../../../hooks/useSubtitles";
 import { useWordDefinitions } from "../../../hooks/useWordDefinitions";
+import { useSegmentTranslations } from "../../../hooks/useSegmentTranslations";
 import { findWordMatch } from "./wordMatcher";
 import * as Haptics from "expo-haptics";
 
@@ -54,6 +55,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
       (state: RootState) => state.language.devMuted,
     );
     const { data: wordDefs } = useWordDefinitions(item.id, nativeLanguage);
+    const { data: segTranslations } = useSegmentTranslations(item.id, nativeLanguage);
     const saveFlashcard = useSaveFlashcard();
     const [isPaused, setIsPaused] = useState(false);
     const [popupData, setPopupData] = useState<WordPopupData | null>(null);
@@ -417,6 +419,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
             currentTimeMs={currentTimeMs}
             highlightRange={highlightRange}
             wordDefs={wordDefs}
+            segTranslations={segTranslations}
             language={item.language}
             onWordTap={(word, fullText, tapX, tapY, detectionIndex, charIndex) => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
