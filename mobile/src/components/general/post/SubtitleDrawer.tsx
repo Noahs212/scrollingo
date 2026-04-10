@@ -43,6 +43,7 @@ interface Props {
   currentTimeMs: number;
   highlightRange?: HighlightRange | null;
   wordDefs?: WordDefinition[];
+  segTranslations?: Map<number, string>;
   language?: string;
   onWordTap: (
     word: string,
@@ -173,6 +174,7 @@ export default function SubtitleDrawer({
   currentTimeMs,
   highlightRange,
   wordDefs,
+  segTranslations,
   language,
   onWordTap,
   onSeek,
@@ -252,14 +254,10 @@ export default function SubtitleDrawer({
 
   if (!subtitleData || segments.length === 0) return null;
 
-  // Build sentence translation from word definitions
-  const activeTranslation = useMemo(() => {
-    if (!activeText || !wordDefs || wordDefs.length === 0) return "";
-    const wordsInOrder = wordDefs
-      .filter((wd) => currentTimeMs >= wd.start_ms - 2000 && currentTimeMs < wd.end_ms + 2000)
-      .sort((a, b) => a.word_index - b.word_index);
-    return wordsInOrder.map((wd) => wd.translation).join(" ");
-  }, [activeText, wordDefs, currentTimeMs]);
+  // Sentence translation from segment_translations table
+  const activeTranslation = activeSegment
+    ? (segTranslations?.get(activeSegment.start_ms) ?? "")
+    : "";
 
   // --- Collapsed: transcript | translation side by side ---
   const collapsedContent = (
@@ -405,13 +403,7 @@ export default function SubtitleDrawer({
               {/* Right: translation */}
               <View style={styles.transcriptRight}>
                 <Text style={[styles.transcriptTranslation, isActive && styles.transcriptTranslationActive]} numberOfLines={2}>
-                  {(() => {
-                    if (!wordDefs) return "";
-                    const segWords = wordDefs
-                      .filter((wd) => seg.start_ms <= wd.start_ms + 2000 && wd.end_ms - 2000 <= seg.end_ms)
-                      .sort((a, b) => a.word_index - b.word_index);
-                    return segWords.map((wd) => wd.translation).join(" ") || "";
-                  })()}
+                  {segTranslations?.get(seg.start_ms) ?? ""}
                 </Text>
               </View>
             </Pressable>
