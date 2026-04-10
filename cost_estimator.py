@@ -1291,60 +1291,61 @@ with tab4:
 | ID | Requirement |
 |----|-------------|
 | N1 | Monthly infrastructure cost ≤ $85 at 10K MAU |
-| N2 | App binary < 50 MB (dictionaries downloaded on-demand) |
+| N2 | App binary < 50 MB |
 | N3 | Video start-to-play < 2 seconds on 4G |
-| N4 | Flashcard review works fully offline |
-| N5 | ~~Dictionary lookup < 100ms (local SQLite)~~ → Removed (definitions served from Supabase, pre-loaded per video) |
+| N4 | ~~Flashcard review works fully offline~~ → Deferred to Phase 2 (MMKV) |
+| N5 | ~~Dictionary lookup < 100ms (local SQLite)~~ → Removed (definitions pre-loaded from Supabase per video) |
     """)
 
 with tab5:
     st.header("Database Design")
-    st.markdown("Supabase PostgreSQL | 12 tables | Phase 1")
+    st.markdown("Supabase PostgreSQL | 14 tables | Phase 1")
     st.markdown("---")
 
     st.subheader("Entity Relationships")
     st.code("""
-users ─────────────┬──────────────┬───────────────┬──────────────┐
-                   │              │               │              │
-              user_views     user_likes     user_bookmarks   comments
-                   │              │               │              │
-                   └──────┬───────┘               │              │
-                          │                       │              │
-                       videos ────────────── video_words ────────┘
-                          │                    │
-                     pipeline_jobs        vocab_words ──── word_definitions
-                                               │
-                                          flashcards
-                                               │
-                                        daily_progress
+users ─────┬──────────┬───────────┬────────────┬──────────────┐
+           │          │           │            │              │
+      user_views  user_likes  user_bookmarks  comments   user_follows
+           │          │           │            │
+           └────┬─────┘           │            │
+                │                 │            │
+             videos ──────── video_words ──────┘
+                │                 │
+           pipeline_jobs     vocab_words ──── word_definitions
+                                  │
+                             flashcards ──── review_logs
+                                  │
+                           daily_progress
     """, language=None)
 
     st.subheader("Table Summary")
     st.markdown("""
 | Table | Purpose | Req |
 |-------|---------|-----|
-| `users` | Profile, language prefs, streak, stats | R7, R8, R18-R21, R26 |
-| `videos` | Video metadata, status, counts | R1-R5, R29, R32 |
-| `vocab_words` | Canonical word entries per language (word, frequency, TTS URL, pinyin) | R11, R22, R31 |
-| `word_definitions` | LLM contextual definitions per (word, target_lang, sentence_context) | R11, R24, R30 |
-| `video_words` | Links words in a video to their timestamps + definitions | R10, R11 |
-| `flashcards` | User's saved words with FSRS SRS state (ts-fsrs) | R17-R19, R21 |
+| `users` | Profile, language prefs, streak, stats, max_reviews_per_day | R7, R8, R22 |
+| `videos` | Video metadata, status, counts, subtitle_source, creator_id | R1-R5, R13-R15 |
+| `vocab_words` | Canonical word entries per language (word, pinyin, frequency) | R11, R28 |
+| `word_definitions` | LLM contextual definitions per (vocab_word, video, target_language) | R11, R28 |
+| `video_words` | Links words to timestamps in a video (word_index, start_ms, end_ms) | R10, R16 |
+| `flashcards` | User's saved words with FSRS SRS state + starred flag | R17, R18 |
 | `review_logs` | Per-review analytics + FSRS state snapshots | R18 |
-| `user_views` | Watch tracking (completion %, view count) | R2, R3, R27 |
+| `user_views` | Watch tracking (completion %, view count) | R2, R3 |
 | `user_likes` | Liked videos | R6 |
 | `user_bookmarks` | Bookmarked videos | R6 |
-| `comments` | Video comments | R6 |
-| `daily_progress` | Daily streak + activity stats | R26-R28 |
-| `pipeline_jobs` | AI pipeline tracking per video | R29, R30, R32 |
+| `user_follows` | Follower/following relationships | R7 |
+| `comments` | Video comments (max 500 chars) | R6 |
+| `daily_progress` | Daily streak + activity stats | R30-R32 |
+| `pipeline_jobs` | AI pipeline tracking per video | R33, R34, R37 |
     """)
 
     st.markdown("---")
     st.subheader("Schema DDL")
 
     with st.expander("1. users", expanded=False):
+        st.markdown("PK = Supabase auth UID directly (no separate supabase_uid). RLS uses `auth.uid()`.")
         st.code("""CREATE TABLE users (
-    id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    supabase_uid        TEXT UNIQUE NOT NULL,
+    id                  UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     username            TEXT UNIQUE,
     display_name        TEXT,
     avatar_url          TEXT,
@@ -1352,43 +1353,51 @@ users ─────────────┬──────────�
     target_language     TEXT NOT NULL DEFAULT 'en',
     learning_languages  TEXT[] NOT NULL DEFAULT '{"en"}',
     daily_goal_minutes  SMALLINT NOT NULL DEFAULT 10,
+    max_reviews_per_day SMALLINT NOT NULL DEFAULT 20,
     streak_days         INT NOT NULL DEFAULT 0,
     streak_last_date    DATE,
+    longest_streak      INT NOT NULL DEFAULT 0,
     total_words_learned INT NOT NULL DEFAULT 0,
     total_videos_watched INT NOT NULL DEFAULT 0,
+    follower_count      INT NOT NULL DEFAULT 0,
+    following_count     INT NOT NULL DEFAULT 0,
     premium             BOOLEAN NOT NULL DEFAULT FALSE,
+    preferences         JSONB NOT NULL DEFAULT '{}',
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
     with st.expander("2. videos", expanded=False):
         st.code("""CREATE TABLE videos (
-    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title             TEXT NOT NULL,
     description       TEXT,
     language          TEXT NOT NULL,
-    difficulty        TEXT,              -- Free-form (Phase 2: CEFR/HSK)
-    duration_sec      SMALLINT NOT NULL,
+    difficulty        TEXT,
+    duration_sec      SMALLINT NOT NULL CHECK (duration_sec > 0),
     tags              TEXT[] DEFAULT '{}',
     r2_video_key      TEXT NOT NULL,
     cdn_url           TEXT NOT NULL,
     thumbnail_url     TEXT,
     transcript_text   TEXT,
+    subtitle_source   TEXT CHECK (subtitle_source IN ('stt', 'ocr', 'both')),
     status            TEXT NOT NULL DEFAULT 'processing'
         CHECK (status IN ('uploading','processing','ready','failed')),
     seeded_by         TEXT,
     processed_at      TIMESTAMPTZ,
+    creator_id        UUID REFERENCES users(id),
     view_count        INT NOT NULL DEFAULT 0,
     like_count        INT NOT NULL DEFAULT 0,
     comment_count     INT NOT NULL DEFAULT 0,
     bookmark_count    INT NOT NULL DEFAULT 0,
-    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
     with st.expander("3. vocab_words", expanded=False):
         st.markdown("Canonical word entries. One row per unique word per language. TTS pre-generated. POS lives in `word_definitions` (context-dependent).")
         st.code("""CREATE TABLE vocab_words (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     word            TEXT NOT NULL,
     language        TEXT NOT NULL,
     frequency_rank  INT,
@@ -1401,34 +1410,35 @@ users ─────────────┬──────────�
 );""", language="sql")
 
     with st.expander("4. word_definitions", expanded=False):
-        st.markdown("LLM-generated contextual definitions. Same word can have different meanings per sentence context.")
+        st.markdown("LLM-generated contextual definitions. Same word gets different definitions per video context (sentence it appears in).")
         st.code("""CREATE TABLE word_definitions (
-    id                     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vocab_word_id          UUID NOT NULL REFERENCES vocab_words(id) ON DELETE CASCADE,
+    video_id               UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
     target_language        TEXT NOT NULL,
-    sentence_context       TEXT,
-    translation            TEXT NOT NULL,           -- Just the word, not the sentence
-    contextual_definition  TEXT NOT NULL,           -- LLM explanation in target language
+    translation            TEXT NOT NULL,
+    contextual_definition  TEXT NOT NULL,
     part_of_speech         TEXT,
+    source_sentence        TEXT,
     llm_provider           TEXT,
     created_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE(vocab_word_id, target_language, sentence_context)
+    UNIQUE(vocab_word_id, video_id, target_language)
 );""", language="sql")
         st.markdown("**Example**: 'bank' in 'river bank' → orilla (es) vs 'bank' in 'go to the bank' → banco (es)")
 
     with st.expander("5. video_words", expanded=False):
-        st.markdown("Links words to their timestamps in a video. Replaces old `subtitles.word_data` JSONB.")
+        st.markdown("Links words to their timestamps in a video. Definitions resolved at query time via JOIN on `(vocab_word_id, video_id, target_language)`.")
         st.code("""CREATE TABLE video_words (
-    id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     video_id        UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
     vocab_word_id   UUID NOT NULL REFERENCES vocab_words(id) ON DELETE CASCADE,
-    definition_id   UUID REFERENCES word_definitions(id),
-    start_ms        INT NOT NULL,
+    start_ms        INT NOT NULL CHECK (start_ms >= 0),
     end_ms          INT NOT NULL,
     word_index      SMALLINT NOT NULL,
     display_text    TEXT NOT NULL,
-    transcript_source TEXT CHECK (transcript_source IN ('stt', 'ocr', 'merged')),  -- M6.5: tracks extraction method
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    transcript_source TEXT,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CHECK (end_ms > start_ms)
 );""", language="sql")
 
     with st.expander("6. flashcards + review_logs", expanded=False):
@@ -1496,11 +1506,12 @@ CREATE TABLE user_bookmarks (
 );
 
 CREATE TABLE comments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     video_id UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     body TEXT NOT NULL CHECK (length(body) <= 500),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
     with st.expander("11. daily_progress", expanded=False):
@@ -1514,17 +1525,27 @@ CREATE TABLE comments (
     PRIMARY KEY (user_id, date)
 );""", language="sql")
 
-    with st.expander("12. pipeline_jobs", expanded=False):
+    with st.expander("13. user_follows", expanded=False):
+        st.code("""CREATE TABLE user_follows (
+    follower_id  UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    following_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (follower_id, following_id),
+    CHECK (follower_id != following_id)
+);""", language="sql")
+
+    with st.expander("14. pipeline_jobs", expanded=False):
         st.code("""CREATE TABLE pipeline_jobs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     video_id UUID NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
     status TEXT NOT NULL DEFAULT 'pending'
-        CHECK (status IN ('pending','stt','translating','definitions','ready','failed')),
+        CHECK (status IN ('pending','extracting','translating','definitions','ready','failed')),
     error_message TEXT,
     retry_count SMALLINT NOT NULL DEFAULT 0,
     started_at TIMESTAMPTZ,
     completed_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );""", language="sql")
 
     st.markdown("---")
@@ -1532,33 +1553,41 @@ CREATE TABLE comments (
 
     with st.expander("Word Tap → Flashcard Save"):
         st.markdown("""
-1. User watches video (`video_id = X`)
-2. `SubtitleOverlay` renders words from `video_words WHERE video_id = X`
-3. User taps **"café"**
-   - Look up `video_words.vocab_word_id` → `vocab_words` (get `tts_url`, `pinyin`)
-   - Look up `video_words.definition_id` → `word_definitions` (get `translation`, `contextual_definition`)
-   - Bottom sheet shows: **café** → "coffee" + "The beverage, ordering context" + play audio
-4. User taps **Save**
-   - `POST /api/v1/flashcards` with `vocab_word_id`, `definition_id`
+1. User watches video (`video_id = X`, native language = `es`)
+2. App fetches word data via two queries:
+   - `video_words JOIN vocab_words` → get words + pinyin + timestamps
+   - `word_definitions WHERE video_id = X AND target_language = 'es'` → get translations + definitions
+3. `SubtitleTapOverlay` (OCR) or `SubtitleDrawer` (STT) renders tappable words
+4. User taps **"好"**
+   - `wordMatcher.ts` matches tapped char position to a `WordDefinition` by text + time proximity
+   - `WordPopup` shows: **好** (hǎo) → "good" + "fine, okay" + expo-speech pronunciation
+5. User taps **Save**
+   - `useSaveFlashcard` mutation → Supabase upsert into `flashcards` table
    - Flashcard created with FSRS defaults (`state=0/new`, `stability=0`, `difficulty=0`)
-   - Saved to MMKV locally + synced to server
+   - Dedup: UNIQUE index on `(user_id, vocab_word_id, definition_id)` prevents duplicates
         """)
 
     with st.expander("AI Pipeline (per video)"):
         st.markdown("""
-1. Admin uploads video → `pipeline_jobs.status = 'pending'`
-2. **STT** (Groq Whisper): extract transcript + word timestamps
-   - `INSERT INTO vocab_words (word, language) ON CONFLICT DO NOTHING`
-   - `pipeline_jobs.status = 'stt'`
-3. **Translation + Definitions** (per native language):
-   - Google Translate: bulk translation
-   - LLM batch: contextual definitions for all words
-   - `INSERT INTO word_definitions ... ON CONFLICT DO NOTHING`
+1. Admin runs: `python3 scripts/pipeline.py --video source.mp4`
+2. **Normalize** video to 720p with FFmpeg (scale + pad + faststart)
+3. **Extract subtitles** — runs both OCR + STT, then merges:
+   - OCR: PaddleOCR PP-OCRv5 (VideOCR SSIM dedup) for burned-in text
+   - STT: Groq Whisper Turbo for audio → word-level timestamps
+   - `merge_ocr_stt()` combines both with fuzzy matching
+   - `pipeline_jobs.status = 'extracting'`
+4. **Upload** to R2: video.mp4, thumbnail.jpg, bboxes.json, transcript.json
+5. **Insert video row** in Supabase (`status='processing'`, `subtitle_source`)
+6. **Segment words** — jieba for Chinese, whitespace for English
+   - `INSERT INTO vocab_words ON CONFLICT DO NOTHING`
+7. **Generate definitions** — Claude Haiku 3.5 via OpenRouter
+   - One LLM call per word × 11 target languages (localized prompts)
+   - `INSERT INTO word_definitions (vocab_word_id, video_id, target_language, ...)`
    - `pipeline_jobs.status = 'definitions'`
-4. **Link words to video**:
-   - `INSERT INTO video_words (video_id, vocab_word_id, definition_id, start_ms, end_ms, ...)`
-5. Generate WebVTT → upload to R2
-6. `videos.status = 'ready'`, `pipeline_jobs.status = 'ready'`
+8. **Link words to video** — `INSERT INTO video_words (video_id, vocab_word_id, start_ms, end_ms, display_text, word_index)`
+9. **Mark ready** — `videos.status = 'ready'`, `pipeline_jobs.status = 'ready'`
+
+*Note: No Google Translate step — LLM generates definitions directly in each target language. Sentence-level translation is planned for a future milestone.*
         """)
 
     st.markdown("---")
@@ -1581,13 +1610,14 @@ CREATE TABLE comments (
 
     st.subheader("Design Decisions")
     st.markdown("""
-1. **Normalized definitions** — `vocab_words` + `word_definitions` instead of JSONB blobs. Same word across videos shares definitions, flashcards reference by FK.
-2. **FSRS over SM-2** — `ts-fsrs` package provides modern spaced repetition with per-card stability/difficulty. Review logs enable future per-user parameter optimization.
-3. **Flashcards reference, don't snapshot** — Cards store FKs to `vocab_words` + `word_definitions` + FSRS state. Client MMKV caches display data for offline.
-4. **No decks** — Single implicit deck per user in Phase 1. Add deck management in Phase 2.
-5. **No subtitles table** — Replaced by `video_words`. WebVTT files are R2 rendering artifacts, not source of truth.
-5. **Contextual definitions** — Same word gets different definitions per sentence context ("bank" = river bank vs financial bank).
-6. **No tts_cache** — TTS is pre-generated, tracked via `vocab_words.tts_url`.
+1. **Supabase auth UID as PK** — `users.id` references `auth.users(id)` directly. No dual-identity. All RLS uses `auth.uid()`.
+2. **Normalized definitions** — `vocab_words` + `word_definitions` instead of JSONB blobs. Keyed on `(vocab_word_id, video_id, target_language)`.
+3. **FSRS over SM-2** — `ts-fsrs` package provides modern spaced repetition. Review logs store full FSRS snapshots for future parameter optimization.
+4. **Flashcards reference, don't snapshot** — Cards store FKs + FSRS state. Display data resolved via JOINs at query time.
+5. **Contextual definitions** — Same word gets different definitions per video context ("bank" = river bank vs financial bank).
+6. **No decks** — Single implicit deck per user in Phase 1.
+7. **On-device TTS** — expo-speech for pronunciation. Pre-generated TTS deferred to Phase 2.
+8. **Sentence translation** — Not yet implemented. Planned as a future feature (LLM word definitions don't compose into good sentence translations).
     """)
 
 with tab6:
@@ -1836,15 +1866,15 @@ This means M11.4 ("batch LLM definitions for all languages") is already handled 
     st.subheader("Milestone 3.5: STT Subtitle Creation (Pipeline)")
     st.caption("Add Whisper STT path for videos WITHOUT burned-in subtitles. Extends the M3 pipeline with audio-based subtitle extraction.")
 
-    st.checkbox("3.5.1 — Get API key: Groq (Whisper Turbo, $0.000667/min)", key="m3_5_1")
-    st.checkbox("3.5.2 — Extract audio from video with FFmpeg → audio.mp3", key="m3_5_2")
-    st.checkbox("3.5.3 — Send audio to Groq Whisper → get transcript with word-level timestamps", key="m3_5_3")
-    st.checkbox("3.5.4 — Convert Whisper timestamps to same segment format as OCR output (start_ms, end_ms, text)", key="m3_5_4")
-    st.checkbox("3.5.5 — Generate bboxes.json with centered subtitle positions (no burned-in text to overlay — app renders visible subtitles)", key="m3_5_5")
-    st.checkbox("3.5.6 — Auto-detect subtitle source: check if video has burned-in text (OCR on 3 sample frames) → route to OCR or STT path", key="m3_5_6")
-    st.checkbox("3.5.7 — Upload audio.mp3 to R2 for future reference", key="m3_5_7")
-    st.checkbox("3.5.8 — Set video.subtitle_source = 'stt', 'ocr', or 'both' in DB", key="m3_5_8")
-    st.checkbox("3.5.9 — Test: process one video without subtitles → verify app shows generated subtitles", key="m3_5_9")
+    st.checkbox("3.5.1 — Get API key: Groq (Whisper Turbo, $0.000667/min)", value=True, key="m3_5_1")
+    st.checkbox("3.5.2 — Extract audio from video with FFmpeg → audio.mp3", value=True, key="m3_5_2")
+    st.checkbox("3.5.3 — Send audio to Groq Whisper → get transcript with word-level timestamps", value=True, key="m3_5_3")
+    st.checkbox("3.5.4 — Convert Whisper timestamps to same segment format as OCR output (start_ms, end_ms, text)", value=True, key="m3_5_4")
+    st.checkbox("3.5.5 — Generate bboxes.json with centered subtitle positions (no burned-in text to overlay — app renders visible subtitles)", value=True, key="m3_5_5")
+    st.checkbox("3.5.6 — Auto-detect subtitle source: check if video has burned-in text (OCR on 3 sample frames) → route to OCR or STT path", value=True, key="m3_5_6")
+    st.checkbox("3.5.7 — Upload audio.mp3 to R2 for future reference", value=True, key="m3_5_7")
+    st.checkbox("3.5.8 — Set video.subtitle_source = 'stt', 'ocr', or 'both' in DB", value=True, key="m3_5_8")
+    st.checkbox("3.5.9 — Test: process one video without subtitles → verify app shows generated subtitles", value=True, key="m3_5_9")
 
     with st.expander("M3.5 Details: OCR vs STT auto-detection"):
         st.markdown("""
@@ -2140,14 +2170,14 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
     st.subheader("Milestone 7: Social Features")
     st.caption("Likes, comments, bookmarks. Depends on M4 (need videos to interact with).")
 
-    st.checkbox("7.1 — Like button on video card: toggle INSERT/DELETE user_likes + optimistic like_count update", key="m7_1")
-    st.checkbox("7.2 — Bookmark button: toggle INSERT/DELETE user_bookmarks", key="m7_2")
-    st.checkbox("7.3 — Comment modal: fetch comments by video (cursor pagination), post new comment", key="m7_3")
+    st.checkbox("7.1 — Like button on video card: toggle INSERT/DELETE user_likes + optimistic like_count update", value=True, key="m7_1")
+    st.checkbox("7.2 — Bookmark button: toggle INSERT/DELETE user_bookmarks", value=True, key="m7_2")
+    st.checkbox("7.3 — Comment modal: fetch comments by video (cursor pagination), post new comment", value=True, key="m7_3")
     st.checkbox("7.4 — 'My Bookmarks' screen: list saved videos", key="m7_4")
-    st.checkbox("7.5 — Show like/comment/bookmark counts on video cards", key="m7_5")
-    st.checkbox("7.6 — Other user profile screen: tap creator name on video → view their profile", key="m7_6")
-    st.checkbox("7.7 — Follow/unfollow button on other users' profiles (user_follows table)", key="m7_7")
-    st.checkbox("7.8 — Follower/following counts on profiles", key="m7_8")
+    st.checkbox("7.5 — Show like/comment/bookmark counts on video cards", value=True, key="m7_5")
+    st.checkbox("7.6 — Other user profile screen: tap creator name on video → view their profile", value=True, key="m7_6")
+    st.checkbox("7.7 — Follow/unfollow button on other users' profiles (user_follows table)", value=True, key="m7_7")
+    st.checkbox("7.8 — Follower/following counts on profiles", value=True, key="m7_8")
 
     st.markdown("---")
 
@@ -2262,8 +2292,8 @@ Generated once in the pipeline via `pypinyin` library, stored in `vocab_words.pi
 | **M4** | Video feed in app + thumbnails + prefetch + view tracking | M3 | **Done** |
 | **M5** | Tappable subtitles + word popup (production version) | M4, M1.5 | **Done** |
 | **M6** | Flashcard save + FSRS review (ts-fsrs) + review hub | M5 | **Done** |
-| **M6.5** | Unified OCR+STT transcript — merge OCR text + STT timing, filter titles | M3.5, M5 | **In Progress** |
-| **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | 2-3 days |
+| **M6.5** | Unified OCR+STT transcript — merge OCR text + STT timing, filter titles | M3.5, M5 | **Done** (tests 6.5.9-6.5.12 pending) |
+| **M7** | Social (likes, comments, bookmarks, follows, profiles) | M4 | **Done** (7.4 My Bookmarks screen pending) |
 | **M10** | Go backend (centralize API + port pipeline) | M1, M2, M3 | 5-7 days |
 | **M11** | Content pipeline (batch 100 videos) | M10 | 3-5 days |
 | **M13** | Polish & launch | All above | 3-5 days |
