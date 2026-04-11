@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "format": "prettier \"**/*.{ts,tsx}\" --write",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "tunnel": "expo start --tunnel"
   },
   "jest": {
     "preset": "jest-expo",
@@ -41,6 +42,7 @@
   },
   "dependencies": {
     "@expo/metro-config": "^55.0.9",
+    "@expo/ngrok": "^4.1.0",
     "@expo/vector-icons": "^15.1.1",
     "@gorhom/bottom-sheet": "^5",
     "@react-navigation/material-bottom-tabs": "^6.2.29",
