@@ -878,89 +878,44 @@ def run_ocr(video_path: str, video_id: str) -> dict:
 # Languages we support as content/source languages
 SUPPORTED_SOURCE_LANGUAGES = {"zh", "en", "ja", "fr", "es"}
 
-def detect_content_language(*bbox_sources: dict | None) -> str | None:
+def detect_content_language(bbox_data: dict) -> str | None:
     """
-    Auto-detect content language from one or more OCR/STT bbox sources.
-
-    Accepts multiple sources so the caller can pass both bbox_data_stt and
-    bbox_data_ocr — their text is combined for a stronger signal.
-
-    Three-stage detection:
-      1. CJK character density: if >15% of non-whitespace characters are CJK
-         ideographs (U+4E00–U+9FFF and extensions), the content is East Asian.
-         Chinese and Japanese both use CJK ideographs, so a second check
-         distinguishes them:
-           - Hiragana (U+3040–U+309F) or katakana (U+30A0–U+30FF) present
-             → Japanese ('ja'). Japanese mixes kana with kanji; Chinese never
-             uses kana.
-           - No kana → Chinese ('zh'), covering both Simplified and Traditional.
-         This sidesteps langdetect's well-known false-positive where Traditional
-         Chinese text (e.g. 說, 灣, 朋) is classified as Korean ('ko') because
-         Korean Hanja shares some ideograph codepoints. Hangul syllables
-         (U+AC00–U+D7A3) register 0% CJK density so Korean content falls
-         through to stage 2.
-      2. For Latin-script and other text, use langdetect.detect_langs() and
-         only accept the top result if confidence >= 0.90 and the code is in
-         SUPPORTED_SOURCE_LANGUAGES. Low-confidence or unsupported results
-         return None so the caller can apply its own fallback (default: 'zh').
-
-    Adding a new CJK language (e.g. Korean with Hanja): extend stage 1 with
-    its distinctive script range — don't rely on langdetect alone for short
-    CJK-heavy subtitle text.
+    Auto-detect the content language from OCR text.
+    Uses langdetect on the concatenated subtitle text.
+    Returns ISO 639-1 code or None if detection fails.
     """
-    # Collect text from all provided sources
-    all_text = []
-    for bbox_data in bbox_sources:
-        if not bbox_data:
-            continue
+    try:
+        from langdetect import detect, DetectorFactory
+        # Make detection deterministic
+        DetectorFactory.seed = 0
+
+        # Gather all detected text
+        all_text = []
         for seg in bbox_data.get("segments", []):
             for det in seg.get("detections", []):
                 text = det.get("text", "").strip()
                 if len(text) >= 2:
                     all_text.append(text)
 
-    if not all_text:
-        return None
+        if not all_text:
+            return None
 
-    combined = " ".join(all_text)
+        combined = " ".join(all_text)
+        detected = detect(combined)
 
-    # Stage 1: CJK ideograph density, then kana presence to split zh vs ja.
-    _CJK_RANGES = [(0x4E00, 0x9FFF), (0x3400, 0x4DBF), (0x20000, 0x2A6DF), (0xF900, 0xFAFF)]
-    def _is_cjk(ch: str) -> bool:
-        cp = ord(ch)
-        return any(lo <= cp <= hi for lo, hi in _CJK_RANGES)
+        # langdetect returns 'zh-cn' or 'zh-tw' for Chinese
+        if detected.startswith("zh"):
+            detected = "zh"
 
-    def _is_kana(ch: str) -> bool:
-        cp = ord(ch)
-        return 0x3040 <= cp <= 0x309F or 0x30A0 <= cp <= 0x30FF  # hiragana or katakana
+        if detected in SUPPORTED_SOURCE_LANGUAGES:
+            return detected
 
-    meaningful = [c for c in combined if not c.isspace()]
-    if meaningful:
-        cjk_density = sum(1 for c in meaningful if _is_cjk(c)) / len(meaningful)
-        if cjk_density > 0.15:
-            has_kana = any(_is_kana(c) for c in combined)
-            return "ja" if has_kana else "zh"
-
-    # Stage 2: langdetect with confidence threshold for Latin-script languages.
-    try:
-        from langdetect import detect_langs, DetectorFactory
-        DetectorFactory.seed = 0
-
-        results = detect_langs(combined)
-        if results:
-            top = results[0]
-            lang_code = top.lang
-            confidence = top.prob
-            if lang_code.startswith("zh"):
-                lang_code = "zh"
-            if confidence >= 0.90 and lang_code in SUPPORTED_SOURCE_LANGUAGES:
-                return lang_code
-            print(f"  WARNING: langdetect returned '{lang_code}' (confidence {confidence:.2f}) — below threshold, falling back to default")
+        print(f"  WARNING: Detected language '{detected}' is not a supported source language")
+        return detected
 
     except Exception as e:
         print(f"  WARNING: Language detection failed: {e}")
-
-    return None
+        return None
 
 
 # ─── Step 5: Word Segmentation ───
@@ -1477,10 +1432,11 @@ def main():
         bbox_data = bbox_data_ocr
         sub_source = "both" if bbox_data_stt else "ocr"
 
-        # Auto-detect language from subtitle text if not provided.
-        # Pass both STT and OCR so detection uses the combined text signal.
+        # Auto-detect language from subtitle text if not provided
+        # Prefer STT text (more accurate) over OCR text
         if not language:
-            language = detect_content_language(bbox_data_stt, bbox_data_ocr)
+            source = bbox_data_stt or bbox_data_ocr
+            language = detect_content_language(source)
             if language:
                 print(f"  Auto-detected language: {language}")
             else:
@@ -1499,19 +1455,18 @@ def main():
         # Step 4: Upload to R2
         print("[4/9] Uploading to R2...")
 
-        # Duplicate guard: abort if video.mp4 already exists in R2
+        # Duplicate guard — abort if video.mp4 already exists for this video_id
         if R2_ENDPOINT and R2_ACCESS_KEY:
             try:
-                r2_check = get_r2_client()
-                r2_check.head_object(Bucket=R2_BUCKET_NAME, Key=f"videos/{video_id}/video.mp4")
-                raise RuntimeError(
-                    f"R2 key videos/{video_id}/video.mp4 already exists — "
-                    "refusing to overwrite. Is this a duplicate video_id?"
-                )
-            except RuntimeError:
-                raise
-            except Exception:
-                pass  # Object does not exist — safe to proceed
+                _r2_check = get_r2_client()
+                _r2_check.head_object(Bucket=R2_BUCKET_NAME, Key=f"videos/{video_id}/video.mp4")
+                print(f"\n  WARNING: videos/{video_id}/video.mp4 already exists in R2.")
+                print("  Aborting to prevent overwriting another video's data.")
+                sys.exit(1)
+            except Exception as _head_err:
+                # head_object raises ClientError with 404 if object doesn't exist — that's fine
+                if hasattr(_head_err, "response") and _head_err.response.get("Error", {}).get("Code") not in ("404", "NoSuchKey"):
+                    raise
 
         cdn_url = upload_to_r2(norm_path, f"videos/{video_id}/video.mp4")
         thumb_url = upload_to_r2(thumb_path, f"videos/{video_id}/thumbnail.jpg")
@@ -1639,22 +1594,23 @@ def main():
                     print(f"  WARNING: Supabase cleanup failed: {cleanup_err}")
                     print(f"  Manual cleanup needed for video_id: {video_id}")
 
+                # Clean up R2 files
                 if R2_ENDPOINT and R2_ACCESS_KEY:
-                    r2_cleanup = get_r2_client()
-                    r2_files = [
+                    print("  Cleaning up R2 files...")
+                    _r2_cleanup = get_r2_client()
+                    for r2_key in [
                         f"videos/{video_id}/video.mp4",
                         f"videos/{video_id}/thumbnail.jpg",
                         f"videos/{video_id}/bboxes.json",
                         f"videos/{video_id}/stt.json",
                         f"videos/{video_id}/transcript.json",
                         f"videos/{video_id}/audio.mp3",
-                    ]
-                    for r2_key in r2_files:
+                    ]:
                         try:
-                            r2_cleanup.delete_object(Bucket=R2_BUCKET_NAME, Key=r2_key)
-                            print(f"  Deleted R2 object: {r2_key}")
-                        except Exception as r2_err:
-                            print(f"  WARNING: Failed to delete R2 object {r2_key}: {r2_err}")
+                            _r2_cleanup.delete_object(Bucket=R2_BUCKET_NAME, Key=r2_key)
+                            print(f"    Deleted R2: {r2_key}")
+                        except Exception as r2_del_err:
+                            print(f"    WARNING: Could not delete R2 {r2_key}: {r2_del_err}")
                 raise
         else:
             print("[8/9] [DRY RUN] Skipping Supabase inserts")

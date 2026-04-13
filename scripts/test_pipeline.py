@@ -932,3 +932,299 @@ class TestOCRRegression:
         assert "SSIM_THRESHOLD = 0.92" in videocr2_source
         assert "SUBTITLE_REGION_TOP = 0.5" in videocr2_source
         assert "SUBTITLE_REGION_BOTTOM = 0.85" in videocr2_source
+
+
+# ===========================================================================
+# Tests: Hardening Fix 1 — R2 cleanup on Supabase insert error
+# ===========================================================================
+
+class TestR2CleanupOnError:
+    """When the Supabase insert fails, R2 files for the video must be deleted."""
+
+    def _make_pipeline_mocks(self, tmp_path):
+        """Return a dict of common mocks needed to run main() up to the insert step."""
+        video_file = tmp_path / "video.mp4"
+        video_file.write_bytes(b"fake")
+        norm_file = tmp_path / "norm.mp4"
+        norm_file.write_bytes(b"fake norm")
+        thumb_file = tmp_path / "thumbnail.jpg"
+        thumb_file.write_bytes(b"fake thumb")
+        return {
+            "video_file": video_file,
+            "norm_file": norm_file,
+            "thumb_file": thumb_file,
+        }
+
+    @patch("pipeline.mark_video_ready")
+    @patch("pipeline.insert_vocab_and_definitions")
+    @patch("pipeline.generate_all_definitions")
+    @patch("pipeline.segment_words")
+    @patch("pipeline.run_ocr")
+    @patch("pipeline.get_r2_client")
+    @patch("pipeline.upload_to_r2")
+    @patch("pipeline.insert_video_row")
+    @patch("pipeline.extract_thumbnail")
+    @patch("pipeline.normalize_video")
+    @patch("pipeline.uuid.uuid4")
+    def test_r2_delete_called_for_all_six_keys_on_error(
+        self, mock_uuid, mock_normalize, mock_thumb, mock_insert_row,
+        mock_upload, mock_get_r2, mock_ocr, mock_segment, mock_defs,
+        mock_insert_vocab, mock_ready, tmp_path,
+    ):
+        """All 6 R2 keys are deleted when Supabase insert raises."""
+        mocks = self._make_pipeline_mocks(tmp_path)
+        mock_uuid.return_value = uuid.UUID(SAMPLE_VIDEO_ID)
+        mock_normalize.return_value = (str(mocks["norm_file"]), 30)
+        mock_thumb.return_value = str(mocks["thumb_file"])
+        mock_upload.return_value = "https://cdn/video.mp4"
+        mock_ocr.return_value = _make_bbox_data()
+        mock_segment.return_value = (["你好"], [
+            {"word": "你好", "start_ms": 0, "end_ms": 1000, "display_text": "你好", "sentence": "你好世界"},
+        ])
+        mock_defs.return_value = {}
+        mock_insert_row.return_value = {"id": SAMPLE_VIDEO_ID}
+
+        mock_r2 = MagicMock()
+        mock_get_r2.return_value = mock_r2
+        # head_object raises 404 (no duplicate) → pipeline continues
+        err_404 = Exception("NoSuchKey")
+        err_404.response = {"Error": {"Code": "404"}}
+        mock_r2.head_object.side_effect = err_404
+
+        # Make insert_vocab_and_definitions raise to trigger cleanup
+        mock_insert_vocab.side_effect = Exception("DB connection lost")
+
+        with patch("sys.argv", ["pipeline.py", "--video", str(mocks["video_file"]), "--language", "zh"]):
+            with pytest.raises(Exception, match="DB connection lost"):
+                pipeline.main()
+
+        deleted_keys = [c[1]["Key"] for c in mock_r2.delete_object.call_args_list]
+        expected_keys = [
+            f"videos/{SAMPLE_VIDEO_ID}/video.mp4",
+            f"videos/{SAMPLE_VIDEO_ID}/thumbnail.jpg",
+            f"videos/{SAMPLE_VIDEO_ID}/bboxes.json",
+            f"videos/{SAMPLE_VIDEO_ID}/stt.json",
+            f"videos/{SAMPLE_VIDEO_ID}/transcript.json",
+            f"videos/{SAMPLE_VIDEO_ID}/audio.mp3",
+        ]
+        for key in expected_keys:
+            assert key in deleted_keys, f"Expected R2 delete for {key}"
+
+    @patch("pipeline.mark_video_ready")
+    @patch("pipeline.insert_vocab_and_definitions")
+    @patch("pipeline.generate_all_definitions")
+    @patch("pipeline.segment_words")
+    @patch("pipeline.run_ocr")
+    @patch("pipeline.get_r2_client")
+    @patch("pipeline.upload_to_r2")
+    @patch("pipeline.insert_video_row")
+    @patch("pipeline.extract_thumbnail")
+    @patch("pipeline.normalize_video")
+    @patch("pipeline.uuid.uuid4")
+    def test_one_r2_delete_failure_does_not_block_others(
+        self, mock_uuid, mock_normalize, mock_thumb, mock_insert_row,
+        mock_upload, mock_get_r2, mock_ocr, mock_segment, mock_defs,
+        mock_insert_vocab, mock_ready, tmp_path,
+    ):
+        """A failing delete_object for one key must not stop cleanup of the rest."""
+        mocks = self._make_pipeline_mocks(tmp_path)
+        mock_uuid.return_value = uuid.UUID(SAMPLE_VIDEO_ID)
+        mock_normalize.return_value = (str(mocks["norm_file"]), 30)
+        mock_thumb.return_value = str(mocks["thumb_file"])
+        mock_upload.return_value = "https://cdn/video.mp4"
+        mock_ocr.return_value = _make_bbox_data()
+        mock_segment.return_value = (["你好"], [
+            {"word": "你好", "start_ms": 0, "end_ms": 1000, "display_text": "你好", "sentence": "你好世界"},
+        ])
+        mock_defs.return_value = {}
+        mock_insert_row.return_value = {"id": SAMPLE_VIDEO_ID}
+
+        mock_r2 = MagicMock()
+        mock_get_r2.return_value = mock_r2
+        err_404 = Exception("NoSuchKey")
+        err_404.response = {"Error": {"Code": "404"}}
+        mock_r2.head_object.side_effect = err_404
+
+        mock_insert_vocab.side_effect = Exception("DB error")
+        # First delete_object call raises; rest should still be attempted
+        mock_r2.delete_object.side_effect = [Exception("AccessDenied")] + [MagicMock()] * 10
+
+        with patch("sys.argv", ["pipeline.py", "--video", str(mocks["video_file"]), "--language", "zh"]):
+            with pytest.raises(Exception, match="DB error"):
+                pipeline.main()
+
+        # All 6 keys were attempted despite the first failure
+        assert mock_r2.delete_object.call_count == 6
+
+
+# ===========================================================================
+# Tests: Hardening Fix 2 — Local output filenames use video_id, not stem
+# ===========================================================================
+
+class TestLocalFilenameUsesVideoId:
+    """Local output files should be keyed by video_id to prevent collisions."""
+
+    @patch("pipeline.mark_video_ready")
+    @patch("pipeline.insert_vocab_and_definitions")
+    @patch("pipeline.generate_all_definitions")
+    @patch("pipeline.segment_words")
+    @patch("pipeline.run_ocr")
+    @patch("pipeline.get_r2_client")
+    @patch("pipeline.upload_to_r2")
+    @patch("pipeline.insert_video_row")
+    @patch("pipeline.extract_thumbnail")
+    @patch("pipeline.normalize_video")
+    @patch("pipeline.uuid.uuid4")
+    def test_bbox_output_path_uses_video_id(
+        self, mock_uuid, mock_normalize, mock_thumb, mock_insert_row,
+        mock_upload, mock_get_r2, mock_ocr, mock_segment, mock_defs,
+        mock_insert_vocab, mock_ready, tmp_path, monkeypatch,
+    ):
+        """_pipeline.json local output uses video_id, not the video filename stem."""
+        # Input file has a generic name that could collide
+        video_file = tmp_path / "video.mp4"
+        video_file.write_bytes(b"fake")
+        norm_file = tmp_path / "norm.mp4"
+        norm_file.write_bytes(b"fake norm")
+        thumb_file = tmp_path / "thumbnail.jpg"
+        thumb_file.write_bytes(b"fake thumb")
+
+        mock_uuid.return_value = uuid.UUID(SAMPLE_VIDEO_ID)
+        mock_normalize.return_value = (str(norm_file), 30)
+        mock_thumb.return_value = str(thumb_file)
+        mock_upload.return_value = "https://cdn/video.mp4"
+        mock_ocr.return_value = _make_bbox_data()
+        mock_segment.return_value = ([], [])
+        mock_defs.return_value = {}
+        mock_insert_row.return_value = {"id": SAMPLE_VIDEO_ID}
+
+        mock_r2 = MagicMock()
+        mock_get_r2.return_value = mock_r2
+        err_404 = Exception("NoSuchKey")
+        err_404.response = {"Error": {"Code": "404"}}
+        mock_r2.head_object.side_effect = err_404
+
+        # Redirect OUTPUT_DIR to tmp_path so files are actually written
+        monkeypatch.setattr(pipeline, "OUTPUT_DIR", tmp_path)
+
+        with patch("sys.argv", ["pipeline.py", "--video", str(video_file), "--language", "zh"]):
+            pipeline.main()
+
+        written_names = [f.name for f in tmp_path.iterdir()]
+        # Must contain video_id in name, NOT the raw stem "video"
+        assert any(SAMPLE_VIDEO_ID in n and "_pipeline.json" in n for n in written_names), \
+            f"Expected *{SAMPLE_VIDEO_ID}*_pipeline.json, got: {written_names}"
+        # The stem "video" alone must NOT appear as the prefix (collision risk)
+        assert not any(n.startswith("video_pipeline") for n in written_names), \
+            f"Found collision-prone filename: {written_names}"
+
+
+# ===========================================================================
+# Tests: Hardening Fix 3 — Duplicate R2 guard before upload
+# ===========================================================================
+
+class TestDuplicateR2Guard:
+    """Pipeline must abort if video.mp4 already exists in R2 for a given video_id."""
+
+    def _setup_mocks(self, tmp_path, mock_uuid, mock_normalize, mock_thumb,
+                     mock_insert_row, mock_upload, mock_ocr):
+        video_file = tmp_path / "input.mp4"
+        video_file.write_bytes(b"fake")
+        norm_file = tmp_path / "norm.mp4"
+        norm_file.write_bytes(b"fake norm")
+        thumb_file = tmp_path / "thumbnail.jpg"
+        thumb_file.write_bytes(b"fake thumb")
+        mock_uuid.return_value = uuid.UUID(SAMPLE_VIDEO_ID)
+        mock_normalize.return_value = (str(norm_file), 30)
+        mock_thumb.return_value = str(thumb_file)
+        mock_upload.return_value = "https://cdn/video.mp4"
+        mock_ocr.return_value = _make_bbox_data()
+        mock_insert_row.return_value = {"id": SAMPLE_VIDEO_ID}
+        return video_file
+
+    @patch("pipeline.run_ocr")
+    @patch("pipeline.get_r2_client")
+    @patch("pipeline.upload_to_r2")
+    @patch("pipeline.insert_video_row")
+    @patch("pipeline.extract_thumbnail")
+    @patch("pipeline.normalize_video")
+    @patch("pipeline.uuid.uuid4")
+    def test_aborts_when_video_already_exists_in_r2(
+        self, mock_uuid, mock_normalize, mock_thumb, mock_insert_row,
+        mock_upload, mock_get_r2, mock_ocr, tmp_path,
+    ):
+        """head_object succeeds (key exists) → pipeline calls sys.exit(1)."""
+        video_file = self._setup_mocks(tmp_path, mock_uuid, mock_normalize,
+                                       mock_thumb, mock_insert_row, mock_upload, mock_ocr)
+        mock_r2 = MagicMock()
+        mock_get_r2.return_value = mock_r2
+        # head_object does NOT raise → key exists
+        mock_r2.head_object.return_value = {"ContentLength": 1234}
+
+        with patch("sys.argv", ["pipeline.py", "--video", str(video_file), "--language", "zh"]):
+            with pytest.raises(SystemExit) as exc_info:
+                pipeline.main()
+
+        assert exc_info.value.code == 1
+        # upload_to_r2 must NOT have been called for video.mp4
+        uploaded_keys = [c[0][1] for c in mock_upload.call_args_list]
+        assert f"videos/{SAMPLE_VIDEO_ID}/video.mp4" not in uploaded_keys
+
+    @patch("pipeline.mark_video_ready")
+    @patch("pipeline.insert_vocab_and_definitions")
+    @patch("pipeline.generate_all_definitions")
+    @patch("pipeline.segment_words")
+    @patch("pipeline.run_ocr")
+    @patch("pipeline.get_r2_client")
+    @patch("pipeline.upload_to_r2")
+    @patch("pipeline.insert_video_row")
+    @patch("pipeline.extract_thumbnail")
+    @patch("pipeline.normalize_video")
+    @patch("pipeline.uuid.uuid4")
+    def test_continues_when_head_object_returns_404(
+        self, mock_uuid, mock_normalize, mock_thumb, mock_insert_row,
+        mock_upload, mock_get_r2, mock_ocr, mock_segment, mock_defs,
+        mock_insert_vocab, mock_ready, tmp_path,
+    ):
+        """head_object raises a 404 ClientError → pipeline continues normally."""
+        video_file = self._setup_mocks(tmp_path, mock_uuid, mock_normalize,
+                                       mock_thumb, mock_insert_row, mock_upload, mock_ocr)
+        mock_r2 = MagicMock()
+        mock_get_r2.return_value = mock_r2
+        err_404 = Exception("NoSuchKey")
+        err_404.response = {"Error": {"Code": "404"}}
+        mock_r2.head_object.side_effect = err_404
+
+        mock_segment.return_value = ([], [])
+        mock_defs.return_value = {}
+
+        with patch("sys.argv", ["pipeline.py", "--video", str(video_file), "--language", "zh"]):
+            pipeline.main()  # Must not raise or exit
+
+        # upload_to_r2 was called with video.mp4
+        uploaded_keys = [c[0][1] for c in mock_upload.call_args_list]
+        assert f"videos/{SAMPLE_VIDEO_ID}/video.mp4" in uploaded_keys
+
+    @patch("pipeline.run_ocr")
+    @patch("pipeline.get_r2_client")
+    @patch("pipeline.upload_to_r2")
+    @patch("pipeline.insert_video_row")
+    @patch("pipeline.extract_thumbnail")
+    @patch("pipeline.normalize_video")
+    @patch("pipeline.uuid.uuid4")
+    def test_non_404_r2_error_propagates(
+        self, mock_uuid, mock_normalize, mock_thumb, mock_insert_row,
+        mock_upload, mock_get_r2, mock_ocr, tmp_path,
+    ):
+        """An unexpected error from head_object (not 404) should propagate, not be swallowed."""
+        video_file = self._setup_mocks(tmp_path, mock_uuid, mock_normalize,
+                                       mock_thumb, mock_insert_row, mock_upload, mock_ocr)
+        mock_r2 = MagicMock()
+        mock_get_r2.return_value = mock_r2
+        err_500 = Exception("InternalError")
+        err_500.response = {"Error": {"Code": "500"}}
+        mock_r2.head_object.side_effect = err_500
+
+        with patch("sys.argv", ["pipeline.py", "--video", str(video_file), "--language", "zh"]):
+            with pytest.raises(Exception, match="InternalError"):
+                pipeline.main()
