@@ -411,8 +411,12 @@ def _interpolate_timestamps(text: str, chunk_text: str, chunk_start_char: int,
     return start_ms, end_ms
 
 
-def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) -> dict:
-    """Build a segment dict with synthetic bbox/chars (same format as whisper_to_bboxes)."""
+def _build_centered_detection(text: str, resolution: dict) -> dict:
+    """Build a synthetic centered detection dict for subtitle display.
+
+    Returns a single detection entry (not a full segment). Used for both
+    STT-only gap-fill segments and stt-chunked segments.
+    """
     vw, vh = resolution.get("width", 720), resolution.get("height", 1280)
     char_w = min(int(vw * 0.85) // max(len(text), 1), int(vw * 0.06))
     total_w = char_w * len(text)
@@ -443,14 +447,19 @@ def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) 
                           "width": len(word) * char_w, "height": sub_h})
 
     return {
+        "text": text,
+        "confidence": 1.0,
+        "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
+        "chars": chars,
+    }
+
+
+def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) -> dict:
+    """Build a full segment dict with synthetic centered bbox/chars."""
+    return {
         "start_ms": start_ms,
         "end_ms": end_ms,
-        "detections": [{
-            "text": text,
-            "confidence": 1.0,
-            "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
-            "chars": chars,
-        }],
+        "detections": [_build_centered_detection(text, resolution)],
     }
 
 
@@ -533,151 +542,292 @@ def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
 
 
 def _text_similarity(a: str, b: str) -> float:
-    """Character-level Jaccard similarity between two strings."""
+    """Sequence-based similarity using SequenceMatcher ratio.
+
+    Better than Jaccard for both CJK and Latin text:
+    - Considers character position and order (not just set membership)
+    - Handles substrings, partial matches, and OCR noise gracefully
+    - SequenceMatcher.ratio() = 2*M/T where M = matching chars, T = total chars
+    """
+    from difflib import SequenceMatcher
+    a, b = a.strip(), b.strip()
     if not a or not b:
         return 0.0
-    set_a = set(a.strip())
-    set_b = set(b.strip())
-    intersection = len(set_a & set_b)
-    union = len(set_a | set_b)
-    return intersection / union if union > 0 else 0.0
+    return SequenceMatcher(None, a, b).ratio()
 
 
-def merge_ocr_stt(ocr_data: dict, stt_data: dict,
-                  time_tolerance_ms: int = 500) -> dict:
-    """Merge OCR content with STT timing into a unified transcript.
+def _detect_watermarks(ocr_segments: list) -> set:
+    """Return set of text strings that appear in ≥70% of OCR segments.
 
-    Rules:
-    - OCR content wins (more accurate text recognition)
-    - STT timing wins (word-level alignment to speech)
-    - ≥50% char overlap = same subtitle → use OCR text + STT timing
-    - <50% overlap = title/watermark → exclude from transcript
-    - STT segments with no OCR match → gap fill (use STT text)
-
-    Returns transcript data with only spoken subtitles.
+    Persistent text (watermarks, disclaimers, channel IDs) appears nearly
+    every frame while subtitle text changes. Count per segment (not per
+    detection) to avoid over-counting multi-detection frames.
     """
-    ocr_segments = ocr_data.get("segments", [])
-    stt_segments = stt_data.get("segments", [])
-    resolution = ocr_data.get("resolution", {"width": 720, "height": 1280})
-    res_h = resolution.get("height", 1280)
-
-    # Find persistent OCR text (appears in >70% of segments) — likely watermarks
     text_counts: dict[str, int] = {}
     for seg in ocr_segments:
-        seen = set()
+        seen: set[str] = set()
         for det in seg.get("detections", []):
             t = det["text"].strip()
             if t and t not in seen:
                 text_counts[t] = text_counts.get(t, 0) + 1
                 seen.add(t)
-    total_segs = max(len(ocr_segments), 1)
-    persistent_texts = {t for t, c in text_counts.items() if c / total_segs >= 0.7}
+    total = max(len(ocr_segments), 1)
+    # Require both ≥70% frequency AND at least 3 occurrences.
+    # The count guard prevents false positives on short videos (< 5 segments)
+    # where any subtitle text would otherwise hit 100% frequency.
+    return {t for t, c in text_counts.items() if c / total >= 0.7 and c >= 3}
 
-    transcript_segments = []
+
+def _find_subtitle_y_band(ocr_segments: list, res_h: int,
+                          persistent_texts: set) -> float:
+    """Find the minimum y-fraction for subtitle text detection.
+
+    Collects y-positions of non-watermark detections in the bottom half of
+    the frame, then returns the 25th percentile as the floor. This adapts to
+    videos where subtitles appear higher or lower than usual.
+
+    Falls back to 0.55 (bottom 45%) with insufficient data.
+    """
+    y_fracs = []
+    for seg in ocr_segments:
+        for det in seg.get("detections", []):
+            t = det.get("text", "").strip()
+            if not t or t in persistent_texts:
+                continue
+            y_frac = det["bbox"]["y"] / max(res_h, 1)
+            # Only sample from the bottom half (avoids scene text skewing the calc)
+            if y_frac >= 0.50:
+                y_fracs.append(y_frac)
+
+    if len(y_fracs) < 5:
+        return 0.55  # default: bottom 45% of frame
+
+    y_fracs.sort()
+    p25 = y_fracs[len(y_fracs) // 4]
+    # Clamp: never go below 0.40 (safety floor) or above 0.75 (too restrictive)
+    return max(0.40, min(p25, 0.75))
+
+
+def _is_subtitle_detection(det: dict, res_h: int, persistent_texts: set,
+                            subtitle_y_min: float) -> bool:
+    """Return True if this OCR detection looks like a real subtitle line.
+
+    Filters out: watermarks, scene text in top portion of frame, empty text.
+    """
+    text = det.get("text", "").strip()
+    if not text:
+        return False
+    if text in persistent_texts:
+        return False
+    # Must be in the subtitle band (lower portion of frame)
+    if det["bbox"]["y"] / max(res_h, 1) < subtitle_y_min:
+        return False
+    return True
+
+
+def _is_stt_hallucination(stt_text: str, prev_stt_texts: list,
+                           duration_ms: int) -> bool:
+    """Detect likely Whisper hallucination patterns.
+
+    Whisper hallucinates in two main ways:
+    1. Very short segments (<300ms) during silence or music
+    2. Looping/repeating the same phrase — a distinctive Whisper artifact
+       where the same text appears 3+ times consecutively in the transcript
+
+    Returns True if the segment looks like a hallucination.
+    """
+    if duration_ms < 300:
+        return True
+    # Looping: text is highly similar to ≥2 of the last 4 STT segments
+    if len(prev_stt_texts) >= 2:
+        recent = prev_stt_texts[-4:]
+        similar_count = sum(1 for t in recent if _text_similarity(stt_text, t) >= 0.75)
+        if similar_count >= 2:
+            return True
+    return False
+
+
+def merge_ocr_stt(ocr_data: dict, stt_data: dict,
+                  time_tolerance_ms: int = 400) -> dict:
+    """Merge OCR and STT into a unified subtitle transcript — OCR-first design.
+
+    Algorithm:
+    1. OCR is the backbone — every valid OCR segment becomes an output segment.
+       OCR text is pixel-accurate for CJK and reliable for Latin with good contrast.
+    2. Filter OCR to subtitle text: position (bottom ~45%), persistence (watermarks),
+       and duration (200ms–15s).
+    3. Optionally refine OCR timing with STT: if a high-similarity (≥0.6) STT
+       segment overlaps, adopt STT start/end for tighter speech alignment.
+    4. STT fills genuine gaps only — windows between OCR segments with no OCR
+       activity, with hallucination filtering applied (short, looping).
+
+    Source field values in output segments:
+    - "ocr"      : OCR text and timing, no STT match found
+    - "ocr+stt"  : OCR text with STT-refined timing (high-sim match)
+    - "stt_only" : STT gap fill in a genuine OCR-free window
+    """
+    ocr_segments = ocr_data.get("segments", [])
+    stt_segments = stt_data.get("segments", [])
+    resolution = ocr_data.get("resolution", {"width": 720, "height": 1280})
+    res_h = resolution.get("height", 1280)
+    duration_ms = ocr_data.get("duration_ms", 0)
+
+    # ── Phase 1: Precompute filters ───────────────────────────────────────────
+    persistent_texts = _detect_watermarks(ocr_segments)
+    subtitle_y_min = _find_subtitle_y_band(ocr_segments, res_h, persistent_texts)
+
+    # ── Phase 2: Build OCR backbone ───────────────────────────────────────────
+    # For each OCR segment pick the best subtitle detection (lowest/deepest y).
+    # Duration filter: skip very short (<200ms) and suspiciously long (>15s) segments.
+    ocr_output: list[dict] = []
+
+    for ocr_seg in ocr_segments:
+        seg_dur = ocr_seg["end_ms"] - ocr_seg["start_ms"]
+        if seg_dur < 200 or seg_dur > 15_000:
+            continue
+
+        # Pick the deepest subtitle detection (highest y = lowest on screen)
+        best_det: dict | None = None
+        best_y = -1
+        for det in ocr_seg.get("detections", []):
+            if not _is_subtitle_detection(det, res_h, persistent_texts, subtitle_y_min):
+                continue
+            y = det["bbox"]["y"]
+            if y > best_y:
+                best_y = y
+                best_det = det
+
+        if best_det is None:
+            continue
+
+        ocr_output.append({
+            "start_ms": ocr_seg["start_ms"],
+            "end_ms": ocr_seg["end_ms"],
+            "source": "ocr",
+            "_det": best_det,
+        })
+
+    # ── Phase 3: Refine OCR timing with STT ───────────────────────────────────
+    # For each OCR output segment, search for a high-similarity STT match.
+    # If found (sim ≥ 0.6), adopt STT timestamps for tighter speech alignment.
+    for out_seg in ocr_output:
+        ocr_text = out_seg["_det"]["text"]
+        best_sim = 0.0
+        best_stt: dict | None = None
+
+        for stt_seg in stt_segments:
+            if (stt_seg["end_ms"] + time_tolerance_ms < out_seg["start_ms"] or
+                    stt_seg["start_ms"] - time_tolerance_ms > out_seg["end_ms"]):
+                continue
+            stt_text = "".join(
+                det.get("text", "") for det in stt_seg.get("detections", [])
+            ).strip()
+            if not stt_text:
+                continue
+            sim = _text_similarity(ocr_text, stt_text)
+            if sim > best_sim:
+                best_sim = sim
+                best_stt = stt_seg
+
+        if best_sim >= 0.6 and best_stt is not None:
+            out_seg["start_ms"] = best_stt["start_ms"]
+            out_seg["end_ms"] = best_stt["end_ms"]
+            out_seg["source"] = "ocr+stt"
+
+    ocr_output.sort(key=lambda s: s["start_ms"])
+
+    # ── Phase 4: STT gap-fill ─────────────────────────────────────────────────
+    # Only fill genuine gaps — windows between OCR segments ≥ 500ms where OCR
+    # produced no output.  OCR windows with output but no STT match are NOT
+    # gaps — they mean OCR ran and found no speech text there.
+    MIN_GAP_MS = 500
+
+    gaps: list[tuple[int, int]] = []
+    if ocr_output:
+        if ocr_output[0]["start_ms"] > MIN_GAP_MS:
+            gaps.append((0, ocr_output[0]["start_ms"]))
+        for i in range(len(ocr_output) - 1):
+            g_start = ocr_output[i]["end_ms"]
+            g_end = ocr_output[i + 1]["start_ms"]
+            if g_end - g_start >= MIN_GAP_MS:
+                gaps.append((g_start, g_end))
+        tail = duration_ms - ocr_output[-1]["end_ms"]
+        if duration_ms > 0 and tail >= MIN_GAP_MS:
+            gaps.append((ocr_output[-1]["end_ms"], duration_ms))
+    elif duration_ms > 0:
+        # No OCR at all — entire video is a gap
+        gaps.append((0, duration_ms))
+
+    stt_fills: list[dict] = []
+    prev_stt_texts: list[str] = []
 
     for stt_seg in stt_segments:
-        stt_text = ""
-        for det in stt_seg.get("detections", []):
-            stt_text += det.get("text", "")
-        stt_text = stt_text.strip()
+        stt_text = "".join(
+            det.get("text", "") for det in stt_seg.get("detections", [])
+        ).strip()
         if not stt_text:
             continue
 
         stt_start = stt_seg["start_ms"]
         stt_end = stt_seg["end_ms"]
+        stt_dur = stt_end - stt_start
 
-        # Find overlapping OCR detections (within time tolerance)
-        best_ocr_text = None
-        best_sim = 0.0
+        # Must be fully contained in a genuine gap
+        if not any(g_start <= stt_start and stt_end <= g_end for g_start, g_end in gaps):
+            continue
 
-        for ocr_seg in ocr_segments:
-            # Check time overlap
-            if (ocr_seg["end_ms"] + time_tolerance_ms < stt_start or
-                    ocr_seg["start_ms"] - time_tolerance_ms > stt_end):
-                continue
+        # Apply hallucination filters
+        if _is_stt_hallucination(stt_text, prev_stt_texts, stt_dur):
+            continue
+        if stt_text in persistent_texts:
+            continue
 
-            # Check each detection in this OCR segment
-            for det in ocr_seg.get("detections", []):
-                det_text = det["text"].strip()
-
-                # Skip persistent text (watermarks/disclaimers)
-                if det_text in persistent_texts:
-                    continue
-
-                # Skip text in top 40% of frame (likely titles, not spoken subtitles)
-                if det["bbox"]["y"] / res_h < 0.40:
-                    continue
-
-                sim = _text_similarity(det_text, stt_text)
-                if sim > best_sim:
-                    best_sim = sim
-                    best_ocr_text = det_text
-
-        if best_sim >= 0.5 and best_ocr_text:
-            # Matched: OCR content + STT timing
-            text = best_ocr_text
-            source = "ocr+stt"
-        else:
-            # No OCR match: STT gap fill
-            text = stt_text
-            source = "stt_only"
-
-        # Build detection in the same format as OCR bboxes.json
-        # Centered at bottom of frame for display
-        vw, vh = resolution.get("width", 720), resolution.get("height", 1280)
-        char_w = min(int(vw * 0.85) // max(len(text), 1), int(vw * 0.06))
-        total_w = char_w * len(text)
-        start_x = (vw - total_w) // 2
-        sub_y = int(vh * 0.82)
-        sub_h = int(vh * 0.05)
-
-        # Build chars — word-level for Latin, char-level for CJK
-        chars = []
-        i = 0
-        while i < len(text):
-            c = text[i]
-            c_code = ord(c)
-            is_cjk = (0x4e00 <= c_code <= 0x9fff or 0x3400 <= c_code <= 0x4dbf
-                       or 0x3040 <= c_code <= 0x30ff or 0xac00 <= c_code <= 0xd7af)
-            if is_cjk:
-                chars.append({"char": c, "x": start_x + i * char_w, "y": sub_y,
-                              "width": char_w, "height": sub_h})
-                i += 1
-            elif c.strip() == "":
-                i += 1
-            else:
-                word_start = i
-                while i < len(text) and text[i].strip() and not (0x4e00 <= ord(text[i]) <= 0x9fff):
-                    i += 1
-                word = text[word_start:i]
-                chars.append({"char": word, "x": start_x + word_start * char_w, "y": sub_y,
-                              "width": len(word) * char_w, "height": sub_h})
-
-        transcript_segments.append({
+        prev_stt_texts.append(stt_text)
+        stt_fills.append({
             "start_ms": stt_start,
             "end_ms": stt_end,
-            "source": source,
+            "source": "stt_only",
+            "_text": stt_text,
+        })
+
+    # ── Phase 5: Assemble, sort, build detections ─────────────────────────────
+    all_segs: list[dict] = []
+
+    for seg in ocr_output:
+        det = seg["_det"]
+        all_segs.append({
+            "start_ms": seg["start_ms"],
+            "end_ms": seg["end_ms"],
+            "source": seg["source"],
             "spoken": True,
             "detections": [{
-                "text": text,
-                "confidence": 1.0,
-                "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
-                "chars": chars,
+                "text": det["text"],
+                "confidence": det.get("confidence", 1.0),
+                "bbox": det["bbox"],
+                "chars": det.get("chars", []),
             }],
         })
 
-    # Sort by start time
-    transcript_segments.sort(key=lambda s: s["start_ms"])
+    for seg in stt_fills:
+        all_segs.append({
+            "start_ms": seg["start_ms"],
+            "end_ms": seg["end_ms"],
+            "source": seg["source"],
+            "spoken": True,
+            "detections": [_build_centered_detection(seg["_text"], resolution)],
+        })
 
-    # Deduplicate: remove consecutive segments with same/similar text
-    # (OCR sometimes detects the same subtitle with slight variations across frames)
-    deduped = []
-    for seg in transcript_segments:
-        seg_text = seg.get("detections", [{}])[0].get("text", "") if seg.get("detections") else ""
+    all_segs.sort(key=lambda s: s["start_ms"])
+
+    # ── Phase 6: Deduplicate consecutive near-identical segments ──────────────
+    # OCR flickering can produce back-to-back segments with near-identical text.
+    # Merge them by extending the previous segment's end_ms.
+    deduped: list[dict] = []
+    for seg in all_segs:
+        text = seg["detections"][0]["text"] if seg.get("detections") else ""
         if deduped:
-            prev_text = deduped[-1].get("detections", [{}])[0].get("text", "") if deduped[-1].get("detections") else ""
-            if _text_similarity(seg_text.strip(), prev_text.strip()) >= 0.8:
-                # Same text — extend the previous segment's end time
+            prev_text = deduped[-1]["detections"][0]["text"] if deduped[-1].get("detections") else ""
+            if _text_similarity(text, prev_text) >= 0.85:
                 deduped[-1]["end_ms"] = max(deduped[-1]["end_ms"], seg["end_ms"])
                 continue
         deduped.append(seg)
@@ -685,7 +835,7 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
     return {
         "video": ocr_data.get("video", ""),
         "resolution": resolution,
-        "duration_ms": ocr_data.get("duration_ms", 0),
+        "duration_ms": duration_ms,
         "subtitle_source": "both",
         "segments": deduped,
     }

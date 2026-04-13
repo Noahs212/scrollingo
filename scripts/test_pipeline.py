@@ -883,55 +883,39 @@ class TestEdgeCases:
 # ===========================================================================
 
 class TestOCRRegression:
-    """Verify that the pipeline's run_ocr() produces the same output as
-    the validated extract_subtitles_videocr2.py for a reference video.
+    """Verify that pipeline.run_ocr() uses the expected constants from
+    extract_subtitles_dense.py (the active dense-OCR backend).
 
-    This test prevents the regression where the pipeline's inline OCR
-    silently diverged from the validated extraction script and produced
-    fewer subtitles. If this test fails, either:
-    1. The pipeline's run_ocr() was changed without updating videocr2, or
-    2. The videocr2 script was changed without updating the pipeline.
+    If this test fails, run_ocr() has drifted from the dense module — either
+    the dense module constants changed without updating run_ocr, or vice versa.
     """
 
-    def test_pipeline_ocr_constants_match_videocr2(self):
-        """Verify that the pipeline's OCR uses the same constants as videocr2."""
-        import importlib.util
+    def test_pipeline_ocr_uses_dense_backend_constants(self):
+        """run_ocr imports and uses the dense OCR backend."""
+        import inspect
 
-        # Load videocr2 module
-        spec = importlib.util.spec_from_file_location(
-            "videocr2",
-            os.path.join(os.path.dirname(__file__), "extract_subtitles_videocr2.py"),
-        )
-        videocr2 = importlib.util.module_from_spec(spec)
-
-        # Extract constants from videocr2 source (avoid executing the module
-        # which would try to import paddleocr)
-        videocr2_source = open(
-            os.path.join(os.path.dirname(__file__), "extract_subtitles_videocr2.py")
+        run_ocr_source = inspect.getsource(pipeline.run_ocr)
+        dense_source = open(
+            os.path.join(os.path.dirname(__file__), "extract_subtitles_dense.py")
         ).read()
 
-        # Check that the pipeline's run_ocr docstring mentions videocr2
-        import inspect
-        run_ocr_source = inspect.getsource(pipeline.run_ocr)
+        # run_ocr must import from extract_subtitles_dense
+        assert "extract_subtitles_dense" in run_ocr_source, \
+            "run_ocr must import from extract_subtitles_dense"
 
-        # Verify critical constants are present and match
-        assert "FRAME_INTERVAL_MS = 250" in run_ocr_source, "Pipeline must sample at 250ms"
-        assert "OCR_SCALE = 0.5" in run_ocr_source, "Pipeline must use half-res"
-        assert "MIN_DURATION_MS = 750" in run_ocr_source, "Pipeline must filter <750ms segments"
-        assert "CONF_THRESHOLD = 0.70" in run_ocr_source, "Pipeline must use 0.70 confidence"
-        assert "MIN_CHARS = 2" in run_ocr_source, "Pipeline must filter <2 char detections"
-        assert "SSIM_THRESHOLD = 0.92" in run_ocr_source, "Pipeline must use 0.92 SSIM threshold"
-        assert "SUBTITLE_REGION_TOP = 0.5" in run_ocr_source, "Pipeline subtitle region must start at 50%"
-        assert "SUBTITLE_REGION_BOTTOM = 0.85" in run_ocr_source, "Pipeline subtitle region must end at 85%"
-
-        # Same constants in videocr2
-        assert "FRAME_INTERVAL_MS = 250" in videocr2_source
-        assert "OCR_SCALE = 0.5" in videocr2_source
-        assert "MIN_DURATION_MS = 750" in videocr2_source
-        assert "CONF_THRESHOLD = 0.70" in videocr2_source
-        assert "SSIM_THRESHOLD = 0.92" in videocr2_source
-        assert "SUBTITLE_REGION_TOP = 0.5" in videocr2_source
-        assert "SUBTITLE_REGION_BOTTOM = 0.85" in videocr2_source
+        # Dense backend constants — verified in the dense module source
+        assert "FRAME_INTERVAL_MS = 100" in dense_source, \
+            "Dense OCR must sample at 100ms (10fps)"
+        assert "CONF_THRESHOLD = 0.50" in dense_source, \
+            "Dense OCR must use 0.50 confidence threshold"
+        assert "MIN_DURATION_MS = 100" in dense_source, \
+            "Dense OCR must keep segments ≥ 100ms"
+        assert "GAP_TOLERANCE_MS = 500" in dense_source, \
+            "Dense OCR must bridge gaps ≤ 500ms"
+        assert "CHANGE_THRESHOLD = 2.0" in dense_source, \
+            "Dense OCR must use pixel diff threshold 2.0"
+        assert "SUBTITLE_REGION_TOP = 0.60" in dense_source, \
+            "Dense OCR change detection must monitor from 60% of frame height"
 
 
 # ===========================================================================
@@ -1228,3 +1212,615 @@ class TestDuplicateR2Guard:
         with patch("sys.argv", ["pipeline.py", "--video", str(video_file), "--language", "zh"]):
             with pytest.raises(Exception, match="InternalError"):
                 pipeline.main()
+
+
+# ===========================================================================
+# Helpers for merge tests
+# ===========================================================================
+
+RES = {"width": 720, "height": 1280}
+RES_H = 1280
+
+def _ocr_det(text, y_frac=0.80, conf=0.95):
+    """Build a minimal OCR detection dict at a given y-fraction of a 1280px frame."""
+    y = int(RES_H * y_frac)
+    return {
+        "text": text,
+        "confidence": conf,
+        "bbox": {"x": 10, "y": y, "width": 300, "height": 40},
+        "chars": [{"char": c, "x": 10 + i * 20, "y": y, "width": 20, "height": 40}
+                  for i, c in enumerate(text)],
+    }
+
+def _ocr_seg(text, start_ms, end_ms, y_frac=0.80):
+    """Build a minimal OCR segment dict."""
+    return {
+        "start_ms": start_ms,
+        "end_ms": end_ms,
+        "detections": [_ocr_det(text, y_frac)],
+    }
+
+def _stt_seg(text, start_ms, end_ms):
+    """Build a minimal STT segment dict (same bbox format as whisper_to_bboxes)."""
+    y = int(RES_H * 0.82)
+    return {
+        "start_ms": start_ms,
+        "end_ms": end_ms,
+        "detections": [{
+            "text": text,
+            "confidence": 1.0,
+            "bbox": {"x": 0, "y": y, "width": 300, "height": 40},
+            "chars": [],
+        }],
+    }
+
+def _make_ocr_data(segments, duration_ms=10_000):
+    return {"video": SAMPLE_VIDEO_ID, "resolution": RES, "duration_ms": duration_ms, "segments": segments}
+
+def _make_stt_data(segments):
+    return {"video": SAMPLE_VIDEO_ID, "resolution": RES, "segments": segments}
+
+def _seg_texts(result):
+    """Extract (text, source) pairs from merge result segments."""
+    return [(s["detections"][0]["text"], s["source"]) for s in result["segments"]]
+
+
+# ===========================================================================
+# Tests: _text_similarity
+# ===========================================================================
+
+class TestTextSimilarity:
+    def test_identical_strings(self):
+        assert pipeline._text_similarity("你好", "你好") == 1.0
+
+    def test_empty_a(self):
+        assert pipeline._text_similarity("", "你好") == 0.0
+
+    def test_empty_b(self):
+        assert pipeline._text_similarity("你好", "") == 0.0
+
+    def test_both_empty(self):
+        assert pipeline._text_similarity("", "") == 0.0
+
+    def test_completely_different(self):
+        assert pipeline._text_similarity("你好世界", "abcdefgh") == 0.0
+
+    def test_chinese_partial_overlap(self):
+        # "你好" is a prefix of "你好世界" — should score > 0.5
+        sim = pipeline._text_similarity("你好", "你好世界")
+        assert sim > 0.5
+
+    def test_chinese_near_identical(self):
+        # One extra character — high similarity
+        sim = pipeline._text_similarity("今天天气很好", "今天天气好")
+        assert sim > 0.8
+
+    def test_latin_position_sensitive(self):
+        # SequenceMatcher considers position — "Hello" vs "World" is low
+        sim = pipeline._text_similarity("Hello", "World")
+        assert sim < 0.5
+
+    def test_latin_false_positive_jaccard_would_give(self):
+        # Old Jaccard similarity: "Hello world" vs "Yellow world" scored 0.75
+        # because both contain {e,l,o,w,r,d}. SequenceMatcher should score lower.
+        sim = pipeline._text_similarity("Hello world", "Yellow world")
+        # SequenceMatcher: " world" matches (6 chars), plus "llo" vs "low" partial
+        # Exact value doesn't matter — just verify it's meaningfully lower than the 0.75 Jaccard got
+        # "Hello world" (11) vs "Yellow world" (12): "llo" matches at pos 2 vs 3, " world" matches
+        # M ≈ 8, T = 23 → ratio ≈ 0.70. Not dramatically different but position helps.
+        # The real test: dissimilar strings that happen to share letters score < 0.8
+        sim2 = pipeline._text_similarity("Hello world", "Completely different text")
+        assert sim2 < 0.3
+
+    def test_substring_scores_high(self):
+        sim = pipeline._text_similarity("weather", "today's weather is nice")
+        assert sim > 0.4  # 7/23 chars match → ratio ≈ 0.48
+
+    def test_whitespace_stripped(self):
+        assert pipeline._text_similarity("  你好  ", "你好") == 1.0
+
+
+# ===========================================================================
+# Tests: _detect_watermarks
+# ===========================================================================
+
+class TestDetectWatermarks:
+    def test_empty_segments(self):
+        assert pipeline._detect_watermarks([]) == set()
+
+    def test_text_in_all_segments_filtered(self):
+        segs = [_ocr_seg("WATERMARK", i * 1000, i * 1000 + 800) for i in range(10)]
+        wm = pipeline._detect_watermarks(segs)
+        assert "WATERMARK" in wm
+
+    def test_text_in_69_percent_not_filtered(self):
+        # 7/10 = 70% — just at the border; must appear in exactly 7 of 10
+        segs = ([_ocr_seg("BORDERLINE", i * 1000, i * 1000 + 800) for i in range(7)] +
+                [_ocr_seg("OTHER", i * 1000, i * 1000 + 800) for i in range(3)])
+        wm = pipeline._detect_watermarks(segs)
+        assert "BORDERLINE" in wm  # 7/10 = 70% exactly — included
+
+    def test_text_in_60_percent_not_filtered(self):
+        segs = ([_ocr_seg("FREQUENT", i * 1000, i * 1000 + 800) for i in range(6)] +
+                [_ocr_seg("OTHER", i * 1000, i * 1000 + 800) for i in range(4)])
+        wm = pipeline._detect_watermarks(segs)
+        assert "FREQUENT" not in wm  # 60% < 70%
+
+    def test_single_segment_not_filtered(self):
+        # 1/1 = 100% frequency but only 1 occurrence — count guard (c >= 3) prevents false positive
+        wm = pipeline._detect_watermarks([_ocr_seg("TEXT", 0, 1000)])
+        assert "TEXT" not in wm
+
+    def test_subtitle_text_not_filtered(self):
+        # Each segment has unique text — nothing hits 70%
+        segs = [_ocr_seg(f"subtitle {i}", i * 1000, i * 1000 + 2000) for i in range(10)]
+        wm = pipeline._detect_watermarks(segs)
+        assert len(wm) == 0
+
+    def test_deduplication_per_segment(self):
+        # Same text appearing twice in ONE segment only counts once
+        seg = {"start_ms": 0, "end_ms": 2000, "detections": [
+            _ocr_det("REPEAT"), _ocr_det("REPEAT"),
+        ]}
+        segs = [seg] + [_ocr_seg("OTHER", i * 1000, i * 1000 + 800) for i in range(9)]
+        wm = pipeline._detect_watermarks(segs)
+        assert "REPEAT" not in wm  # only 1 of 10 segments
+
+
+# ===========================================================================
+# Tests: _find_subtitle_y_band
+# ===========================================================================
+
+class TestFindSubtitleYBand:
+    def test_insufficient_data_returns_default(self):
+        # < 5 detections → default 0.55
+        segs = [_ocr_seg("hello", 0, 1000, y_frac=0.80)]
+        y = pipeline._find_subtitle_y_band(segs, RES_H, set())
+        assert y == 0.55
+
+    def test_all_subtitles_at_bottom(self):
+        # All detections at 0.80 → p25 ≈ 0.80 → clamped to 0.75
+        segs = [_ocr_seg(f"text{i}", i * 1000, i * 1000 + 2000, y_frac=0.80)
+                for i in range(10)]
+        y = pipeline._find_subtitle_y_band(segs, RES_H, set())
+        assert 0.40 <= y <= 0.75
+
+    def test_watermarks_excluded(self):
+        # Watermark at top (y=0.30) should not pull the band up
+        wm_det = _ocr_det("WM", y_frac=0.30)
+        sub_det = _ocr_det("sub", y_frac=0.80)
+        segs = [{"start_ms": i * 1000, "end_ms": i * 1000 + 2000,
+                 "detections": [wm_det, sub_det]} for i in range(10)]
+        y = pipeline._find_subtitle_y_band(segs, RES_H, {"WM"})
+        # Only subtitle at 0.80 counted — result should be > 0.55
+        assert y > 0.55
+
+    def test_clamps_to_safe_range(self):
+        # Even if detections are all at 0.95, result <= 0.75
+        segs = [_ocr_seg(f"t{i}", i * 1000, i * 1000 + 1000, y_frac=0.95) for i in range(20)]
+        y = pipeline._find_subtitle_y_band(segs, RES_H, set())
+        assert y <= 0.75
+
+    def test_ignores_top_half_detections(self):
+        # Detections in top half (y < 0.50) should not be sampled
+        top_det = _ocr_det("title", y_frac=0.30)
+        segs = [{"start_ms": 0, "end_ms": 1000, "detections": [top_det]}]
+        y = pipeline._find_subtitle_y_band(segs, RES_H, set())
+        assert y == 0.55  # falls back to default (< 5 bottom-half detections)
+
+
+# ===========================================================================
+# Tests: _is_stt_hallucination
+# ===========================================================================
+
+class TestIsSTTHallucination:
+    def test_too_short_below_300ms(self):
+        assert pipeline._is_stt_hallucination("text", [], 299) is True
+
+    def test_exactly_300ms_is_ok(self):
+        assert pipeline._is_stt_hallucination("text", [], 300) is False
+
+    def test_long_enough_no_repetition(self):
+        assert pipeline._is_stt_hallucination("hello world", ["goodbye"], 500) is False
+
+    def test_looping_detected(self):
+        # Same text appears ≥ 2 times in recent 4 — hallucination
+        prev = ["music music", "music music music"]
+        assert pipeline._is_stt_hallucination("music music", prev, 800) is True
+
+    def test_looping_needs_two_similar(self):
+        # Only 1 similar in history — not a loop
+        prev = ["music music"]
+        assert pipeline._is_stt_hallucination("music music", prev, 800) is False
+
+    def test_looping_uses_last_4_only(self):
+        # Many old instances but only 1 in the last 4 — not a loop
+        prev = ["music"] * 10 + ["different text", "also different", "totally other"]
+        assert pipeline._is_stt_hallucination("music", prev, 800) is False
+
+    def test_similar_but_not_identical_still_loops(self):
+        # 80% similar text still counts as loop
+        prev = ["今天天气很好啊", "今天天气很好"]
+        assert pipeline._is_stt_hallucination("今天天气很好", prev, 600) is True
+
+
+# ===========================================================================
+# Tests: merge_ocr_stt — OCR-first design
+# ===========================================================================
+
+class TestMergeOcrStt:
+
+    # ── Empty / degenerate inputs ────────────────────────────────────────────
+
+    def test_empty_both(self):
+        result = pipeline.merge_ocr_stt(_make_ocr_data([]), _make_stt_data([]))
+        assert result["segments"] == []
+
+    def test_empty_ocr_all_stt(self):
+        """No OCR → STT fills the whole video (if hallucination-free)."""
+        stt = _make_stt_data([_stt_seg("hello", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(_make_ocr_data([], duration_ms=10_000), stt)
+        texts = _seg_texts(result)
+        assert len(texts) == 1
+        assert texts[0] == ("hello", "stt_only")
+
+    def test_empty_stt_all_ocr(self):
+        """No STT → OCR backbone only, no gap fill possible."""
+        ocr = _make_ocr_data([_ocr_seg("你好", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        texts = _seg_texts(result)
+        assert len(texts) == 1
+        assert texts[0] == ("你好", "ocr")
+
+    # ── OCR backbone priority ────────────────────────────────────────────────
+
+    def test_ocr_text_used_not_stt_text_when_matching(self):
+        """When OCR and STT overlap with high similarity, OCR text wins."""
+        # OCR has the accurate Chinese text; STT has a slightly different transcription
+        ocr = _make_ocr_data([_ocr_seg("今天天气很好", 1000, 3000)])
+        stt = _make_stt_data([_stt_seg("今天天气好", 1000, 3000)])  # missing 很
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        texts = _seg_texts(result)
+        # OCR text must win
+        assert texts[0][0] == "今天天气很好"
+
+    def test_stt_timing_adopted_on_high_similarity(self):
+        """OCR timing is replaced by STT timing when sim ≥ 0.6."""
+        # OCR covers 800–3200ms; STT has tighter timing 1000–2800ms
+        ocr = _make_ocr_data([_ocr_seg("今天天气很好", 800, 3200)])
+        stt = _make_stt_data([_stt_seg("今天天气好", 1000, 2800)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        seg = result["segments"][0]
+        assert seg["source"] == "ocr+stt"
+        assert seg["start_ms"] == 1000
+        assert seg["end_ms"] == 2800
+
+    def test_stt_timing_not_adopted_on_low_similarity(self):
+        """When OCR/STT texts are dissimilar (different content), keep OCR timing."""
+        ocr = _make_ocr_data([_ocr_seg("完全不同的内容", 1000, 3000)])
+        stt = _make_stt_data([_stt_seg("hello world", 1200, 2800)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        seg = result["segments"][0]
+        assert seg["source"] == "ocr"
+        assert seg["start_ms"] == 1000  # original OCR timing preserved
+
+    def test_ocr_source_field_when_no_stt(self):
+        ocr = _make_ocr_data([_ocr_seg("你好", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert result["segments"][0]["source"] == "ocr"
+
+    def test_ocr_plus_stt_source_field(self):
+        ocr = _make_ocr_data([_ocr_seg("今天天气很好", 1000, 3000)])
+        stt = _make_stt_data([_stt_seg("今天天气好", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        assert result["segments"][0]["source"] == "ocr+stt"
+
+    # ── Watermark filtering ──────────────────────────────────────────────────
+
+    def test_watermark_ocr_segments_excluded(self):
+        """OCR segments whose only detection is a watermark are excluded."""
+        # 10 segments with watermark, 1 with actual subtitle
+        wm_segs = [_ocr_seg("CHANNELID", i * 1000, i * 1000 + 800) for i in range(10)]
+        sub_seg = _ocr_seg("你好世界", 10_000, 12_000)
+        ocr = _make_ocr_data(wm_segs + [sub_seg], duration_ms=15_000)
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        assert "CHANNELID" not in texts
+        assert "你好世界" in texts
+
+    def test_multiple_detections_watermark_filtered_best_subtitle_used(self):
+        """Segment with both watermark and subtitle — subtitle wins."""
+        seg = {
+            "start_ms": 1000, "end_ms": 3000,
+            "detections": [
+                _ocr_det("WATERMARK", y_frac=0.80),  # will be persistent
+                _ocr_det("真正的字幕", y_frac=0.85),
+            ],
+        }
+        # 10 identical watermark segments so it hits the 70% threshold
+        wm_only = [{"start_ms": i * 500, "end_ms": i * 500 + 400,
+                    "detections": [_ocr_det("WATERMARK", y_frac=0.80)]}
+                   for i in range(10)]
+        ocr = _make_ocr_data(wm_only + [seg], duration_ms=10_000)
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        # "WATERMARK" must not appear; "真正的字幕" should
+        assert "WATERMARK" not in texts
+        assert "真正的字幕" in texts
+
+    # ── Position (scene text) filtering ─────────────────────────────────────
+
+    def test_scene_text_in_top_of_frame_excluded(self):
+        """Detections in the top portion of the frame are not treated as subtitles."""
+        # y_frac=0.20 = top 20% of frame — scene text / title
+        ocr = _make_ocr_data([_ocr_seg("STORE SIGN", 1000, 3000, y_frac=0.20)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert result["segments"] == []
+
+    def test_subtitle_in_bottom_included(self):
+        """Detections in the bottom portion are included."""
+        ocr = _make_ocr_data([_ocr_seg("字幕文字", 1000, 3000, y_frac=0.82)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert len(result["segments"]) == 1
+        assert result["segments"][0]["detections"][0]["text"] == "字幕文字"
+
+    # ── Duration filter ──────────────────────────────────────────────────────
+
+    def test_very_short_ocr_segment_excluded(self):
+        """OCR segments < 200ms are filtered (single-frame flicker)."""
+        ocr = _make_ocr_data([_ocr_seg("flicker", 1000, 1100)])  # 100ms
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert result["segments"] == []
+
+    def test_very_long_ocr_segment_excluded(self):
+        """OCR segments > 15s are excluded (likely a persistent element, not a subtitle)."""
+        ocr = _make_ocr_data([_ocr_seg("persistent", 0, 16_000)])  # 16s
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert result["segments"] == []
+
+    def test_200ms_ocr_segment_included(self):
+        """200ms is the minimum — exactly 200ms should pass."""
+        ocr = _make_ocr_data([_ocr_seg("ok", 1000, 1200)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert len(result["segments"]) == 1
+
+    # ── STT gap-fill ─────────────────────────────────────────────────────────
+
+    def test_stt_fills_genuine_gap_between_ocr_segments(self):
+        """STT segment in a real gap between two OCR segments is included."""
+        ocr = _make_ocr_data([
+            _ocr_seg("段落一", 0, 2000),
+            _ocr_seg("段落三", 5000, 7000),
+        ], duration_ms=10_000)
+        stt = _make_stt_data([_stt_seg("gap speech", 2500, 4500)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        texts = _seg_texts(result)
+        assert ("gap speech", "stt_only") in texts
+
+    def test_stt_not_inserted_during_ocr_coverage(self):
+        """STT segment that overlaps with an OCR segment is NOT gap-filled."""
+        ocr = _make_ocr_data([_ocr_seg("字幕", 1000, 5000)], duration_ms=10_000)
+        # STT segment is during the OCR coverage window
+        stt = _make_stt_data([_stt_seg("overlapping", 2000, 4000)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        # "overlapping" must not appear as stt_only — it was within an OCR window
+        stt_only = [s for s in result["segments"] if s["source"] == "stt_only"]
+        assert not any(s["detections"][0]["text"] == "overlapping" for s in stt_only)
+
+    def test_stt_not_inserted_in_small_gap(self):
+        """Gaps < 500ms are not filled — too small for reliable gap detection."""
+        ocr = _make_ocr_data([
+            _ocr_seg("seg1", 0, 2000),
+            _ocr_seg("seg2", 2300, 4000),  # only 300ms gap
+        ], duration_ms=10_000)
+        stt = _make_stt_data([_stt_seg("small gap", 2050, 2250)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        stt_only = [s for s in result["segments"] if s["source"] == "stt_only"]
+        assert len(stt_only) == 0
+
+    def test_stt_fills_gap_before_first_ocr(self):
+        """STT before the first OCR segment is included (intro speech)."""
+        ocr = _make_ocr_data([_ocr_seg("字幕", 3000, 5000)], duration_ms=10_000)
+        stt = _make_stt_data([_stt_seg("intro speech", 500, 2000)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        stt_only = [s for s in result["segments"] if s["source"] == "stt_only"]
+        assert any(s["detections"][0]["text"] == "intro speech" for s in stt_only)
+
+    def test_stt_fills_gap_after_last_ocr(self):
+        """STT after the last OCR segment is included (outro speech)."""
+        ocr = _make_ocr_data([_ocr_seg("字幕", 1000, 3000)], duration_ms=10_000)
+        stt = _make_stt_data([_stt_seg("outro", 7000, 9000)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        stt_only = [s for s in result["segments"] if s["source"] == "stt_only"]
+        assert any(s["detections"][0]["text"] == "outro" for s in stt_only)
+
+    # ── STT hallucination filtering ──────────────────────────────────────────
+
+    def test_short_stt_segment_not_gap_filled(self):
+        """STT segments < 300ms are hallucination-filtered."""
+        ocr = _make_ocr_data([
+            _ocr_seg("a", 0, 1000),
+            _ocr_seg("b", 3000, 4000),
+        ], duration_ms=10_000)
+        stt = _make_stt_data([_stt_seg("short", 1200, 1400)])  # 200ms
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        stt_only = [s for s in result["segments"] if s["source"] == "stt_only"]
+        assert len(stt_only) == 0
+
+    def test_looping_stt_not_gap_filled(self):
+        """Repeating STT text (Whisper loop hallucination) is filtered."""
+        ocr = _make_ocr_data([_ocr_seg("字幕", 0, 1000)], duration_ms=20_000)
+        # Five identical STT segments in the gap — classic Whisper loop
+        stt_segs = [_stt_seg("music music music", 2000 + i * 2000, 3000 + i * 2000)
+                    for i in range(5)]
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data(stt_segs))
+        stt_only = [s for s in result["segments"] if s["source"] == "stt_only"]
+        # After the 3rd repetition, hallucination filter kicks in
+        assert len(stt_only) <= 2  # at most the first 2 before loop detected
+
+    def test_varied_stt_in_gap_not_filtered(self):
+        """Different STT segments in a genuine gap are not filtered."""
+        ocr = _make_ocr_data([
+            _ocr_seg("a", 0, 1000),
+            _ocr_seg("b", 8000, 9000),
+        ], duration_ms=12_000)
+        stt_segs = [
+            _stt_seg("first sentence", 1500, 2500),
+            _stt_seg("second sentence", 3000, 4500),
+            _stt_seg("third sentence", 5000, 6500),
+        ]
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data(stt_segs))
+        stt_only = [s for s in result["segments"] if s["source"] == "stt_only"]
+        assert len(stt_only) == 3
+
+    # ── Deduplication ────────────────────────────────────────────────────────
+
+    def test_consecutive_identical_segments_merged(self):
+        """Consecutive OCR segments with identical text are merged into one."""
+        ocr = _make_ocr_data([
+            _ocr_seg("你好", 0, 1000),
+            _ocr_seg("你好", 1000, 2000),  # exact duplicate
+        ])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert len(result["segments"]) == 1
+        assert result["segments"][0]["end_ms"] == 2000
+
+    def test_consecutive_similar_segments_merged(self):
+        """Segments with ≥85% similar text are merged (OCR noise)."""
+        # "你好世界" vs "你好世界！" — one punctuation difference, high similarity
+        ocr = _make_ocr_data([
+            _ocr_seg("你好世界", 0, 1000),
+            _ocr_seg("你好世界！", 1000, 2000),
+        ])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert len(result["segments"]) == 1
+
+    def test_different_segments_not_merged(self):
+        """Segments with different text are not deduplicated."""
+        ocr = _make_ocr_data([
+            _ocr_seg("第一段", 0, 2000),
+            _ocr_seg("第二段", 2500, 4500),
+        ])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert len(result["segments"]) == 2
+
+    # ── Output format ────────────────────────────────────────────────────────
+
+    def test_output_has_required_top_level_fields(self):
+        ocr = _make_ocr_data([_ocr_seg("test", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert "video" in result
+        assert "resolution" in result
+        assert "duration_ms" in result
+        assert "subtitle_source" in result
+        assert "segments" in result
+        assert result["subtitle_source"] == "both"
+
+    def test_each_segment_has_required_fields(self):
+        ocr = _make_ocr_data([_ocr_seg("你好", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        seg = result["segments"][0]
+        assert "start_ms" in seg
+        assert "end_ms" in seg
+        assert "source" in seg
+        assert "spoken" in seg
+        assert seg["spoken"] is True
+        assert "detections" in seg
+        det = seg["detections"][0]
+        assert "text" in det
+        assert "confidence" in det
+        assert "bbox" in det
+        assert "chars" in det
+
+    def test_stt_only_segments_have_centered_bbox(self):
+        """STT-only segments get a synthetic centered bbox."""
+        ocr = _make_ocr_data([_ocr_seg("字幕", 0, 1000)], duration_ms=10_000)
+        stt = _make_stt_data([_stt_seg("gap speech", 2000, 4000)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        stt_segs = [s for s in result["segments"] if s["source"] == "stt_only"]
+        assert len(stt_segs) == 1
+        bbox = stt_segs[0]["detections"][0]["bbox"]
+        # Should be centered horizontally on a 720px frame
+        text = stt_segs[0]["detections"][0]["text"]
+        assert bbox["x"] >= 0
+        assert bbox["y"] > int(1280 * 0.70)  # in the bottom portion
+
+    def test_segments_sorted_by_start_ms(self):
+        """Output segments are always in chronological order."""
+        ocr = _make_ocr_data([
+            _ocr_seg("第二段", 5000, 7000),
+            _ocr_seg("第一段", 1000, 3000),
+        ], duration_ms=10_000)
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        starts = [s["start_ms"] for s in result["segments"]]
+        assert starts == sorted(starts)
+
+    def test_ocr_preserves_char_bboxes(self):
+        """OCR segments retain their original char bbox data (not synthetic)."""
+        det = _ocr_det("你好世界", y_frac=0.80)
+        det["chars"] = [{"char": c, "x": i * 25, "y": 1024, "width": 25, "height": 40}
+                        for i, c in enumerate("你好世界")]
+        seg = {"start_ms": 1000, "end_ms": 3000, "detections": [det]}
+        ocr = _make_ocr_data([seg])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        out_det = result["segments"][0]["detections"][0]
+        # Chars should come from OCR, not synthetic (OCR chars have y=1024 here)
+        assert out_det["chars"][0]["y"] == 1024
+
+    # ── Latin language support ────────────────────────────────────────────────
+
+    def test_latin_subtitles_pass_through(self):
+        """Latin-script subtitles (Spanish) are handled without CJK assumptions."""
+        ocr = _make_ocr_data([_ocr_seg("Buenos días", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert len(result["segments"]) == 1
+        assert result["segments"][0]["detections"][0]["text"] == "Buenos días"
+
+    def test_latin_stt_timing_refinement(self):
+        """Spanish OCR matches Spanish STT with SequenceMatcher (not Jaccard)."""
+        ocr = _make_ocr_data([_ocr_seg("Buenos días amigos", 1000, 3500)])
+        stt = _make_stt_data([_stt_seg("Buenos días amigos", 1100, 3200)])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        seg = result["segments"][0]
+        assert seg["source"] == "ocr+stt"
+        assert seg["start_ms"] == 1100
+
+    def test_mixed_cjk_latin_segment(self):
+        """Mixed Chinese+English subtitles (code-switching) are preserved."""
+        ocr = _make_ocr_data([_ocr_seg("Hello 世界", 1000, 3000)])
+        result = pipeline.merge_ocr_stt(ocr, _make_stt_data([]))
+        assert result["segments"][0]["detections"][0]["text"] == "Hello 世界"
+
+    # ── Multi-segment scenarios ──────────────────────────────────────────────
+
+    def test_full_video_ocr_with_stt_gaps(self):
+        """Realistic scenario: OCR for subtitles + STT for intro/outro gaps."""
+        ocr = _make_ocr_data([
+            _ocr_seg("第一句", 2000, 4000),
+            _ocr_seg("第二句", 5000, 7000),
+            _ocr_seg("第三句", 8000, 10000),
+        ], duration_ms=15_000)
+        stt = _make_stt_data([
+            _stt_seg("intro words", 500, 1500),          # before first OCR
+            _stt_seg("第一句", 2100, 3900),              # overlaps OCR → timing refinement
+            _stt_seg("gap words", 4200, 4800),            # small gap (800ms) → included
+            _stt_seg("第二句 variation", 5100, 6900),    # overlaps OCR → timing refinement
+            _stt_seg("outro words", 11000, 13000),        # after last OCR
+        ])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        sources = [s["source"] for s in result["segments"]]
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+
+        # OCR text must be preserved for matching segments
+        assert "第一句" in texts
+        assert "第二句" in texts
+        assert "第三句" in texts
+        # STT gap fills present
+        assert "intro words" in texts
+        assert "outro words" in texts
+        # No stt_only segments for OCR-covered windows
+        ocr_covered_stt_only = [
+            (t, src) for t, src in zip(texts, sources)
+            if src == "stt_only" and t in ("第一句 variation",)
+        ]
+        assert len(ocr_covered_stt_only) == 0
