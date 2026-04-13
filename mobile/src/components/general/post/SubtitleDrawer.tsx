@@ -242,21 +242,32 @@ export default function SubtitleDrawer({
   //   scrollY = item.midY - viewportHeight/2
   // We also add headerHeight as a correction because onLayout y-values on items
   // inside the ScrollView can include the header offset on some RN versions.
+  /** Shared scroll helper — centered below header. */
+  const scrollToIndex = useCallback((index: number, animated = true) => {
+    const layout = itemLayoutsRef.current.get(index);
+    if (!layout) return false;
+    const headerH = headerHeightRef.current;
+    const viewportHeight = EXPANDED_HEIGHT - headerH;
+    const itemMidY = layout.y + layout.height / 2;
+    // Center the item in the viewport, then shift down by headerH so it
+    // clears the header and lands in the visible scroll area.
+    const scrollY = Math.max(0, itemMidY - viewportHeight / 2 - headerH);
+    scrollRef.current?.scrollTo({ y: scrollY, animated });
+    return true;
+  }, []);
+
+  // Auto-scroll in expanded mode — center the active item in the visible scroll area.
+  // Only marks activeIndexRef as "done" after a successful scroll so that, if the
+  // item layout hasn't been measured yet, the onLayout callback can retry.
   useEffect(() => {
     if (expanded && activeSegmentIndex >= 0 && activeSegmentIndex !== activeIndexRef.current) {
-      activeIndexRef.current = activeSegmentIndex;
-      const layout = itemLayoutsRef.current.get(activeSegmentIndex);
-      if (layout) {
-        const headerH = headerHeightRef.current;
-        const viewportHeight = EXPANDED_HEIGHT - headerH;
-        const itemMidY = layout.y + layout.height / 2;
-        // Center the item in the viewport, then shift down by headerH so it
-        // clears the header and lands in the visible scroll area.
-        const scrollY = Math.max(0, itemMidY - viewportHeight / 2 - headerH);
-        scrollRef.current?.scrollTo({ y: scrollY, animated: true });
+      if (scrollToIndex(activeSegmentIndex)) {
+        activeIndexRef.current = activeSegmentIndex;
       }
+      // If layout not yet measured, activeIndexRef stays stale so the
+      // onLayout callback below can trigger the scroll once measurement arrives.
     }
-  }, [expanded, activeSegmentIndex]);
+  }, [expanded, activeSegmentIndex, scrollToIndex]);
 
   const toggleExpanded = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -286,7 +297,7 @@ export default function SubtitleDrawer({
 
   // --- Collapsed: transcript | translation side by side ---
   const collapsedContent = (
-    <Pressable style={[styles.collapsed, { height: COLLAPSED_HEIGHT + insets.bottom, paddingBottom: insets.bottom }]} onPress={toggleExpanded}>
+    <Pressable testID="drawer-collapsed" style={[styles.collapsed, { height: COLLAPSED_HEIGHT + insets.bottom, paddingBottom: insets.bottom }]} onPress={toggleExpanded}>
       <View style={styles.collapsedRow}>
         {/* Left: Transcript with ruby pinyin */}
         <View style={styles.collapsedLeft}>
@@ -350,13 +361,14 @@ export default function SubtitleDrawer({
     <View style={[styles.expandedOverlay, { height: EXPANDED_HEIGHT }]}>
       {/* Handle bar + header */}
       <View
+        testID="drawer-header"
         style={styles.expandedHeader}
         onLayout={(e) => { headerHeightRef.current = e.nativeEvent.layout.height; }}
       >
         <View style={styles.handleBar} />
         <View style={styles.headerRow}>
           <Text style={styles.headerTitle}>Transcript</Text>
-          <TouchableOpacity onPress={toggleExpanded} style={styles.dismissButton}>
+          <TouchableOpacity testID="drawer-dismiss" onPress={toggleExpanded} style={styles.dismissButton}>
             <Ionicons name="chevron-down" size={20} color="#888" />
           </TouchableOpacity>
         </View>
@@ -377,6 +389,7 @@ export default function SubtitleDrawer({
           return (
             <Pressable
               key={si}
+              testID={`transcript-item-${si}`}
               style={[styles.transcriptItem, isActive && styles.transcriptItemActive]}
               onPress={() => handleLineTap(si)}
               onLayout={(e) => {
@@ -384,6 +397,12 @@ export default function SubtitleDrawer({
                   y: e.nativeEvent.layout.y,
                   height: e.nativeEvent.layout.height,
                 });
+                // Retry scroll if this item's layout arrived after the effect fired
+                if (expanded && si === activeSegmentIndex && si !== activeIndexRef.current) {
+                  if (scrollToIndex(si)) {
+                    activeIndexRef.current = si;
+                  }
+                }
               }}
             >
               <Text style={styles.timestamp}>{formatTime(seg.start_ms)}</Text>
