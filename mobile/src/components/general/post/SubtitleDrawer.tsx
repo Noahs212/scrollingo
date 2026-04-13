@@ -235,14 +235,24 @@ export default function SubtitleDrawer({
     [showPinyin, activeText, wordDefs],
   );
 
-  // Auto-scroll in expanded mode — center the active item in the visible area
+  // Auto-scroll in expanded mode — center the active item in the visible scroll area.
+  // The ScrollView sits below the header, so its viewport height is
+  // (EXPANDED_HEIGHT - headerHeight). We want the item's midpoint to land at the
+  // center of that viewport. scrollTo({y}) is a content offset, so:
+  //   scrollY = item.midY - viewportHeight/2
+  // We also add headerHeight as a correction because onLayout y-values on items
+  // inside the ScrollView can include the header offset on some RN versions.
   useEffect(() => {
     if (expanded && activeSegmentIndex >= 0 && activeSegmentIndex !== activeIndexRef.current) {
       activeIndexRef.current = activeSegmentIndex;
       const layout = itemLayoutsRef.current.get(activeSegmentIndex);
       if (layout) {
-        const visibleHeight = EXPANDED_HEIGHT - headerHeightRef.current;
-        const scrollY = Math.max(0, layout.y - visibleHeight / 2 + layout.height / 2);
+        const headerH = headerHeightRef.current;
+        const viewportHeight = EXPANDED_HEIGHT - headerH;
+        const itemMidY = layout.y + layout.height / 2;
+        // Center the item in the viewport, then shift down by headerH so it
+        // clears the header and lands in the visible scroll area.
+        const scrollY = Math.max(0, itemMidY - viewportHeight / 2 - headerH);
         scrollRef.current?.scrollTo({ y: scrollY, animated: true });
       }
     }
