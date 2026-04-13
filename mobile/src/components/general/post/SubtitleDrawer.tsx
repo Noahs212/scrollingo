@@ -182,6 +182,10 @@ export default function SubtitleDrawer({
   const [expanded, setExpanded] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
   const activeIndexRef = useRef(-1);
+  // Map from segment index → { y, height } measured via onLayout
+  const itemLayoutsRef = useRef<Map<number, { y: number; height: number }>>(new Map());
+  // Height of the header (handle bar + title row) measured via onLayout
+  const headerHeightRef = useRef(60);
   const insets = useSafeAreaInsets();
 
   const showPinyin = hasPinyin(language);
@@ -231,17 +235,28 @@ export default function SubtitleDrawer({
     [showPinyin, activeText, wordDefs],
   );
 
-  // Auto-scroll in expanded mode
+  // Auto-scroll in expanded mode — center the active item in the visible area
   useEffect(() => {
     if (expanded && activeSegmentIndex >= 0 && activeSegmentIndex !== activeIndexRef.current) {
       activeIndexRef.current = activeSegmentIndex;
-      scrollRef.current?.scrollTo({ y: Math.max(0, activeSegmentIndex * 80 - 60), animated: true });
+      const layout = itemLayoutsRef.current.get(activeSegmentIndex);
+      if (layout) {
+        const visibleHeight = EXPANDED_HEIGHT - headerHeightRef.current;
+        const scrollY = Math.max(0, layout.y - visibleHeight / 2 + layout.height / 2);
+        scrollRef.current?.scrollTo({ y: scrollY, animated: true });
+      }
     }
   }, [expanded, activeSegmentIndex]);
 
   const toggleExpanded = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpanded((e) => !e);
+    setExpanded((e) => {
+      if (!e) {
+        // Reset activeIndexRef so the scroll effect fires immediately on open
+        activeIndexRef.current = -1;
+      }
+      return !e;
+    });
   }, []);
 
   const handleLineTap = useCallback(
@@ -324,7 +339,10 @@ export default function SubtitleDrawer({
   const expandedContent = (
     <View style={[styles.expandedOverlay, { height: EXPANDED_HEIGHT }]}>
       {/* Handle bar + header */}
-      <View style={styles.expandedHeader}>
+      <View
+        style={styles.expandedHeader}
+        onLayout={(e) => { headerHeightRef.current = e.nativeEvent.layout.height; }}
+      >
         <View style={styles.handleBar} />
         <View style={styles.headerRow}>
           <Text style={styles.headerTitle}>Transcript</Text>
@@ -351,6 +369,12 @@ export default function SubtitleDrawer({
               key={si}
               style={[styles.transcriptItem, isActive && styles.transcriptItemActive]}
               onPress={() => handleLineTap(si)}
+              onLayout={(e) => {
+                itemLayoutsRef.current.set(si, {
+                  y: e.nativeEvent.layout.y,
+                  height: e.nativeEvent.layout.height,
+                });
+              }}
             >
               <Text style={styles.timestamp}>{formatTime(seg.start_ms)}</Text>
 
