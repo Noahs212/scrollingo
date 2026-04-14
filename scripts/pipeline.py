@@ -229,186 +229,10 @@ def run_stt(audio_path: str, language: str | None = None) -> dict:
     return {"words": words, "segments": segments, "text": transcript.text}
 
 
-def whisper_to_bboxes(whisper_result: dict, video_id: str, duration_ms: int,
-                      resolution: dict = None) -> dict:
-    """Convert Whisper output to the same bboxes.json format as OCR.
-
-    Generates synthetic character positions centered at the bottom of the frame.
-    """
-    if resolution is None:
-        resolution = {"width": 720, "height": 1280}
-
-    vw, vh = resolution["width"], resolution["height"]
-    # Subtitle position: centered, at ~82% of frame height
-    sub_y = int(vh * 0.82)
-    sub_h = int(vh * 0.05)
-    max_text_width = int(vw * 0.85)
-
-    segments = []
-    for seg in whisper_result.get("segments", []):
-        text = seg.get("text", "").strip()
-        if not text:
-            continue
-
-        start_ms = int(seg["start"] * 1000)
-        end_ms = int(seg["end"] * 1000)
-
-        # Build character-level bboxes (evenly spaced)
-        char_width = min(max_text_width // max(len(text), 1), int(vw * 0.06))
-        total_width = char_width * len(text)
-        start_x = (vw - total_width) // 2
-
-        chars = []
-        for i, ch in enumerate(text):
-            chars.append({
-                "char": ch,
-                "x": start_x + i * char_width,
-                "y": sub_y,
-                "width": char_width,
-                "height": sub_h,
-            })
-
-        det_bbox = {
-            "x": start_x,
-            "y": sub_y,
-            "width": total_width,
-            "height": sub_h,
-        }
-
-        segments.append({
-            "start_ms": start_ms,
-            "end_ms": end_ms,
-            "detections": [{
-                "text": text,
-                "confidence": 1.0,
-                "bbox": det_bbox,
-                "chars": chars,
-            }],
-        })
-
-    return {
-        "video": video_id,
-        "resolution": resolution,
-        "duration_ms": duration_ms,
-        "subtitle_source": "stt",
-        "segments": segments,
-    }
-
-
-# ─── STT Segment Chunking ───
-
-MAX_VISUAL_WIDTH = 36    # max visual width units per chunk (2 lines × ~18 units)
-                         # CJK char = 2 units (~22px), Latin char = 1 unit (~11px)
-                         # "你好World" = 4+5 = 9 units. Pure CJK 18 chars = 36 units. Pure Latin 36 chars = 36 units.
-PAUSE_THRESHOLD_S = 0.3  # 300ms gap = natural speech pause
-
-_PUNCT_SPLIT = re.compile(r'(?<=[。！？，、.!?,;])\s*')
-
-
 def _is_cjk_char(c: str) -> bool:
     code = ord(c)
     return (0x4e00 <= code <= 0x9fff or 0x3400 <= code <= 0x4dbf
             or 0x3040 <= code <= 0x30ff or 0xac00 <= code <= 0xd7af)
-
-
-def _is_cjk_dominant(text: str) -> bool:
-    cjk = sum(1 for c in text if _is_cjk_char(c))
-    return cjk > len(text) * 0.3
-
-
-def _visual_width(text: str) -> int:
-    """Visual width in units. CJK = 2 units (full-width ~22px), Latin/number = 1 unit (~11px)."""
-    return sum(2 if _is_cjk_char(c) else 1 for c in text if c.strip())
-
-
-def _exceeds_limit(text: str) -> bool:
-    """Check if text exceeds the visual width limit for the subtitle bar."""
-    return _visual_width(text) > MAX_VISUAL_WIDTH
-
-
-def _get_words_for_segment(seg_start_s: float, seg_end_s: float, whisper_words: list) -> list:
-    """Find Whisper word timestamps that fall within a segment's time range."""
-    return [w for w in whisper_words
-            if w["start"] >= seg_start_s - 0.05 and w["end"] <= seg_end_s + 0.05]
-
-
-def _split_at_punctuation(text: str) -> list[str]:
-    """Split text at sentence-ending punctuation."""
-    parts = _PUNCT_SPLIT.split(text)
-    return [p for p in parts if p.strip()]
-
-
-def _find_pause_split(text: str, seg_words: list) -> int | None:
-    """Find the character index where the longest speech pause (>300ms) occurs.
-
-    Maps Whisper word boundaries back to character positions in the text.
-    Returns the character index to split at, or None if no pause found.
-    """
-    if len(seg_words) < 2:
-        return None
-
-    best_gap = 0
-    best_char_idx = None
-    char_pos = 0
-
-    for i in range(len(seg_words) - 1):
-        # Advance char_pos past this word
-        word_text = seg_words[i]["word"]
-        word_idx = text.find(word_text, char_pos)
-        if word_idx >= 0:
-            char_pos = word_idx + len(word_text)
-
-        gap = seg_words[i + 1]["start"] - seg_words[i]["end"]
-        if gap > PAUSE_THRESHOLD_S and gap > best_gap:
-            best_gap = gap
-            best_char_idx = char_pos
-
-    return best_char_idx
-
-
-def _hard_split(text: str, limit: int = MAX_VISUAL_WIDTH) -> tuple[str, str]:
-    """Force split at a word boundary within the visual width limit.
-
-    Uses visual width (CJK=2, Latin=1) to handle mixed text correctly.
-    """
-    import jieba
-
-    # Try jieba segmentation for CJK-containing text, space-split for pure Latin
-    if any(_is_cjk_char(c) for c in text):
-        words = list(jieba.cut(text))
-    else:
-        words = text.split(" ")
-        # Re-add spaces between words for Latin
-        words = [w + " " for w in words[:-1]] + [words[-1]] if words else []
-
-    first_part = ""
-    for w in words:
-        candidate = first_part + w
-        if _visual_width(candidate) > limit:
-            break
-        first_part = candidate
-
-    if not first_part:
-        # Absolute fallback: split character by character
-        for i in range(1, len(text)):
-            if _visual_width(text[:i+1]) > limit:
-                first_part = text[:i]
-                break
-        if not first_part:
-            first_part = text
-
-    remainder = text[len(first_part):].strip()
-    return first_part.strip(), remainder
-
-
-def _interpolate_timestamps(text: str, chunk_text: str, chunk_start_char: int,
-                            seg_start_ms: int, seg_end_ms: int) -> tuple[int, int]:
-    """Linearly interpolate timestamps for a chunk based on character position."""
-    total_len = max(len(text), 1)
-    chunk_end_char = chunk_start_char + len(chunk_text)
-    start_ms = seg_start_ms + int((chunk_start_char / total_len) * (seg_end_ms - seg_start_ms))
-    end_ms = seg_start_ms + int((chunk_end_char / total_len) * (seg_end_ms - seg_start_ms))
-    return start_ms, end_ms
 
 
 def _build_centered_detection(text: str, resolution: dict) -> dict:
@@ -452,93 +276,6 @@ def _build_centered_detection(text: str, resolution: dict) -> dict:
         "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
         "chars": chars,
     }
-
-
-def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) -> dict:
-    """Build a full segment dict with synthetic centered bbox/chars."""
-    return {
-        "start_ms": start_ms,
-        "end_ms": end_ms,
-        "detections": [_build_centered_detection(text, resolution)],
-    }
-
-
-def _recursive_chunk(text: str, seg_words: list,
-                     seg_start_ms: int, seg_end_ms: int, resolution: dict) -> list[dict]:
-    """Recursively split text into chunks that fit the visual width limit."""
-    text = text.strip()
-    if not text:
-        return []
-
-    if not _exceeds_limit(text):
-        return [_build_stt_segment(text, seg_start_ms, seg_end_ms, resolution)]
-
-    # Tier A: Try punctuation split
-    parts = _split_at_punctuation(text)
-    if len(parts) > 1:
-        chunks = []
-        char_offset = 0
-        for part in parts:
-            start_ms, end_ms = _interpolate_timestamps(text, part, char_offset, seg_start_ms, seg_end_ms)
-            # Find words for this sub-part
-            sub_words = _get_words_for_segment(start_ms / 1000, end_ms / 1000, seg_words)
-            chunks.extend(_recursive_chunk(part, sub_words, start_ms, end_ms, resolution))
-            char_offset += len(part)
-        return chunks
-
-    # Tier B: Try speech pause split
-    pause_idx = _find_pause_split(text, seg_words)
-    if pause_idx and 0 < pause_idx < len(text):
-        first = text[:pause_idx].strip()
-        second = text[pause_idx:].strip()
-        if first and second:
-            first_start, first_end = _interpolate_timestamps(text, first, 0, seg_start_ms, seg_end_ms)
-            second_start, second_end = _interpolate_timestamps(text, second, pause_idx, seg_start_ms, seg_end_ms)
-            sub_words_1 = _get_words_for_segment(first_start / 1000, first_end / 1000, seg_words)
-            sub_words_2 = _get_words_for_segment(second_start / 1000, second_end / 1000, seg_words)
-            return (_recursive_chunk(first, sub_words_1, first_start, first_end, resolution) +
-                    _recursive_chunk(second, sub_words_2, second_start, second_end, resolution))
-
-    # Tier C: Hard split at word boundary
-    first, second = _hard_split(text)
-    first_start, first_end = _interpolate_timestamps(text, first, 0, seg_start_ms, seg_end_ms)
-    second_start, second_end = _interpolate_timestamps(text, second, len(first), seg_start_ms, seg_end_ms)
-    return ([_build_stt_segment(first, first_start, first_end, resolution)] +
-            _recursive_chunk(second, seg_words, second_start, second_end, resolution))
-
-
-def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
-    """Split oversized STT segments into display-friendly chunks.
-
-    Uses a 3-tier strategy: punctuation → speech pauses → hard word boundary split.
-    Preserves Whisper word-level timestamps for accurate timing.
-    """
-    whisper_words = whisper_result.get("words", [])
-    resolution = bbox_data.get("resolution", {"width": 720, "height": 1280})
-    new_segments = []
-
-    for seg in bbox_data.get("segments", []):
-        dets = seg.get("detections", [])
-        if not dets:
-            new_segments.append(seg)
-            continue
-
-        text = dets[0]["text"].strip()
-
-        if not _exceeds_limit(text):
-            new_segments.append(seg)
-            continue
-
-        seg_start_ms = seg["start_ms"]
-        seg_end_ms = seg["end_ms"]
-        seg_words = _get_words_for_segment(seg_start_ms / 1000, seg_end_ms / 1000, whisper_words)
-
-        chunks = _recursive_chunk(text, seg_words, seg_start_ms, seg_end_ms, resolution)
-        new_segments.extend(chunks)
-
-    result = dict(bbox_data)
-    result["segments"] = new_segments
-    return result
 
 
 def _to_simplified_chinese(text: str) -> str:
@@ -1586,33 +1323,26 @@ def main():
         print("[2/9] Running OCR...")
         bbox_data_ocr = run_ocr(norm_path, video_id)
 
-        # Step 3: Run STT (always — extract audio transcript with word timing)
-        bbox_data_stt = None
+        # Step 3: Run STT (audio only — no longer converted to bbox format)
         print("[3/9] Running STT (Groq Whisper)...")
         audio_path = extract_audio(norm_path, tmpdir)
         if audio_path and groq:
             try:
-                whisper_result = run_stt(audio_path, language)
-                duration_ms = duration_sec * 1000
-                bbox_data_stt = whisper_to_bboxes(whisper_result, video_id, duration_ms)
-                bbox_data_stt = chunk_stt_segments(bbox_data_stt, whisper_result)
                 upload_to_r2(audio_path, f"videos/{video_id}/audio.mp3")
             except Exception as e:
-                print(f"  STT failed: {e} — continuing with OCR only")
+                print(f"  STT/audio upload failed: {e}")
         elif not groq:
             print("  No GroqAPIKey — skipping STT")
         else:
             print("  No audio stream — skipping STT")
 
-        # Use OCR data as primary (has bbox positions for tap targets)
-        # Use STT data for the visible subtitle drawer
+        # OCR is the sole data source — bboxes.json for tap targets, transcript.json via remerge
         bbox_data = bbox_data_ocr
-        sub_source = "both" if bbox_data_stt else "ocr"
+        sub_source = "ocr"
 
         # Auto-detect language from subtitle text if not provided
-        # Prefer STT text (more accurate) over OCR text
         if not language:
-            source = bbox_data_stt or bbox_data_ocr
+            source = bbox_data_ocr
             language = detect_content_language(source)
             if language:
                 print(f"  Auto-detected language: {language}")
@@ -1622,8 +1352,7 @@ def main():
 
         # Auto-detect title from first subtitle if not provided
         if not title:
-            source = bbox_data_stt or bbox_data_ocr
-            title = get_auto_title(source)
+            title = get_auto_title(bbox_data_ocr)
             print(f"  Auto-title: \"{title}\"")
 
         # Extract thumbnail at ~30% into the video
@@ -1659,43 +1388,16 @@ def main():
             json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
         upload_to_r2(bbox_path, f"videos/{video_id}/bboxes.json")
 
-        # Save + upload STT stt.json (debugging)
-        if bbox_data_stt:
-            stt_path = os.path.join(tmpdir, "stt.json")
-            with open(stt_path, "w", encoding="utf-8") as f:
-                json.dump(bbox_data_stt, f, ensure_ascii=False, indent=2)
-            upload_to_r2(stt_path, f"videos/{video_id}/stt.json")
-
-        # Merge OCR + STT into unified transcript
-        if bbox_data_stt:
-            print("  Merging OCR + STT transcript...")
-            transcript_data = merge_ocr_stt(bbox_data_ocr, bbox_data_stt, language=language)
-            transcript_path = os.path.join(tmpdir, "transcript.json")
-            with open(transcript_path, "w", encoding="utf-8") as f:
-                json.dump(transcript_data, f, ensure_ascii=False, indent=2)
-            upload_to_r2(transcript_path, f"videos/{video_id}/transcript.json")
-            merged_count = len(transcript_data["segments"])
-            ocr_matched = sum(1 for s in transcript_data["segments"] if s["source"] == "ocr+stt")
-            stt_only = sum(1 for s in transcript_data["segments"] if s["source"] == "stt_only")
-            print(f"  Transcript: {merged_count} segments ({ocr_matched} OCR+STT, {stt_only} STT-only)")
-
         # Save locally for testing
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         local_bbox_path = OUTPUT_DIR / f"{video_id}_pipeline.json"
         with open(local_bbox_path, "w", encoding="utf-8") as f:
             json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
-        if bbox_data_stt:
-            local_stt_path = OUTPUT_DIR / f"{video_id}_stt.json"
-            with open(local_stt_path, "w", encoding="utf-8") as f:
-                json.dump(bbox_data_stt, f, ensure_ascii=False, indent=2)
-            local_transcript_path = OUTPUT_DIR / f"{video_id}_transcript.json"
-            with open(local_transcript_path, "w", encoding="utf-8") as f:
-                json.dump(transcript_data, f, ensure_ascii=False, indent=2)
         print(f"  Saved locally: {local_bbox_path}")
 
-        # Step 5: Word segmentation — prefer STT (better word boundaries) over OCR
+        # Step 5: Word segmentation — from OCR data
         print("[5/9] Segmenting words...")
-        seg_source = bbox_data_stt if bbox_data_stt else bbox_data_ocr
+        seg_source = bbox_data_ocr
         unique_words, word_occurrences = segment_words(seg_source, language)
 
         # Build word → sentence map for LLM context

@@ -1241,7 +1241,7 @@ def _ocr_seg(text, start_ms, end_ms, y_frac=0.80):
     }
 
 def _stt_seg(text, start_ms, end_ms):
-    """Build a minimal STT segment dict (same bbox format as whisper_to_bboxes)."""
+    """Build a minimal STT segment dict in bboxes format."""
     y = int(RES_H * 0.82)
     return {
         "start_ms": start_ms,
