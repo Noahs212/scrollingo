@@ -77,7 +77,7 @@ export const PostSingle = forwardRef<PostSingleHandles, { item: Video }>(
     // OCR data for invisible tap targets over burned-in text
     const subtitleData = ocrData;
     // Transcript for the subtitle drawer (merged OCR text + STT timing, spoken only)
-    // Falls back through: transcript.json → stt.json → bboxes.json (handled in fetchTranscriptData)
+    // Falls back through: transcript.json → bboxes.json (handled in fetchTranscriptData)
     const drawerData = transcriptData ?? ocrData;
 
     const player = useVideoPlayer(item.cdn_url, (p) => {
