@@ -115,14 +115,19 @@ def analyze_transcript(transcript: dict, video_id: str) -> dict:
     }
 
 
-def remerge_video(r2, video_id: str, dry_run: bool) -> dict | None:
-    bboxes_key    = f"videos/{video_id}/bboxes.json"
-    stt_key       = f"videos/{video_id}/stt.json"
+def _count_traditional_chars(text: str) -> int:
+    """Count characters that are Traditional-only (differ after t2s conversion)."""
+    converted = pl._to_simplified_chinese(text)
+    return sum(1 for a, b in zip(text, converted) if a != b)
+
+
+def remerge_video(r2, video_id: str, language: str, dry_run: bool) -> dict | None:
+    bboxes_key     = f"videos/{video_id}/bboxes.json"
+    stt_key        = f"videos/{video_id}/stt.json"
     transcript_key = f"videos/{video_id}/transcript.json"
 
-    has_bboxes    = r2_exists(r2, bboxes_key)
-    has_stt       = r2_exists(r2, stt_key)
-    has_transcript = r2_exists(r2, transcript_key)
+    has_bboxes = r2_exists(r2, bboxes_key)
+    has_stt    = r2_exists(r2, stt_key)
 
     if not has_bboxes:
         print(f"  SKIP {video_id}: no bboxes.json in R2")
@@ -149,27 +154,33 @@ def remerge_video(r2, video_id: str, dry_run: bool) -> dict | None:
             stt_raw = {}
 
         # stt.json may be raw whisper or already-chunked bboxes format
-        # If it's bboxes format (has "segments" key), use as-is for stt_data
-        # If it's whisper format (has "words"/"text"), it's already been chunked into bboxes
-        # merge_ocr_stt expects: ocr_data = bboxes format, stt_data = bboxes format
         if "words" in stt_raw or "text" in stt_raw:
-            # This is raw whisper — it should have been chunked before storage but wasn't
-            # Use empty stt_data and rely on OCR backbone only
             print(f"  WARN {video_id}: stt.json is raw Whisper format, using OCR-only merge")
             stt_data = {"segments": [], "resolution": ocr_data.get("resolution", {})}
         else:
             stt_data = stt_raw
 
-        new_transcript = pl.merge_ocr_stt(ocr_data, stt_data)
+        new_transcript = pl.merge_ocr_stt(ocr_data, stt_data, language=language)
         analysis = analyze_transcript(new_transcript, video_id)
 
+        # Count Traditional chars that were converted (only meaningful for zh)
+        trad_converted = 0
+        if language == "zh":
+            for seg in new_transcript.get("segments", []):
+                for det in seg.get("detections", []):
+                    # Compare against original OCR text to find what was converted
+                    trad_converted += _count_traditional_chars(det.get("text", ""))
+        analysis["trad_converted"] = trad_converted
+
         if dry_run:
-            print(f"  DRY-RUN {video_id}: would upload transcript.json "
-                  f"({analysis['total_segments']} segs, sources={analysis['sources']})")
+            print(f"  DRY-RUN {video_id} (lang={language}): would upload transcript.json "
+                  f"({analysis['total_segments']} segs, sources={analysis['sources']}"
+                  f"{', trad_converted='+str(trad_converted) if trad_converted else ''})")
         else:
             r2_upload_json(r2, new_transcript, transcript_key)
-            print(f"  OK {video_id}: uploaded transcript.json "
-                  f"({analysis['total_segments']} segs, sources={analysis['sources']})")
+            print(f"  OK {video_id} (lang={language}): uploaded transcript.json "
+                  f"({analysis['total_segments']} segs, sources={analysis['sources']}"
+                  f"{', trad_converted='+str(trad_converted) if trad_converted else ''})")
 
         return analysis
 
@@ -183,19 +194,23 @@ def main():
     sb = create_client(SUPABASE_URL, SUPABASE_KEY)
     r2 = get_r2()
 
+    rows = sb.table("videos").select("id, title, language, status") \
+             .eq("status", "ready").order("created_at").execute()
+    lang_map = {r["id"]: r.get("language", "zh") for r in rows.data}
+
     if args.video_id:
         video_ids = [args.video_id]
     else:
-        rows = sb.table("videos").select("id, title, language, status") \
-                 .eq("status", "ready").order("created_at").execute()
-        video_ids = [r["id"] for r in rows.data]
+        video_ids = list(lang_map.keys())
         print(f"Found {len(video_ids)} ready videos in Supabase\n")
 
     results = []
     for vid_id in video_ids:
-        print(f"Processing {vid_id} ...")
-        analysis = remerge_video(r2, vid_id, dry_run=args.dry_run)
+        language = lang_map.get(vid_id, "zh")
+        print(f"Processing {vid_id} (lang={language}) ...")
+        analysis = remerge_video(r2, vid_id, language=language, dry_run=args.dry_run)
         if analysis:
+            analysis["language"] = language
             results.append(analysis)
         print()
 
@@ -213,12 +228,25 @@ def main():
     print(f"Source breakdown: {dict(all_sources)}")
     print()
 
+    trad_videos = [(r["video_id"], r["trad_converted"]) for r in results if r.get("trad_converted", 0) > 0]
+
     print("Per-video breakdown:")
-    print(f"  {'Video ID':<40} {'Segs':>5}  Sources")
-    print(f"  {'-'*40} {'-'*5}  {'-'*30}")
+    print(f"  {'Video ID':<40} {'Lang':>4} {'Segs':>5}  {'Trad→Simp':>9}  Sources")
+    print(f"  {'-'*40} {'-'*4} {'-'*5}  {'-'*9}  {'-'*30}")
     for r in results:
         sources_str = "  ".join(f"{k}={v}" for k, v in sorted(r["sources"].items()))
-        print(f"  {r['video_id']:<40} {r['total_segments']:>5}  {sources_str}")
+        trad = r.get("trad_converted", 0)
+        trad_str = str(trad) if trad else "-"
+        lang = r.get("language", "?")
+        print(f"  {r['video_id']:<40} {lang:>4} {r['total_segments']:>5}  {trad_str:>9}  {sources_str}")
+
+    # Traditional → Simplified conversion report
+    if trad_videos:
+        print(f"\nTraditional→Simplified conversions ({len(trad_videos)} videos):")
+        for vid_id, count in trad_videos:
+            print(f"  {vid_id}: {count} char(s) converted")
+    else:
+        print("\nNo Traditional Chinese characters found in any video.")
 
     # Suspicious segments
     all_suspicious = [(r["video_id"], s) for r in results for s in r["suspicious"]]

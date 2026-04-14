@@ -541,6 +541,29 @@ def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
     return result
 
 
+def _to_simplified_chinese(text: str) -> str:
+    """Convert Traditional Chinese characters to Simplified Chinese.
+
+    No-op for non-Chinese text (Latin, Japanese kana, empty strings).
+    Uses opencc-python-reimplemented with the t2s (Traditional→Simplified) config.
+    Lazy-imports opencc so the rest of the pipeline still works without it.
+    """
+    if not text:
+        return text
+    # Quick check: if no CJK characters present, skip conversion entirely
+    if not any(_is_cjk_char(c) for c in text):
+        return text
+    try:
+        import opencc
+        _converter = getattr(_to_simplified_chinese, "_converter", None)
+        if _converter is None:
+            _converter = opencc.OpenCC("t2s")
+            _to_simplified_chinese._converter = _converter  # type: ignore[attr-defined]
+        return _converter.convert(text)
+    except ImportError:
+        return text
+
+
 def _text_similarity(a: str, b: str) -> float:
     """Sequence-based similarity using SequenceMatcher ratio.
 
@@ -648,7 +671,8 @@ def _is_stt_hallucination(stt_text: str, prev_stt_texts: list,
 
 
 def merge_ocr_stt(ocr_data: dict, stt_data: dict,
-                  time_tolerance_ms: int = 400) -> dict:
+                  time_tolerance_ms: int = 400,
+                  language: str | None = None) -> dict:
     """Merge OCR and STT into a unified subtitle transcript — OCR-first design.
 
     Algorithm:
@@ -660,12 +684,15 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
        segment overlaps, adopt STT start/end for tighter speech alignment.
     4. STT fills genuine gaps only — windows between OCR segments with no OCR
        activity, with hallucination filtering applied (short, looping).
+    5. For Chinese content (language="zh"), all text is normalized to Simplified
+       Chinese via _to_simplified_chinese().
 
     Source field values in output segments:
     - "ocr"      : OCR text and timing, no STT match found
     - "ocr+stt"  : OCR text with STT-refined timing (high-sim match)
     - "stt_only" : STT gap fill in a genuine OCR-free window
     """
+    normalize_text = _to_simplified_chinese if language == "zh" else (lambda t: t)
     ocr_segments = ocr_data.get("segments", [])
     stt_segments = stt_data.get("segments", [])
     resolution = ocr_data.get("resolution", {"width": 720, "height": 1280})
@@ -801,7 +828,7 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
             "source": seg["source"],
             "spoken": True,
             "detections": [{
-                "text": det["text"],
+                "text": normalize_text(det["text"]),
                 "confidence": det.get("confidence", 1.0),
                 "bbox": det["bbox"],
                 "chars": det.get("chars", []),
@@ -814,7 +841,7 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
             "end_ms": seg["end_ms"],
             "source": seg["source"],
             "spoken": True,
-            "detections": [_build_centered_detection(seg["_text"], resolution)],
+            "detections": [_build_centered_detection(normalize_text(seg["_text"]), resolution)],
         })
 
     all_segs.sort(key=lambda s: s["start_ms"])
@@ -1642,7 +1669,7 @@ def main():
         # Merge OCR + STT into unified transcript
         if bbox_data_stt:
             print("  Merging OCR + STT transcript...")
-            transcript_data = merge_ocr_stt(bbox_data_ocr, bbox_data_stt)
+            transcript_data = merge_ocr_stt(bbox_data_ocr, bbox_data_stt, language=language)
             transcript_path = os.path.join(tmpdir, "transcript.json")
             with open(transcript_path, "w", encoding="utf-8") as f:
                 json.dump(transcript_data, f, ensure_ascii=False, indent=2)

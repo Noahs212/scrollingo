@@ -1824,3 +1824,109 @@ class TestMergeOcrStt:
             if src == "stt_only" and t in ("第一句 variation",)
         ]
         assert len(ocr_covered_stt_only) == 0
+
+
+# ─── TestToSimplifiedChinese ──────────────────────────────────────────────────
+
+class TestToSimplifiedChinese:
+    """Tests for _to_simplified_chinese() helper."""
+
+    def test_traditional_converts_to_simplified(self):
+        # 繁體 → 繁体, 語言 → 语言
+        assert pipeline._to_simplified_chinese("繁體中文") == "繁体中文"
+        assert pipeline._to_simplified_chinese("語言學習") == "语言学习"
+
+    def test_simplified_passthrough_unchanged(self):
+        # Already simplified — should not be altered
+        text = "简体中文"
+        assert pipeline._to_simplified_chinese(text) == text
+
+    def test_mixed_traditional_and_simplified(self):
+        # Mixed input: Traditional chars should flip, Simplified ones stay
+        result = pipeline._to_simplified_chinese("語言简体")
+        assert result == "语言简体"
+
+    def test_latin_text_untouched(self):
+        # Pure ASCII / Latin — no conversion should occur
+        text = "Hello world 123"
+        assert pipeline._to_simplified_chinese(text) == text
+
+    def test_empty_string(self):
+        assert pipeline._to_simplified_chinese("") == ""
+
+    def test_mixed_chinese_and_latin(self):
+        # Mixed Chinese+Latin sentence
+        result = pipeline._to_simplified_chinese("學習 English 很重要")
+        assert result == "学习 English 很重要"
+
+    def test_japanese_kana_untouched(self):
+        # Japanese hiragana / katakana should pass through unchanged
+        text = "こんにちは"
+        assert pipeline._to_simplified_chinese(text) == text
+
+    def test_punctuation_untouched(self):
+        result = pipeline._to_simplified_chinese("你好！這是一個測試。")
+        # Punctuation preserved, Traditional chars converted
+        assert "！" in result
+        assert "。" in result
+        assert "这是一个测试" in result
+
+    def test_converter_cached(self):
+        # Calling twice should use the cached converter (no error, same result)
+        r1 = pipeline._to_simplified_chinese("繁體")
+        r2 = pipeline._to_simplified_chinese("繁體")
+        assert r1 == r2 == "繁体"
+
+
+# ─── TestMergeOcrSttLanguage ──────────────────────────────────────────────────
+
+class TestMergeOcrSttLanguage:
+    """Tests for Traditional→Simplified conversion inside merge_ocr_stt()."""
+
+    def test_zh_language_converts_traditional_ocr(self):
+        # Traditional OCR text should be converted when language="zh"
+        ocr = _make_ocr_data([_ocr_seg("繁體中文", 0, 2000)])
+        stt = _make_stt_data([])
+        result = pipeline.merge_ocr_stt(ocr, stt, language="zh")
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        assert texts == ["繁体中文"]
+
+    def test_zh_language_converts_traditional_stt_fill(self):
+        # Traditional STT gap-fill text should also be converted when language="zh"
+        ocr = _make_ocr_data([])  # no OCR → entire video is a gap
+        stt = _make_stt_data([_stt_seg("繁體語言", 500, 2000)])
+        result = pipeline.merge_ocr_stt(ocr, stt, language="zh")
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        assert texts == ["繁体语言"]
+
+    def test_no_language_no_conversion(self):
+        # Without language="zh", Traditional chars pass through unchanged
+        ocr = _make_ocr_data([_ocr_seg("繁體中文", 0, 2000)])
+        stt = _make_stt_data([])
+        result = pipeline.merge_ocr_stt(ocr, stt)
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        assert texts == ["繁體中文"]
+
+    def test_non_zh_language_no_conversion(self):
+        # language="en" should not convert CJK text
+        ocr = _make_ocr_data([_ocr_seg("繁體中文", 0, 2000)])
+        stt = _make_stt_data([])
+        result = pipeline.merge_ocr_stt(ocr, stt, language="en")
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        assert texts == ["繁體中文"]
+
+    def test_zh_simplified_input_passthrough(self):
+        # Already-Simplified input should come out unchanged
+        ocr = _make_ocr_data([_ocr_seg("简体中文", 0, 2000)])
+        stt = _make_stt_data([])
+        result = pipeline.merge_ocr_stt(ocr, stt, language="zh")
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        assert texts == ["简体中文"]
+
+    def test_zh_latin_text_untouched(self):
+        # Latin subtitle text in a zh video should not be altered
+        ocr = _make_ocr_data([_ocr_seg("Hello world", 0, 2000)])
+        stt = _make_stt_data([])
+        result = pipeline.merge_ocr_stt(ocr, stt, language="zh")
+        texts = [s["detections"][0]["text"] for s in result["segments"]]
+        assert texts == ["Hello world"]
