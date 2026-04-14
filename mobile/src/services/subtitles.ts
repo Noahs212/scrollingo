@@ -11,6 +11,19 @@
 import { SubtitleData } from "../components/general/post/subtitleOverlay";
 
 /**
+ * Cache-busting version for transcript.json and bboxes.json CDN URLs.
+ * Bump this whenever the pipeline re-merges transcripts so iOS doesn't
+ * serve immutable-cached stale content. `Cache-Control: immutable` means
+ * the iOS URLSession never revalidates even with cache: "no-store" on fetch.
+ * Changing the URL is the only reliable way to bypass the system cache.
+ *
+ * History:
+ *   v1 — original STT-driven pipeline (Traditional Chinese, Whisper hallucinations)
+ *   v2 — OCR-first rewrite + Traditional→Simplified normalization (2026-04-14)
+ */
+const TRANSCRIPT_VERSION = "v2";
+
+/**
  * Map from local video index to the subtitle JSON.
  * Using dense — best available OCR extraction.
  * These are the same videos in the same order as LOCAL_VIDEOS in posts.ts.
@@ -50,7 +63,7 @@ function deriveBboxesUrl(cdnUrl: string): string {
   if (lastSlash === -1) {
     throw new Error(`Invalid CDN URL: ${cdnUrl}`);
   }
-  return cdnUrl.substring(0, lastSlash + 1) + "bboxes.json";
+  return cdnUrl.substring(0, lastSlash + 1) + `bboxes.json?${TRANSCRIPT_VERSION}`;
 }
 
 /**
@@ -101,7 +114,7 @@ function deriveTranscriptUrl(cdnUrl: string): string {
   if (lastSlash === -1) {
     throw new Error(`Invalid CDN URL: ${cdnUrl}`);
   }
-  return cdnUrl.substring(0, lastSlash + 1) + "transcript.json";
+  return cdnUrl.substring(0, lastSlash + 1) + `transcript.json?${TRANSCRIPT_VERSION}`;
 }
 
 /**
