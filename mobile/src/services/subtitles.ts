@@ -11,6 +11,19 @@
 import { SubtitleData } from "../components/general/post/subtitleOverlay";
 
 /**
+ * Cache-busting version for transcript.json and bboxes.json CDN URLs.
+ * Bump this whenever the pipeline re-merges transcripts so iOS doesn't
+ * serve immutable-cached stale content. `Cache-Control: immutable` means
+ * the iOS URLSession never revalidates even with cache: "no-store" on fetch.
+ * Changing the URL is the only reliable way to bypass the system cache.
+ *
+ * History:
+ *   v1 — original STT-driven pipeline (Traditional Chinese, Whisper hallucinations)
+ *   v2 — OCR-first rewrite + Traditional→Simplified normalization (2026-04-14)
+ */
+const TRANSCRIPT_VERSION = "v2";
+
+/**
  * Map from local video index to the subtitle JSON.
  * Using dense — best available OCR extraction.
  * These are the same videos in the same order as LOCAL_VIDEOS in posts.ts.
@@ -50,7 +63,7 @@ function deriveBboxesUrl(cdnUrl: string): string {
   if (lastSlash === -1) {
     throw new Error(`Invalid CDN URL: ${cdnUrl}`);
   }
-  return cdnUrl.substring(0, lastSlash + 1) + "bboxes.json";
+  return cdnUrl.substring(0, lastSlash + 1) + `bboxes.json?${TRANSCRIPT_VERSION}`;
 }
 
 /**
@@ -101,35 +114,45 @@ function deriveTranscriptUrl(cdnUrl: string): string {
   if (lastSlash === -1) {
     throw new Error(`Invalid CDN URL: ${cdnUrl}`);
   }
-  return cdnUrl.substring(0, lastSlash + 1) + "transcript.json";
+  return cdnUrl.substring(0, lastSlash + 1) + `transcript.json?${TRANSCRIPT_VERSION}`;
 }
 
 /**
  * Fetch merged transcript (OCR content + STT timing) from the CDN.
  * This is the primary data source for the subtitle drawer.
  * Contains only spoken subtitles (title cards filtered out).
- * Falls back to stt.json, then bboxes.json for old videos.
+ *
+ * Fallback chain:
+ *   1. transcript.json — OCR-first merged output (preferred)
+ *   2. bboxes.json — raw OCR data (for videos not yet processed through the merge pipeline)
+ *
+ * stt.json is intentionally NOT in the fallback chain. The STT output contains
+ * Whisper hallucinations, Traditional Chinese characters, and erroneous text
+ * (e.g. "魔法" instead of "模仿"). The OCR backbone is always more accurate
+ * for burned-in subtitle text, so if transcript.json is missing we prefer raw OCR.
  */
 export async function fetchTranscriptData(cdnUrl: string): Promise<SubtitleData | null> {
-  // Try transcript.json first (merged OCR+STT)
+  // 1. Try transcript.json (OCR-first merged output)
   try {
     const url = deriveTranscriptUrl(cdnUrl);
-    const response = await fetch(url);
-    if (response.ok) return response.json();
-  } catch {}
+    const response = await fetch(url, { cache: "no-store" });
+    if (response.ok) {
+      console.log("[subtitles] loaded transcript.json for", url);
+      return response.json();
+    }
+    console.log("[subtitles] transcript.json not ok:", response.status, url);
+  } catch (e) {
+    console.log("[subtitles] transcript.json fetch error:", e);
+  }
 
-  // Fall back to stt.json
-  try {
-    const sttUrl = deriveSttUrl(cdnUrl);
-    const response = await fetch(sttUrl);
-    if (response.ok) return response.json();
-  } catch {}
-
-  // Fall back to bboxes.json (old videos)
+  // 2. Fall back to bboxes.json (raw OCR — never stt.json)
   try {
     const bboxUrl = deriveBboxesUrl(cdnUrl);
-    const response = await fetch(bboxUrl);
-    if (response.ok) return response.json();
+    const response = await fetch(bboxUrl, { cache: "no-store" });
+    if (response.ok) {
+      console.log("[subtitles] fell back to bboxes.json for", bboxUrl);
+      return response.json();
+    }
   } catch {}
 
   return null;

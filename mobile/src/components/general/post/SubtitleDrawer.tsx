@@ -43,6 +43,7 @@ interface Props {
   currentTimeMs: number;
   highlightRange?: HighlightRange | null;
   wordDefs?: WordDefinition[];
+  segTranslations?: Map<number, string>;
   language?: string;
   onWordTap: (
     word: string,
@@ -173,6 +174,7 @@ export default function SubtitleDrawer({
   currentTimeMs,
   highlightRange,
   wordDefs,
+  segTranslations,
   language,
   onWordTap,
   onSeek,
@@ -180,6 +182,10 @@ export default function SubtitleDrawer({
   const [expanded, setExpanded] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
   const activeIndexRef = useRef(-1);
+  // Map from segment index → { y, height } measured via onLayout
+  const itemLayoutsRef = useRef<Map<number, { y: number; height: number }>>(new Map());
+  // Height of the header (handle bar + title row) measured via onLayout
+  const headerHeightRef = useRef(60);
   const insets = useSafeAreaInsets();
 
   const showPinyin = hasPinyin(language);
@@ -229,17 +235,49 @@ export default function SubtitleDrawer({
     [showPinyin, activeText, wordDefs],
   );
 
-  // Auto-scroll in expanded mode
+  // Auto-scroll in expanded mode — center the active item in the visible scroll area.
+  // The ScrollView sits below the header, so its viewport height is
+  // (EXPANDED_HEIGHT - headerHeight). We want the item's midpoint to land at the
+  // center of that viewport. scrollTo({y}) is a content offset, so:
+  //   scrollY = item.midY - viewportHeight/2
+  // We also add headerHeight as a correction because onLayout y-values on items
+  // inside the ScrollView can include the header offset on some RN versions.
+  /** Shared scroll helper — centered below header. */
+  const scrollToIndex = useCallback((index: number, animated = true) => {
+    const layout = itemLayoutsRef.current.get(index);
+    if (!layout) return false;
+    const headerH = headerHeightRef.current;
+    const viewportHeight = EXPANDED_HEIGHT - headerH;
+    const itemMidY = layout.y + layout.height / 2;
+    // Center the item in the viewport, then shift down by headerH so it
+    // clears the header and lands in the visible scroll area.
+    const scrollY = Math.max(0, itemMidY - viewportHeight / 2 - headerH);
+    scrollRef.current?.scrollTo({ y: scrollY, animated });
+    return true;
+  }, []);
+
+  // Auto-scroll in expanded mode — center the active item in the visible scroll area.
+  // Only marks activeIndexRef as "done" after a successful scroll so that, if the
+  // item layout hasn't been measured yet, the onLayout callback can retry.
   useEffect(() => {
     if (expanded && activeSegmentIndex >= 0 && activeSegmentIndex !== activeIndexRef.current) {
-      activeIndexRef.current = activeSegmentIndex;
-      scrollRef.current?.scrollTo({ y: Math.max(0, activeSegmentIndex * 80 - 60), animated: true });
+      if (scrollToIndex(activeSegmentIndex)) {
+        activeIndexRef.current = activeSegmentIndex;
+      }
+      // If layout not yet measured, activeIndexRef stays stale so the
+      // onLayout callback below can trigger the scroll once measurement arrives.
     }
-  }, [expanded, activeSegmentIndex]);
+  }, [expanded, activeSegmentIndex, scrollToIndex]);
 
   const toggleExpanded = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpanded((e) => !e);
+    setExpanded((e) => {
+      if (!e) {
+        // Reset activeIndexRef so the scroll effect fires immediately on open
+        activeIndexRef.current = -1;
+      }
+      return !e;
+    });
   }, []);
 
   const handleLineTap = useCallback(
@@ -252,18 +290,14 @@ export default function SubtitleDrawer({
 
   if (!subtitleData || segments.length === 0) return null;
 
-  // Build sentence translation from word definitions
-  const activeTranslation = useMemo(() => {
-    if (!activeText || !wordDefs || wordDefs.length === 0) return "";
-    const wordsInOrder = wordDefs
-      .filter((wd) => currentTimeMs >= wd.start_ms - 2000 && currentTimeMs < wd.end_ms + 2000)
-      .sort((a, b) => a.word_index - b.word_index);
-    return wordsInOrder.map((wd) => wd.translation).join(" ");
-  }, [activeText, wordDefs, currentTimeMs]);
+  // Sentence translation from segment_translations table
+  const activeTranslation = activeSegment
+    ? (segTranslations?.get(activeSegment.start_ms) ?? "")
+    : "";
 
   // --- Collapsed: transcript | translation side by side ---
   const collapsedContent = (
-    <Pressable style={[styles.collapsed, { height: COLLAPSED_HEIGHT + insets.bottom, paddingBottom: insets.bottom }]} onPress={toggleExpanded}>
+    <Pressable testID="drawer-collapsed" style={[styles.collapsed, { height: COLLAPSED_HEIGHT + insets.bottom, paddingBottom: insets.bottom }]} onPress={toggleExpanded}>
       <View style={styles.collapsedRow}>
         {/* Left: Transcript with ruby pinyin */}
         <View style={styles.collapsedLeft}>
@@ -326,11 +360,15 @@ export default function SubtitleDrawer({
   const expandedContent = (
     <View style={[styles.expandedOverlay, { height: EXPANDED_HEIGHT }]}>
       {/* Handle bar + header */}
-      <View style={styles.expandedHeader}>
+      <View
+        testID="drawer-header"
+        style={styles.expandedHeader}
+        onLayout={(e) => { headerHeightRef.current = e.nativeEvent.layout.height; }}
+      >
         <View style={styles.handleBar} />
         <View style={styles.headerRow}>
           <Text style={styles.headerTitle}>Transcript</Text>
-          <TouchableOpacity onPress={toggleExpanded} style={styles.dismissButton}>
+          <TouchableOpacity testID="drawer-dismiss" onPress={toggleExpanded} style={styles.dismissButton}>
             <Ionicons name="chevron-down" size={20} color="#888" />
           </TouchableOpacity>
         </View>
@@ -351,8 +389,21 @@ export default function SubtitleDrawer({
           return (
             <Pressable
               key={si}
+              testID={`transcript-item-${si}`}
               style={[styles.transcriptItem, isActive && styles.transcriptItemActive]}
               onPress={() => handleLineTap(si)}
+              onLayout={(e) => {
+                itemLayoutsRef.current.set(si, {
+                  y: e.nativeEvent.layout.y,
+                  height: e.nativeEvent.layout.height,
+                });
+                // Retry scroll if this item's layout arrived after the effect fired
+                if (expanded && si === activeSegmentIndex && si !== activeIndexRef.current) {
+                  if (scrollToIndex(si)) {
+                    activeIndexRef.current = si;
+                  }
+                }
+              }}
             >
               <Text style={styles.timestamp}>{formatTime(seg.start_ms)}</Text>
 
@@ -405,13 +456,7 @@ export default function SubtitleDrawer({
               {/* Right: translation */}
               <View style={styles.transcriptRight}>
                 <Text style={[styles.transcriptTranslation, isActive && styles.transcriptTranslationActive]} numberOfLines={2}>
-                  {(() => {
-                    if (!wordDefs) return "";
-                    const segWords = wordDefs
-                      .filter((wd) => seg.start_ms <= wd.start_ms + 2000 && wd.end_ms - 2000 <= seg.end_ms)
-                      .sort((a, b) => a.word_index - b.word_index);
-                    return segWords.map((wd) => wd.translation).join(" ") || "";
-                  })()}
+                  {segTranslations?.get(seg.start_ms) ?? ""}
                 </Text>
               </View>
             </Pressable>

@@ -25,6 +25,11 @@ jest.mock("../../../../hooks/useSaveFlashcard", () => ({
   useSaveFlashcard: jest.fn(() => ({ mutate: jest.fn() })),
 }));
 
+// Mock useSegmentTranslations (PostSingle fetches subtitle translations)
+jest.mock("../../../../hooks/useSegmentTranslations", () => ({
+  useSegmentTranslations: jest.fn(() => ({ data: new Map() })),
+}));
+
 // Mock expo-haptics
 jest.mock("expo-haptics", () => ({
   impactAsync: jest.fn(),

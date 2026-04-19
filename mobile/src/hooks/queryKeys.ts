@@ -12,6 +12,8 @@ export const keys = {
   subtitles: (videoId: string) => ["subtitles", videoId] as const,
   wordDefinitions: (videoId: string, lang: string | null) =>
     ["wordDefinitions", videoId, lang] as const,
+  segmentTranslations: (videoId: string, lang: string | null) =>
+    ["segmentTranslations", videoId, lang] as const,
   flashcards: (language: string | null) => ["flashcards", language] as const,
   flashcardCount: (language: string | null) =>
     ["flashcardCount", language] as const,

@@ -33,7 +33,7 @@ import requests
 from supabase import create_client
 from openai import OpenAI
 
-from pipeline import run_ocr, extract_audio, whisper_to_bboxes, merge_ocr_stt
+from pipeline import run_ocr, extract_audio, merge_ocr_stt
 
 VIDEOS_DIR = Path(__file__).parent.parent / "mobile" / "assets" / "videos"
 SUBTITLES_DIR = Path(__file__).parent.parent / "mobile" / "assets" / "subtitles"
@@ -59,7 +59,7 @@ def map_videos_to_supabase():
         bbox_url = v["cdn_url"].rsplit("/", 1)[0] + "/bboxes.json"
         try:
             r2_data = requests.get(bbox_url, timeout=5).json()
-        except:
+        except (requests.RequestException, ValueError):
             continue
 
         r2_texts = set()
@@ -82,7 +82,11 @@ def map_videos_to_supabase():
 
 
 def run_stt_on_video(video_path, video_id):
-    """Run Groq Whisper STT and return bboxes-format data."""
+    """Run Groq Whisper STT and return data in merge_ocr_stt-compatible format.
+
+    Returns a dict with 'segments' where each segment has start_ms, end_ms,
+    and a 'text' field (merge_ocr_stt handles both 'text' and 'detections' formats).
+    """
     if not groq:
         return None
 
@@ -98,10 +102,7 @@ def run_stt_on_video(video_path, video_id):
                 response_format="verbose_json",
                 timestamp_granularities=["word", "segment"],
             )
-            words = [{"word": w.word, "start": w.start, "end": w.end}
-                     for w in (getattr(transcript, "words", []) or [])]
-            segments = [{"text": s.text, "start": s.start, "end": s.end}
-                        for s in (getattr(transcript, "segments", []) or [])]
+            raw_segments = getattr(transcript, "segments", []) or []
 
             probe = json.loads(subprocess.run(
                 ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", video_path],
@@ -109,8 +110,27 @@ def run_stt_on_video(video_path, video_id):
             vs = [s for s in probe["streams"] if s["codec_type"] == "video"][0]
             dur_ms = int(float(vs.get("duration", 0)) * 1000)
 
-            return whisper_to_bboxes({"words": words, "segments": segments, "text": transcript.text},
-                                     video_id, dur_ms)
+            # Build segments with start_ms/end_ms and text — the format merge_ocr_stt expects
+            segments = []
+            for s in raw_segments:
+                text = s.text.strip() if hasattr(s, "text") else str(s.get("text", "")).strip()
+                start = s.start if hasattr(s, "start") else s.get("start", 0)
+                end = s.end if hasattr(s, "end") else s.get("end", 0)
+                if not text:
+                    continue
+                segments.append({
+                    "start_ms": int(start * 1000),
+                    "end_ms": int(end * 1000),
+                    "text": text,
+                })
+
+            return {
+                "video": video_id,
+                "resolution": {"width": 720, "height": 1280},
+                "duration_ms": dur_ms,
+                "subtitle_source": "stt",
+                "segments": segments,
+            }
         except Exception as e:
             print(f"    STT error: {e}")
             return None

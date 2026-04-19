@@ -12,9 +12,10 @@ Steps:
    STT: Extract audio → Groq Whisper → word-level timestamps
 4. Upload video + thumbnail + bboxes.json to R2
 5. Word segmentation (jieba for Chinese)
-6. Generate translations + definitions via Claude Haiku 3.5 (OpenRouter)
-7. Insert vocab_words, word_definitions, video_words into Supabase
-8. Mark video status='ready'
+6. Generate word translations + definitions via Claude Haiku 3.5 (OpenRouter)
+7. Generate segment translations via Claude Haiku 3.5 (one call per target language)
+8. Insert vocab_words, word_definitions, video_words, segment_translations into Supabase
+9. Mark video status='ready'
 
 Usage:
     python3 scripts/pipeline.py --video ~/downloads/chinese_video.mp4
@@ -224,84 +225,44 @@ def run_stt(audio_path: str, language: str | None = None) -> dict:
     # Convert Pydantic objects to dicts
     words = [{"word": w.word, "start": w.start, "end": w.end} for w in raw_words]
     segments = [{"text": s.text, "start": s.start, "end": s.end} for s in raw_segments]
-    print(f"  Got {len(words)} words, {len(segments)} segments")
-    return {"words": words, "segments": segments, "text": transcript.text}
+    # Capture Whisper's auto-detected language and normalize to ISO 639-1.
+    # Groq/Whisper may return either the full name ("Chinese") or ISO code ("zh").
+    raw_lang = getattr(transcript, "language", None)
+    detected_language = _normalize_whisper_language(raw_lang)
+    print(f"  Got {len(words)} words, {len(segments)} segments, detected language: {raw_lang} → {detected_language}")
+    return {"words": words, "segments": segments, "text": transcript.text, "language": detected_language}
 
 
-def whisper_to_bboxes(whisper_result: dict, video_id: str, duration_ms: int,
-                      resolution: dict = None) -> dict:
-    """Convert Whisper output to the same bboxes.json format as OCR.
-
-    Generates synthetic character positions centered at the bottom of the frame.
-    """
-    if resolution is None:
-        resolution = {"width": 720, "height": 1280}
-
-    vw, vh = resolution["width"], resolution["height"]
-    # Subtitle position: centered, at ~82% of frame height
-    sub_y = int(vh * 0.82)
-    sub_h = int(vh * 0.05)
-    max_text_width = int(vw * 0.85)
-
-    segments = []
-    for seg in whisper_result.get("segments", []):
-        text = seg.get("text", "").strip()
-        if not text:
-            continue
-
-        start_ms = int(seg["start"] * 1000)
-        end_ms = int(seg["end"] * 1000)
-
-        # Build character-level bboxes (evenly spaced)
-        char_width = min(max_text_width // max(len(text), 1), int(vw * 0.06))
-        total_width = char_width * len(text)
-        start_x = (vw - total_width) // 2
-
-        chars = []
-        for i, ch in enumerate(text):
-            chars.append({
-                "char": ch,
-                "x": start_x + i * char_width,
-                "y": sub_y,
-                "width": char_width,
-                "height": sub_h,
-            })
-
-        det_bbox = {
-            "x": start_x,
-            "y": sub_y,
-            "width": total_width,
-            "height": sub_h,
-        }
-
-        segments.append({
-            "start_ms": start_ms,
-            "end_ms": end_ms,
-            "detections": [{
-                "text": text,
-                "confidence": 1.0,
-                "bbox": det_bbox,
-                "chars": chars,
-            }],
-        })
-
-    return {
-        "video": video_id,
-        "resolution": resolution,
-        "duration_ms": duration_ms,
-        "subtitle_source": "stt",
-        "segments": segments,
-    }
+# Whisper returns either ISO 639-1 codes or full English language names.
+# Map full names → ISO codes. Unknown values pass through unchanged.
+_WHISPER_LANG_MAP = {
+    "chinese": "zh", "mandarin": "zh",
+    "english": "en",
+    "japanese": "ja",
+    "french": "fr",
+    "spanish": "es",
+    "korean": "ko",
+    "vietnamese": "vi",
+    "finnish": "fi",
+    "german": "de",
+    "portuguese": "pt",
+    "italian": "it",
+    "russian": "ru",
+    "hindi": "hi",
+    "arabic": "ar",
+}
 
 
-# ─── STT Segment Chunking ───
-
-MAX_VISUAL_WIDTH = 36    # max visual width units per chunk (2 lines × ~18 units)
-                         # CJK char = 2 units (~22px), Latin char = 1 unit (~11px)
-                         # "你好World" = 4+5 = 9 units. Pure CJK 18 chars = 36 units. Pure Latin 36 chars = 36 units.
-PAUSE_THRESHOLD_S = 0.3  # 300ms gap = natural speech pause
-
-_PUNCT_SPLIT = re.compile(r'(?<=[。！？，、.!?,;])\s*')
+def _normalize_whisper_language(raw: str | None) -> str | None:
+    if not raw:
+        return None
+    key = raw.strip().lower()
+    if key in _WHISPER_LANG_MAP:
+        return _WHISPER_LANG_MAP[key]
+    # Already an ISO code or close to it — take first 2 chars (handles "zh-cn" etc)
+    if len(key) <= 3:
+        return key[:2]
+    return key  # Unknown — pass through, caller can handle
 
 
 def _is_cjk_char(c: str) -> bool:
@@ -310,108 +271,12 @@ def _is_cjk_char(c: str) -> bool:
             or 0x3040 <= code <= 0x30ff or 0xac00 <= code <= 0xd7af)
 
 
-def _is_cjk_dominant(text: str) -> bool:
-    cjk = sum(1 for c in text if _is_cjk_char(c))
-    return cjk > len(text) * 0.3
+def _build_centered_detection(text: str, resolution: dict) -> dict:
+    """Build a synthetic centered detection dict for subtitle display.
 
-
-def _visual_width(text: str) -> int:
-    """Visual width in units. CJK = 2 units (full-width ~22px), Latin/number = 1 unit (~11px)."""
-    return sum(2 if _is_cjk_char(c) else 1 for c in text if c.strip())
-
-
-def _exceeds_limit(text: str) -> bool:
-    """Check if text exceeds the visual width limit for the subtitle bar."""
-    return _visual_width(text) > MAX_VISUAL_WIDTH
-
-
-def _get_words_for_segment(seg_start_s: float, seg_end_s: float, whisper_words: list) -> list:
-    """Find Whisper word timestamps that fall within a segment's time range."""
-    return [w for w in whisper_words
-            if w["start"] >= seg_start_s - 0.05 and w["end"] <= seg_end_s + 0.05]
-
-
-def _split_at_punctuation(text: str) -> list[str]:
-    """Split text at sentence-ending punctuation."""
-    parts = _PUNCT_SPLIT.split(text)
-    return [p for p in parts if p.strip()]
-
-
-def _find_pause_split(text: str, seg_words: list) -> int | None:
-    """Find the character index where the longest speech pause (>300ms) occurs.
-
-    Maps Whisper word boundaries back to character positions in the text.
-    Returns the character index to split at, or None if no pause found.
+    Returns a single detection entry (not a full segment). Used for both
+    STT-only gap-fill segments and stt-chunked segments.
     """
-    if len(seg_words) < 2:
-        return None
-
-    best_gap = 0
-    best_char_idx = None
-    char_pos = 0
-
-    for i in range(len(seg_words) - 1):
-        # Advance char_pos past this word
-        word_text = seg_words[i]["word"]
-        word_idx = text.find(word_text, char_pos)
-        if word_idx >= 0:
-            char_pos = word_idx + len(word_text)
-
-        gap = seg_words[i + 1]["start"] - seg_words[i]["end"]
-        if gap > PAUSE_THRESHOLD_S and gap > best_gap:
-            best_gap = gap
-            best_char_idx = char_pos
-
-    return best_char_idx
-
-
-def _hard_split(text: str, limit: int = MAX_VISUAL_WIDTH) -> tuple[str, str]:
-    """Force split at a word boundary within the visual width limit.
-
-    Uses visual width (CJK=2, Latin=1) to handle mixed text correctly.
-    """
-    import jieba
-
-    # Try jieba segmentation for CJK-containing text, space-split for pure Latin
-    if any(_is_cjk_char(c) for c in text):
-        words = list(jieba.cut(text))
-    else:
-        words = text.split(" ")
-        # Re-add spaces between words for Latin
-        words = [w + " " for w in words[:-1]] + [words[-1]] if words else []
-
-    first_part = ""
-    for w in words:
-        candidate = first_part + w
-        if _visual_width(candidate) > limit:
-            break
-        first_part = candidate
-
-    if not first_part:
-        # Absolute fallback: split character by character
-        for i in range(1, len(text)):
-            if _visual_width(text[:i+1]) > limit:
-                first_part = text[:i]
-                break
-        if not first_part:
-            first_part = text
-
-    remainder = text[len(first_part):].strip()
-    return first_part.strip(), remainder
-
-
-def _interpolate_timestamps(text: str, chunk_text: str, chunk_start_char: int,
-                            seg_start_ms: int, seg_end_ms: int) -> tuple[int, int]:
-    """Linearly interpolate timestamps for a chunk based on character position."""
-    total_len = max(len(text), 1)
-    chunk_end_char = chunk_start_char + len(chunk_text)
-    start_ms = seg_start_ms + int((chunk_start_char / total_len) * (seg_end_ms - seg_start_ms))
-    end_ms = seg_start_ms + int((chunk_end_char / total_len) * (seg_end_ms - seg_start_ms))
-    return start_ms, end_ms
-
-
-def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) -> dict:
-    """Build a segment dict with synthetic bbox/chars (same format as whisper_to_bboxes)."""
     vw, vh = resolution.get("width", 720), resolution.get("height", 1280)
     char_w = min(int(vw * 0.85) // max(len(text), 1), int(vw * 0.06))
     total_w = char_w * len(text)
@@ -442,241 +307,356 @@ def _build_stt_segment(text: str, start_ms: int, end_ms: int, resolution: dict) 
                           "width": len(word) * char_w, "height": sub_h})
 
     return {
-        "start_ms": start_ms,
-        "end_ms": end_ms,
-        "detections": [{
-            "text": text,
-            "confidence": 1.0,
-            "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
-            "chars": chars,
-        }],
+        "text": text,
+        "confidence": 1.0,
+        "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
+        "chars": chars,
     }
 
 
-def _recursive_chunk(text: str, seg_words: list,
-                     seg_start_ms: int, seg_end_ms: int, resolution: dict) -> list[dict]:
-    """Recursively split text into chunks that fit the visual width limit."""
-    text = text.strip()
-    if not text:
-        return []
+def _to_simplified_chinese(text: str) -> str:
+    """Convert Traditional Chinese characters to Simplified Chinese.
 
-    if not _exceeds_limit(text):
-        return [_build_stt_segment(text, seg_start_ms, seg_end_ms, resolution)]
-
-    # Tier A: Try punctuation split
-    parts = _split_at_punctuation(text)
-    if len(parts) > 1:
-        chunks = []
-        char_offset = 0
-        for part in parts:
-            start_ms, end_ms = _interpolate_timestamps(text, part, char_offset, seg_start_ms, seg_end_ms)
-            # Find words for this sub-part
-            sub_words = _get_words_for_segment(start_ms / 1000, end_ms / 1000, seg_words)
-            chunks.extend(_recursive_chunk(part, sub_words, start_ms, end_ms, resolution))
-            char_offset += len(part)
-        return chunks
-
-    # Tier B: Try speech pause split
-    pause_idx = _find_pause_split(text, seg_words)
-    if pause_idx and 0 < pause_idx < len(text):
-        first = text[:pause_idx].strip()
-        second = text[pause_idx:].strip()
-        if first and second:
-            first_start, first_end = _interpolate_timestamps(text, first, 0, seg_start_ms, seg_end_ms)
-            second_start, second_end = _interpolate_timestamps(text, second, pause_idx, seg_start_ms, seg_end_ms)
-            sub_words_1 = _get_words_for_segment(first_start / 1000, first_end / 1000, seg_words)
-            sub_words_2 = _get_words_for_segment(second_start / 1000, second_end / 1000, seg_words)
-            return (_recursive_chunk(first, sub_words_1, first_start, first_end, resolution) +
-                    _recursive_chunk(second, sub_words_2, second_start, second_end, resolution))
-
-    # Tier C: Hard split at word boundary
-    first, second = _hard_split(text)
-    first_start, first_end = _interpolate_timestamps(text, first, 0, seg_start_ms, seg_end_ms)
-    second_start, second_end = _interpolate_timestamps(text, second, len(first), seg_start_ms, seg_end_ms)
-    return ([_build_stt_segment(first, first_start, first_end, resolution)] +
-            _recursive_chunk(second, seg_words, second_start, second_end, resolution))
-
-
-def chunk_stt_segments(bbox_data: dict, whisper_result: dict) -> dict:
-    """Split oversized STT segments into display-friendly chunks.
-
-    Uses a 3-tier strategy: punctuation → speech pauses → hard word boundary split.
-    Preserves Whisper word-level timestamps for accurate timing.
+    No-op for non-Chinese text (Latin, Japanese kana, empty strings).
+    Uses opencc-python-reimplemented with the t2s (Traditional→Simplified) config.
+    Lazy-imports opencc so the rest of the pipeline still works without it.
     """
-    whisper_words = whisper_result.get("words", [])
-    resolution = bbox_data.get("resolution", {"width": 720, "height": 1280})
-    new_segments = []
-
-    for seg in bbox_data.get("segments", []):
-        dets = seg.get("detections", [])
-        if not dets:
-            new_segments.append(seg)
-            continue
-
-        text = dets[0]["text"].strip()
-
-        if not _exceeds_limit(text):
-            new_segments.append(seg)
-            continue
-
-        seg_start_ms = seg["start_ms"]
-        seg_end_ms = seg["end_ms"]
-        seg_words = _get_words_for_segment(seg_start_ms / 1000, seg_end_ms / 1000, whisper_words)
-
-        chunks = _recursive_chunk(text, seg_words, seg_start_ms, seg_end_ms, resolution)
-        new_segments.extend(chunks)
-
-    result = dict(bbox_data)
-    result["segments"] = new_segments
-    return result
+    if not text:
+        return text
+    # Quick check: if no CJK characters present, skip conversion entirely
+    if not any(_is_cjk_char(c) for c in text):
+        return text
+    try:
+        import opencc
+        _converter = getattr(_to_simplified_chinese, "_converter", None)
+        if _converter is None:
+            _converter = opencc.OpenCC("t2s")
+            _to_simplified_chinese._converter = _converter  # type: ignore[attr-defined]
+        return _converter.convert(text)
+    except ImportError:
+        return text
 
 
 def _text_similarity(a: str, b: str) -> float:
-    """Character-level Jaccard similarity between two strings."""
+    """Sequence-based similarity using SequenceMatcher ratio.
+
+    Better than Jaccard for both CJK and Latin text:
+    - Considers character position and order (not just set membership)
+    - Handles substrings, partial matches, and OCR noise gracefully
+    - SequenceMatcher.ratio() = 2*M/T where M = matching chars, T = total chars
+    """
+    from difflib import SequenceMatcher
+    a, b = a.strip(), b.strip()
     if not a or not b:
         return 0.0
-    set_a = set(a.strip())
-    set_b = set(b.strip())
-    intersection = len(set_a & set_b)
-    union = len(set_a | set_b)
-    return intersection / union if union > 0 else 0.0
+    return SequenceMatcher(None, a, b).ratio()
 
 
-def merge_ocr_stt(ocr_data: dict, stt_data: dict,
-                  time_tolerance_ms: int = 500) -> dict:
-    """Merge OCR content with STT timing into a unified transcript.
+def _detect_watermarks(ocr_segments: list) -> set:
+    """Return set of text strings that appear in ≥70% of OCR segments.
 
-    Rules:
-    - OCR content wins (more accurate text recognition)
-    - STT timing wins (word-level alignment to speech)
-    - ≥50% char overlap = same subtitle → use OCR text + STT timing
-    - <50% overlap = title/watermark → exclude from transcript
-    - STT segments with no OCR match → gap fill (use STT text)
-
-    Returns transcript data with only spoken subtitles.
+    Persistent text (watermarks, disclaimers, channel IDs) appears nearly
+    every frame while subtitle text changes. Count per segment (not per
+    detection) to avoid over-counting multi-detection frames.
     """
-    ocr_segments = ocr_data.get("segments", [])
-    stt_segments = stt_data.get("segments", [])
-    resolution = ocr_data.get("resolution", {"width": 720, "height": 1280})
-    res_h = resolution.get("height", 1280)
-
-    # Find persistent OCR text (appears in >70% of segments) — likely watermarks
     text_counts: dict[str, int] = {}
     for seg in ocr_segments:
-        seen = set()
+        seen: set[str] = set()
         for det in seg.get("detections", []):
             t = det["text"].strip()
             if t and t not in seen:
                 text_counts[t] = text_counts.get(t, 0) + 1
                 seen.add(t)
-    total_segs = max(len(ocr_segments), 1)
-    persistent_texts = {t for t, c in text_counts.items() if c / total_segs >= 0.7}
+    total = max(len(ocr_segments), 1)
+    # Require both ≥70% frequency AND at least 3 occurrences.
+    # The count guard prevents false positives on short videos (< 5 segments)
+    # where any subtitle text would otherwise hit 100% frequency.
+    return {t for t, c in text_counts.items() if c / total >= 0.7 and c >= 3}
 
-    transcript_segments = []
+
+def _find_subtitle_y_band(ocr_segments: list, res_h: int,
+                          persistent_texts: set) -> float:
+    """Find the minimum y-fraction for subtitle text detection.
+
+    Collects y-positions of non-watermark detections in the bottom half of
+    the frame, then returns the 25th percentile as the floor. This adapts to
+    videos where subtitles appear higher or lower than usual.
+
+    Falls back to 0.55 (bottom 45%) with insufficient data.
+    """
+    y_fracs = []
+    for seg in ocr_segments:
+        for det in seg.get("detections", []):
+            t = det.get("text", "").strip()
+            if not t or t in persistent_texts:
+                continue
+            y_frac = det["bbox"]["y"] / max(res_h, 1)
+            # Only sample from the bottom half (avoids scene text skewing the calc)
+            if y_frac >= 0.50:
+                y_fracs.append(y_frac)
+
+    if len(y_fracs) < 5:
+        return 0.55  # default: bottom 45% of frame
+
+    y_fracs.sort()
+    p25 = y_fracs[len(y_fracs) // 4]
+    # Clamp: never go below 0.40 (safety floor) or above 0.75 (too restrictive)
+    return max(0.40, min(p25, 0.75))
+
+
+def _is_subtitle_detection(det: dict, res_h: int, persistent_texts: set,
+                            subtitle_y_min: float) -> bool:
+    """Return True if this OCR detection looks like a real subtitle line.
+
+    Filters out: watermarks, scene text in top portion of frame, empty text.
+    """
+    text = det.get("text", "").strip()
+    if not text:
+        return False
+    if text in persistent_texts:
+        return False
+    # Must be in the subtitle band (lower portion of frame)
+    if det["bbox"]["y"] / max(res_h, 1) < subtitle_y_min:
+        return False
+    return True
+
+
+def _is_stt_hallucination(stt_text: str, prev_stt_texts: list,
+                           duration_ms: int) -> bool:
+    """Detect likely Whisper hallucination patterns.
+
+    Whisper hallucinates in two main ways:
+    1. Very short segments (<300ms) during silence or music
+    2. Looping/repeating the same phrase — a distinctive Whisper artifact
+       where the same text appears 3+ times consecutively in the transcript
+
+    Returns True if the segment looks like a hallucination.
+    """
+    if duration_ms < 300:
+        return True
+    # Looping: text is highly similar to ≥2 of the last 4 STT segments
+    if len(prev_stt_texts) >= 2:
+        recent = prev_stt_texts[-4:]
+        similar_count = sum(1 for t in recent if _text_similarity(stt_text, t) >= 0.75)
+        if similar_count >= 2:
+            return True
+    return False
+
+
+def _get_stt_segment_text(stt_seg: dict) -> str:
+    """Extract text from an STT segment, handling both formats.
+
+    Groq Whisper returns segments with a direct 'text' field:
+        {"text": "...", "start": 1.2, "end": 3.4}
+    But whisper_to_bboxes (if used) wraps them in 'detections':
+        {"detections": [{"text": "..."}], "start_ms": 1200, "end_ms": 3400}
+
+    This helper normalizes both to a plain string.
+    """
+    # Direct text field (Groq Whisper raw format)
+    if "text" in stt_seg and isinstance(stt_seg["text"], str):
+        return stt_seg["text"].strip()
+    # Detections array (bbox-converted format)
+    dets = stt_seg.get("detections", [])
+    if dets:
+        return "".join(det.get("text", "") for det in dets).strip()
+    return ""
+
+
+def _get_stt_segment_times(stt_seg: dict) -> tuple[int, int]:
+    """Extract start_ms/end_ms from an STT segment, handling both formats.
+
+    Groq raw format uses 'start'/'end' in seconds.
+    Bbox-converted format uses 'start_ms'/'end_ms' in milliseconds.
+    """
+    if "start_ms" in stt_seg:
+        return stt_seg["start_ms"], stt_seg["end_ms"]
+    # Groq raw: seconds → milliseconds
+    return int(stt_seg.get("start", 0) * 1000), int(stt_seg.get("end", 0) * 1000)
+
+
+def merge_ocr_stt(ocr_data: dict, stt_data: dict,
+                  time_tolerance_ms: int = 400,
+                  language: str | None = None) -> dict:
+    """Merge OCR and STT into a unified subtitle transcript — OCR-first design.
+
+    Algorithm:
+    1. OCR is the backbone — every valid OCR segment becomes an output segment.
+       OCR text is pixel-accurate for CJK and reliable for Latin with good contrast.
+    2. Filter OCR to subtitle text: position (bottom ~45%), persistence (watermarks),
+       and duration (200ms–15s).
+    3. Optionally refine OCR timing with STT: if a high-similarity (≥0.6) STT
+       segment overlaps, adopt STT start/end for tighter speech alignment.
+    4. STT fills genuine gaps only — windows between OCR segments with no OCR
+       activity, with hallucination filtering applied (short, looping).
+    5. For Chinese content (language="zh"), all text is normalized to Simplified
+       Chinese via _to_simplified_chinese().
+
+    Source field values in output segments:
+    - "ocr"      : OCR text and timing, no STT match found
+    - "ocr+stt"  : OCR text with STT-refined timing (high-sim match)
+    - "stt_only" : STT gap fill in a genuine OCR-free window
+    """
+    normalize_text = _to_simplified_chinese if language == "zh" else (lambda t: t)
+    ocr_segments = ocr_data.get("segments", [])
+    stt_segments = stt_data.get("segments", [])
+    resolution = ocr_data.get("resolution", {"width": 720, "height": 1280})
+    res_h = resolution.get("height", 1280)
+    duration_ms = ocr_data.get("duration_ms", 0)
+
+    # ── Phase 1: Precompute filters ───────────────────────────────────────────
+    persistent_texts = _detect_watermarks(ocr_segments)
+    subtitle_y_min = _find_subtitle_y_band(ocr_segments, res_h, persistent_texts)
+
+    # ── Phase 2: Build OCR backbone ───────────────────────────────────────────
+    # For each OCR segment pick the best subtitle detection (lowest/deepest y).
+    # Duration filter: skip very short (<200ms) and suspiciously long (>15s) segments.
+    ocr_output: list[dict] = []
+
+    for ocr_seg in ocr_segments:
+        seg_dur = ocr_seg["end_ms"] - ocr_seg["start_ms"]
+        if seg_dur < 200 or seg_dur > 15_000:
+            continue
+
+        # Pick the deepest subtitle detection (highest y = lowest on screen)
+        best_det: dict | None = None
+        best_y = -1
+        for det in ocr_seg.get("detections", []):
+            if not _is_subtitle_detection(det, res_h, persistent_texts, subtitle_y_min):
+                continue
+            y = det["bbox"]["y"]
+            if y > best_y:
+                best_y = y
+                best_det = det
+
+        if best_det is None:
+            continue
+
+        ocr_output.append({
+            "start_ms": ocr_seg["start_ms"],
+            "end_ms": ocr_seg["end_ms"],
+            "source": "ocr",
+            "_det": best_det,
+        })
+
+    # ── Phase 3: Refine OCR timing with STT ───────────────────────────────────
+    # For each OCR output segment, search for a high-similarity STT match.
+    # If found (sim ≥ 0.6), adopt STT timestamps for tighter speech alignment.
+    for out_seg in ocr_output:
+        ocr_text = out_seg["_det"]["text"]
+        best_sim = 0.0
+        best_stt: dict | None = None
+
+        for stt_seg in stt_segments:
+            stt_start, stt_end = _get_stt_segment_times(stt_seg)
+            if (stt_end + time_tolerance_ms < out_seg["start_ms"] or
+                    stt_start - time_tolerance_ms > out_seg["end_ms"]):
+                continue
+            stt_text = _get_stt_segment_text(stt_seg)
+            if not stt_text:
+                continue
+            sim = _text_similarity(ocr_text, stt_text)
+            if sim > best_sim:
+                best_sim = sim
+                best_stt = stt_seg
+
+        if best_sim >= 0.6 and best_stt is not None:
+            best_start, best_end = _get_stt_segment_times(best_stt)
+            out_seg["start_ms"] = best_start
+            out_seg["end_ms"] = best_end
+            out_seg["source"] = "ocr+stt"
+
+    ocr_output.sort(key=lambda s: s["start_ms"])
+
+    # ── Phase 4: STT gap-fill ─────────────────────────────────────────────────
+    # Only fill genuine gaps — windows between OCR segments ≥ 500ms where OCR
+    # produced no output.  OCR windows with output but no STT match are NOT
+    # gaps — they mean OCR ran and found no speech text there.
+    MIN_GAP_MS = 500
+
+    gaps: list[tuple[int, int]] = []
+    if ocr_output:
+        if ocr_output[0]["start_ms"] > MIN_GAP_MS:
+            gaps.append((0, ocr_output[0]["start_ms"]))
+        for i in range(len(ocr_output) - 1):
+            g_start = ocr_output[i]["end_ms"]
+            g_end = ocr_output[i + 1]["start_ms"]
+            if g_end - g_start >= MIN_GAP_MS:
+                gaps.append((g_start, g_end))
+        tail = duration_ms - ocr_output[-1]["end_ms"]
+        if duration_ms > 0 and tail >= MIN_GAP_MS:
+            gaps.append((ocr_output[-1]["end_ms"], duration_ms))
+    elif duration_ms > 0:
+        # No OCR at all — entire video is a gap
+        gaps.append((0, duration_ms))
+
+    stt_fills: list[dict] = []
+    prev_stt_texts: list[str] = []
 
     for stt_seg in stt_segments:
-        stt_text = ""
-        for det in stt_seg.get("detections", []):
-            stt_text += det.get("text", "")
-        stt_text = stt_text.strip()
+        stt_text = _get_stt_segment_text(stt_seg)
         if not stt_text:
             continue
 
-        stt_start = stt_seg["start_ms"]
-        stt_end = stt_seg["end_ms"]
+        stt_start, stt_end = _get_stt_segment_times(stt_seg)
+        stt_dur = stt_end - stt_start
 
-        # Find overlapping OCR detections (within time tolerance)
-        best_ocr_text = None
-        best_sim = 0.0
+        # Must be fully contained in a genuine gap
+        if not any(g_start <= stt_start and stt_end <= g_end for g_start, g_end in gaps):
+            continue
 
-        for ocr_seg in ocr_segments:
-            # Check time overlap
-            if (ocr_seg["end_ms"] + time_tolerance_ms < stt_start or
-                    ocr_seg["start_ms"] - time_tolerance_ms > stt_end):
-                continue
+        # Apply hallucination filters
+        if _is_stt_hallucination(stt_text, prev_stt_texts, stt_dur):
+            continue
+        if stt_text in persistent_texts:
+            continue
 
-            # Check each detection in this OCR segment
-            for det in ocr_seg.get("detections", []):
-                det_text = det["text"].strip()
-
-                # Skip persistent text (watermarks/disclaimers)
-                if det_text in persistent_texts:
-                    continue
-
-                # Skip text in top 40% of frame (likely titles, not spoken subtitles)
-                if det["bbox"]["y"] / res_h < 0.40:
-                    continue
-
-                sim = _text_similarity(det_text, stt_text)
-                if sim > best_sim:
-                    best_sim = sim
-                    best_ocr_text = det_text
-
-        if best_sim >= 0.5 and best_ocr_text:
-            # Matched: OCR content + STT timing
-            text = best_ocr_text
-            source = "ocr+stt"
-        else:
-            # No OCR match: STT gap fill
-            text = stt_text
-            source = "stt_only"
-
-        # Build detection in the same format as OCR bboxes.json
-        # Centered at bottom of frame for display
-        vw, vh = resolution.get("width", 720), resolution.get("height", 1280)
-        char_w = min(int(vw * 0.85) // max(len(text), 1), int(vw * 0.06))
-        total_w = char_w * len(text)
-        start_x = (vw - total_w) // 2
-        sub_y = int(vh * 0.82)
-        sub_h = int(vh * 0.05)
-
-        # Build chars — word-level for Latin, char-level for CJK
-        chars = []
-        i = 0
-        while i < len(text):
-            c = text[i]
-            c_code = ord(c)
-            is_cjk = (0x4e00 <= c_code <= 0x9fff or 0x3400 <= c_code <= 0x4dbf
-                       or 0x3040 <= c_code <= 0x30ff or 0xac00 <= c_code <= 0xd7af)
-            if is_cjk:
-                chars.append({"char": c, "x": start_x + i * char_w, "y": sub_y,
-                              "width": char_w, "height": sub_h})
-                i += 1
-            elif c.strip() == "":
-                i += 1
-            else:
-                word_start = i
-                while i < len(text) and text[i].strip() and not (0x4e00 <= ord(text[i]) <= 0x9fff):
-                    i += 1
-                word = text[word_start:i]
-                chars.append({"char": word, "x": start_x + word_start * char_w, "y": sub_y,
-                              "width": len(word) * char_w, "height": sub_h})
-
-        transcript_segments.append({
+        prev_stt_texts.append(stt_text)
+        stt_fills.append({
             "start_ms": stt_start,
             "end_ms": stt_end,
-            "source": source,
+            "source": "stt_only",
+            "_text": stt_text,
+        })
+
+    # ── Phase 5: Assemble, sort, build detections ─────────────────────────────
+    all_segs: list[dict] = []
+
+    for seg in ocr_output:
+        det = seg["_det"]
+        all_segs.append({
+            "start_ms": seg["start_ms"],
+            "end_ms": seg["end_ms"],
+            "source": seg["source"],
             "spoken": True,
             "detections": [{
-                "text": text,
-                "confidence": 1.0,
-                "bbox": {"x": start_x, "y": sub_y, "width": total_w, "height": sub_h},
-                "chars": chars,
+                "text": normalize_text(det["text"]),
+                "confidence": det.get("confidence", 1.0),
+                "bbox": det["bbox"],
+                "chars": det.get("chars", []),
             }],
         })
 
-    # Sort by start time
-    transcript_segments.sort(key=lambda s: s["start_ms"])
+    for seg in stt_fills:
+        all_segs.append({
+            "start_ms": seg["start_ms"],
+            "end_ms": seg["end_ms"],
+            "source": seg["source"],
+            "spoken": True,
+            "detections": [_build_centered_detection(normalize_text(seg["_text"]), resolution)],
+        })
 
-    # Deduplicate: remove consecutive segments with same/similar text
-    # (OCR sometimes detects the same subtitle with slight variations across frames)
-    deduped = []
-    for seg in transcript_segments:
-        seg_text = seg.get("detections", [{}])[0].get("text", "") if seg.get("detections") else ""
+    all_segs.sort(key=lambda s: s["start_ms"])
+
+    # ── Phase 6: Deduplicate consecutive near-identical segments ──────────────
+    # OCR flickering can produce back-to-back segments with near-identical text.
+    # Merge them by extending the previous segment's end_ms.
+    deduped: list[dict] = []
+    for seg in all_segs:
+        text = seg["detections"][0]["text"] if seg.get("detections") else ""
         if deduped:
-            prev_text = deduped[-1].get("detections", [{}])[0].get("text", "") if deduped[-1].get("detections") else ""
-            if _text_similarity(seg_text.strip(), prev_text.strip()) >= 0.8:
-                # Same text — extend the previous segment's end time
+            prev_text = deduped[-1]["detections"][0]["text"] if deduped[-1].get("detections") else ""
+            if _text_similarity(text, prev_text) >= 0.85:
                 deduped[-1]["end_ms"] = max(deduped[-1]["end_ms"], seg["end_ms"])
                 continue
         deduped.append(seg)
@@ -684,7 +664,7 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
     return {
         "video": ocr_data.get("video", ""),
         "resolution": resolution,
-        "duration_ms": ocr_data.get("duration_ms", 0),
+        "duration_ms": duration_ms,
         "subtitle_source": "both",
         "segments": deduped,
     }
@@ -746,15 +726,37 @@ def upload_to_r2(local_path: str, r2_key: str) -> str:
     return public_url
 
 
+def download_from_r2(r2_key: str, local_path: str) -> bool:
+    """Download a file from R2 to a local path. Returns True on success."""
+    if not R2_ENDPOINT or not R2_ACCESS_KEY:
+        print(f"  [R2 SKIP] No R2 credentials — cannot download {r2_key}")
+        return False
+    try:
+        r2 = get_r2_client()
+        r2.download_file(R2_BUCKET_NAME, r2_key, local_path)
+        return True
+    except Exception as e:
+        print(f"  WARNING: R2 download failed for {r2_key}: {e}")
+        return False
+
+
 # ─── Step 3: Insert Video Row ───
 
 def insert_video_row(video_id: str, title: str, language: str, duration_sec: int,
-                     cdn_url: str, thumbnail_url: str, subtitle_source: str = "ocr") -> dict:
+                     cdn_url: str, thumbnail_url: str, subtitle_source: str = "ocr",
+                     language_confidence: str = "high") -> dict:
     """Insert a row into the videos table."""
+    if language not in SUPPORTED_SOURCE_LANGUAGES:
+        print(f"  WARNING: Language '{language}' not supported, defaulting to 'zh'")
+        language = "zh"
+    if language_confidence not in ("high", "medium", "flagged"):
+        print(f"  WARNING: Invalid language_confidence '{language_confidence}', defaulting to 'flagged'")
+        language_confidence = "flagged"
     row = {
         "id": video_id,
         "title": title,
         "language": language,
+        "language_confidence": language_confidence,
         "duration_sec": duration_sec,
         "r2_video_key": f"videos/{video_id}/video.mp4",
         "cdn_url": cdn_url,
@@ -863,44 +865,129 @@ def run_ocr(video_path: str, video_id: str) -> dict:
 # Languages we support as content/source languages
 SUPPORTED_SOURCE_LANGUAGES = {"zh", "en", "ja", "fr", "es"}
 
-def detect_content_language(bbox_data: dict) -> str | None:
-    """
-    Auto-detect the content language from OCR text.
-    Uses langdetect on the concatenated subtitle text.
-    Returns ISO 639-1 code or None if detection fails.
-    """
+# Minimum Latin characters to consider OCR as containing "meaningful Latin text"
+# (not just usernames, numbers, or brand names like "@weemann43" or "2025")
+MEANINGFUL_LATIN_THRESHOLD = 20
+
+
+def _count_scripts(text: str) -> dict:
+    """Count characters by Unicode script class."""
+    counts = {"cjk": 0, "kana": 0, "latin": 0}
+    for ch in text:
+        cp = ord(ch)
+        if 0x4E00 <= cp <= 0x9FFF or 0x3400 <= cp <= 0x4DBF:
+            counts["cjk"] += 1
+        elif 0x3040 <= cp <= 0x309F or 0x30A0 <= cp <= 0x30FF:
+            counts["kana"] += 1
+        elif (0x0041 <= cp <= 0x005A) or (0x0061 <= cp <= 0x007A) or (0x00C0 <= cp <= 0x024F):
+            counts["latin"] += 1
+    return counts
+
+
+def _langdetect_latin(text: str) -> str | None:
+    """Run langdetect and return a supported language code or None."""
     try:
         from langdetect import detect, DetectorFactory
-        # Make detection deterministic
         DetectorFactory.seed = 0
-
-        # Gather all detected text
-        all_text = []
-        for seg in bbox_data.get("segments", []):
-            for det in seg.get("detections", []):
-                text = det.get("text", "").strip()
-                if len(text) >= 2:
-                    all_text.append(text)
-
-        if not all_text:
-            return None
-
-        combined = " ".join(all_text)
-        detected = detect(combined)
-
-        # langdetect returns 'zh-cn' or 'zh-tw' for Chinese
+        detected = detect(text)
         if detected.startswith("zh"):
             detected = "zh"
-
         if detected in SUPPORTED_SOURCE_LANGUAGES:
             return detected
-
-        print(f"  WARNING: Detected language '{detected}' is not a supported source language")
-        return detected
-
-    except Exception as e:
-        print(f"  WARNING: Language detection failed: {e}")
         return None
+    except Exception as e:
+        print(f"  WARNING: langdetect failed: {e}")
+        return None
+
+
+def detect_content_language(
+    bbox_data: dict,
+    stt_data: dict | None = None,
+) -> tuple[str | None, str]:
+    """
+    Auto-detect the content language from OCR text and optional STT data.
+
+    Decision tree:
+      1. Single-script OCR (only CJK OR only Latin) → confidence='high'
+      2. Dual-script OCR (both CJK and meaningful Latin) → use STT → confidence='medium'
+      3. STT unavailable or hallucinated → confidence='flagged'
+
+    Args:
+        bbox_data: OCR bbox output with segments/detections
+        stt_data: Optional STT output from run_stt() containing 'language' key
+
+    Returns:
+        (language_code, confidence) where confidence is one of:
+          'high'    — single-script OCR, unambiguous
+          'medium'  — dual-script OCR resolved via STT
+          'flagged' — needs review (hallucinated STT, unavailable, or ambiguous)
+        language_code is None only when OCR is empty AND STT is unavailable.
+    """
+    # Gather OCR text
+    all_text = []
+    for seg in bbox_data.get("segments", []):
+        for det in seg.get("detections", []):
+            text = det.get("text", "").strip()
+            if len(text) >= 2:
+                all_text.append(text)
+
+    stt_lang = (stt_data or {}).get("language")
+    # Normalize Whisper's zh-cn/zh-tw to 'zh'
+    if stt_lang and stt_lang.startswith("zh"):
+        stt_lang = "zh"
+
+    # Edge case: no OCR text at all — fall back to STT
+    if not all_text:
+        if stt_lang in SUPPORTED_SOURCE_LANGUAGES:
+            print(f"  No OCR text; using STT language: {stt_lang}")
+            return stt_lang, "flagged"  # flagged because we can't cross-validate
+        return None, "flagged"
+
+    combined = " ".join(all_text)
+    counts = _count_scripts(combined)
+    has_cjk = (counts["cjk"] + counts["kana"]) > 0
+    has_meaningful_latin = counts["latin"] >= MEANINGFUL_LATIN_THRESHOLD
+
+    # CASE 1: Single-script OCR — high confidence
+    if has_cjk and not has_meaningful_latin:
+        print(f"  Single-script OCR (CJK only) → zh [high]")
+        return "zh", "high"
+
+    if has_meaningful_latin and not has_cjk:
+        lang = _langdetect_latin(combined)
+        if lang:
+            print(f"  Single-script OCR (Latin only) → {lang} [high]")
+            return lang, "high"
+        print(f"  Single-script Latin but langdetect returned unsupported → flagged")
+        return "en", "flagged"  # best-guess Latin default
+
+    # CASE 2 & 3: Dual-script OCR — use STT to resolve
+    if has_cjk and has_meaningful_latin:
+        if stt_lang in SUPPORTED_SOURCE_LANGUAGES:
+            # Sanity check for STT hallucination: if STT claims a language with
+            # zero supporting script in OCR, treat as hallucinated.
+            # (e.g. STT says 'ja' but OCR has no kana — suspicious)
+            hallucinated = False
+            if stt_lang == "ja" and counts["kana"] == 0:
+                hallucinated = True
+            if hallucinated:
+                print(f"  STT says '{stt_lang}' but OCR lacks supporting script → flagged")
+                # Default to CJK-majority guess
+                fallback = "zh" if counts["cjk"] > counts["latin"] else "en"
+                return fallback, "flagged"
+            print(f"  Dual-script OCR resolved via STT → {stt_lang} [medium]")
+            return stt_lang, "medium"
+
+        # STT unavailable or returned unsupported language
+        print(f"  Dual-script OCR but STT unavailable/unsupported → flagged")
+        # Best-guess: go with CJK-majority since Chinese is primary content
+        fallback = "zh" if counts["cjk"] >= counts["latin"] else "en"
+        return fallback, "flagged"
+
+    # Fallthrough: no CJK, no meaningful Latin (e.g. only numbers/symbols)
+    if stt_lang in SUPPORTED_SOURCE_LANGUAGES:
+        return stt_lang, "flagged"
+    return None, "flagged"
 
 
 # ─── Step 5: Word Segmentation ───
@@ -1036,88 +1123,234 @@ def generate_definition_for_word(
         f"{labels['important']}"
     )
 
-    try:
-        response = llm.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": f"You are a professional translator. Provide precise, contextual translations into {target_name}."},
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0.1,
-            max_tokens=200,
-        )
-        content = response.choices[0].message.content.strip()
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = llm.chat.completions.create(
+                model=LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": f"You are a professional translator. Provide precise, contextual translations into {target_name}."},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.1,
+                max_tokens=200,
+            )
+            raw_content = response.choices[0].message.content
+            finish_reason = getattr(response.choices[0], "finish_reason", "unknown")
 
-        # Parse the structured response
-        translation = ""
-        contextual_def = ""
-        part_of_speech = ""
+            if raw_content is None or raw_content.strip() == "":
+                print(f"    WARNING: Empty LLM response for '{word}' → {target_lang} (attempt {attempt}/{max_retries}, finish_reason={finish_reason})")
+                if attempt < max_retries:
+                    time.sleep(2 * attempt)
+                    continue
+                return {"translation": "", "contextual_definition": "", "part_of_speech": ""}
 
-        for line in content.split("\n"):
-            line = line.strip()
-            # Match localized or English labels
-            trans_label = labels["translation"]
-            def_label = labels["definition"]
-            pos_label = labels["pos"]
+            content = raw_content.strip()
 
-            if line.startswith(f"{trans_label}:") or line.startswith("Translation:"):
-                translation = line.split(":", 1)[1].strip()
-            elif line.startswith(f"{def_label}:") or line.startswith("Contextual Definition:"):
-                contextual_def = line.split(":", 1)[1].strip()
-            elif line.startswith(f"{pos_label}:") or line.startswith("Part of Speech:"):
-                part_of_speech = line.split(":", 1)[1].strip()
+            # Parse the structured response
+            translation = ""
+            contextual_def = ""
+            part_of_speech = ""
 
-        return {
-            "translation": translation,
-            "contextual_definition": contextual_def,
-            "part_of_speech": part_of_speech,
-        }
-    except Exception as e:
-        print(f"    WARNING: LLM error for '{word}' → {target_lang}: {e}")
-        return {"translation": "", "contextual_definition": "", "part_of_speech": ""}
+            for line in content.split("\n"):
+                line = line.strip()
+                # Match localized or English labels
+                trans_label = labels["translation"]
+                def_label = labels["definition"]
+                pos_label = labels["pos"]
+
+                if line.startswith(f"{trans_label}:") or line.startswith("Translation:"):
+                    translation = line.split(":", 1)[1].strip()
+                elif line.startswith(f"{def_label}:") or line.startswith("Contextual Definition:"):
+                    contextual_def = line.split(":", 1)[1].strip()
+                elif line.startswith(f"{pos_label}:") or line.startswith("Part of Speech:"):
+                    part_of_speech = line.split(":", 1)[1].strip()
+
+            return {
+                "translation": translation,
+                "contextual_definition": contextual_def,
+                "part_of_speech": part_of_speech,
+            }
+        except Exception as e:
+            print(f"    WARNING: LLM error for '{word}' → {target_lang} (attempt {attempt}/{max_retries}): {e}")
+            if attempt < max_retries:
+                time.sleep(2 * attempt)
+                continue
+            return {"translation": "", "contextual_definition": "", "part_of_speech": ""}
 
 
 def generate_all_definitions(
     words: list[str],
     word_sentences: dict[str, str],
     source_lang: str,
+    max_workers: int = 10,
 ) -> dict[str, dict[str, dict]]:
     """
     Generate translations for all words × all target languages (excluding self-translation).
+    Uses a thread pool to run up to max_workers LLM calls concurrently.
     Returns: {word: {target_lang: {translation, contextual_definition, part_of_speech}}}
     """
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
     if not words:
         return {}
 
-    # Build word → sentence map for context
     target_langs = [t for t in TARGET_LANGUAGES if t["code"] != source_lang]
-
     total_calls = len(words) * len(target_langs)
-    print(f"  Generating definitions: {len(words)} words × {len(target_langs)} languages = {total_calls} LLM calls")
+    print(f"  Generating definitions: {len(words)} words × {len(target_langs)} languages = {total_calls} LLM calls ({max_workers} workers)")
 
-    all_defs: dict[str, dict[str, dict]] = {}
+    all_defs: dict[str, dict[str, dict]] = {word: {} for word in words}
     call_count = 0
+    lock = threading.Lock()
 
-    for word in words:
-        sentence = word_sentences.get(word, word)
-        all_defs[word] = {}
+    def _define_one(word: str, sentence: str, target_code: str):
+        return word, target_code, generate_definition_for_word(word, sentence, source_lang, target_code)
 
-        for target in target_langs:
-            result = generate_definition_for_word(word, sentence, source_lang, target["code"])
-            all_defs[word][target["code"]] = result
-            call_count += 1
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for word in words:
+            sentence = word_sentences.get(word, word)
+            for target in target_langs:
+                futures.append(executor.submit(_define_one, word, sentence, target["code"]))
 
-            if call_count % 10 == 0:
-                print(f"    Progress: {call_count}/{total_calls} calls")
-
-            # Rate limit: ~2 calls/sec to stay under OpenRouter limits
-            time.sleep(0.5)
+        for future in as_completed(futures):
+            word, target_code, result = future.result()
+            all_defs[word][target_code] = result
+            with lock:
+                call_count += 1
+                if call_count % 50 == 0:
+                    print(f"    Progress: {call_count}/{total_calls} calls")
 
     print(f"  Definitions complete: {call_count} LLM calls")
     return all_defs
 
 
-# ─── Step 7: Insert into Supabase ───
+# ─── Step 7: Segment Translations ───
+
+def generate_segment_translations(
+    segments: list[dict], source_lang: str, target_lang: str,
+) -> dict[int, str]:
+    """Translate all spoken segments for one target language in a single batched LLM call.
+
+    Args:
+        segments: list of {start_ms, end_ms, text}
+        source_lang: language code of the source content (e.g. "zh")
+        target_lang: language code to translate into (e.g. "en")
+    Returns:
+        {start_ms: translated_text}
+    """
+    if not segments:
+        return {}
+
+    source_name = get_source_lang_name(source_lang)
+    target_name = get_source_lang_name(target_lang)
+
+    batch = [{"id": seg["start_ms"], "text": seg["text"]} for seg in segments]
+    batch_json = json.dumps(batch, ensure_ascii=False)
+
+    prompt = (
+        f"Translate the following {source_name} subtitles into {target_name}. "
+        f"Return ONLY a JSON array with the same structure, where each object has "
+        f"\"id\" (unchanged integer) and \"translation\" (the translated text).\n\n"
+        f"{batch_json}"
+    )
+
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = llm.chat.completions.create(
+                model=LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": (
+                        f"You are a professional subtitle translator. "
+                        f"Translate {source_name} subtitles into natural {target_name}. "
+                        f"Preserve meaning and tone. Return only valid JSON, no markdown."
+                    )},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.1,
+                max_tokens=max(500, len(segments) * 100),
+            )
+            raw_content = response.choices[0].message.content
+            finish_reason = getattr(response.choices[0], "finish_reason", "unknown")
+
+            if raw_content is None or raw_content.strip() == "":
+                print(f"    WARNING: Empty LLM response for segment translations → {target_lang} (attempt {attempt}/{max_retries}, finish_reason={finish_reason})")
+                if attempt < max_retries:
+                    time.sleep(2 * attempt)
+                    continue
+                return {}
+
+            content = raw_content.strip()
+
+            # Strip markdown code fences if the model included them
+            if content.startswith("```"):
+                lines = content.splitlines()
+                content = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+                content = content.strip()
+
+            # Re-check emptiness after fence stripping (model may return "```json\n```")
+            if not content:
+                print(f"    WARNING: Empty LLM response for segment translations → {target_lang} (empty after fence strip, attempt {attempt}/{max_retries})")
+                if attempt < max_retries:
+                    time.sleep(2 * attempt)
+                    continue
+                return {}
+
+            results = json.loads(content)
+            # Handle single-object dict instead of array
+            if isinstance(results, dict):
+                results = [results]
+            return {item["id"]: item["translation"] for item in results}
+
+        except Exception as e:
+            print(f"    WARNING: LLM error for segment translations → {target_lang} (attempt {attempt}/{max_retries}): {e}")
+            if attempt < max_retries:
+                time.sleep(2 * attempt)
+                continue
+            return {}
+
+
+def insert_segment_translations(
+    video_id: str, spoken_segments: list[dict],
+    all_seg_translations: dict[str, dict[int, str]],
+):
+    """Batch-insert segment_translations rows into Supabase.
+
+    Args:
+        video_id: UUID of the video
+        spoken_segments: list of {start_ms, end_ms, text} (source text)
+        all_seg_translations: {target_lang: {start_ms: translated_text}}
+    """
+    # Build a start_ms → segment map for source_text + end_ms lookups
+    seg_by_start = {seg["start_ms"]: seg for seg in spoken_segments}
+
+    rows = []
+    for target_lang, trans_map in all_seg_translations.items():
+        for start_ms, translation in trans_map.items():
+            seg = seg_by_start.get(start_ms)
+            if not seg or not translation:
+                continue
+            rows.append({
+                "video_id": video_id,
+                "start_ms": start_ms,
+                "end_ms": seg["end_ms"],
+                "source_text": seg["text"],
+                "target_language": target_lang,
+                "translation": translation,
+                "llm_provider": LLM_MODEL,
+            })
+
+    if rows:
+        for i in range(0, len(rows), 50):
+            supabase.table("segment_translations").upsert(
+                rows[i:i + 50], on_conflict="video_id,start_ms,target_language"
+            ).execute()
+    print(f"  Inserted {len(rows)} segment_translations ({len(spoken_segments)} segments × {len(all_seg_translations)} languages)")
+
+
+# ─── Step 8: Insert vocab into Supabase ───
 
 def insert_vocab_and_definitions(
     video_id: str, words: list[str], all_definitions: dict[str, dict[str, dict]],
@@ -1152,6 +1385,10 @@ def insert_vocab_and_definitions(
         sentence = word_sentences.get(word, "")
 
         for target_lang, defn in lang_defs.items():
+            # Skip empty definitions from LLM errors — inserting blank rows
+            # pollutes the DB and shows empty cards in the app.
+            if not defn.get("translation") and not defn.get("contextual_definition"):
+                continue
             def_rows.append({
                 "vocab_word_id": word_id_map[word],
                 "video_id": video_id,
@@ -1165,8 +1402,11 @@ def insert_vocab_and_definitions(
 
     if def_rows:
         for i in range(0, len(def_rows), 50):
-            supabase.table("word_definitions").insert(def_rows[i:i + 50]).execute()
-    print(f"  Inserted {len(def_rows)} word_definitions ({len(all_definitions)} words × {len(def_rows) // max(len(all_definitions), 1)} languages)")
+            supabase.table("word_definitions").upsert(
+                def_rows[i:i + 50],
+                on_conflict="vocab_word_id,video_id,target_language"
+            ).execute()
+    print(f"  Upserted {len(def_rows)} word_definitions ({len(all_definitions)} words × {len(def_rows) // max(len(all_definitions), 1)} languages)")
 
     # Insert video_words
     vw_rows = []
@@ -1290,156 +1530,235 @@ def main():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # Step 1: Normalize
-        print("[1/8] Normalizing video...")
+        print("[1/9] Normalizing video...")
         norm_path, duration_sec = normalize_video(video_path, tmpdir)
 
-        # Step 2: Run OCR (always — detect burned-in text positions)
-        print("[2/8] Running OCR...")
-        bbox_data_ocr = run_ocr(norm_path, video_id)
-
-        # Step 3: Run STT (always — extract audio transcript with word timing)
-        bbox_data_stt = None
-        print("[3/8] Running STT (Groq Whisper)...")
-        audio_path = extract_audio(norm_path, tmpdir)
-        if audio_path and groq:
-            try:
-                whisper_result = run_stt(audio_path, language)
-                duration_ms = duration_sec * 1000
-                bbox_data_stt = whisper_to_bboxes(whisper_result, video_id, duration_ms)
-                bbox_data_stt = chunk_stt_segments(bbox_data_stt, whisper_result)
-                upload_to_r2(audio_path, f"videos/{video_id}/audio.mp3")
-            except Exception as e:
-                print(f"  STT failed: {e} — continuing with OCR only")
-        elif not groq:
-            print("  No GroqAPIKey — skipping STT")
+        # Step 2: Run OCR
+        if args.skip_ocr:
+            print("[2/9] Skipping OCR (--skip-ocr)")
+            bbox_data_ocr = {
+                "video": video_id,
+                "resolution": {"width": 720, "height": 1280},
+                "duration_ms": duration_sec * 1000,
+                "subtitle_source": "stt",
+                "segments": [],
+            }
         else:
-            print("  No audio stream — skipping STT")
+            print("[2/9] Running OCR...")
+            bbox_data_ocr = run_ocr(norm_path, video_id)
 
-        # Use OCR data as primary (has bbox positions for tap targets)
-        # Use STT data for the visible subtitle drawer
+        # Step 3: Run STT (audio extraction + Whisper transcription + upload)
+        stt_data = None
+        if args.skip_stt:
+            print("[3/9] Skipping STT (--skip-stt)")
+        else:
+            print("[3/9] Running STT (Groq Whisper)...")
+            audio_path = extract_audio(norm_path, tmpdir)
+            if audio_path and groq:
+                try:
+                    upload_to_r2(audio_path, f"videos/{video_id}/audio.mp3")
+                    # Actually run Whisper to get transcript + detected language
+                    stt_data = run_stt(audio_path, language=language)
+                except Exception as e:
+                    print(f"  STT/audio upload failed: {e}")
+            elif not groq:
+                print("  No GroqAPIKey — skipping STT")
+            else:
+                print("  No audio stream — skipping STT")
+
+        # Determine subtitle source label
         bbox_data = bbox_data_ocr
-        sub_source = "both" if bbox_data_stt else "ocr"
+        sub_source = "stt" if args.skip_ocr else ("both" if stt_data else "ocr")
 
         # Auto-detect language from subtitle text if not provided
-        # Prefer STT text (more accurate) over OCR text
         if not language:
-            source = bbox_data_stt or bbox_data_ocr
-            language = detect_content_language(source)
-            if language:
-                print(f"  Auto-detected language: {language}")
+            detected, confidence = detect_content_language(bbox_data_ocr, stt_data)
+            if detected:
+                language = detected
+                print(f"  Auto-detected language: {language} [confidence={confidence}]")
             else:
                 language = "zh"  # Default fallback
-                print(f"  Could not detect language, defaulting to: {language}")
+                confidence = "flagged"
+                print(f"  Could not detect language, defaulting to: {language} [flagged]")
+        else:
+            # User provided --language, so confidence is high (explicit override)
+            confidence = "high"
 
         # Auto-detect title from first subtitle if not provided
         if not title:
-            source = bbox_data_stt or bbox_data_ocr
-            title = get_auto_title(source)
+            title = get_auto_title(bbox_data_ocr)
             print(f"  Auto-title: \"{title}\"")
 
         # Extract thumbnail at ~30% into the video
         thumb_path = extract_thumbnail(norm_path, tmpdir, duration_sec)
 
-        # Step 4: Upload to R2
-        print("[4/8] Uploading to R2...")
-        cdn_url = upload_to_r2(norm_path, f"videos/{video_id}/video.mp4")
-        thumb_url = upload_to_r2(thumb_path, f"videos/{video_id}/thumbnail.jpg")
+        # Step 4–9: Upload, insert, and process — all inside cleanup block
+        # so a failure at ANY point cleans up orphan R2 objects + Supabase rows.
+        print("[4/9] Uploading to R2...")
 
-        if not args.dry_run:
-            # Insert video row
-            print("  Inserting video row...")
-            insert_video_row(video_id, title, language, duration_sec, cdn_url, thumb_url, sub_source)
+        # Duplicate guard — abort if video.mp4 already exists for this video_id
+        if R2_ENDPOINT and R2_ACCESS_KEY:
+            try:
+                _r2_check = get_r2_client()
+                _r2_check.head_object(Bucket=R2_BUCKET_NAME, Key=f"videos/{video_id}/video.mp4")
+                print(f"\n  WARNING: videos/{video_id}/video.mp4 already exists in R2.")
+                print("  Aborting to prevent overwriting another video's data.")
+                sys.exit(1)
+            except Exception as _head_err:
+                # head_object raises ClientError with 404 if object doesn't exist — that's fine
+                if hasattr(_head_err, "response") and _head_err.response.get("Error", {}).get("Code") not in ("404", "NoSuchKey"):
+                    raise
 
-        # Save + upload OCR bboxes.json (for tap targets over burned-in text)
-        bbox_path = os.path.join(tmpdir, "bboxes.json")
-        with open(bbox_path, "w", encoding="utf-8") as f:
-            json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
-        upload_to_r2(bbox_path, f"videos/{video_id}/bboxes.json")
-
-        # Save + upload STT stt.json (debugging)
-        if bbox_data_stt:
-            stt_path = os.path.join(tmpdir, "stt.json")
-            with open(stt_path, "w", encoding="utf-8") as f:
-                json.dump(bbox_data_stt, f, ensure_ascii=False, indent=2)
-            upload_to_r2(stt_path, f"videos/{video_id}/stt.json")
-
-        # Merge OCR + STT into unified transcript
-        if bbox_data_stt:
-            print("  Merging OCR + STT transcript...")
-            transcript_data = merge_ocr_stt(bbox_data_ocr, bbox_data_stt)
-            transcript_path = os.path.join(tmpdir, "transcript.json")
-            with open(transcript_path, "w", encoding="utf-8") as f:
-                json.dump(transcript_data, f, ensure_ascii=False, indent=2)
-            upload_to_r2(transcript_path, f"videos/{video_id}/transcript.json")
-            merged_count = len(transcript_data["segments"])
-            ocr_matched = sum(1 for s in transcript_data["segments"] if s["source"] == "ocr+stt")
-            stt_only = sum(1 for s in transcript_data["segments"] if s["source"] == "stt_only")
-            print(f"  Transcript: {merged_count} segments ({ocr_matched} OCR+STT, {stt_only} STT-only)")
-
-        # Save locally for testing
+        # Save locally for testing (safe — no remote side effects)
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        local_bbox_path = OUTPUT_DIR / f"{Path(video_path).stem}_pipeline.json"
+        local_bbox_path = OUTPUT_DIR / f"{video_id}_pipeline.json"
         with open(local_bbox_path, "w", encoding="utf-8") as f:
             json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
-        if bbox_data_stt:
-            local_stt_path = OUTPUT_DIR / f"{Path(video_path).stem}_stt.json"
-            with open(local_stt_path, "w", encoding="utf-8") as f:
-                json.dump(bbox_data_stt, f, ensure_ascii=False, indent=2)
-            local_transcript_path = OUTPUT_DIR / f"{Path(video_path).stem}_transcript.json"
-            with open(local_transcript_path, "w", encoding="utf-8") as f:
-                json.dump(transcript_data, f, ensure_ascii=False, indent=2)
         print(f"  Saved locally: {local_bbox_path}")
-
-        # Step 5: Word segmentation — prefer STT (better word boundaries) over OCR
-        print("[5/8] Segmenting words...")
-        seg_source = bbox_data_stt if bbox_data_stt else bbox_data_ocr
-        unique_words, word_occurrences = segment_words(seg_source, language)
-
-        # Build word → sentence map for LLM context
-        word_sentences = {}
-        for occ in word_occurrences:
-            if occ["word"] not in word_sentences:
-                word_sentences[occ["word"]] = occ["sentence"]
-
-        # Step 6: LLM definitions — all words × all target languages
-        if args.reuse_definitions:
-            print("[6/8] Reusing existing definitions from Supabase...")
-            all_definitions = reuse_existing_definitions(unique_words, language)
-            missing = [w for w in unique_words if w not in all_definitions or not all_definitions[w]]
-            if missing:
-                print(f"  {len(missing)} words have no existing definitions: {missing[:5]}{'...' if len(missing) > 5 else ''}")
-        else:
-            print("[6/8] Generating definitions via Claude Haiku 3.5...")
-            all_definitions = generate_all_definitions(unique_words, word_sentences, language)
 
         if not args.dry_run:
             started_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
             try:
-                # Step 7: Insert into Supabase
-                print("[7/8] Inserting into Supabase...")
+                # Upload to R2
+                cdn_url = upload_to_r2(norm_path, f"videos/{video_id}/video.mp4")
+                thumb_url = upload_to_r2(thumb_path, f"videos/{video_id}/thumbnail.jpg")
+
+                bbox_path = os.path.join(tmpdir, "bboxes.json")
+                with open(bbox_path, "w", encoding="utf-8") as f:
+                    json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
+                upload_to_r2(bbox_path, f"videos/{video_id}/bboxes.json")
+
+                # Step 5: Word segmentation — from OCR data
+                print("[5/9] Segmenting words...")
+                seg_source = bbox_data_ocr
+                unique_words, word_occurrences = segment_words(seg_source, language)
+
+                # Build word → sentence map for LLM context
+                word_sentences = {}
+                for occ in word_occurrences:
+                    if occ["word"] not in word_sentences:
+                        word_sentences[occ["word"]] = occ["sentence"]
+
+                # Step 6: LLM definitions — all words × all target languages
+                if args.reuse_definitions:
+                    print("[6/9] Reusing existing definitions from Supabase...")
+                    all_definitions = reuse_existing_definitions(unique_words, language)
+                    missing = [w for w in unique_words if w not in all_definitions or not all_definitions[w]]
+                    if missing:
+                        print(f"  {len(missing)} words have no existing definitions: {missing[:5]}{'...' if len(missing) > 5 else ''}")
+                else:
+                    print("[6/9] Generating definitions via Claude Haiku 3.5...")
+                    all_definitions = generate_all_definitions(unique_words, word_sentences, language)
+
+                # Step 7: Generate segment translations — one LLM call per target language
+                spoken_segments = [
+                    {
+                        "start_ms": seg["start_ms"],
+                        "end_ms": seg["end_ms"],
+                        "text": seg["detections"][0]["text"],
+                    }
+                    for seg in seg_source.get("segments", [])
+                    if seg.get("detections") and seg["detections"][0].get("text", "").strip()
+                ]
+                if spoken_segments:
+                    print("[7/9] Generating segment translations...")
+                    target_langs = [t for t in TARGET_LANGUAGES if t["code"] != language]
+                    all_seg_translations: dict[str, dict[int, str]] = {}
+                    from concurrent.futures import ThreadPoolExecutor, as_completed as _as_completed
+                    with ThreadPoolExecutor(max_workers=5) as _pool:
+                        _futures = {
+                            _pool.submit(generate_segment_translations, spoken_segments, language, t["code"]): t["code"]
+                            for t in target_langs
+                        }
+                        for _f in _as_completed(_futures):
+                            _lang = _futures[_f]
+                            _result = _f.result()
+                            if _result:
+                                all_seg_translations[_lang] = _result
+                    print(f"  Translations complete: {len(all_seg_translations)}/{len(target_langs)} languages ({len(spoken_segments)} segments)")
+                else:
+                    all_seg_translations = {}
+                    print("[7/9] No spoken segments — skipping translations")
+
+                # Step 8: Insert into Supabase
+                # Insert video row HERE (just before FK-dependent inserts) so the gap
+                # between insert and FK check is milliseconds, not 10+ minutes.
+                print("[8/9] Inserting into Supabase...")
+                print("  Inserting video row...")
+                insert_video_row(video_id, title, language, duration_sec, cdn_url, thumb_url, sub_source, language_confidence=confidence)
+
                 insert_vocab_and_definitions(
                     video_id, unique_words, all_definitions,
                     word_occurrences, language,
                 )
+                if all_seg_translations:
+                    insert_segment_translations(video_id, spoken_segments, all_seg_translations)
 
-                # Step 8: Mark ready
-                print("[8/8] Marking video ready...")
+                # Step 9: Mark ready
+                print("[9/9] Marking video ready...")
                 mark_video_ready(video_id, started_at)
+
             except Exception as e:
-                print(f"\n  ERROR during Supabase insert: {e}")
+                print(f"\n  ERROR during pipeline: {e}")
                 print("  Cleaning up — deleting partial video data...")
                 try:
+                    supabase.table("segment_translations").delete().eq("video_id", video_id).execute()
                     supabase.table("video_words").delete().eq("video_id", video_id).execute()
                     supabase.table("word_definitions").delete().eq("video_id", video_id).execute()
                     supabase.table("videos").delete().eq("id", video_id).execute()
                     print("  Cleanup complete — video row and related data removed")
                 except Exception as cleanup_err:
-                    print(f"  WARNING: Cleanup failed: {cleanup_err}")
+                    print(f"  WARNING: Supabase cleanup failed: {cleanup_err}")
                     print(f"  Manual cleanup needed for video_id: {video_id}")
+
+                # Clean up R2 files
+                if R2_ENDPOINT and R2_ACCESS_KEY:
+                    print("  Cleaning up R2 files...")
+                    _r2_cleanup = get_r2_client()
+                    for r2_key in [
+                        f"videos/{video_id}/video.mp4",
+                        f"videos/{video_id}/thumbnail.jpg",
+                        f"videos/{video_id}/bboxes.json",
+                        f"videos/{video_id}/stt.json",
+                        f"videos/{video_id}/transcript.json",
+                        f"videos/{video_id}/audio.mp3",
+                    ]:
+                        try:
+                            _r2_cleanup.delete_object(Bucket=R2_BUCKET_NAME, Key=r2_key)
+                            print(f"    Deleted R2: {r2_key}")
+                        except Exception as r2_del_err:
+                            print(f"    WARNING: Could not delete R2 {r2_key}: {r2_del_err}")
                 raise
         else:
-            print("[7/8] [DRY RUN] Skipping Supabase inserts")
-            print("[8/8] [DRY RUN] Skipping status update")
+            # Dry run — still do segmentation + LLM for testing, but skip remote writes
+            seg_source = bbox_data_ocr
+            print("[5/9] Segmenting words...")
+            unique_words, word_occurrences = segment_words(seg_source, language)
+            word_sentences = {}
+            for occ in word_occurrences:
+                if occ["word"] not in word_sentences:
+                    word_sentences[occ["word"]] = occ["sentence"]
+
+            if args.reuse_definitions:
+                print("[6/9] Reusing existing definitions from Supabase...")
+                all_definitions = reuse_existing_definitions(unique_words, language)
+            else:
+                print("[6/9] Generating definitions via Claude Haiku 3.5...")
+                all_definitions = generate_all_definitions(unique_words, word_sentences, language)
+
+            spoken_segments = [
+                {
+                    "start_ms": seg["start_ms"],
+                    "end_ms": seg["end_ms"],
+                    "text": seg["detections"][0]["text"],
+                }
+                for seg in seg_source.get("segments", [])
+                if seg.get("detections") and seg["detections"][0].get("text", "").strip()
+            ]
+            all_seg_translations = {}
+            print("[7/9] [DRY RUN] Skipping segment translation generation")
+            print("[8/9] [DRY RUN] Skipping Supabase inserts")
+            print("[9/9] [DRY RUN] Skipping status update")
 
     elapsed = time.time() - t_start
     print(f"\n{'=' * 60}")
@@ -1450,6 +1769,7 @@ def main():
     print(f"  Words: {len(unique_words)}")
     print(f"  Definitions: {len(unique_words)} words × {num_langs} languages = {len(unique_words) * num_langs}")
     print(f"  Segments: {len(bbox_data['segments'])}")
+    print(f"  Segment translations: {len(spoken_segments)} segments × {len(all_seg_translations)} languages = {len(spoken_segments) * len(all_seg_translations)}")
     if args.dry_run:
         print(f"  [DRY RUN] No data written to Supabase/R2")
     print(f"{'=' * 60}\n")
@@ -1504,8 +1824,104 @@ def backfill_pinyin():
     print()
 
 
+def backfill_translations():
+    """Backfill segment_translations for all ready videos that have none yet."""
+    print("\n=== Backfilling segment translations for ready videos ===\n")
+
+    # Fetch all ready videos
+    result = (
+        supabase.table("videos")
+        .select("id, language")
+        .eq("status", "ready")
+        .execute()
+    )
+    videos = result.data
+    print(f"  Found {len(videos)} ready videos\n")
+
+    if not videos:
+        print("  Nothing to backfill!")
+        return
+
+    processed = 0
+    skipped = 0
+
+    for video in videos:
+        video_id = video["id"]
+        language = video["language"]
+
+        # Check if segment_translations already exist for this video
+        existing = (
+            supabase.table("segment_translations")
+            .select("id", count="exact")
+            .eq("video_id", video_id)
+            .limit(1)
+            .execute()
+        )
+        if existing.data:
+            skipped += 1
+            continue
+
+        print(f"  Processing video {video_id} (language={language})...")
+
+        # Download transcript.json from R2 (fall back to bboxes.json if not available)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            local_transcript = os.path.join(tmpdir, "transcript.json")
+            if not download_from_r2(f"videos/{video_id}/transcript.json", local_transcript):
+                local_bboxes = os.path.join(tmpdir, "bboxes.json")
+                if not download_from_r2(f"videos/{video_id}/bboxes.json", local_bboxes):
+                    print(f"    Skipping — no transcript or bboxes in R2")
+                    skipped += 1
+                    continue
+                with open(local_bboxes, encoding="utf-8") as f:
+                    transcript_data = json.load(f)
+            else:
+                with open(local_transcript, encoding="utf-8") as f:
+                    transcript_data = json.load(f)
+
+            # Extract spoken segments
+            spoken_segments = [
+                {
+                    "start_ms": seg["start_ms"],
+                    "end_ms": seg["end_ms"],
+                    "text": seg["detections"][0]["text"],
+                }
+                for seg in transcript_data.get("segments", [])
+                if seg.get("detections") and seg["detections"][0].get("text", "").strip()
+            ]
+
+            if not spoken_segments:
+                print(f"    Skipping — no spoken segments found")
+                skipped += 1
+                continue
+
+            print(f"    {len(spoken_segments)} spoken segments, generating translations...")
+
+            # Generate translations for all target languages (excluding source)
+            target_langs = [t for t in TARGET_LANGUAGES if t["code"] != language]
+            all_seg_translations: dict[str, dict[int, str]] = {}
+            for target in target_langs:
+                trans_map = generate_segment_translations(spoken_segments, language, target["code"])
+                if trans_map:
+                    all_seg_translations[target["code"]] = trans_map
+
+            if all_seg_translations:
+                insert_segment_translations(video_id, spoken_segments, all_seg_translations)
+                processed += 1
+            else:
+                print(f"    WARNING: No translations generated for {video_id}")
+                skipped += 1
+
+        if processed % 10 == 0 and processed > 0:
+            print(f"\n  Progress: {processed} processed, {skipped} skipped\n")
+
+    print(f"\n  Backfill complete: {processed} videos updated, {skipped} skipped")
+    print()
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--backfill-pinyin":
         backfill_pinyin()
+    elif len(sys.argv) > 1 and sys.argv[1] == "--backfill-translations":
+        backfill_translations()
     else:
         main()
