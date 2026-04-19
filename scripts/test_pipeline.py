@@ -1930,3 +1930,151 @@ class TestMergeOcrSttLanguage:
         result = pipeline.merge_ocr_stt(ocr, stt, language="zh")
         texts = [s["detections"][0]["text"] for s in result["segments"]]
         assert texts == ["Hello world"]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Language Detection Tests (OCR + STT decision tree)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _bbox_with_texts(texts: list[str]) -> dict:
+    """Build minimal bbox_data with given OCR text lines."""
+    return {
+        "segments": [
+            {"detections": [{"text": t} for t in texts]}
+        ]
+    }
+
+
+class TestDetectContentLanguage:
+    """Decision tree: single-script=high, dual-script=medium (via STT), STT fail=flagged."""
+
+    def test_case1_cjk_only_returns_zh_high(self):
+        bbox = _bbox_with_texts(["你好世界", "我是中国人"])
+        lang, conf = pipeline.detect_content_language(bbox)
+        assert lang == "zh"
+        assert conf == "high"
+
+    def test_case1_latin_only_english_returns_en_high(self):
+        bbox = _bbox_with_texts([
+            "Hello world this is an English sentence",
+            "The quick brown fox jumps over the lazy dog",
+        ])
+        lang, conf = pipeline.detect_content_language(bbox)
+        assert lang == "en"
+        assert conf == "high"
+
+    def test_case1_short_latin_treated_as_username_not_dual(self):
+        # Chinese video with just a short @username overlay — should still be high-confidence zh
+        bbox = _bbox_with_texts(["你好世界", "@user123"])
+        lang, conf = pipeline.detect_content_language(bbox)
+        assert lang == "zh"
+        assert conf == "high"
+
+    def test_case2_dual_script_stt_says_zh_returns_zh_medium(self):
+        # Chinese audio with English translation subs baked in
+        bbox = _bbox_with_texts([
+            "高级的男人都在修行孤独",
+            "Advanced men are practicing loneliness",
+            "学会控制欲望",
+            "Learn to control desires",
+        ])
+        stt = {"language": "zh", "text": "高级的男人..."}
+        lang, conf = pipeline.detect_content_language(bbox, stt)
+        assert lang == "zh"
+        assert conf == "medium"
+
+    def test_case2_dual_script_stt_says_en_returns_en_medium(self):
+        # English audio with Chinese translation subs — the rare edge case
+        bbox = _bbox_with_texts([
+            "高级的男人都在修行孤独",
+            "Advanced men are practicing loneliness",
+            "学会控制欲望",
+            "Learn to control desires",
+        ])
+        stt = {"language": "en", "text": "Advanced men are..."}
+        lang, conf = pipeline.detect_content_language(bbox, stt)
+        assert lang == "en"
+        assert conf == "medium"
+
+    def test_case3_dual_script_no_stt_flagged(self):
+        bbox = _bbox_with_texts([
+            "高级的男人都在修行孤独",
+            "Advanced men are practicing loneliness",
+        ])
+        lang, conf = pipeline.detect_content_language(bbox, stt_data=None)
+        assert conf == "flagged"
+        assert lang in ("zh", "en")  # best-guess fallback
+
+    def test_case3_stt_hallucination_ja_without_kana_flagged(self):
+        # STT claims Japanese but OCR has zero kana — obvious hallucination
+        bbox = _bbox_with_texts([
+            "高级的男人都在修行孤独",
+            "Advanced men are practicing loneliness",
+        ])
+        stt = {"language": "ja"}
+        lang, conf = pipeline.detect_content_language(bbox, stt)
+        assert conf == "flagged"
+
+    def test_zh_cn_normalized_to_zh(self):
+        bbox = _bbox_with_texts([
+            "高级的男人都在修行孤独",
+            "Advanced men are practicing loneliness",
+        ])
+        stt = {"language": "zh-cn"}
+        lang, conf = pipeline.detect_content_language(bbox, stt)
+        assert lang == "zh"
+        assert conf == "medium"
+
+    def test_empty_ocr_with_stt_flagged(self):
+        bbox = {"segments": []}
+        stt = {"language": "en"}
+        lang, conf = pipeline.detect_content_language(bbox, stt)
+        assert lang == "en"
+        assert conf == "flagged"
+
+    def test_empty_ocr_no_stt_returns_none(self):
+        bbox = {"segments": []}
+        lang, conf = pipeline.detect_content_language(bbox, None)
+        assert lang is None
+        assert conf == "flagged"
+
+    def test_stt_unsupported_language_treated_as_unavailable(self):
+        # STT returns Korean (unsupported) — should fall through to flagged best-guess
+        bbox = _bbox_with_texts([
+            "高级的男人都在修行孤独",
+            "Advanced men are practicing loneliness",
+        ])
+        stt = {"language": "ko"}
+        lang, conf = pipeline.detect_content_language(bbox, stt)
+        assert conf == "flagged"
+        assert lang in ("zh", "en")
+
+    def test_bilingual_real_world_example(self):
+        # Actual OCR data from video fc7773e3
+        bbox = _bbox_with_texts([
+            "Advanced men are practicing loneliness", "高级的男人都在修行孤独",
+            "Learn to control desires", "学会控制欲望",
+            "In addition to making money", "除了赚钱之外",
+            "Just enjoy being alone", "就是享受孤独",
+        ])
+        stt = {"language": "zh"}
+        lang, conf = pipeline.detect_content_language(bbox, stt)
+        assert lang == "zh"
+        assert conf == "medium"
+
+
+class TestCountScripts:
+    def test_counts_cjk_and_latin(self):
+        counts = pipeline._count_scripts("你好 hello 世界")
+        assert counts["cjk"] == 4
+        assert counts["latin"] == 5
+        assert counts["kana"] == 0
+
+    def test_counts_kana(self):
+        counts = pipeline._count_scripts("こんにちは カタカナ")
+        assert counts["kana"] > 0
+
+    def test_ignores_digits_and_punct(self):
+        counts = pipeline._count_scripts("@user123 #tag 2025!")
+        assert counts["latin"] == 7  # 'u','s','e','r','t','a','g'
+        assert counts["cjk"] == 0

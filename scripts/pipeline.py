@@ -225,8 +225,44 @@ def run_stt(audio_path: str, language: str | None = None) -> dict:
     # Convert Pydantic objects to dicts
     words = [{"word": w.word, "start": w.start, "end": w.end} for w in raw_words]
     segments = [{"text": s.text, "start": s.start, "end": s.end} for s in raw_segments]
-    print(f"  Got {len(words)} words, {len(segments)} segments")
-    return {"words": words, "segments": segments, "text": transcript.text}
+    # Capture Whisper's auto-detected language and normalize to ISO 639-1.
+    # Groq/Whisper may return either the full name ("Chinese") or ISO code ("zh").
+    raw_lang = getattr(transcript, "language", None)
+    detected_language = _normalize_whisper_language(raw_lang)
+    print(f"  Got {len(words)} words, {len(segments)} segments, detected language: {raw_lang} → {detected_language}")
+    return {"words": words, "segments": segments, "text": transcript.text, "language": detected_language}
+
+
+# Whisper returns either ISO 639-1 codes or full English language names.
+# Map full names → ISO codes. Unknown values pass through unchanged.
+_WHISPER_LANG_MAP = {
+    "chinese": "zh", "mandarin": "zh",
+    "english": "en",
+    "japanese": "ja",
+    "french": "fr",
+    "spanish": "es",
+    "korean": "ko",
+    "vietnamese": "vi",
+    "finnish": "fi",
+    "german": "de",
+    "portuguese": "pt",
+    "italian": "it",
+    "russian": "ru",
+    "hindi": "hi",
+    "arabic": "ar",
+}
+
+
+def _normalize_whisper_language(raw: str | None) -> str | None:
+    if not raw:
+        return None
+    key = raw.strip().lower()
+    if key in _WHISPER_LANG_MAP:
+        return _WHISPER_LANG_MAP[key]
+    # Already an ISO code or close to it — take first 2 chars (handles "zh-cn" etc)
+    if len(key) <= 3:
+        return key[:2]
+    return key  # Unknown — pass through, caller can handle
 
 
 def _is_cjk_char(c: str) -> bool:
@@ -407,6 +443,38 @@ def _is_stt_hallucination(stt_text: str, prev_stt_texts: list,
     return False
 
 
+def _get_stt_segment_text(stt_seg: dict) -> str:
+    """Extract text from an STT segment, handling both formats.
+
+    Groq Whisper returns segments with a direct 'text' field:
+        {"text": "...", "start": 1.2, "end": 3.4}
+    But whisper_to_bboxes (if used) wraps them in 'detections':
+        {"detections": [{"text": "..."}], "start_ms": 1200, "end_ms": 3400}
+
+    This helper normalizes both to a plain string.
+    """
+    # Direct text field (Groq Whisper raw format)
+    if "text" in stt_seg and isinstance(stt_seg["text"], str):
+        return stt_seg["text"].strip()
+    # Detections array (bbox-converted format)
+    dets = stt_seg.get("detections", [])
+    if dets:
+        return "".join(det.get("text", "") for det in dets).strip()
+    return ""
+
+
+def _get_stt_segment_times(stt_seg: dict) -> tuple[int, int]:
+    """Extract start_ms/end_ms from an STT segment, handling both formats.
+
+    Groq raw format uses 'start'/'end' in seconds.
+    Bbox-converted format uses 'start_ms'/'end_ms' in milliseconds.
+    """
+    if "start_ms" in stt_seg:
+        return stt_seg["start_ms"], stt_seg["end_ms"]
+    # Groq raw: seconds → milliseconds
+    return int(stt_seg.get("start", 0) * 1000), int(stt_seg.get("end", 0) * 1000)
+
+
 def merge_ocr_stt(ocr_data: dict, stt_data: dict,
                   time_tolerance_ms: int = 400,
                   language: str | None = None) -> dict:
@@ -480,12 +548,11 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
         best_stt: dict | None = None
 
         for stt_seg in stt_segments:
-            if (stt_seg["end_ms"] + time_tolerance_ms < out_seg["start_ms"] or
-                    stt_seg["start_ms"] - time_tolerance_ms > out_seg["end_ms"]):
+            stt_start, stt_end = _get_stt_segment_times(stt_seg)
+            if (stt_end + time_tolerance_ms < out_seg["start_ms"] or
+                    stt_start - time_tolerance_ms > out_seg["end_ms"]):
                 continue
-            stt_text = "".join(
-                det.get("text", "") for det in stt_seg.get("detections", [])
-            ).strip()
+            stt_text = _get_stt_segment_text(stt_seg)
             if not stt_text:
                 continue
             sim = _text_similarity(ocr_text, stt_text)
@@ -494,8 +561,9 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
                 best_stt = stt_seg
 
         if best_sim >= 0.6 and best_stt is not None:
-            out_seg["start_ms"] = best_stt["start_ms"]
-            out_seg["end_ms"] = best_stt["end_ms"]
+            best_start, best_end = _get_stt_segment_times(best_stt)
+            out_seg["start_ms"] = best_start
+            out_seg["end_ms"] = best_end
             out_seg["source"] = "ocr+stt"
 
     ocr_output.sort(key=lambda s: s["start_ms"])
@@ -526,14 +594,11 @@ def merge_ocr_stt(ocr_data: dict, stt_data: dict,
     prev_stt_texts: list[str] = []
 
     for stt_seg in stt_segments:
-        stt_text = "".join(
-            det.get("text", "") for det in stt_seg.get("detections", [])
-        ).strip()
+        stt_text = _get_stt_segment_text(stt_seg)
         if not stt_text:
             continue
 
-        stt_start = stt_seg["start_ms"]
-        stt_end = stt_seg["end_ms"]
+        stt_start, stt_end = _get_stt_segment_times(stt_seg)
         stt_dur = stt_end - stt_start
 
         # Must be fully contained in a genuine gap
@@ -678,12 +743,20 @@ def download_from_r2(r2_key: str, local_path: str) -> bool:
 # ─── Step 3: Insert Video Row ───
 
 def insert_video_row(video_id: str, title: str, language: str, duration_sec: int,
-                     cdn_url: str, thumbnail_url: str, subtitle_source: str = "ocr") -> dict:
+                     cdn_url: str, thumbnail_url: str, subtitle_source: str = "ocr",
+                     language_confidence: str = "high") -> dict:
     """Insert a row into the videos table."""
+    if language not in SUPPORTED_SOURCE_LANGUAGES:
+        print(f"  WARNING: Language '{language}' not supported, defaulting to 'zh'")
+        language = "zh"
+    if language_confidence not in ("high", "medium", "flagged"):
+        print(f"  WARNING: Invalid language_confidence '{language_confidence}', defaulting to 'flagged'")
+        language_confidence = "flagged"
     row = {
         "id": video_id,
         "title": title,
         "language": language,
+        "language_confidence": language_confidence,
         "duration_sec": duration_sec,
         "r2_video_key": f"videos/{video_id}/video.mp4",
         "cdn_url": cdn_url,
@@ -792,44 +865,129 @@ def run_ocr(video_path: str, video_id: str) -> dict:
 # Languages we support as content/source languages
 SUPPORTED_SOURCE_LANGUAGES = {"zh", "en", "ja", "fr", "es"}
 
-def detect_content_language(bbox_data: dict) -> str | None:
-    """
-    Auto-detect the content language from OCR text.
-    Uses langdetect on the concatenated subtitle text.
-    Returns ISO 639-1 code or None if detection fails.
-    """
+# Minimum Latin characters to consider OCR as containing "meaningful Latin text"
+# (not just usernames, numbers, or brand names like "@weemann43" or "2025")
+MEANINGFUL_LATIN_THRESHOLD = 20
+
+
+def _count_scripts(text: str) -> dict:
+    """Count characters by Unicode script class."""
+    counts = {"cjk": 0, "kana": 0, "latin": 0}
+    for ch in text:
+        cp = ord(ch)
+        if 0x4E00 <= cp <= 0x9FFF or 0x3400 <= cp <= 0x4DBF:
+            counts["cjk"] += 1
+        elif 0x3040 <= cp <= 0x309F or 0x30A0 <= cp <= 0x30FF:
+            counts["kana"] += 1
+        elif (0x0041 <= cp <= 0x005A) or (0x0061 <= cp <= 0x007A) or (0x00C0 <= cp <= 0x024F):
+            counts["latin"] += 1
+    return counts
+
+
+def _langdetect_latin(text: str) -> str | None:
+    """Run langdetect and return a supported language code or None."""
     try:
         from langdetect import detect, DetectorFactory
-        # Make detection deterministic
         DetectorFactory.seed = 0
-
-        # Gather all detected text
-        all_text = []
-        for seg in bbox_data.get("segments", []):
-            for det in seg.get("detections", []):
-                text = det.get("text", "").strip()
-                if len(text) >= 2:
-                    all_text.append(text)
-
-        if not all_text:
-            return None
-
-        combined = " ".join(all_text)
-        detected = detect(combined)
-
-        # langdetect returns 'zh-cn' or 'zh-tw' for Chinese
+        detected = detect(text)
         if detected.startswith("zh"):
             detected = "zh"
-
         if detected in SUPPORTED_SOURCE_LANGUAGES:
             return detected
-
-        print(f"  WARNING: Detected language '{detected}' is not a supported source language")
-        return detected
-
-    except Exception as e:
-        print(f"  WARNING: Language detection failed: {e}")
         return None
+    except Exception as e:
+        print(f"  WARNING: langdetect failed: {e}")
+        return None
+
+
+def detect_content_language(
+    bbox_data: dict,
+    stt_data: dict | None = None,
+) -> tuple[str | None, str]:
+    """
+    Auto-detect the content language from OCR text and optional STT data.
+
+    Decision tree:
+      1. Single-script OCR (only CJK OR only Latin) → confidence='high'
+      2. Dual-script OCR (both CJK and meaningful Latin) → use STT → confidence='medium'
+      3. STT unavailable or hallucinated → confidence='flagged'
+
+    Args:
+        bbox_data: OCR bbox output with segments/detections
+        stt_data: Optional STT output from run_stt() containing 'language' key
+
+    Returns:
+        (language_code, confidence) where confidence is one of:
+          'high'    — single-script OCR, unambiguous
+          'medium'  — dual-script OCR resolved via STT
+          'flagged' — needs review (hallucinated STT, unavailable, or ambiguous)
+        language_code is None only when OCR is empty AND STT is unavailable.
+    """
+    # Gather OCR text
+    all_text = []
+    for seg in bbox_data.get("segments", []):
+        for det in seg.get("detections", []):
+            text = det.get("text", "").strip()
+            if len(text) >= 2:
+                all_text.append(text)
+
+    stt_lang = (stt_data or {}).get("language")
+    # Normalize Whisper's zh-cn/zh-tw to 'zh'
+    if stt_lang and stt_lang.startswith("zh"):
+        stt_lang = "zh"
+
+    # Edge case: no OCR text at all — fall back to STT
+    if not all_text:
+        if stt_lang in SUPPORTED_SOURCE_LANGUAGES:
+            print(f"  No OCR text; using STT language: {stt_lang}")
+            return stt_lang, "flagged"  # flagged because we can't cross-validate
+        return None, "flagged"
+
+    combined = " ".join(all_text)
+    counts = _count_scripts(combined)
+    has_cjk = (counts["cjk"] + counts["kana"]) > 0
+    has_meaningful_latin = counts["latin"] >= MEANINGFUL_LATIN_THRESHOLD
+
+    # CASE 1: Single-script OCR — high confidence
+    if has_cjk and not has_meaningful_latin:
+        print(f"  Single-script OCR (CJK only) → zh [high]")
+        return "zh", "high"
+
+    if has_meaningful_latin and not has_cjk:
+        lang = _langdetect_latin(combined)
+        if lang:
+            print(f"  Single-script OCR (Latin only) → {lang} [high]")
+            return lang, "high"
+        print(f"  Single-script Latin but langdetect returned unsupported → flagged")
+        return "en", "flagged"  # best-guess Latin default
+
+    # CASE 2 & 3: Dual-script OCR — use STT to resolve
+    if has_cjk and has_meaningful_latin:
+        if stt_lang in SUPPORTED_SOURCE_LANGUAGES:
+            # Sanity check for STT hallucination: if STT claims a language with
+            # zero supporting script in OCR, treat as hallucinated.
+            # (e.g. STT says 'ja' but OCR has no kana — suspicious)
+            hallucinated = False
+            if stt_lang == "ja" and counts["kana"] == 0:
+                hallucinated = True
+            if hallucinated:
+                print(f"  STT says '{stt_lang}' but OCR lacks supporting script → flagged")
+                # Default to CJK-majority guess
+                fallback = "zh" if counts["cjk"] > counts["latin"] else "en"
+                return fallback, "flagged"
+            print(f"  Dual-script OCR resolved via STT → {stt_lang} [medium]")
+            return stt_lang, "medium"
+
+        # STT unavailable or returned unsupported language
+        print(f"  Dual-script OCR but STT unavailable/unsupported → flagged")
+        # Best-guess: go with CJK-majority since Chinese is primary content
+        fallback = "zh" if counts["cjk"] >= counts["latin"] else "en"
+        return fallback, "flagged"
+
+    # Fallthrough: no CJK, no meaningful Latin (e.g. only numbers/symbols)
+    if stt_lang in SUPPORTED_SOURCE_LANGUAGES:
+        return stt_lang, "flagged"
+    return None, "flagged"
 
 
 # ─── Step 5: Word Segmentation ───
@@ -965,82 +1123,104 @@ def generate_definition_for_word(
         f"{labels['important']}"
     )
 
-    try:
-        response = llm.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": f"You are a professional translator. Provide precise, contextual translations into {target_name}."},
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0.1,
-            max_tokens=200,
-        )
-        content = response.choices[0].message.content.strip()
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = llm.chat.completions.create(
+                model=LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": f"You are a professional translator. Provide precise, contextual translations into {target_name}."},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.1,
+                max_tokens=200,
+            )
+            raw_content = response.choices[0].message.content
+            finish_reason = getattr(response.choices[0], "finish_reason", "unknown")
 
-        # Parse the structured response
-        translation = ""
-        contextual_def = ""
-        part_of_speech = ""
+            if raw_content is None or raw_content.strip() == "":
+                print(f"    WARNING: Empty LLM response for '{word}' → {target_lang} (attempt {attempt}/{max_retries}, finish_reason={finish_reason})")
+                if attempt < max_retries:
+                    time.sleep(2 * attempt)
+                    continue
+                return {"translation": "", "contextual_definition": "", "part_of_speech": ""}
 
-        for line in content.split("\n"):
-            line = line.strip()
-            # Match localized or English labels
-            trans_label = labels["translation"]
-            def_label = labels["definition"]
-            pos_label = labels["pos"]
+            content = raw_content.strip()
 
-            if line.startswith(f"{trans_label}:") or line.startswith("Translation:"):
-                translation = line.split(":", 1)[1].strip()
-            elif line.startswith(f"{def_label}:") or line.startswith("Contextual Definition:"):
-                contextual_def = line.split(":", 1)[1].strip()
-            elif line.startswith(f"{pos_label}:") or line.startswith("Part of Speech:"):
-                part_of_speech = line.split(":", 1)[1].strip()
+            # Parse the structured response
+            translation = ""
+            contextual_def = ""
+            part_of_speech = ""
 
-        return {
-            "translation": translation,
-            "contextual_definition": contextual_def,
-            "part_of_speech": part_of_speech,
-        }
-    except Exception as e:
-        print(f"    WARNING: LLM error for '{word}' → {target_lang}: {e}")
-        return {"translation": "", "contextual_definition": "", "part_of_speech": ""}
+            for line in content.split("\n"):
+                line = line.strip()
+                # Match localized or English labels
+                trans_label = labels["translation"]
+                def_label = labels["definition"]
+                pos_label = labels["pos"]
+
+                if line.startswith(f"{trans_label}:") or line.startswith("Translation:"):
+                    translation = line.split(":", 1)[1].strip()
+                elif line.startswith(f"{def_label}:") or line.startswith("Contextual Definition:"):
+                    contextual_def = line.split(":", 1)[1].strip()
+                elif line.startswith(f"{pos_label}:") or line.startswith("Part of Speech:"):
+                    part_of_speech = line.split(":", 1)[1].strip()
+
+            return {
+                "translation": translation,
+                "contextual_definition": contextual_def,
+                "part_of_speech": part_of_speech,
+            }
+        except Exception as e:
+            print(f"    WARNING: LLM error for '{word}' → {target_lang} (attempt {attempt}/{max_retries}): {e}")
+            if attempt < max_retries:
+                time.sleep(2 * attempt)
+                continue
+            return {"translation": "", "contextual_definition": "", "part_of_speech": ""}
 
 
 def generate_all_definitions(
     words: list[str],
     word_sentences: dict[str, str],
     source_lang: str,
+    max_workers: int = 10,
 ) -> dict[str, dict[str, dict]]:
     """
     Generate translations for all words × all target languages (excluding self-translation).
+    Uses a thread pool to run up to max_workers LLM calls concurrently.
     Returns: {word: {target_lang: {translation, contextual_definition, part_of_speech}}}
     """
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
     if not words:
         return {}
 
-    # Build word → sentence map for context
     target_langs = [t for t in TARGET_LANGUAGES if t["code"] != source_lang]
-
     total_calls = len(words) * len(target_langs)
-    print(f"  Generating definitions: {len(words)} words × {len(target_langs)} languages = {total_calls} LLM calls")
+    print(f"  Generating definitions: {len(words)} words × {len(target_langs)} languages = {total_calls} LLM calls ({max_workers} workers)")
 
-    all_defs: dict[str, dict[str, dict]] = {}
+    all_defs: dict[str, dict[str, dict]] = {word: {} for word in words}
     call_count = 0
+    lock = threading.Lock()
 
-    for word in words:
-        sentence = word_sentences.get(word, word)
-        all_defs[word] = {}
+    def _define_one(word: str, sentence: str, target_code: str):
+        return word, target_code, generate_definition_for_word(word, sentence, source_lang, target_code)
 
-        for target in target_langs:
-            result = generate_definition_for_word(word, sentence, source_lang, target["code"])
-            all_defs[word][target["code"]] = result
-            call_count += 1
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for word in words:
+            sentence = word_sentences.get(word, word)
+            for target in target_langs:
+                futures.append(executor.submit(_define_one, word, sentence, target["code"]))
 
-            if call_count % 10 == 0:
-                print(f"    Progress: {call_count}/{total_calls} calls")
-
-            # Rate limit: ~2 calls/sec to stay under OpenRouter limits
-            time.sleep(0.5)
+        for future in as_completed(futures):
+            word, target_code, result = future.result()
+            all_defs[word][target_code] = result
+            with lock:
+                call_count += 1
+                if call_count % 50 == 0:
+                    print(f"    Progress: {call_count}/{total_calls} calls")
 
     print(f"  Definitions complete: {call_count} LLM calls")
     return all_defs
@@ -1076,33 +1256,60 @@ def generate_segment_translations(
         f"{batch_json}"
     )
 
-    try:
-        response = llm.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": (
-                    f"You are a professional subtitle translator. "
-                    f"Translate {source_name} subtitles into natural {target_name}. "
-                    f"Preserve meaning and tone. Return only valid JSON, no markdown."
-                )},
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0.1,
-            max_tokens=max(500, len(segments) * 100),
-        )
-        content = response.choices[0].message.content.strip()
+    max_retries = 3
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = llm.chat.completions.create(
+                model=LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": (
+                        f"You are a professional subtitle translator. "
+                        f"Translate {source_name} subtitles into natural {target_name}. "
+                        f"Preserve meaning and tone. Return only valid JSON, no markdown."
+                    )},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=0.1,
+                max_tokens=max(500, len(segments) * 100),
+            )
+            raw_content = response.choices[0].message.content
+            finish_reason = getattr(response.choices[0], "finish_reason", "unknown")
 
-        # Strip markdown code fences if the model included them
-        if content.startswith("```"):
-            lines = content.splitlines()
-            content = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+            if raw_content is None or raw_content.strip() == "":
+                print(f"    WARNING: Empty LLM response for segment translations → {target_lang} (attempt {attempt}/{max_retries}, finish_reason={finish_reason})")
+                if attempt < max_retries:
+                    time.sleep(2 * attempt)
+                    continue
+                return {}
 
-        results = json.loads(content)
-        return {item["id"]: item["translation"] for item in results}
+            content = raw_content.strip()
 
-    except Exception as e:
-        print(f"    WARNING: LLM error for segment translations → {target_lang}: {e}")
-        return {}
+            # Strip markdown code fences if the model included them
+            if content.startswith("```"):
+                lines = content.splitlines()
+                content = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+                content = content.strip()
+
+            # Re-check emptiness after fence stripping (model may return "```json\n```")
+            if not content:
+                print(f"    WARNING: Empty LLM response for segment translations → {target_lang} (empty after fence strip, attempt {attempt}/{max_retries})")
+                if attempt < max_retries:
+                    time.sleep(2 * attempt)
+                    continue
+                return {}
+
+            results = json.loads(content)
+            # Handle single-object dict instead of array
+            if isinstance(results, dict):
+                results = [results]
+            return {item["id"]: item["translation"] for item in results}
+
+        except Exception as e:
+            print(f"    WARNING: LLM error for segment translations → {target_lang} (attempt {attempt}/{max_retries}): {e}")
+            if attempt < max_retries:
+                time.sleep(2 * attempt)
+                continue
+            return {}
 
 
 def insert_segment_translations(
@@ -1178,6 +1385,10 @@ def insert_vocab_and_definitions(
         sentence = word_sentences.get(word, "")
 
         for target_lang, defn in lang_defs.items():
+            # Skip empty definitions from LLM errors — inserting blank rows
+            # pollutes the DB and shows empty cards in the app.
+            if not defn.get("translation") and not defn.get("contextual_definition"):
+                continue
             def_rows.append({
                 "vocab_word_id": word_id_map[word],
                 "video_id": video_id,
@@ -1191,8 +1402,11 @@ def insert_vocab_and_definitions(
 
     if def_rows:
         for i in range(0, len(def_rows), 50):
-            supabase.table("word_definitions").insert(def_rows[i:i + 50]).execute()
-    print(f"  Inserted {len(def_rows)} word_definitions ({len(all_definitions)} words × {len(def_rows) // max(len(all_definitions), 1)} languages)")
+            supabase.table("word_definitions").upsert(
+                def_rows[i:i + 50],
+                on_conflict="vocab_word_id,video_id,target_language"
+            ).execute()
+    print(f"  Upserted {len(def_rows)} word_definitions ({len(all_definitions)} words × {len(def_rows) // max(len(all_definitions), 1)} languages)")
 
     # Insert video_words
     vw_rows = []
@@ -1319,36 +1533,56 @@ def main():
         print("[1/9] Normalizing video...")
         norm_path, duration_sec = normalize_video(video_path, tmpdir)
 
-        # Step 2: Run OCR (always — detect burned-in text positions)
-        print("[2/9] Running OCR...")
-        bbox_data_ocr = run_ocr(norm_path, video_id)
-
-        # Step 3: Run STT (audio only — no longer converted to bbox format)
-        print("[3/9] Running STT (Groq Whisper)...")
-        audio_path = extract_audio(norm_path, tmpdir)
-        if audio_path and groq:
-            try:
-                upload_to_r2(audio_path, f"videos/{video_id}/audio.mp3")
-            except Exception as e:
-                print(f"  STT/audio upload failed: {e}")
-        elif not groq:
-            print("  No GroqAPIKey — skipping STT")
+        # Step 2: Run OCR
+        if args.skip_ocr:
+            print("[2/9] Skipping OCR (--skip-ocr)")
+            bbox_data_ocr = {
+                "video": video_id,
+                "resolution": {"width": 720, "height": 1280},
+                "duration_ms": duration_sec * 1000,
+                "subtitle_source": "stt",
+                "segments": [],
+            }
         else:
-            print("  No audio stream — skipping STT")
+            print("[2/9] Running OCR...")
+            bbox_data_ocr = run_ocr(norm_path, video_id)
 
-        # OCR is the sole data source — bboxes.json for tap targets, transcript.json via remerge
+        # Step 3: Run STT (audio extraction + Whisper transcription + upload)
+        stt_data = None
+        if args.skip_stt:
+            print("[3/9] Skipping STT (--skip-stt)")
+        else:
+            print("[3/9] Running STT (Groq Whisper)...")
+            audio_path = extract_audio(norm_path, tmpdir)
+            if audio_path and groq:
+                try:
+                    upload_to_r2(audio_path, f"videos/{video_id}/audio.mp3")
+                    # Actually run Whisper to get transcript + detected language
+                    stt_data = run_stt(audio_path, language=language)
+                except Exception as e:
+                    print(f"  STT/audio upload failed: {e}")
+            elif not groq:
+                print("  No GroqAPIKey — skipping STT")
+            else:
+                print("  No audio stream — skipping STT")
+
+        # Determine subtitle source label
         bbox_data = bbox_data_ocr
-        sub_source = "ocr"
+        sub_source = "stt" if args.skip_ocr else ("both" if stt_data else "ocr")
 
         # Auto-detect language from subtitle text if not provided
         if not language:
-            source = bbox_data_ocr
-            language = detect_content_language(source)
-            if language:
-                print(f"  Auto-detected language: {language}")
+            detected, confidence = detect_content_language(bbox_data_ocr, stt_data)
+            if detected:
+                language = detected
+                print(f"  Auto-detected language: {language} [confidence={confidence}]")
             else:
                 language = "zh"  # Default fallback
-                print(f"  Could not detect language, defaulting to: {language}")
+                confidence = "flagged"
+                print(f"  Could not detect language, defaulting to: {language} [flagged]")
+        else:
+            # User provided --language, so confidence is high (explicit override)
+            confidence = "high"
 
         # Auto-detect title from first subtitle if not provided
         if not title:
@@ -1358,7 +1592,8 @@ def main():
         # Extract thumbnail at ~30% into the video
         thumb_path = extract_thumbnail(norm_path, tmpdir, duration_sec)
 
-        # Step 4: Upload to R2
+        # Step 4–9: Upload, insert, and process — all inside cleanup block
+        # so a failure at ANY point cleans up orphan R2 objects + Supabase rows.
         print("[4/9] Uploading to R2...")
 
         # Duplicate guard — abort if video.mp4 already exists for this video_id
@@ -1374,82 +1609,84 @@ def main():
                 if hasattr(_head_err, "response") and _head_err.response.get("Error", {}).get("Code") not in ("404", "NoSuchKey"):
                     raise
 
-        cdn_url = upload_to_r2(norm_path, f"videos/{video_id}/video.mp4")
-        thumb_url = upload_to_r2(thumb_path, f"videos/{video_id}/thumbnail.jpg")
-
-        if not args.dry_run:
-            # Insert video row
-            print("  Inserting video row...")
-            insert_video_row(video_id, title, language, duration_sec, cdn_url, thumb_url, sub_source)
-
-        # Save + upload OCR bboxes.json (for tap targets over burned-in text)
-        bbox_path = os.path.join(tmpdir, "bboxes.json")
-        with open(bbox_path, "w", encoding="utf-8") as f:
-            json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
-        upload_to_r2(bbox_path, f"videos/{video_id}/bboxes.json")
-
-        # Save locally for testing
+        # Save locally for testing (safe — no remote side effects)
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         local_bbox_path = OUTPUT_DIR / f"{video_id}_pipeline.json"
         with open(local_bbox_path, "w", encoding="utf-8") as f:
             json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
         print(f"  Saved locally: {local_bbox_path}")
 
-        # Step 5: Word segmentation — from OCR data
-        print("[5/9] Segmenting words...")
-        seg_source = bbox_data_ocr
-        unique_words, word_occurrences = segment_words(seg_source, language)
-
-        # Build word → sentence map for LLM context
-        word_sentences = {}
-        for occ in word_occurrences:
-            if occ["word"] not in word_sentences:
-                word_sentences[occ["word"]] = occ["sentence"]
-
-        # Step 6: LLM definitions — all words × all target languages
-        if args.reuse_definitions:
-            print("[6/9] Reusing existing definitions from Supabase...")
-            all_definitions = reuse_existing_definitions(unique_words, language)
-            missing = [w for w in unique_words if w not in all_definitions or not all_definitions[w]]
-            if missing:
-                print(f"  {len(missing)} words have no existing definitions: {missing[:5]}{'...' if len(missing) > 5 else ''}")
-        else:
-            print("[6/9] Generating definitions via Claude Haiku 3.5...")
-            all_definitions = generate_all_definitions(unique_words, word_sentences, language)
-
-        # Step 7: Generate segment translations — one LLM call per target language
-        spoken_segments = [
-            {
-                "start_ms": seg["start_ms"],
-                "end_ms": seg["end_ms"],
-                "text": seg["detections"][0]["text"],
-            }
-            for seg in seg_source.get("segments", [])
-            if seg.get("detections") and seg["detections"][0].get("text", "").strip()
-        ]
-        if not args.dry_run and spoken_segments:
-            print("[7/9] Generating segment translations...")
-            target_langs = [t for t in TARGET_LANGUAGES if t["code"] != language]
-            all_seg_translations: dict[str, dict[int, str]] = {}
-            for i, target in enumerate(target_langs):
-                trans_map = generate_segment_translations(spoken_segments, language, target["code"])
-                if trans_map:
-                    all_seg_translations[target["code"]] = trans_map
-                if (i + 1) % 5 == 0:
-                    print(f"    Progress: {i + 1}/{len(target_langs)} languages")
-            print(f"  Translations complete: {len(all_seg_translations)}/{len(target_langs)} languages ({len(spoken_segments)} segments)")
-        elif not args.dry_run:
-            all_seg_translations = {}
-            print("[7/9] No spoken segments — skipping translations")
-        else:
-            all_seg_translations = {}
-            print("[7/9] [DRY RUN] Skipping segment translation generation")
-
         if not args.dry_run:
             started_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
             try:
+                # Upload to R2
+                cdn_url = upload_to_r2(norm_path, f"videos/{video_id}/video.mp4")
+                thumb_url = upload_to_r2(thumb_path, f"videos/{video_id}/thumbnail.jpg")
+
+                bbox_path = os.path.join(tmpdir, "bboxes.json")
+                with open(bbox_path, "w", encoding="utf-8") as f:
+                    json.dump(bbox_data_ocr, f, ensure_ascii=False, indent=2)
+                upload_to_r2(bbox_path, f"videos/{video_id}/bboxes.json")
+
+                # Step 5: Word segmentation — from OCR data
+                print("[5/9] Segmenting words...")
+                seg_source = bbox_data_ocr
+                unique_words, word_occurrences = segment_words(seg_source, language)
+
+                # Build word → sentence map for LLM context
+                word_sentences = {}
+                for occ in word_occurrences:
+                    if occ["word"] not in word_sentences:
+                        word_sentences[occ["word"]] = occ["sentence"]
+
+                # Step 6: LLM definitions — all words × all target languages
+                if args.reuse_definitions:
+                    print("[6/9] Reusing existing definitions from Supabase...")
+                    all_definitions = reuse_existing_definitions(unique_words, language)
+                    missing = [w for w in unique_words if w not in all_definitions or not all_definitions[w]]
+                    if missing:
+                        print(f"  {len(missing)} words have no existing definitions: {missing[:5]}{'...' if len(missing) > 5 else ''}")
+                else:
+                    print("[6/9] Generating definitions via Claude Haiku 3.5...")
+                    all_definitions = generate_all_definitions(unique_words, word_sentences, language)
+
+                # Step 7: Generate segment translations — one LLM call per target language
+                spoken_segments = [
+                    {
+                        "start_ms": seg["start_ms"],
+                        "end_ms": seg["end_ms"],
+                        "text": seg["detections"][0]["text"],
+                    }
+                    for seg in seg_source.get("segments", [])
+                    if seg.get("detections") and seg["detections"][0].get("text", "").strip()
+                ]
+                if spoken_segments:
+                    print("[7/9] Generating segment translations...")
+                    target_langs = [t for t in TARGET_LANGUAGES if t["code"] != language]
+                    all_seg_translations: dict[str, dict[int, str]] = {}
+                    from concurrent.futures import ThreadPoolExecutor, as_completed as _as_completed
+                    with ThreadPoolExecutor(max_workers=5) as _pool:
+                        _futures = {
+                            _pool.submit(generate_segment_translations, spoken_segments, language, t["code"]): t["code"]
+                            for t in target_langs
+                        }
+                        for _f in _as_completed(_futures):
+                            _lang = _futures[_f]
+                            _result = _f.result()
+                            if _result:
+                                all_seg_translations[_lang] = _result
+                    print(f"  Translations complete: {len(all_seg_translations)}/{len(target_langs)} languages ({len(spoken_segments)} segments)")
+                else:
+                    all_seg_translations = {}
+                    print("[7/9] No spoken segments — skipping translations")
+
                 # Step 8: Insert into Supabase
+                # Insert video row HERE (just before FK-dependent inserts) so the gap
+                # between insert and FK check is milliseconds, not 10+ minutes.
                 print("[8/9] Inserting into Supabase...")
+                print("  Inserting video row...")
+                insert_video_row(video_id, title, language, duration_sec, cdn_url, thumb_url, sub_source, language_confidence=confidence)
+
                 insert_vocab_and_definitions(
                     video_id, unique_words, all_definitions,
                     word_occurrences, language,
@@ -1460,8 +1697,9 @@ def main():
                 # Step 9: Mark ready
                 print("[9/9] Marking video ready...")
                 mark_video_ready(video_id, started_at)
+
             except Exception as e:
-                print(f"\n  ERROR during Supabase insert: {e}")
+                print(f"\n  ERROR during pipeline: {e}")
                 print("  Cleaning up — deleting partial video data...")
                 try:
                     supabase.table("segment_translations").delete().eq("video_id", video_id).execute()
@@ -1492,6 +1730,33 @@ def main():
                             print(f"    WARNING: Could not delete R2 {r2_key}: {r2_del_err}")
                 raise
         else:
+            # Dry run — still do segmentation + LLM for testing, but skip remote writes
+            seg_source = bbox_data_ocr
+            print("[5/9] Segmenting words...")
+            unique_words, word_occurrences = segment_words(seg_source, language)
+            word_sentences = {}
+            for occ in word_occurrences:
+                if occ["word"] not in word_sentences:
+                    word_sentences[occ["word"]] = occ["sentence"]
+
+            if args.reuse_definitions:
+                print("[6/9] Reusing existing definitions from Supabase...")
+                all_definitions = reuse_existing_definitions(unique_words, language)
+            else:
+                print("[6/9] Generating definitions via Claude Haiku 3.5...")
+                all_definitions = generate_all_definitions(unique_words, word_sentences, language)
+
+            spoken_segments = [
+                {
+                    "start_ms": seg["start_ms"],
+                    "end_ms": seg["end_ms"],
+                    "text": seg["detections"][0]["text"],
+                }
+                for seg in seg_source.get("segments", [])
+                if seg.get("detections") and seg["detections"][0].get("text", "").strip()
+            ]
+            all_seg_translations = {}
+            print("[7/9] [DRY RUN] Skipping segment translation generation")
             print("[8/9] [DRY RUN] Skipping Supabase inserts")
             print("[9/9] [DRY RUN] Skipping status update")
 
